@@ -16,42 +16,120 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- CSS -->
-  <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/css/login.css">
+  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./css/registro.css">
+  
 </head>
 <body>
-  <div class="login-page">
-    <div class="login-container">
-      <!-- Card de registro -->
-      <div id="register-card" class="login-card">
-        <div class="login-header">
-          <a href="/">
-            <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="login-logo">
-          </a>
-          <h2>Criar nova conta</h2>
-        </div>
-        <form id="register-form" class="login-form">
-          <div class="form-group">
-            <label for="register-name">Nome completo</label>
-            <input type="text" id="register-name" name="name" placeholder="Seu nome completo" required>
+  <div class="split-layout">
+    <!-- Seção do logo -->
+    <div class="logo-section">
+      <div class="content">
+        <a href="/">
+          <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="login-logo">
+        </a>
+        <p>Bem-vindo à Cakeria, seu destino para os mais deliciosos doces artesanais e bolos personalizados!</p>
+      </div>
+    </div>
+    
+    <!-- Seção do formulário -->
+    <div class="form-section">
+      <div class="login-container">
+        <div id="register-card" class="login-card">
+          <div class="login-header">
+            <h2>Criar nova conta</h2>
+            <p>Preencha os campos abaixo para fazer parte da Cakeria</p>
           </div>
-          <div class="form-group">
-            <label for="register-email">E-mail</label>
-            <input type="email" id="register-email" name="email" placeholder="Seu e-mail" required>
+          <form id="register-form" class="login-form">
+            <!-- Primeira linha: Nome e Email -->
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="register-name">Nome completo</label>
+                  <input type="text" id="register-name" name="name" placeholder="Seu nome completo" required>
+                  <span id="name-error" class="error-message"></span>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="register-email">E-mail</label>
+                  <input type="email" id="register-email" name="email" placeholder="Seu e-mail" required>
+                  <span id="email-error" class="error-message"></span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Segunda linha: Telefone e CPF -->
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="register-phone">Telefone</label>
+                  <input type="tel" id="register-phone" name="phone" placeholder="(00) 00000-0000" required>
+                  <span id="phone-error" class="error-message"></span>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="register-cpf">CPF</label>
+                  <input type="text" id="register-cpf" name="cpf" placeholder="000.000.000-00" required>
+                  <span id="cpf-error" class="error-message"></span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Endereço em uma única linha: CEP, Rua e Número -->
+            <div class="form-row address-row">
+              <div class="form-col cep-col">
+                <div class="form-group">
+                  <label for="register-cep">CEP</label>
+                  <input type="text" id="register-cep" name="cep" placeholder="00000-000" required>
+                  <span id="cep-error" class="error-message"></span>
+                </div>
+              </div>
+              <div class="form-col street-col">
+                <div class="form-group">
+                  <label for="register-street">Rua</label>
+                  <input type="text" id="register-street" name="street" placeholder="Nome da rua" required>
+                  <span id="street-error" class="error-message"></span>
+                </div>
+              </div>
+              <div class="form-col number-col">
+                <div class="form-group">
+                  <label for="register-number">Nº</label>
+                  <input type="text" id="register-number" name="number" placeholder="123" required>
+                  <span id="number-error" class="error-message"></span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Terceira linha: Senha e Confirmar Senha -->
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="register-password">Senha</label>
+                  <input type="password" id="register-password" name="password" placeholder="Sua senha" required>
+                  <span id="password-error" class="error-message"></span>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="register-confirm-password">Confirmar Senha</label>
+                  <input type="password" id="register-confirm-password" name="confirm-password" placeholder="Confirme sua senha" required>
+                  <span id="confirm-password-error" class="error-message"></span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Botão de cadastro -->
+            <div class="form-row">
+              <div class="form-col full-width">
+                <button type="submit" class="btn btn-primary btn-login">Cadastrar</button>
+              </div>
+            </div>
+          </form>
+          <div class="login-footer">
+            <p>Já possui uma conta? <a href="/login.html" id="login-link">Fazer login</a> | <a href="/">Página inicial</a></p>
           </div>
-          <div class="form-group">
-            <label for="register-phone">Telefone</label>
-            <input type="tel" id="register-phone" name="phone" placeholder="Seu telefone" required>
-          </div>
-          <div class="form-group">
-            <label for="register-password">Senha</label>
-            <input type="password" id="register-password" name="password" placeholder="Sua senha" required>
-          </div>
-          <button type="submit" class="btn btn-primary btn-login">Cadastrar</button>
-        </form>
-        <div class="login-footer">
-          <p>Já possui uma conta? <a href="/login.html" id="login-link">Fazer login</a></p>
-          <p class="back-to-home"><a href="/">Voltar para a página inicial</a></p>
         </div>
       </div>
     </div>

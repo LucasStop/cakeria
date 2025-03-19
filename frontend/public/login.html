@@ -20,30 +20,42 @@
   <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
-  <div class="login-page">
-    <div class="login-container">
-      <!-- Card de login -->
-      <div id="login-card" class="login-card">
-        <div class="login-header">
-          <a href="/">
-            <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="login-logo">
-          </a>
-          <h2>Acesse sua conta</h2>
-        </div>
-        <form id="login-form" class="login-form">
-          <div class="form-group">
-            <label for="email">E-mail</label>
-            <input type="email" id="email" name="email" placeholder="Seu e-mail" required>
+  <div class="split-layout">
+    <!-- Seção do logo -->
+    <div class="logo-section">
+      <div class="content">
+        <a href="/">
+          <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="login-logo">
+        </a>
+        <p>Bem-vindo à Cakeria, seu destino para os mais deliciosos doces artesanais e bolos personalizados!</p>
+      </div>
+    </div>
+    
+    <!-- Seção do formulário -->
+    <div class="form-section">
+      <div class="login-container">
+        <div id="login-card" class="login-card">
+          <div class="login-header">
+            <h2>Acesse sua conta</h2>
+            <p>Preencha os campos abaixo para acessar sua conta</p>
           </div>
-          <div class="form-group">
-            <label for="password">Senha</label>
-            <input type="password" id="password" name="password" placeholder="Sua senha" required>
+          <form id="login-form" class="login-form">
+            <div class="form-group">
+              <label for="email">E-mail</label>
+              <input type="email" id="email" name="email" placeholder="Seu e-mail" required>
+              <span id="email-error" class="error-message"></span>
+            </div>
+            <div class="form-group">
+              <label for="password">Senha</label>
+              <input type="password" id="password" name="password" placeholder="Sua senha" required>
+              <span id="password-error" class="error-message"></span>
+            </div>
+            <button type="submit" class="btn btn-primary btn-login">Entrar</button>
+          </form>
+          <div class="login-footer">
+            <p>Não possui uma conta? <a href="/registro.html" id="register-link">Cadastre-se</a></p>
+            <p class="back-to-home"><a href="/">Voltar para a página inicial</a></p>
           </div>
-          <button type="submit" class="btn btn-primary btn-login">Entrar</button>
-        </form>
-        <div class="login-footer">
-          <p>Não possui uma conta? <a href="/registro.html" id="register-link">Cadastre-se</a></p>
-          <p class="back-to-home"><a href="/">Voltar para a página inicial</a></p>
         </div>
       </div>
     </div>
