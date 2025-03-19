@@ -110,6 +110,7 @@ body {
 }
 
 .form-group {
+  position: relative;
   margin-bottom: 4px;
 }
 
@@ -257,4 +258,38 @@ body {
     flex: 1;
     width: 100%;
   }
+}
+
+/* Estilo para o toggle de visualização da senha */
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-33%);
+  cursor: pointer;
+  color: #777;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  background: none;
+  border: none;
+  padding: 0;
+  height: 24px;
+  width: 24px;
+}
+
+.password-toggle:hover {
+  color: #333;
+}
+
+.password-toggle svg {
+  height: 18px;
+  width: 18px;
+  fill: currentColor;
+}
+
+.form-group input[type="password"],
+.form-group input[type="text"].password-input {
+  padding-right: 40px;
 }
