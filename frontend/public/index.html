@@ -33,40 +33,288 @@
     <header-component></header-component>
 
     <main id="content">
+      <!-- Hero Banner -->
       <section class="hero">
+        <div class="overlay"></div>
         <div class="container">
           <div class="hero-content">
-            <h2>Doces que encantam. Sabores que surpreendem.</h2>
-            <p>
-              Os melhores bolos e doces artesanais para todas as ocasiões
-              especiais
-            </p>
+            <h1>Doces que encantam, sabores que surpreendem</h1>
+            <div class="divider"></div>
+            <p>Sabores inesquecíveis para momentos especiais</p>
             <div class="hero-buttons">
-              <button class="btn btn-primary" id="ver-produtos">
-                Ver Produtos
-              </button>
-              <button class="btn btn-outline">Fazer Pedido</button>
+              <a href="#cake-builder" class="btn btn-primary">Monte seu Bolo</a>
+              <a href="/fazer-pedido" class="btn btn-outline">Fazer Pedido</a>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="featured">
+      <!-- Cake Builder Section -->
+      <section class="cake-builder" id="cake-builder">
         <div class="container">
-          <h2 class="section-title">Produtos Destacados</h2>
-          <div class="featured-products" id="produtos-container">
-            <!-- Produtos serão carregados aqui via JavaScript -->
-            <p class="loading">Carregando produtos...</p>
+          <div class="section-header split-layout">
+            <div class="header-left">
+              <h2 class="section-title">Monte do seu jeito!</h2>
+            </div>
+            <div class="header-right">
+              <p class="section-subtitle"><strong>Aqui você é o chef!</strong></p>
+              <p class="section-subtitle">Temos diversos tamanhos, massas e recheios para você combinar como preferir seguindo nosso passo a passo.</p>
+              
+            </div>
+          </div>
+          
+          <div class="cake-steps">
+            <div class="step-card">
+              <div class="step-number">1</div>
+              <div class="step-image">
+                <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Tamanho">
+              </div>
+              <h3>Tamanho</h3>
+            </div>
+            
+            <div class="step-card">
+              <div class="step-number">2</div>
+              <div class="step-image">
+                <img src="https://images.unsplash.com/photo-1557925923-cd4648e211a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Massas">
+              </div>
+              <h3>Massas</h3>
+            </div>
+            
+            <div class="step-card">
+              <div class="step-number">3</div>
+              <div class="step-image">
+                <img src="https://images.unsplash.com/photo-1582716401301-b2407dc7563d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Recheios">
+              </div>
+              <h3>Recheios</h3>
+            </div>
+            
+            <div class="step-card">
+              <div class="step-number">4</div>
+              <div class="step-image">
+                <img src="https://images.unsplash.com/photo-1607478900766-efe13248b125?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Finalização">
+              </div>
+              <h3>Finalização</h3>
+            </div>
+          </div>
+          
+          <div class="cake-builder-cta">
+            <a href="/fazer-pedido" class="btn btn-primary btn-large">Monte seu Bolo Agora</a>
           </div>
         </div>
       </section>
 
-      <section class="categories">
+      <!-- Bolos Prontos Section -->
+      <section class="ready-cakes">
         <div class="container">
-          <h2 class="section-title">Nossas Categorias</h2>
-          <div class="category-grid" id="categorias-container">
-            <!-- Categorias serão carregadas aqui via JavaScript -->
-            <p class="loading">Carregando categorias...</p>
+          <div class="section-header">
+            <span class="section-tag">Pronto para Entrega</span>
+            <h2 class="section-title">Não quer esperar? Temos opções prontas!</h2>
+            <div class="divider centered"></div>
+            <p class="section-subtitle">Confira nossa seleção de bolos prontos para entrega imediata</p>
+          </div>
+          
+          <div class="ready-cakes-grid">
+            <div class="cake-card">
+              <div class="cake-badge">Mais Pedido</div>
+              <div class="cake-image">
+                <img src="https://images.unsplash.com/photo-1562777717-dc6984f65a63?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Bolo de Chocolate">
+                <div class="cake-overlay">
+                  <a href="/fazer-pedido" class="btn btn-primary btn-sm">Encomendar</a>
+                </div>
+              </div>
+              <div class="cake-info">
+                <h3>Bolo de Chocolate</h3>
+                <p>Massa de chocolate com recheio de brigadeiro e cobertura de ganache</p>
+                <div class="cake-price-row">
+                  <div class="cake-price">R$ 89,90</div>
+                  <a href="/fazer-pedido" class="btn-cart"><i class="fas fa-shopping-cart"></i></a>
+                </div>
+              </div>
+            </div>
+            
+            <div class="cake-card">
+              <div class="cake-image">
+                <img src="https://images.unsplash.com/photo-1534766555764-ce878a5e3a2b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Red Velvet">
+              </div>
+              <div class="cake-info">
+                <h3>Red Velvet</h3>
+                <p>Massa red velvet com recheio e cobertura cream cheese</p>
+                <div class="cake-price">R$ 99,90</div>
+                <a href="/fazer-pedido" class="btn btn-outline btn-sm">Comprar</a>
+              </div>
+            </div>
+            
+            <div class="cake-card">
+              <div class="cake-image">
+                <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Bolo de Frutas">
+              </div>
+              <div class="cake-info">
+                <h3>Bolo de Frutas</h3>
+                <p>Massa baunilha com recheio de frutas vermelhas e cobertura de chantilly</p>
+                <div class="cake-price">R$ 94,90</div>
+                <a href="/fazer-pedido" class="btn btn-outline btn-sm">Comprar</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Por que nos escolher -->
+      <section class="why-choose">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-tag">Nossos Diferenciais</span>
+            <h2 class="section-title">Por que escolher a Cakeria?</h2>
+            <div class="divider centered"></div>
+            <p class="section-subtitle">Compromisso com qualidade e sabor em cada detalhe</p>
+          </div>
+          <div class="features-grid">
+            <div class="feature">
+              <div class="feature-icon">
+                <i class="fas fa-cookie"></i>
+              </div>
+              <h3>Ingredientes Selecionados</h3>
+              <p>Usamos apenas ingredientes frescos e de alta qualidade em nossas receitas.</p>
+            </div>
+            <div class="feature">
+              <div class="feature-icon">
+                <i class="fas fa-birthday-cake"></i>
+              </div>
+              <h3>Produção Artesanal</h3>
+              <p>Cada doce é preparado com atenção aos detalhes e técnicas tradicionais.</p>
+            </div>
+            <div class="feature">
+              <div class="feature-icon">
+                <i class="fas fa-shipping-fast"></i>
+              </div>
+              <h3>Entrega Rápida</h3>
+              <p>Entregamos seus pedidos com pontualidade e cuidado em toda a cidade.</p>
+            </div>
+            <div class="feature">
+              <div class="feature-icon">
+                <i class="fas fa-heart"></i>
+              </div>
+              <h3>Feito com Amor</h3>
+              <p>Colocamos paixão em cada criação para tornar seu momento especial.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Brand Intro -->
+      <section class="brand-intro">
+        <div class="container">
+          <div class="brand-intro-content">
+            <div class="brand-intro-greeting">
+              <h2>Fala Caker! <span class="highlight-text">Que bom te ver por aqui ;)</span></h2>
+              <div class="divider centered"></div>
+            </div>
+            
+            <div class="brand-intro-description">
+              <p>Caso você não nos conheça, somos uma marca de <span class="text-accent">Curitiba</span> com a missão de deixar vidas mais doces e sem burocracias!</p>
+              <p>Nascemos em 2024 e estamos desde então deixando rotinas mais práticas e muito mais gostosas <i class="fas fa-heart pulse"></i></p>
+            </div>
+            
+            <div class="brand-intro-highlights">
+              <div class="highlight-item">
+                <div class="highlight-icon">
+                  <i class="fas fa-birthday-cake"></i>
+                </div>
+                <h3>CONFEITARIA</h3>
+              </div>
+              <div class="highlight-item">
+                <div class="highlight-icon">
+                  <i class="fas fa-shipping-fast"></i>
+                </div>
+                <h3>RÁPIDA</h3>
+              </div>
+              <div class="highlight-item">
+                <div class="highlight-icon">
+                  <i class="fas fa-tools"></i>
+                </div>
+                <h3>MONTE DO<br>SEU JEITO</h3>
+                <span class="highlight-caption">100% personalizável</span>
+              </div>
+              <div class="highlight-item">
+                <div class="highlight-icon">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3>CURITIBA</h3>
+              </div>
+            </div>
+            
+            <div class="brand-tagline">
+              <p>Uma experiência doce e descomplicada, feita para você!</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="decoration-elements">
+          <div class="decoration-circle circle-1"></div>
+          <div class="decoration-circle circle-2"></div>
+          <div class="decoration-circle circle-3"></div>
+          <div class="decoration-circle circle-4"></div>
+        </div>
+      </section>
+
+      <!-- Instagram Gallery -->
+      <section class="instagram">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-tag">@cakeriaconfeitaria</span>
+            <h2 class="section-title">Nos siga no Instagram</h2>
+            <div class="divider centered"></div>
+            <p class="section-subtitle">Compartilhe suas experiências usando #cakeriaconfeitaria</p>
+          </div>
+          <div class="instagram-grid">
+            <a href="https://instagram.com" class="instagram-item">
+              <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Bolo de chocolate">
+              <div class="instagram-overlay">
+                <i class="fab fa-instagram"></i>
+              </div>
+            </a>
+            <a href="https://instagram.com" class="instagram-item">
+              <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Cupcakes">
+              <div class="instagram-overlay">
+                <i class="fab fa-instagram"></i>
+              </a>
+            <a href="https://instagram.com" class="instagram-item">
+              <img src="https://images.unsplash.com/photo-1551404973-761c83d4722b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Doces variados">
+              <div class="instagram-overlay">
+                <i class="fab fa-instagram"></i>
+              </div>
+            </a>
+            <a href="https://instagram.com" class="instagram-item">
+              <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Bolo decorado">
+              <div class="instagram-overlay">
+                <i class="fab fa-instagram"></i>
+              </div>
+            </a>
+            <a href="https://instagram.com" class="instagram-item">
+              <img src="https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Torta de frutas">
+              <div class="instagram-overlay">
+                <i class="fab fa-instagram"></i>
+              </div>
+            </a>
+            <a href="https://instagram.com" class="instagram-item">
+              <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Docinhos">
+              <div class="instagram-overlay">
+                <i class="fab fa-instagram"></i>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Call to Action -->
+      <section class="cta">
+        <div class="overlay gradient"></div>
+        <div class="container">
+          <div class="cta-content">
+            <h2>Pronto para adoçar seu dia?</h2>
+            <div class="divider centered light"></div>
+            <p>Faça seu pedido agora e surpreenda-se com nossas delícias artesanais</p>
+            <a href="/fazer-pedido" class="btn btn-primary btn-large">Encomendar Agora</a>
           </div>
         </div>
       </section>
