@@ -257,6 +257,67 @@ nav ul li a.active::after {
   line-height: 1.8;
 }
 
+/* Estilos para o container das redes sociais */
+.social-links {
+  display: flex;
+  gap: 10px; /* Espaçamento entre os links */
+}
+
+/* Estilos gerais para os links */
+.social-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit; /* Mantém a cor do texto como está */
+  transition: transform 0.3s ease, color 0.3s ease; /* Transição para o efeito de hover */
+}
+
+/* Estilos para os ícones */
+.social-icon {
+  font-size: 24px; /* Tamanho dos ícones */
+  margin-right: 8px; /* Espaçamento entre o ícone e o texto */
+  transition: color 0.3s ease;
+}
+
+/* Efeito de hover para o link */
+.social-link:hover {
+  transform: scale(1.1); /* Aumenta o tamanho do link ao passar o mouse */
+}
+
+/* Efeito de hover para a cor do ícone */
+.social-link:hover .social-icon {
+  color: #ff4081; /* Altere para a cor desejada */
+}
+
+/* Estilos para ícones específicos */
+
+/* Instagram */
+.social-link[title="Instagram"] .social-icon {
+  color: #E4405F; /* Cor do ícone do Instagram */
+}
+
+/* Facebook */
+.social-link[title="Facebook"] .social-icon {
+  color: #1877F2; /* Cor do ícone do Facebook */
+}
+
+/* WhatsApp */
+.social-link[title="WhatsApp"] .social-icon {
+  color: #25D366; /* Cor do ícone do WhatsApp */
+}
+/* Efeito de hover para cada ícone */
+.social-link[title="Instagram"]:hover .social-icon {
+  color: #c13584; /* Cor do Instagram ao passar o mouse */
+}
+
+.social-link[title="Facebook"]:hover .social-icon {
+  color: #3b5998; /* Cor do Facebook ao passar o mouse */
+}
+
+.social-link[title="WhatsApp"]:hover .social-icon {
+  color: #128C7E; /* Cor do WhatsApp ao passar o mouse */
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .product-details {
@@ -270,4 +331,5 @@ nav ul li a.active::after {
   nav ul {
     margin-top: 15px;
   }
+
 }
