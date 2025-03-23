@@ -14,11 +14,6 @@ class Footer extends HTMLElement {
 
       const html = await response.text();
       this.innerHTML = html;
-
-      const yearSpan = this.querySelector("#current-year");
-      if (yearSpan) {
-        yearSpan.textContent = new Date().getFullYear();
-      }
     } catch (error) {
       console.error("Não foi possível carregar o componente Footer:", error);
       this.innerHTML = "<p>Erro ao carregar o componente Footer</p>";
