@@ -27,9 +27,14 @@ class Header extends HTMLElement {
     const links = this.querySelectorAll(".nav-link");
     links.forEach((link) => {
       link.addEventListener("click", (e) => {
-        e.preventDefault();
         const route = link.getAttribute("data-route");
 
+        // Permitir navegação direta para a página de receitas
+        if (route === "receitas") {
+          return; // Não previne o comportamento padrão para permitir navegação normal
+        }
+
+        e.preventDefault();
         links.forEach((l) => l.classList.remove("active"));
 
         link.classList.add("active");
@@ -126,7 +131,9 @@ class Header extends HTMLElement {
         (path.includes("/produtos") &&
           link.getAttribute("data-route") === "produtos") ||
         (path.includes("/categorias") &&
-          link.getAttribute("data-route") === "categorias")
+          link.getAttribute("data-route") === "categorias") ||
+        (path.includes("/receitas") &&
+          link.getAttribute("data-route") === "receitas")
       ) {
         link.classList.add("active");
       }

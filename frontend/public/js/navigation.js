@@ -22,6 +22,11 @@ const Navigation = {
     window.location.href = "/registro.html";
     this.currentPage = "registro";
   },
+  
+  navegarParaReceitas: function () {
+    window.location.href = "/receitas.html";
+    this.currentPage = "receitas";
+  },
 
   handleNavigation: function () {
     const path = window.location.pathname;
@@ -33,6 +38,8 @@ const Navigation = {
       this.navegarParaProdutos();
     } else if (path === "/categorias") {
       this.navegarParaCategorias();
+    } else if (path === "/receitas.html") {
+      this.currentPage = "receitas";
     }
   },
 };
@@ -48,4 +55,7 @@ window.navegarParaLogin = function () {
 };
 window.navegarParaRegistro = function () {
   Navigation.navegarParaRegistro();
+};
+window.navegarParaReceitas = function () {
+  Navigation.navegarParaReceitas();
 };
