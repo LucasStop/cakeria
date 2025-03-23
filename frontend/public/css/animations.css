@@ -1,0 +1,76 @@
+/* Estilos base para elementos antes da animação */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  will-change: opacity, transform;
+}
+
+/* Quando o elemento está animado (classe adicionada via JavaScript) */
+.animate-on-scroll.animated {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Variações da animação */
+.fade-in {
+  opacity: 0;
+  transform: translateY(0);
+}
+
+.fade-in.animated {
+  opacity: 1;
+}
+
+.slide-up {
+  transform: translateY(50px);
+}
+
+.slide-up.animated {
+  transform: translateY(0);
+}
+
+.slide-left {
+  transform: translateX(50px);
+}
+
+.slide-left.animated {
+  transform: translateX(0);
+}
+
+.slide-right {
+  transform: translateX(-50px);
+}
+
+.slide-right.animated {
+  transform: translateX(0);
+}
+
+.scale-up {
+  transform: scale(0.8);
+}
+
+.scale-up.animated {
+  transform: scale(1);
+}
+
+/* Atrasos para criar efeito em cascata */
+.delay-100 {
+  transition-delay: 0.1s;
+}
+
+.delay-200 {
+  transition-delay: 0.2s;
+}
+
+.delay-300 {
+  transition-delay: 0.3s;
+}
+
+.delay-400 {
+  transition-delay: 0.4s;
+}
+
+.delay-500 {
+  transition-delay: 0.5s;
+}
