@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cakeria | Confeitaria Artesanal</title>
+
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/favicon.ico" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/index.css" />
+    <link rel="stylesheet" href="./components/components.css" />
+    <link rel="stylesheet" href="./components/dashboards/css/styles.css" />
+  </head>
+  <body>
+    <header-component variant="admin"></header-component>
+
+    <main id="content">
+      <!-- Hero Banner -->
+      <section class="hero">
+        <div class="overlay"></div>
+        <div class="container">
+          <div class="hero-content">
+            <h1>Doces que encantam, sabores que surpreendem</h1>
+            <div class="divider"></div>
+            <p>Sabores inesquecíveis para momentos especiais</p>
+            <div class="hero-buttons">
+              <a href="#cake-builder" class="btn btn-primary">Monte seu Bolo</a>
+              <a href="/fazer-pedido" class="btn btn-outline">Fazer Pedido</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dashboard Section -->
+      <section class="dashboard">
+        <div class="container">
+          <h2>Estatísticas de Vendas</h2>
+          
+          <!-- Tipos de Bolos Vendidos -->
+          <div class="card">
+            <h3>Tipos de Bolos Vendidos</h3>
+            <canvas id="cakeTypeChart"></canvas>
+          </div>
+
+          <!-- Usuários Cadastrados -->
+          <div class="card">
+            <h3>Usuários Cadastrados</h3>
+            <canvas id="userChart"></canvas>
+          </div>
+
+          <!-- Valores de Pedidos -->
+          <div class="card">
+            <h3>Distribuição de Valores de Pedidos</h3>
+            <canvas id="orderValueChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer-component></footer-component>
+
+    <!-- Carregar componentes primeiro -->
+    <script src="./components/Header.js"></script>
+    <script src="../public/components/Footer.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/navigation.js"></script>
+    <script src="./js/script.js"></script>
+
+    <!-- Carregar os gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./components/dashboards/js/main.js"></script>
+  </body>
+</html>

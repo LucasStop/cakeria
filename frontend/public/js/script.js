@@ -9,11 +9,14 @@ const categoriasContainer = document.getElementById("categorias-container");
 const verProdutosBtn = document.getElementById("ver-produtos");
 const navProdutos = document.getElementById("nav-produtos");
 const navCategorias = document.getElementById("nav-categorias");
+const navAdmin = document.getElementById("nav-admin");
 
 window.navegarParaProdutos = navegarParaProdutos;
 window.navegarParaCategorias = navegarParaCategorias;
 window.navegarParaLogin = navegarParaLogin;
 window.navegarParaRegistro = navegarParaRegistro;
+window.navegarParaAdmin = navegarParaAdmin;
+
 
 document.addEventListener("DOMContentLoaded", iniciarAplicacao);
 if (verProdutosBtn)
@@ -227,6 +230,8 @@ function renderizarListaCategorias() {
   window.history.pushState({}, "", "/categorias");
 }
 
+
+
 function navegarParaProdutos() {
   renderizarListaProdutos();
 }
@@ -244,6 +249,13 @@ function navegarParaRegistro() {
   window.location.href = "/registro.html";
   currentPage = "registro";
 }
+
+function navegarParaAdmin() {
+  window.location.href = "/admin";
+  currentPage = "admin";
+}
+
+
 
 window.carregarDetalhesProduto = carregarDetalhesProduto;
 window.renderizarListaProdutos = renderizarListaProdutos;
