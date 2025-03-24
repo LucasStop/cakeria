@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-  const OrderProduct = sequelize.define('OrderProduct', {
+  const order_product = sequelize.define('order_product', {
     order_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -31,5 +31,5 @@ module.exports = (sequelize, DataTypes) => {
     underscored: true
   });
 
-  return OrderProduct;
+  return order_product;
 };

@@ -19,17 +19,17 @@ module.exports = {
     if (products.length === 0) return;
 
     // Criar itens de pedidos
-    const orderProducts = [];
+    const order_products = [];
 
     // Pedido 1: Adicionar produtos ao pedido 1
-    orderProducts.push({
+    order_products.push({
       order_id: orders[0].id,
       product_id: products[0].id, // Produto: Bolo de Chocolate
       quantity: 1,
       created_at: new Date(),
       updated_at: new Date()
     });
-    orderProducts.push({
+    order_products.push({
       order_id: orders[0].id,
       product_id: products[6].id, // Produto: Pudim de Leite
       quantity: 2,
@@ -38,7 +38,7 @@ module.exports = {
     });
 
     // Pedido 2: Adicionar produtos ao pedido 2
-    orderProducts.push({
+    order_products.push({
       order_id: orders[1].id,
       product_id: products[1].id, // Produto: Bolo de Casamento
       quantity: 1,
@@ -47,14 +47,14 @@ module.exports = {
     });
 
     // Pedido 3: Adicionar produtos ao pedido 3
-    orderProducts.push({
+    order_products.push({
       order_id: orders[2].id,
       product_id: products[2].id, // Produto: Torta de Limão
       quantity: 3,
       created_at: new Date(),
       updated_at: new Date()
     });
-    orderProducts.push({
+    order_products.push({
       order_id: orders[2].id,
       product_id: products[3].id, // Produto: Brigadeiro Gourmet
       quantity: 10,
@@ -63,7 +63,7 @@ module.exports = {
     });
 
     // Inserir itens de pedidos na tabela order_products
-    await queryInterface.bulkInsert('order_products', orderProducts);
+    await queryInterface.bulkInsert('order_products', order_products);
   },
 
   down: async (queryInterface, Sequelize) => {
