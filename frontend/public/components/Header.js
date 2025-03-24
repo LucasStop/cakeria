@@ -50,7 +50,7 @@ class Header extends HTMLElement {
               <ul class="nav-links">
                 <li><a href="/" class="nav-link" data-route="home"><i class="fa-solid fa-home"></i> Home</a></li>
                 <li><a href="/cadastrar-produtos" class="nav-link" id="nav-cadastrar-produtos" data-route="cadastrar-produtos"><i class="fa-solid fa-cake-candles"></i>Produtos</a></li>
-                <li><a href="/dashboard" class="nav-link" data-route="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="#dashboard" class="nav-link" data-route="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
                 <li><a href="/usuarios" class="nav-link" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
               </ul>
             </nav>
