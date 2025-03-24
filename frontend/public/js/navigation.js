@@ -1,11 +1,18 @@
 const Navigation = {
-  currentPage: "home",
+
 
   navegarParaProdutos: function () {
     window.renderizarListaProdutos();
     this.currentPage = "produtos";
     window.history.pushState({}, "", "/produtos");
   },
+
+  navegarParaAdmin: function () {
+    window.renderizarAdmin();
+    this.currentPage = "admin";
+    window.history.pushState({}, "", "/admin");
+  },
+
 
   navegarParaCategorias: function () {
     window.renderizarListaCategorias();
@@ -33,6 +40,14 @@ const Navigation = {
       this.navegarParaProdutos();
     } else if (path === "/categorias") {
       this.navegarParaCategorias();
+    } else if (path === "/login") {
+      this.navegarParaLogin();
+    } else if (path === "/registro") {
+      this.navegarParaRegistro();
+    } else if (path === "/admin") {
+      this.navegarParaAdmin();
+    } else {
+      window.renderizarListaProdutos();
     }
   },
 };
@@ -49,3 +64,7 @@ window.navegarParaLogin = function () {
 window.navegarParaRegistro = function () {
   Navigation.navegarParaRegistro();
 };
+window.navegarParaAdmin = function () {
+  Navigation.navegarParaAdmin();
+}
+
