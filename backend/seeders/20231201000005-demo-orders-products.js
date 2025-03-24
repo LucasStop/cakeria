@@ -31,7 +31,7 @@ module.exports = {
     });
     orderProducts.push({
       order_id: orders[0].id,
-      product_id: products[6].id, // Produto: Pudim de Leite
+      product_id: products[0].id, // Produto: Pudim de Leite
       quantity: 2,
       created_at: new Date(),
       updated_at: new Date()
@@ -56,7 +56,7 @@ module.exports = {
     });
     orderProducts.push({
       order_id: orders[2].id,
-      product_id: products[3].id, // Produto: Brigadeiro Gourmet
+      product_id: products[2].id, // Produto: Brigadeiro Gourmet
       quantity: 10,
       created_at: new Date(),
       updated_at: new Date()

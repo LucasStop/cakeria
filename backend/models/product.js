@@ -20,10 +20,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
       },
-      image_url: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
+      // image_id: {
+      //   type: DataTypes.TEXT,
+      //   allowNull: true,
+      // },
     },
     {
       tableName: "products",
