@@ -71,37 +71,37 @@ async function carregarDetalhesProduto(id) {
   }
 }
 
-function renderizarProdutosDestaque(produtosDestaque) {
-  if (!produtosContainer) return;
+// function renderizarProdutosDestaque(produtosDestaque) {
+//   if (!produtosContainer) return;
 
-  if (produtosDestaque.length === 0) {
-    produtosContainer.innerHTML = "<p>Nenhum produto encontrado</p>";
-    return;
-  }
+//   if (produtosDestaque.length === 0) {
+//     produtosContainer.innerHTML = "<p>Nenhum produto encontrado</p>";
+//     return;
+//   }
 
-  const html = produtosDestaque
-    .map(
-      (produto) => `
-    <div class="product-card">
-      <div class="product-img" style="background-image: url('${
-        produto.image_url
-          ? `/imgs/${produto.image_url}`
-          : "/imgs/placeholder.png"
-      }')"></div>
-      <div class="product-info">
-        <h3>${produto.name}</h3>
-        <p class="product-price">R$ ${parseFloat(produto.price).toFixed(2)}</p>
-        <button class="btn btn-primary" onclick="verDetalhesProduto(${
-          produto.id
-        })">Ver Detalhes</button>
-      </div>
-    </div>
-  `
-    )
-    .join("");
+//   const html = produtosDestaque
+//     .map(
+//       (produto) => `
+//     <div class="product-card">
+//       <div class="product-img" style="background-image: url('${
+//         produto.image_id
+//           ? `/imgs/${produto.image_id}`
+//           : "/imgs/placeholder.png"
+//       }')"></div>
+//       <div class="product-info">
+//         <h3>${produto.name}</h3>
+//         <p class="product-price">R$ ${parseFloat(produto.price).toFixed(2)}</p>
+//         <button class="btn btn-primary" onclick="verDetalhesProduto(${
+//           produto.id
+//         })">Ver Detalhes</button>
+//       </div>
+//     </div>
+//   `
+//     )
+//     .join("");
 
-  produtosContainer.innerHTML = html;
-}
+//   produtosContainer.innerHTML = html;
+// }
 
 function renderizarCategorias(categoriasList) {
   if (!categoriasContainer) return;
@@ -128,75 +128,75 @@ function renderizarCategorias(categoriasList) {
   categoriasContainer.innerHTML = html;
 }
 
-function renderizarDetalhesProduto(produto) {
-  const mainContent = `
-    <section class="product-details">
-      <div class="product-image">
-        <img src="${
-          produto.image_url
-            ? `/imgs/${produto.image_url}`
-            : "/imgs/placeholder.png"
-        }" alt="${produto.name}">
-      </div>
-      <div class="product-details-info">
-        <h1>${produto.name}</h1>
-        <p class="product-category">Categoria: ${
-          produto.category?.name || "Não categorizado"
-        }</p>
-        <p class="product-details-price">R$ ${parseFloat(produto.price).toFixed(
-          2
-        )}</p>
-        <p class="product-details-description">${
-          produto.description || "Sem descrição disponível"
-        }</p>
-        <button class="btn btn-primary">Adicionar ao Carrinho</button>
-        <button class="btn btn-outline" onclick="navegarParaProdutos()">Voltar para Produtos</button>
-      </div>
-    </section>
-  `;
+// function renderizarDetalhesProduto(produto) {
+//   const mainContent = `
+//     <section class="product-details">
+//       <div class="product-image">
+//         <img src="${
+//           produto.image_id
+//             ? `/imgs/${produto.image_id}`
+//             : "/imgs/placeholder.png"
+//         }" alt="${produto.name}">
+//       </div>
+//       <div class="product-details-info">
+//         <h1>${produto.name}</h1>
+//         <p class="product-category">Categoria: ${
+//           produto.category?.name || "Não categorizado"
+//         }</p>
+//         <p class="product-details-price">R$ ${parseFloat(produto.price).toFixed(
+//           2
+//         )}</p>
+//         <p class="product-details-description">${
+//           produto.description || "Sem descrição disponível"
+//         }</p>
+//         <button class="btn btn-primary">Adicionar ao Carrinho</button>
+//         <button class="btn btn-outline" onclick="navegarParaProdutos()">Voltar para Produtos</button>
+//       </div>
+//     </section>
+//   `;
 
-  contentEl.innerHTML = mainContent;
-  currentPage = "produto";
-  window.history.pushState({}, "", `/produtos/${produto.id}`);
-}
+//   contentEl.innerHTML = mainContent;
+//   currentPage = "produto";
+//   window.history.pushState({}, "", `/produtos/${produto.id}`);
+// }
 
-function renderizarListaProdutos() {
-  const mainContent = `
-    <section class="products-list">
-      <div class="container">
-        <h1 class="section-title">Nossos Produtos</h1>
-        <div class="featured-products">
-          ${produtos
-            .map(
-              (produto) => `
-            <div class="product-card">
-              <div class="product-img" style="background-image: url('${
-                produto.image_url
-                  ? `/imgs/${produto.image_url}`
-                  : "/imgs/placeholder.png"
-              }')"></div>
-              <div class="product-info">
-                <h3>${produto.name}</h3>
-                <p class="product-price">R$ ${parseFloat(produto.price).toFixed(
-                  2
-                )}</p>
-                <button class="btn btn-primary" onclick="verDetalhesProduto(${
-                  produto.id
-                })">Ver Detalhes</button>
-              </div>
-            </div>
-          `
-            )
-            .join("")}
-        </div>
-      </div>
-    </section>
-  `;
+// function renderizarListaProdutos() {
+//   const mainContent = `
+//     <section class="products-list">
+//       <div class="container">
+//         <h1 class="section-title">Nossos Produtos</h1>
+//         <div class="featured-products">
+//           ${produtos
+//             .map(
+//               (produto) => `
+//             <div class="product-card">
+//               <div class="product-img" style="background-image: url('${
+//                 produto.image_id
+//                   ? `/imgs/${produto.image_id}`
+//                   : "/imgs/placeholder.png"
+//               }')"></div>
+//               <div class="product-info">
+//                 <h3>${produto.name}</h3>
+//                 <p class="product-price">R$ ${parseFloat(produto.price).toFixed(
+//                   2
+//                 )}</p>
+//                 <button class="btn btn-primary" onclick="verDetalhesProduto(${
+//                   produto.id
+//                 })">Ver Detalhes</button>
+//               </div>
+//             </div>
+//           `
+//             )
+//             .join("")}
+//         </div>
+//       </div>
+//     </section>
+//   `;
 
-  contentEl.innerHTML = mainContent;
-  currentPage = "produtos";
-  window.history.pushState({}, "", "/produtos");
-}
+//   contentEl.innerHTML = mainContent;
+//   currentPage = "produtos";
+//   window.history.pushState({}, "", "/produtos");
+// }
 
 function renderizarListaCategorias() {
   const mainContent = `
