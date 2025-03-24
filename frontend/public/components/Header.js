@@ -29,11 +29,10 @@ class Header extends HTMLElement {
       link.addEventListener("click", (e) => {
         e.preventDefault();
         const route = link.getAttribute("data-route");
-
+        
         links.forEach((l) => l.classList.remove("active"));
-
         link.classList.add("active");
-
+        
         this.closeMenu();
 
         if (route === "home") {
@@ -42,6 +41,10 @@ class Header extends HTMLElement {
           window.navegarParaProdutos();
         } else if (route === "categorias") {
           window.navegarParaCategorias();
+        } else if (route === "receitas") {
+          window.navegarParaReceitas();
+        } else if (route === "sobre") {
+          window.navegarParaSobre();
         }
       });
     });
@@ -126,7 +129,11 @@ class Header extends HTMLElement {
         (path.includes("/produtos") &&
           link.getAttribute("data-route") === "produtos") ||
         (path.includes("/categorias") &&
-          link.getAttribute("data-route") === "categorias")
+          link.getAttribute("data-route") === "categorias") ||
+        (path.includes("/receitas") &&
+          link.getAttribute("data-route") === "receitas") ||
+        (path.includes("/sobre") &&
+          link.getAttribute("data-route") === "sobre")
       ) {
         link.classList.add("active");
       }
