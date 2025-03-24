@@ -1,105 +1,131 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cakeria | Receitas</title>
-  
-  <!-- Favicon -->
-  <link rel="icon" href="/assets/favicon.ico">
-  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-  <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png">
-  
-  <!-- Google Fonts - Poppins -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  
-  <!-- CSS -->
-  <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/css/receitas.css">
-  <link rel="stylesheet" href="/components/components.css">
-</head>
-<body>
-  <header-component></header-component>
-  
-  <main class="recipes-container">
-    <div class="container">
-      <section class="recipes-header">
-        <h1 class="page-title">Receitas</h1>
-        <p class="page-subtitle">Compartilhe e descubra receitas deliciosas da nossa comunidade</p>
-        
-        <div class="recipes-actions">
-          <div class="search-box">
-            <input type="text" id="search-recipes" placeholder="Buscar receitas...">
-            <button id="search-btn"><i class="fas fa-search"></i></button>
-          </div>
-          
-          <div class="filters">
-            <select id="category-filter">
-              <option value="">Todas as categorias</option>
-              <!-- Categorias serão adicionadas via JavaScript -->
-            </select>
-            
-            <select id="sort-recipes">
-              <option value="newest">Mais recentes</option>
-              <option value="oldest">Mais antigas</option>
-              <option value="popular">Mais populares</option>
-            </select>
-          </div>
-          
-          <button id="new-recipe-btn" class="btn btn-primary">Compartilhar receita</button>
-        </div>
-      </section>
-      
-      <section class="recipes-grid" id="recipes-grid">
-        <!-- Receitas serão carregadas dinamicamente -->
-        <div class="loading-indicator">
-          <div class="spinner"></div>
-          <p>Carregando receitas...</p>
-        </div>
-      </section>
-      
-      <div class="pagination" id="recipes-pagination">
-        <!-- Paginação será adicionada via JavaScript -->
-      </div>
-    </div>
-  </main>
-  
-  <footer-component></footer-component>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cakeria | Receitas</title>
 
-  <!-- Template para cartão de receita -->
-  <template id="recipe-card-template">
-    <div class="recipe-card">
-      <div class="recipe-image">
-        <img src="" alt="">
-      </div>
-      <div class="recipe-content">
-        <h3 class="recipe-title"></h3>
-        <div class="recipe-meta">
-          <span class="recipe-author"><i class="fas fa-user"></i> <span class="author-name"></span></span>
-          <span class="recipe-date"><i class="far fa-calendar"></i> <span class="date-text"></span></span>
-          <span class="recipe-views"><i class="far fa-eye"></i> <span class="views-count"></span></span>
-        </div>
-        <p class="recipe-excerpt"></p>
-        <div class="recipe-footer">
-          <span class="recipe-difficulty"></span>
-          <span class="recipe-time"><i class="far fa-clock"></i> <span class="time-text"></span></span>
-          <a href="#" class="recipe-link">Ver Receita</a>
-        </div>
-      </div>
-    </div>
-  </template>
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/favicon.ico" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="/assets/favicon-32x32.png"
+    />
 
-  <!-- Carregar componentes primeiro -->
-  <script src="/components/Header.js"></script>
-  <script src="/components/Footer.js"></script>
-  <script src="/js/api.js"></script>
-  <script src="/js/navigation.js"></script>
-  <script src="/js/receitas.js"></script>
-  <script src="/js/script.js"></script>
-</body>
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/receitas.css" />
+    <link rel="stylesheet" href="/components/components.css" />
+  </head>
+  <body>
+    <header-component></header-component>
+
+    <main class="recipes-container">
+      <div class="container">
+        <section class="recipes-header">
+          <h1 class="page-title">Receitas</h1>
+          <p class="page-subtitle">
+            Compartilhe e descubra receitas deliciosas da nossa comunidade
+          </p>
+
+          <div class="recipes-actions">
+            <div class="search-box">
+              <input
+                type="text"
+                id="search-recipes"
+                placeholder="Buscar receitas..."
+              />
+              <button id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="filters">
+              <select id="category-filter">
+                <option value="">Todas as categorias</option>
+                <!-- Categorias serão adicionadas via JavaScript -->
+              </select>
+
+              <select id="sort-recipes">
+                <option value="newest">Mais recentes</option>
+                <option value="oldest">Mais antigas</option>
+                <option value="popular">Mais populares</option>
+              </select>
+            </div>
+
+            <button id="new-recipe-btn" class="btn btn-primary">
+              Compartilhar receita
+            </button>
+          </div>
+        </section>
+
+        <section class="recipes-grid" id="recipes-grid">
+          <!-- Receitas serão carregadas dinamicamente -->
+          <div class="loading-indicator">
+            <div class="spinner"></div>
+            <p>Carregando receitas...</p>
+          </div>
+        </section>
+
+        <div class="pagination" id="recipes-pagination">
+          <!-- Paginação será adicionada via JavaScript -->
+        </div>
+      </div>
+    </main>
+
+    <footer-component></footer-component>
+
+    <!-- Template para cartão de receita -->
+    <template id="recipe-card-template">
+      <div class="recipe-card">
+        <div class="recipe-image">
+          <img src="" alt="" />
+        </div>
+        <div class="recipe-content">
+          <h3 class="recipe-title"></h3>
+          <div class="recipe-meta">
+            <span class="recipe-author"
+              ><i class="fas fa-user"></i> <span class="author-name"></span
+            ></span>
+            <span class="recipe-date"
+              ><i class="far fa-calendar"></i> <span class="date-text"></span
+            ></span>
+            <span class="recipe-views"
+              ><i class="far fa-eye"></i> <span class="views-count"></span
+            ></span>
+          </div>
+          <p class="recipe-excerpt"></p>
+          <div class="recipe-footer">
+            <span class="recipe-difficulty"></span>
+            <span class="recipe-time"
+              ><i class="far fa-clock"></i> <span class="time-text"></span
+            ></span>
+            <a href="#" class="recipe-link">Ver Receita</a>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Carregar componentes primeiro -->
+    <script src="/components/Header.js"></script>
+    <script src="/components/Footer.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/navigation.js"></script>
+    <script src="/js/receitas.js"></script>
+    <script src="/js/script.js"></script>
+  </body>
 </html>
