@@ -62,11 +62,11 @@ module.exports = {
   },
   
   // Listar comentários de uma receita
-  getRecipeComments: async (req, res) => {
+  getRecipecomments_recipes: async (req, res) => {
     try {
       const { recipeId } = req.params;
       
-      const comments = await Comment.findAll({
+      const comments_recipes = await Comment.findAll({
         where: { recipeId },
         include: [
           { model: User, as: 'author', attributes: ['id', 'name'] }
@@ -74,7 +74,7 @@ module.exports = {
         order: [['createdAt', 'DESC']]
       });
       
-      res.json(comments);
+      res.json(comments_recipes);
     } catch (error) {
       console.error('Erro ao listar comentários:', error);
       res.status(500).json({ message: 'Erro ao listar comentários' });

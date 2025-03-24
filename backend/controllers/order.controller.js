@@ -1,4 +1,4 @@
-const { Order, Product, User, OrderProduct, sequelize } = require("../models");
+const { Order, Product, User, order_product, sequelize } = require("../models");
 
 exports.findAll = async (req, res) => {
   try {
@@ -44,7 +44,7 @@ exports.findOne = async (req, res) => {
           model: Product,
           as: "products",
           through: {
-            model: OrderProduct,
+            model: order_product,
             attributes: ["quantity"],
           },
         },
@@ -76,13 +76,13 @@ exports.create = async (req, res) => {
       );
 
       if (products && products.length) {
-        const orderProducts = products.map((product) => ({
+        const order_products = products.map((product) => ({
           order_id: order.id,
           product_id: product.id,
           quantity: product.quantity,
         }));
 
-        await OrderProduct.bulkCreate(orderProducts, { transaction: t });
+        await order_product.bulkCreate(order_products, { transaction: t });
       }
 
       return order;
