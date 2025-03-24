@@ -27,18 +27,12 @@ class Header extends HTMLElement {
     const links = this.querySelectorAll(".nav-link");
     links.forEach((link) => {
       link.addEventListener("click", (e) => {
-        const route = link.getAttribute("data-route");
-
-        // Permitir navegação direta para a página de receitas
-        if (route === "receitas") {
-          return; // Não previne o comportamento padrão para permitir navegação normal
-        }
-
         e.preventDefault();
+        const route = link.getAttribute("data-route");
+        
         links.forEach((l) => l.classList.remove("active"));
-
         link.classList.add("active");
-
+        
         this.closeMenu();
 
         if (route === "home") {
@@ -47,6 +41,10 @@ class Header extends HTMLElement {
           window.navegarParaProdutos();
         } else if (route === "categorias") {
           window.navegarParaCategorias();
+        } else if (route === "receitas") {
+          window.navegarParaReceitas();
+        } else if (route === "sobre") {
+          window.navegarParaSobre();
         }
       });
     });
@@ -133,7 +131,9 @@ class Header extends HTMLElement {
         (path.includes("/categorias") &&
           link.getAttribute("data-route") === "categorias") ||
         (path.includes("/receitas") &&
-          link.getAttribute("data-route") === "receitas")
+          link.getAttribute("data-route") === "receitas") ||
+        (path.includes("/sobre") &&
+          link.getAttribute("data-route") === "sobre")
       ) {
         link.classList.add("active");
       }

@@ -1,9 +1,7 @@
 /* Estilos base para elementos antes da animação */
 .animate-on-scroll {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-  will-change: opacity, transform;
+  transition: all 0.6s ease;
 }
 
 /* Quando o elemento está animado (classe adicionada via JavaScript) */
@@ -23,34 +21,52 @@
 }
 
 .slide-up {
+  opacity: 0;
   transform: translateY(50px);
 }
 
 .slide-up.animated {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-down {
+  opacity: 0;
+  transform: translateY(-50px);
+}
+
+.slide-down.animated {
+  opacity: 1;
   transform: translateY(0);
 }
 
 .slide-left {
+  opacity: 0;
   transform: translateX(50px);
 }
 
 .slide-left.animated {
+  opacity: 1;
   transform: translateX(0);
 }
 
 .slide-right {
+  opacity: 0;
   transform: translateX(-50px);
 }
 
 .slide-right.animated {
+  opacity: 1;
   transform: translateX(0);
 }
 
 .scale-up {
+  opacity: 0;
   transform: scale(0.8);
 }
 
 .scale-up.animated {
+  opacity: 1;
   transform: scale(1);
 }
 

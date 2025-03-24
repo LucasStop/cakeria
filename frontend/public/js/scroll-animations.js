@@ -1,57 +1,42 @@
-document.addEventListener('DOMContentLoaded', function() {
-  // Seleciona todos os elementos com a classe 'animate-on-scroll'
+function initScrollAnimations() {
+  console.log("Inicializando animações de scroll");
+  
   const animatedElements = document.querySelectorAll('.animate-on-scroll');
   
-  // Configura o observer de interseção
-  const observerOptions = {
-    root: null, // usar a viewport como referência
-    rootMargin: '0px', // sem margem
-    threshold: 0.15 // animar quando pelo menos 15% do elemento estiver visível
+  // Função para verificar se um elemento está visível na viewport
+  const isElementInViewport = (el) => {
+    const rect = el.getBoundingClientRect();
+    return (
+      rect.top <= (window.innerHeight || document.documentElement.clientHeight) * 0.8 &&
+      rect.bottom >= 0
+    );
   };
   
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        // Adiciona a classe que ativa a animação
-        entry.target.classList.add('animated');
-        // Para de observar o elemento após animar
-        observer.unobserve(entry.target);
+  // Função para animar elementos visíveis
+  const animateElements = () => {
+    animatedElements.forEach(element => {
+      if (isElementInViewport(element)) {
+        element.classList.add('animated');
       }
     });
-  }, observerOptions);
+  };
   
-  // Começa a observar todos os elementos
-  animatedElements.forEach(element => {
-    observer.observe(element);
-  });
+  // Verificar na carga inicial
+  animateElements();
   
-  // Fallback para navegadores que não suportam IntersectionObserver
-  if (!('IntersectionObserver' in window)) {
-    console.log("IntersectionObserver não suportado, usando fallback");
-    
-    // Função para verificar se um elemento está visível
-    function checkIfInView() {
-      const windowHeight = window.innerHeight;
-      const windowTop = window.scrollY;
-      const windowBottom = windowTop + windowHeight;
-      
-      animatedElements.forEach(element => {
-        const elementBounds = element.getBoundingClientRect();
-        const elementTop = elementBounds.top + windowTop;
-        const elementBottom = elementTop + elementBounds.height;
-        
-        // Se o elemento estiver visível
-        if (elementBottom > windowTop && elementTop < windowBottom) {
-          element.classList.add('animated');
-        }
-      });
+  // Adicionar evento de scroll
+  window.addEventListener('scroll', animateElements);
+  
+  return {
+    destroy: function() {
+      window.removeEventListener('scroll', animateElements);
     }
-    
-    // Adiciona listeners de evento para scroll e redimensionamento
-    window.addEventListener('scroll', checkIfInView);
-    window.addEventListener('resize', checkIfInView);
-    
-    // Verifica inicialmente
-    setTimeout(checkIfInView, 100);
-  }
-});
+  };
+}
+
+// Se a página for carregada diretamente, inicializar as animações
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  setTimeout(initScrollAnimations, 1);
+} else {
+  document.addEventListener('DOMContentLoaded', initScrollAnimations);
+}
