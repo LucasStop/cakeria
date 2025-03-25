@@ -13,6 +13,12 @@ const Navigation = {
     window.history.pushState({}, "", "/admin");
   },
 
+  navegarParaRegistroProduct: function () {
+    window.renderizarRegistroProduct();
+    this.currentPage = "registerProduct";
+    window.history.pushState({}, "", "/registerProduct");
+  },
+
 
   navegarParaCategorias: function () {
     window.renderizarListaCategorias();
