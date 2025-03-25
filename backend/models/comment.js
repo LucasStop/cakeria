@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 module.exports = (sequelize, DataTypes) => {
   const Comment = sequelize.define(
-    "Comment",
+    'Comment',
     {
       content: {
         type: DataTypes.TEXT,
@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: "comments_recipes",
+      tableName: 'comments_recipes',
       timestamps: true,
       underscored: true,
     }
@@ -26,13 +26,13 @@ module.exports = (sequelize, DataTypes) => {
 
   Comment.associate = function (models) {
     Comment.belongsTo(models.User, {
-      foreignKey: "user_id",
-      as: "author",
+      foreignKey: 'user_id',
+      as: 'author',
     });
 
     Comment.belongsTo(models.Recipe, {
-      foreignKey: "recipe_id",
-      as: "recipe",
+      foreignKey: 'recipe_id',
+      as: 'recipe',
     });
   };
 

@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("comments_recipes", {
+    await queryInterface.createTable('comments_recipes', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -17,21 +17,21 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "users",
-          key: "id",
+          model: 'users',
+          key: 'id',
         },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       recipe_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "recipes",
-          key: "id",
+          model: 'recipes',
+          key: 'id',
         },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       created_at: {
         allowNull: false,
@@ -45,6 +45,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("comments_recipes");
+    await queryInterface.dropTable('comments_recipes');
   },
 };

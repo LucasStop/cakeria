@@ -1,57 +1,67 @@
-const API_URL = "http://localhost:3001/api";
+const API_URL = 'http://localhost:3001/api';
 
-document.addEventListener("DOMContentLoaded", () => {
-  const registerForm = document.getElementById("register-form");
+document.addEventListener('DOMContentLoaded', () => {
+  const registerForm = document.getElementById('register-form');
 
   if (registerForm) {
-    registerForm.addEventListener("submit", handleRegisterSubmit);
+    registerForm.addEventListener('submit', handleRegisterSubmit);
   }
-  
+
   // Adiciona validação em tempo real para cada campo
-  document.getElementById("register-name").addEventListener("input", function() {
-    validateField(this, validateName, "name-error", "Digite pelo menos nome e sobrenome");
+  document.getElementById('register-name').addEventListener('input', function () {
+    validateField(this, validateName, 'name-error', 'Digite pelo menos nome e sobrenome');
   });
-  
-  document.getElementById("register-email").addEventListener("input", function() {
-    validateField(this, validateEmail, "email-error", "Utilize um formato válido (usuario@email.com)");
+
+  document.getElementById('register-email').addEventListener('input', function () {
+    validateField(
+      this,
+      validateEmail,
+      'email-error',
+      'Utilize um formato válido (usuario@email.com)'
+    );
   });
-  
-  document.getElementById("register-phone").addEventListener("input", function() {
-    validateField(this, validatePhone, "phone-error", "Use o formato (00) 00000-0000");
+
+  document.getElementById('register-phone').addEventListener('input', function () {
+    validateField(this, validatePhone, 'phone-error', 'Use o formato (00) 00000-0000');
   });
-  
-  document.getElementById("register-cpf").addEventListener("input", function() {
-    validateField(this, validateCPF, "cpf-error", "Use o formato 000.000.000-00");
+
+  document.getElementById('register-cpf').addEventListener('input', function () {
+    validateField(this, validateCPF, 'cpf-error', 'Use o formato 000.000.000-00');
   });
-  
-  document.getElementById("register-password").addEventListener("input", function() {
-    validateField(this, validatePassword, "password-error", "A senha deve ter pelo menos 5 caracteres");
+
+  document.getElementById('register-password').addEventListener('input', function () {
+    validateField(
+      this,
+      validatePassword,
+      'password-error',
+      'A senha deve ter pelo menos 5 caracteres'
+    );
   });
-  
-  document.getElementById("register-confirm-password").addEventListener("input", function() {
-    const password = document.getElementById("register-password").value;
+
+  document.getElementById('register-confirm-password').addEventListener('input', function () {
+    const password = document.getElementById('register-password').value;
     if (this.value !== password) {
-      this.classList.add("invalid-input");
-      document.getElementById("confirm-password-error").textContent = "As senhas não coincidem";
+      this.classList.add('invalid-input');
+      document.getElementById('confirm-password-error').textContent = 'As senhas não coincidem';
     } else {
-      this.classList.remove("invalid-input");
-      document.getElementById("confirm-password-error").textContent = "";
+      this.classList.remove('invalid-input');
+      document.getElementById('confirm-password-error').textContent = '';
     }
   });
 
-  document.getElementById("register-cep").addEventListener("input", function() {
-    validateField(this, validateCEP, "cep-error", "Use o formato 00000-000");
+  document.getElementById('register-cep').addEventListener('input', function () {
+    validateField(this, validateCEP, 'cep-error', 'Use o formato 00000-000');
     if (validateCEP(this.value)) {
       fetchAddressInfo(this.value);
     }
   });
-  
-  document.getElementById("register-street").addEventListener("input", function() {
-    validateField(this, validateStreet, "street-error", "Digite o nome da rua");
+
+  document.getElementById('register-street').addEventListener('input', function () {
+    validateField(this, validateStreet, 'street-error', 'Digite o nome da rua');
   });
-  
-  document.getElementById("register-number").addEventListener("input", function() {
-    validateField(this, validateNumber, "number-error", "Digite um número válido");
+
+  document.getElementById('register-number').addEventListener('input', function () {
+    validateField(this, validateNumber, 'number-error', 'Digite um número válido');
   });
 
   // Adiciona funcionalidade aos botões de toggle de senha
@@ -67,12 +77,12 @@ document.addEventListener("DOMContentLoaded", () => {
 function togglePasswordVisibility(e) {
   const button = e.currentTarget;
   const passwordInput = button.previousElementSibling;
-  
+
   // Alterna o tipo do input entre password e text
   if (passwordInput.type === 'password') {
     passwordInput.type = 'text';
     passwordInput.classList.add('password-input');
-    
+
     // Altera o ícone para olho fechado
     button.innerHTML = `<svg class="eye-icon" viewBox="0 0 24 24">
       <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
@@ -80,7 +90,7 @@ function togglePasswordVisibility(e) {
   } else {
     passwordInput.type = 'password';
     passwordInput.classList.remove('password-input');
-    
+
     // Retorna para o ícone de olho aberto
     button.innerHTML = `<svg class="eye-icon" viewBox="0 0 24 24">
       <path d="M12 4.5c-5 0-9.3 3-11 7.5 1.7 4.5 6 7.5 11 7.5s9.3-3 11-7.5c-1.7-4.5-6-7.5-11-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/>
@@ -92,19 +102,19 @@ function togglePasswordVisibility(e) {
 function validateField(inputElement, validationFunction, errorElementId, errorMessage) {
   const value = inputElement.value.trim();
   const errorElement = document.getElementById(errorElementId);
-  
-  if (value === "") {
-    errorElement.textContent = "";
-    inputElement.classList.remove("invalid-input");
+
+  if (value === '') {
+    errorElement.textContent = '';
+    inputElement.classList.remove('invalid-input');
     return;
   }
-  
+
   if (!validationFunction(value)) {
-    inputElement.classList.add("invalid-input");
+    inputElement.classList.add('invalid-input');
     errorElement.textContent = errorMessage;
   } else {
-    inputElement.classList.remove("invalid-input");
-    errorElement.textContent = "";
+    inputElement.classList.remove('invalid-input');
+    errorElement.textContent = '';
   }
 }
 
@@ -154,14 +164,14 @@ function validateNumber(number) {
 function fetchAddressInfo(cep) {
   // Remove o traço para compatibilidade com a API
   cep = cep.replace('-', '');
-  
+
   if (cep.length !== 8) return;
-  
+
   fetch(`https://viacep.com.br/ws/${cep}/json/`)
     .then(response => response.json())
     .then(data => {
       if (!data.erro) {
-        document.getElementById("register-street").value = data.logradouro;
+        document.getElementById('register-street').value = data.logradouro;
         // Não preenchemos o número automaticamente
       }
     })
@@ -171,19 +181,19 @@ function fetchAddressInfo(cep) {
 async function handleRegisterSubmit(e) {
   e.preventDefault();
 
-  const nameInput = document.getElementById("register-name");
-  const emailInput = document.getElementById("register-email");
-  const phoneInput = document.getElementById("register-phone");
-  const cpfInput = document.getElementById("register-cpf");
-  const passwordInput = document.getElementById("register-password");
-  const confirmPasswordInput = document.getElementById("register-confirm-password");
-  const cepInput = document.getElementById("register-cep");
-  const streetInput = document.getElementById("register-street");
-  const numberInput = document.getElementById("register-number");
-  
+  const nameInput = document.getElementById('register-name');
+  const emailInput = document.getElementById('register-email');
+  const phoneInput = document.getElementById('register-phone');
+  const cpfInput = document.getElementById('register-cpf');
+  const passwordInput = document.getElementById('register-password');
+  const confirmPasswordInput = document.getElementById('register-confirm-password');
+  const cepInput = document.getElementById('register-cep');
+  const streetInput = document.getElementById('register-street');
+  const numberInput = document.getElementById('register-number');
+
   // Limpa todas as mensagens de erro anteriores
   clearAllErrors();
-  
+
   const name = nameInput.value.trim();
   const email = emailInput.value.trim();
   const phone = phoneInput.value.trim();
@@ -199,53 +209,53 @@ async function handleRegisterSubmit(e) {
 
   if (!validateName(name)) {
     isValid = false;
-    showError(nameInput, "name-error", "Digite pelo menos nome e sobrenome");
+    showError(nameInput, 'name-error', 'Digite pelo menos nome e sobrenome');
   }
 
   if (!validateEmail(email)) {
     isValid = false;
-    showError(emailInput, "email-error", "Utilize um formato válido (exemplo@dominio.com)");
+    showError(emailInput, 'email-error', 'Utilize um formato válido (exemplo@dominio.com)');
   }
 
   if (!validatePhone(phone)) {
     isValid = false;
-    showError(phoneInput, "phone-error", "Use o formato (00) 00000-0000");
+    showError(phoneInput, 'phone-error', 'Use o formato (00) 00000-0000');
   }
 
   if (!validateCPF(cpf)) {
     isValid = false;
-    showError(cpfInput, "cpf-error", "Use o formato 000.000.000-00");
+    showError(cpfInput, 'cpf-error', 'Use o formato 000.000.000-00');
   }
 
   if (!validatePassword(password)) {
     isValid = false;
-    showError(passwordInput, "password-error", "A senha deve ter pelo menos 5 caracteres");
+    showError(passwordInput, 'password-error', 'A senha deve ter pelo menos 5 caracteres');
   }
-  
+
   if (password !== confirmPassword) {
     isValid = false;
-    showError(confirmPasswordInput, "confirm-password-error", "As senhas não coincidem");
+    showError(confirmPasswordInput, 'confirm-password-error', 'As senhas não coincidem');
   }
 
   if (!validateCEP(cep)) {
     isValid = false;
-    showError(cepInput, "cep-error", "Use o formato 00000-000");
+    showError(cepInput, 'cep-error', 'Use o formato 00000-000');
   }
 
   if (!validateStreet(street)) {
     isValid = false;
-    showError(streetInput, "street-error", "Digite o nome da rua");
+    showError(streetInput, 'street-error', 'Digite o nome da rua');
   }
 
   if (!validateNumber(number)) {
     isValid = false;
-    showError(numberInput, "number-error", "Digite um número válido");
+    showError(numberInput, 'number-error', 'Digite um número válido');
   }
 
   if (!isValid) {
     return;
   }
-  
+
   const userData = {
     name: name,
     email: email,
@@ -254,29 +264,29 @@ async function handleRegisterSubmit(e) {
     address: {
       cep: cep,
       street: street,
-      number: number
+      number: number,
     },
     password: password,
   };
 
-  console.log("Dados do formulário:", userData);
+  console.log('Dados do formulário:', userData);
 }
 
 // Funções auxiliares
 function showError(inputElement, errorElementId, errorMessage) {
-  inputElement.classList.add("invalid-input");
+  inputElement.classList.add('invalid-input');
   const errorElement = document.getElementById(errorElementId);
   errorElement.textContent = errorMessage;
 }
 
 function clearAllErrors() {
-  const errorMessages = document.querySelectorAll(".error-message");
+  const errorMessages = document.querySelectorAll('.error-message');
   errorMessages.forEach(element => {
-    element.textContent = "";
+    element.textContent = '';
   });
-  
-  const invalidInputs = document.querySelectorAll(".invalid-input");
+
+  const invalidInputs = document.querySelectorAll('.invalid-input');
   invalidInputs.forEach(element => {
-    element.classList.remove("invalid-input");
+    element.classList.remove('invalid-input');
   });
 }

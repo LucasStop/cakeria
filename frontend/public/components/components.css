@@ -1,6 +1,6 @@
 /* Global Font Family */
 :root {
-  --font-family: "Poppins", sans-serif;
+  --font-family: 'Poppins', sans-serif;
 }
 
 body {
@@ -13,12 +13,12 @@ body {
   justify-content: center;
   margin: 0 auto;
 }
-#container{
+#container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 97vh;
-  background-color: #F1E9DB;
+  background-color: #f1e9db;
   flex-direction: column;
   color: #f697ae;
   gap: 60px;
@@ -40,7 +40,7 @@ body {
   padding: 10px;
   margin-bottom: 20px;
   border-radius: 10px;
- background-color: #e2e2e2;
+  background-color: #e2e2e2;
 }
 canvas {
   width: 100% !important;
@@ -126,7 +126,7 @@ canvas {
 }
 
 .nav-link::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: -2px;
   left: 0;

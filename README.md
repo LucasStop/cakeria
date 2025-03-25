@@ -65,14 +65,16 @@ Cakeria/
 ### Descrição das Pastas Principais
 
 - **backend/**: Contém o código do servidor (Node.js + Express), incluindo:
+
   - Configurações (pasta `config/`), rotas (`routes/`), controladores (`controllers/`), modelos (`models/`), migrações (`migrations/`), seeders (`seeders/`) e scripts auxiliares (`scripts/`).
   - Arquivo `.env` para variáveis de ambiente (ex.: credenciais de banco de dados, porta do servidor).
   - `app.js` como ponto de entrada do servidor.
 
 - **frontend/**: Contém o código do cliente, que pode ser:
+
   - Arquivos HTML, CSS e JS simples.
   - Ou um framework (React, Vue, Angular).  
-  Aqui há um `app.js` (ou outro arquivo principal) e um possível `.env` para configurações do frontend.
+    Aqui há um `app.js` (ou outro arquivo principal) e um possível `.env` para configurações do frontend.
 
 - **script.sql**: Script para criação inicial das tabelas e inserção de dados básicos no banco de dados (opcional, dependendo se você prefere usar migrations/seeders do Sequelize ou um script SQL manual).
 
@@ -104,7 +106,7 @@ Cakeria/
    npx sequelize db:migrate
    npx sequelize db:seed:all
    ```
-   *(Verifique na seção [Scripts Úteis](#scripts-úteis) como rodar via npm ou yarn.)*
+   _(Verifique na seção [Scripts Úteis](#scripts-úteis) como rodar via npm ou yarn.)_
 
 ### 2. Configuração de Variáveis de Ambiente
 
@@ -119,7 +121,7 @@ DB_DIALECT=mysql
 PORT=8080
 ```
 
-*(Ajuste conforme seu ambiente. Ex.: se usar PostgreSQL, `DB_DIALECT=postgres`.)*
+_(Ajuste conforme seu ambiente. Ex.: se usar PostgreSQL, `DB_DIALECT=postgres`.)_
 
 No **frontend** (arquivo `.env`, se necessário), você pode definir chaves para endpoints da API, por exemplo:
 
@@ -127,7 +129,7 @@ No **frontend** (arquivo `.env`, se necessário), você pode definir chaves para
 REACT_APP_API_URL=http://localhost:8080
 ```
 
-*(Se estiver usando React ou outro framework que suporte `.env`.)*
+_(Se estiver usando React ou outro framework que suporte `.env`.)_
 
 ### 3. Backend
 
@@ -181,6 +183,7 @@ yarn dev
 ```
 
 Isso executará, ao mesmo tempo, os scripts `dev` de `backend` e `frontend`, conforme definido em:
+
 ```json
 "scripts": {
   "dev": "concurrently \"yarn workspace cakeria-backend dev\" \"yarn workspace cakeria-frontend dev\""
@@ -320,8 +323,9 @@ Sinta-se livre para usar, modificar e distribuir conforme os termos da licença.
 
 ## Contato
 
-**Autores**:  
-- Lucas Stopinski da Silva ([GitHub](https://github.com/LucasStop), [Email](mailto:lucasstopinskidasilva@gmail.com))  
-- Eduardo Henrique Fabri ([GitHub](https://github.com/eduardofabrii), [Email](mailto:eduardohfabri@gmail.com))  
-- João Victor Carvalho de Freitas ([GitHub](https://github.com/jvecodev), [Email](mailto:jvitor.oliveira1803@gmail.com))  
+**Autores**:
+
+- Lucas Stopinski da Silva ([GitHub](https://github.com/LucasStop), [Email](mailto:lucasstopinskidasilva@gmail.com))
+- Eduardo Henrique Fabri ([GitHub](https://github.com/eduardofabrii), [Email](mailto:eduardohfabri@gmail.com))
+- João Victor Carvalho de Freitas ([GitHub](https://github.com/jvecodev), [Email](mailto:jvitor.oliveira1803@gmail.com))
 - Renan Americo Herculano ([GitHub](https://github.com/RenanH19), [Email](mailto:Renan.kaspermaya19americo@gmail.com))

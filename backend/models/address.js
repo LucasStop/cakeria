@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 module.exports = (sequelize, DataTypes) => {
   const Address = sequelize.define(
-    "Address",
+    'Address',
     {
       user_id: {
         type: DataTypes.INTEGER,
@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: "addresses",
+      tableName: 'addresses',
       timestamps: true,
       paranoid: true,
       underscored: true,
@@ -43,8 +43,8 @@ module.exports = (sequelize, DataTypes) => {
 
   Address.associate = function (models) {
     Address.belongsTo(models.User, {
-      foreignKey: "user_id",
-      as: "user",
+      foreignKey: 'user_id',
+      as: 'user',
     });
   };
 

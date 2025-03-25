@@ -17,19 +17,19 @@ const recipeCardTemplate = document.getElementById('recipe-card-template');
 document.addEventListener('DOMContentLoaded', async () => {
   // Verificar autenticação para o botão de nova receita
   checkAuthStatus();
-  
+
   // Carregar categorias para o filtro
   await loadCategories();
-  
+
   // Carregar receitas iniciais
   await loadRecipes();
-  
+
   // Configurar event listeners
   searchBtn.addEventListener('click', handleSearch);
-  searchInput.addEventListener('keypress', (e) => {
+  searchInput.addEventListener('keypress', e => {
     if (e.key === 'Enter') handleSearch();
   });
-  
+
   categoryFilter.addEventListener('change', handleFiltersChange);
   sortSelect.addEventListener('change', handleFiltersChange);
 });
@@ -37,21 +37,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function checkAuthStatus() {
   try {
     const token = localStorage.getItem('token');
-    
+
     if (!token) {
       newRecipeBtn.addEventListener('click', () => {
         window.location.href = '/login.html?redirect=/nova-receita.html';
       });
       return;
     }
-    
+
     // Verificar se o token é válido
     const response = await fetch(`${API.BASE_URL}/auth/validate`, {
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
-    
+
     if (response.ok) {
       newRecipeBtn.addEventListener('click', () => {
         window.location.href = '/nova-receita.html';
@@ -73,7 +73,7 @@ async function checkAuthStatus() {
 async function loadCategories() {
   try {
     const categories = await API.get('/categories');
-    
+
     categories.forEach(category => {
       const option = document.createElement('option');
       option.value = category.id;
@@ -87,25 +87,25 @@ async function loadCategories() {
 
 async function loadRecipes() {
   showLoading();
-  
+
   try {
     // Obter parâmetros de filtro e paginação
     const searchTerm = searchInput.value.trim();
     const categoryId = categoryFilter.value;
     const sortBy = sortSelect.value;
-    
+
     // Construir URL com parâmetros
     let url = `/recipes?page=${currentPage}`;
     if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
     if (categoryId) url += `&category=${categoryId}`;
     if (sortBy) url += `&sort=${sortBy}`;
-    
+
     // Buscar receitas do servidor
     const data = await API.get(url);
-    
+
     // Atualizar paginação
     totalPages = data.totalPages;
-    
+
     // Renderizar receitas
     renderRecipes(data.recipes);
     renderPagination();
@@ -143,46 +143,47 @@ function renderRecipes(recipes) {
     `;
     return;
   }
-  
+
   recipesGrid.innerHTML = '';
-  
+
   recipes.forEach(recipe => {
     // Clonar o template
     const recipeCard = recipeCardTemplate.content.cloneNode(true);
-    
+
     // Imagem
     const img = recipeCard.querySelector('.recipe-image img');
     img.src = recipe.imageUrl || '/assets/default-recipe.jpg';
     img.alt = recipe.title;
-    
+
     // Título e metadados
     recipeCard.querySelector('.recipe-title').textContent = recipe.title;
     recipeCard.querySelector('.author-name').textContent = recipe.author?.name || 'Anônimo';
-    
+
     // Data formatada
     const createdAt = new Date(recipe.createdAt);
     recipeCard.querySelector('.date-text').textContent = createdAt.toLocaleDateString('pt-BR');
-    
+
     // Visualizações
     recipeCard.querySelector('.views-count').textContent = recipe.views || 0;
-    
+
     // Descrição resumida
-    const excerpt = recipe.description.substring(0, 120) + (recipe.description.length > 120 ? '...' : '');
+    const excerpt =
+      recipe.description.substring(0, 120) + (recipe.description.length > 120 ? '...' : '');
     recipeCard.querySelector('.recipe-excerpt').textContent = excerpt;
-    
+
     // Dificuldade
     const difficultyEl = recipeCard.querySelector('.recipe-difficulty');
     difficultyEl.textContent = recipe.difficulty || 'Médio';
     difficultyEl.classList.add(`difficulty-${(recipe.difficulty || 'Médio').toLowerCase()}`);
-    
+
     // Tempo de preparo
     const totalTime = (recipe.prepTime || 0) + (recipe.cookTime || 0);
     recipeCard.querySelector('.time-text').textContent = totalTime > 0 ? `${totalTime} min` : 'N/A';
-    
+
     // Link para detalhes
     const recipeLink = recipeCard.querySelector('.recipe-link');
     recipeLink.href = `/receita.html?slug=${recipe.slug}`;
-    
+
     recipesGrid.appendChild(recipeCard);
   });
 }
@@ -192,10 +193,10 @@ function renderPagination() {
     paginationEl.style.display = 'none';
     return;
   }
-  
+
   paginationEl.style.display = 'flex';
   paginationEl.innerHTML = '';
-  
+
   // Botão anterior
   const prevBtn = document.createElement('button');
   prevBtn.classList.add('prev-btn');
@@ -209,16 +210,16 @@ function renderPagination() {
     }
   });
   paginationEl.appendChild(prevBtn);
-  
+
   // Botões de páginas
   const maxVisiblePages = 5;
   let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
   let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-  
+
   if (endPage - startPage + 1 < maxVisiblePages) {
     startPage = Math.max(1, endPage - maxVisiblePages + 1);
   }
-  
+
   for (let i = startPage; i <= endPage; i++) {
     const pageBtn = document.createElement('button');
     pageBtn.textContent = i;
@@ -232,7 +233,7 @@ function renderPagination() {
     });
     paginationEl.appendChild(pageBtn);
   }
-  
+
   // Botão próxima
   const nextBtn = document.createElement('button');
   nextBtn.classList.add('next-btn');
@@ -260,12 +261,12 @@ function handleFiltersChange() {
 
 // Extender o objeto API para validação do token
 if (API) {
-  API.validateToken = async (token) => {
+  API.validateToken = async token => {
     try {
       const response = await fetch(`${API.BASE_URL}/auth/validate`, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       return response.ok;
     } catch (error) {

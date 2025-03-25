@@ -4,9 +4,9 @@ class Header extends HTMLElement {
   }
 
   connectedCallback() {
-    const variant = this.getAttribute("variant") || "user";
+    const variant = this.getAttribute('variant') || 'user';
 
-    if (variant === "user") {
+    if (variant === 'user') {
       this.innerHTML = `
         <header class="header">
           <div class="container">
@@ -40,7 +40,7 @@ class Header extends HTMLElement {
           <div class="overlay"></div>
         </header>
       `;
-    } else if (variant === "admin") {
+    } else if (variant === 'admin') {
       this.innerHTML = `
         <header class="header">
           <div class="container">
@@ -80,17 +80,17 @@ class Header extends HTMLElement {
   }
 
   setupEventListeners() {
-    const links = this.querySelectorAll(".nav-link");
-    links.forEach((link) => {
-      link.addEventListener("click", (e) => {
+    const links = this.querySelectorAll('.nav-link');
+    links.forEach(link => {
+      link.addEventListener('click', e => {
         e.preventDefault();
-        const route = link.getAttribute("data-route");
+        const route = link.getAttribute('data-route');
 
         // Remover classe 'active' de todos os links
-        links.forEach((l) => l.classList.remove("active"));
+        links.forEach(l => l.classList.remove('active'));
 
         // Adicionar classe 'active' ao link clicado
-        link.classList.add("active");
+        link.classList.add('active');
 
         // Fechar o menu mobile se estiver aberto
         this.closeMenu();
@@ -101,17 +101,17 @@ class Header extends HTMLElement {
     });
 
     // Adicionar eventos para os botões de autenticação
-    const loginBtn = this.querySelector(".login-btn");
+    const loginBtn = this.querySelector('.login-btn');
     if (loginBtn) {
-      loginBtn.addEventListener("click", () => {
+      loginBtn.addEventListener('click', () => {
         this.closeMenu();
         window.navegarParaLogin();
       });
     }
 
-    const logoutBtn = this.querySelector(".logout-btn");
+    const logoutBtn = this.querySelector('.logout-btn');
     if (logoutBtn) {
-      logoutBtn.addEventListener("click", () => {
+      logoutBtn.addEventListener('click', () => {
         this.closeMenu();
         this.handleLogout();
       });
@@ -123,31 +123,31 @@ class Header extends HTMLElement {
 
   navigateToRoute(route) {
     switch (route) {
-      case "home":
-        window.location.href = "/";
+      case 'home':
+        window.location.href = '/';
         break;
-      case "produtos":
+      case 'produtos':
         window.navegarParaProdutos();
         break;
-      case "categorias":
+      case 'categorias':
         window.navegarParaCategorias();
         break;
-      case "receitas":
+      case 'receitas':
         window.navegarParaReceitas();
         break;
-      case "sobre":
+      case 'sobre':
         window.navegarParaSobre();
         break;
-      case "admin":
+      case 'admin':
         window.navegarParaAdmin();
         break;
-      case "cadastrar-produtos":
+      case 'cadastrar-produtos':
         window.navegarParaCadastrarProdutos();
         break;
-      case "dashboard":
+      case 'dashboard':
         window.navegarParaDashboard();
         break;
-      case "usuarios":
+      case 'usuarios':
         window.navegarParaUsuarios();
         break;
       default:
@@ -157,30 +157,30 @@ class Header extends HTMLElement {
 
   handleLogout() {
     // Remover token e dados do usuário
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
 
     // Redirecionar para a página inicial
-    window.location.href = "/";
+    window.location.href = '/';
   }
 
   setupMobileMenu() {
-    const menuToggle = this.querySelector(".menu-toggle");
-    const navBar = this.querySelector(".nav-bar");
-    const overlay = this.querySelector(".overlay");
+    const menuToggle = this.querySelector('.menu-toggle');
+    const navBar = this.querySelector('.nav-bar');
+    const overlay = this.querySelector('.overlay');
 
     if (menuToggle && navBar && overlay) {
-      menuToggle.addEventListener("click", () => this.toggleMenu());
-      overlay.addEventListener("click", () => this.closeMenu());
+      menuToggle.addEventListener('click', () => this.toggleMenu());
+      overlay.addEventListener('click', () => this.closeMenu());
 
       // Fechar menu ao pressionar ESC
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") this.closeMenu();
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') this.closeMenu();
       });
 
       // Ajustar menu ao redimensionar a janela
-      window.addEventListener("resize", () => {
-        if (window.innerWidth > 900 && navBar.classList.contains("active")) {
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 900 && navBar.classList.contains('active')) {
           this.closeMenu();
         }
       });
@@ -188,56 +188,53 @@ class Header extends HTMLElement {
   }
 
   toggleMenu() {
-    const navBar = this.querySelector(".nav-bar");
-    const menuToggle = this.querySelector(".menu-toggle");
-    const overlay = this.querySelector(".overlay");
+    const navBar = this.querySelector('.nav-bar');
+    const menuToggle = this.querySelector('.menu-toggle');
+    const overlay = this.querySelector('.overlay');
 
-    navBar.classList.toggle("active");
-    menuToggle.classList.toggle("active");
-    overlay.classList.toggle("active");
+    navBar.classList.toggle('active');
+    menuToggle.classList.toggle('active');
+    overlay.classList.toggle('active');
 
-    document.body.style.overflow = navBar.classList.contains("active")
-      ? "hidden"
-      : "";
+    document.body.style.overflow = navBar.classList.contains('active') ? 'hidden' : '';
   }
 
   closeMenu() {
-    const navBar = this.querySelector(".nav-bar");
-    if (!navBar || !navBar.classList.contains("active")) return;
+    const navBar = this.querySelector('.nav-bar');
+    if (!navBar || !navBar.classList.contains('active')) return;
 
-    const menuToggle = this.querySelector(".menu-toggle");
-    const overlay = this.querySelector(".overlay");
+    const menuToggle = this.querySelector('.menu-toggle');
+    const overlay = this.querySelector('.overlay');
 
-    navBar.classList.remove("active");
-    menuToggle.classList.remove("active");
-    overlay.classList.remove("active");
-    document.body.style.overflow = "";
+    navBar.classList.remove('active');
+    menuToggle.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
   }
 
   highlightCurrentPage() {
     const path = window.location.pathname;
-    const links = this.querySelectorAll(".nav-link");
+    const links = this.querySelectorAll('.nav-link');
 
-    links.forEach((link) => {
-      link.classList.remove("active");
-      const route = link.getAttribute("data-route");
+    links.forEach(link => {
+      link.classList.remove('active');
+      const route = link.getAttribute('data-route');
 
       if (
-        (path === "/" && route === "home") ||
-        (path.includes("/produtos") && route === "produtos") ||
-        (path.includes("/categorias") && route === "categorias") ||
-        (path.includes("/receitas") && route === "receitas") ||
-        (path.includes("/sobre") && route === "sobre") ||
-        (path.includes("/admin") && route === "admin") ||
-        (path.includes("/cadastrar-produtos") &&
-          route === "cadastrar-produtos") ||
-        (path.includes("/dashboard") && route === "dashboard") ||
-        (path.includes("/usuarios") && route === "usuarios")
+        (path === '/' && route === 'home') ||
+        (path.includes('/produtos') && route === 'produtos') ||
+        (path.includes('/categorias') && route === 'categorias') ||
+        (path.includes('/receitas') && route === 'receitas') ||
+        (path.includes('/sobre') && route === 'sobre') ||
+        (path.includes('/admin') && route === 'admin') ||
+        (path.includes('/cadastrar-produtos') && route === 'cadastrar-produtos') ||
+        (path.includes('/dashboard') && route === 'dashboard') ||
+        (path.includes('/usuarios') && route === 'usuarios')
       ) {
-        link.classList.add("active");
+        link.classList.add('active');
       }
     });
   }
 }
 
-customElements.define("header-component", Header);
+customElements.define('header-component', Header);

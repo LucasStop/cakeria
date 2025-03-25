@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("recipes", {
+    await queryInterface.createTable('recipes', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -27,41 +27,41 @@ module.exports = {
       },
       prep_time: {
         type: Sequelize.INTEGER,
-        comment: "Tempo de preparo em minutos",
+        comment: 'Tempo de preparo em minutos',
       },
       cook_time: {
         type: Sequelize.INTEGER,
-        comment: "Tempo de cozimento em minutos",
+        comment: 'Tempo de cozimento em minutos',
       },
       servings: {
         type: Sequelize.INTEGER,
       },
       difficulty: {
-        type: Sequelize.ENUM("Fácil", "Médio", "Difícil"),
-        defaultValue: "Médio",
+        type: Sequelize.ENUM('Fácil', 'Médio', 'Difícil'),
+        defaultValue: 'Médio',
       },
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "users",
-          key: "id",
+          model: 'users',
+          key: 'id',
         },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       category_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: "categories",
-          key: "id",
+          model: 'categories',
+          key: 'id',
         },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       status: {
-        type: Sequelize.ENUM("rascunho", "publicado"),
-        defaultValue: "publicado",
+        type: Sequelize.ENUM('rascunho', 'publicado'),
+        defaultValue: 'publicado',
       },
       views: {
         type: Sequelize.INTEGER,
@@ -70,12 +70,12 @@ module.exports = {
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       deleted_at: {
         type: Sequelize.DATE,
@@ -84,6 +84,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("recipes");
+    await queryInterface.dropTable('recipes');
   },
 };
