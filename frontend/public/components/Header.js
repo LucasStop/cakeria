@@ -19,7 +19,8 @@ class Header extends HTMLElement {
                 <li><a href="/" class="nav-link" data-route="home"><i class="fa-solid fa-home"></i> Home</a></li>
                 <li><a href="/produtos" class="nav-link" id="nav-produtos" data-route="produtos"><i class="fa-solid fa-cake-candles"></i> Produtos</a></li>
                 <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
-                <li></li><a href="/admin" class="nav-link" id="nav-admin" data-route="admin"><i class="fa-solid fa-user-crown"></i> Admin</a></li>
+                <li><a href="/admin" class="nav-link" data-route="admin"><i class="fa-solid fa-user"></i> Admin</a></li>
+                
               </ul>
             </nav>
             
