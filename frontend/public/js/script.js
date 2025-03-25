@@ -232,7 +232,7 @@ function renderizarListaCategorias() {
 }
 
 function navegarParaProdutos() {
-  renderizarListaProdutos();
+  carregarConteudoHTML("/produtos.html");
 }
 
 function navegarParaCategorias() {
