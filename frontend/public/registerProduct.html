@@ -4,25 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cakeria | Cadastro de Produto</title>
-  
-  <!-- Favicon -->
   <link rel="icon" href="/assets/favicon.ico">
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
   <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png">
-  
-  <!-- Google Fonts - Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- CSS -->
   <link rel="stylesheet" href="./css/styles.css">
   <link rel="stylesheet" href="./css/registro.css">
-  
 </head>
 <body>
   <div class="split-layout">
-    <!-- Seção do logo -->
     <div class="logo-section">
       <div class="content">
         <a href="/">
@@ -31,8 +23,7 @@
         <p>Registre um novo produto</p>
       </div>
     </div>
-    
-    <!-- Seção do formulário -->
+
     <div class="form-section">
       <div class="login-container">
         <div id="register-card" class="login-card">
@@ -52,24 +43,23 @@
               </div>
             </div>
 
-            <!-- Descrição e Categoria -->
+            <!-- Descrição -->
             <div class="form-row">
               <div class="form-col">
                 <div class="form-group">
-                  <label for="product-name">Descrição</label>
-                  <input type="text" id="Discription" name="name" placeholder="Descrição do produto" required>
-                  <span id="name-error" class="error-message"></span>
+                  <label for="product-description">Descrição</label>
+                  <input type="text" id="product-description" name="description" placeholder="Descrição do produto" required>
+                  <span id="description-error" class="error-message"></span>
                 </div>
               </div>
             </div>
-             
 
             <!-- Preço e Peso/Tamanho -->
             <div class="form-row">
               <div class="form-col">
                 <div class="form-group">
                   <label for="product-price">Preço</label>
-                  <input type="number" id="product-price" name="price" placeholder="Preço do produto" step="0.01" required>
+                  <input type="text" id="product-price" name="price" placeholder="Preço do produto" required>
                   <span id="price-error" class="error-message"></span>
                 </div>
               </div>
@@ -81,8 +71,6 @@
                 </div>
               </div>
             </div>
-
-           
 
             <!-- Imagem -->
             <div class="form-row">
@@ -129,6 +117,6 @@
   </div>
 
   <script src="/js/api.js"></script>
-  <script src="/js/registro.js"></script>
+  <script src="./js/registerProduct.js"></script>
 </body>
 </html>
