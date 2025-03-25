@@ -27,6 +27,7 @@ async function dropTables() {
     await sequelize.query("DROP TABLE IF EXISTS categories");
     await sequelize.query("DROP TABLE IF EXISTS addresses");
     await sequelize.query("DROP TABLE IF EXISTS users");
+    await sequelize.query("DROP TABLE IF EXISTS admins");
 
     await sequelize.query("DROP TABLE IF EXISTS `ENUM_users_type`");
     await sequelize.query("DROP TABLE IF EXISTS `ENUM_orders_status`");

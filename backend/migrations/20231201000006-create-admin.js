@@ -2,45 +2,29 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("addresses", {
+    await queryInterface.createTable("admins", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "users",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
-      },
-      street: {
-        type: Sequelize.STRING(200),
-        allowNull: false,
-      },
-      number: {
-        type: Sequelize.STRING(10),
-        allowNull: false,
-      },
-      city: {
+      name: {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      state: {
-        type: Sequelize.STRING(100),
+      email: {
+        type: Sequelize.STRING(150),
         allowNull: false,
+        unique: true,
       },
-      postal_code: {
+     
+      phone: {
         type: Sequelize.STRING(20),
         allowNull: false,
       },
-      country: {
-        type: Sequelize.STRING(100),
+      password: {
+        type: Sequelize.STRING(256),
         allowNull: false,
       },
       created_at: {
@@ -59,6 +43,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("addresses");
+    await queryInterface.dropTable("admins");
   },
 };

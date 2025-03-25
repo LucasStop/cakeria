@@ -14,6 +14,20 @@ CREATE TABLE users (
     deleted_at TIMESTAMP NULL DEFAULT NULL
 ) ENGINE=InnoDB;
 
+
+-- Admin Table 
+
+CREATE TABLE admins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(256) NOT NULL,
+    phone VARCHAR(20),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL DEFAULT NULL
+) ENGINE=InnoDB;
+
 -- Addresses Table (multiple addresses per user)
 CREATE TABLE addresses (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -46,7 +60,7 @@ CREATE TABLE products (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     price DECIMAL(10,2) NOT NULL,
-    image_url TEXT,
+    image_id TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL DEFAULT NULL,

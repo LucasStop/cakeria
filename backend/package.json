@@ -4,7 +4,7 @@
   "description": "API back-end para a confeitaria Cakeria",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js", 
+    "start": "node app.js",
     "dev": "nodemon app.js",
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all",

@@ -3,24 +3,78 @@ class Header extends HTMLElement {
     super();
   }
 
-  async connectedCallback() {
-    try {
-      const response = await fetch("/components/Header.html");
-      if (!response.ok) {
-        throw new Error(
-          `Erro ao carregar o template do Header: ${response.status}`
-        );
-      }
+  connectedCallback() {
+    const variant = this.getAttribute("variant") || "user";
 
-      const html = await response.text();
-      this.innerHTML = html;
-
-      this.setupEventListeners();
-      this.highlightCurrentPage();
-    } catch (error) {
-      console.error("Não foi possível carregar o componente Header:", error);
-      this.innerHTML = "<p>Erro ao carregar o componente Header</p>";
+    if (variant === "user") {
+      this.innerHTML = `
+        <header class="header">
+          <div class="container">
+            <div class="logo-container">
+              <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo">
+            </div>
+            
+            <nav class="nav-bar">
+              <ul class="nav-links">
+                <li><a href="/" class="nav-link" data-route="home"><i class="fa-solid fa-home"></i> Home</a></li>
+                <li><a href="/produtos" class="nav-link" id="nav-produtos" data-route="produtos"><i class="fa-solid fa-cake-candles"></i> Produtos</a></li>
+                <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
+                <li><a href="/admin" class="nav-link" data-route="admin"><i class="fa-solid fa-user"></i> Admin</a></li>
+                
+              </ul>
+            </nav>
+            
+            <div class="auth-buttons">
+              <button class="login-btn" data-route="login">
+                <i class="fa-solid fa-user"></i> Login
+              </button>
+            </div>
+            
+            <button class="menu-toggle" aria-label="Menu">
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+            </button>
+          </div>
+          <div class="overlay"></div>
+        </header>
+      `;
+    } else if (variant === "admin") {
+      this.innerHTML = `
+        <header class="header">
+          <div class="container">
+            <div class="logo-container">
+              <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo">
+            </div>
+            
+            <nav class="nav-bar">
+              <ul class="nav-links">
+                <li><a href="/" class="nav-link" data-route="home"><i class="fa-solid fa-home"></i> Home</a></li>
+                <li><a href="/cadastrar-produtos" class="nav-link" id="nav-cadastrar-produtos" data-route="cadastrar-produtos"><i class="fa-solid fa-cake-candles"></i>Produtos</a></li>
+                <li><a href="#dashboard" class="nav-link" data-route="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="/usuarios" class="nav-link" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
+              </ul>
+            </nav>
+            
+            <div class="auth-buttons">
+              <button class="login-btn" data-route="login">
+                <i class="fa-solid fa-user"></i> Login
+              </button>
+            </div>
+            
+            <button class="menu-toggle" aria-label="Menu">
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+            </button>
+          </div>
+          <div class="overlay"></div>
+        </header>
+      `;
     }
+
+    this.setupEventListeners();
+    this.highlightCurrentPage();
   }
 
   setupEventListeners() {
@@ -29,10 +83,10 @@ class Header extends HTMLElement {
       link.addEventListener("click", (e) => {
         e.preventDefault();
         const route = link.getAttribute("data-route");
-        
+
         links.forEach((l) => l.classList.remove("active"));
         link.classList.add("active");
-        
+
         this.closeMenu();
 
         if (route === "home") {
@@ -45,17 +99,15 @@ class Header extends HTMLElement {
           window.navegarParaReceitas();
         } else if (route === "sobre") {
           window.navegarParaSobre();
+        } else if (route === "cadastrar-produtos") {
+          window.navegarParaCadastrarProdutos();
+        } else if (route === "dashboard") {
+          window.navegarParaDashboard();
+        } else if (route === "usuarios") {
+          window.navegarParaUsuarios();
         }
       });
     });
-
-    const loginBtn = this.querySelector(".login-btn");
-    if (loginBtn) {
-      loginBtn.addEventListener("click", () => {
-        this.closeMenu();
-        window.navegarParaLogin();
-      });
-    }
 
     this.setupMobileMenu();
   }
@@ -66,24 +118,13 @@ class Header extends HTMLElement {
     const overlay = this.querySelector(".overlay");
 
     if (menuToggle && navBar && overlay) {
-      menuToggle.addEventListener("click", () => {
-        this.toggleMenu();
-      });
-
-      overlay.addEventListener("click", () => {
-        this.closeMenu();
-      });
-
+      menuToggle.addEventListener("click", () => this.toggleMenu());
+      overlay.addEventListener("click", () => this.closeMenu());
       document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-          this.closeMenu();
-        }
+        if (e.key === "Escape") this.closeMenu();
       });
-
       window.addEventListener("resize", () => {
-        if (window.innerWidth > 900 && navBar.classList.contains("active")) {
-          this.closeMenu();
-        }
+        if (window.innerWidth > 900) this.closeMenu();
       });
     }
   }
@@ -97,11 +138,9 @@ class Header extends HTMLElement {
     menuToggle.classList.toggle("active");
     overlay.classList.toggle("active");
 
-    if (navBar.classList.contains("active")) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = navBar.classList.contains("active")
+      ? "hidden"
+      : "";
   }
 
   closeMenu() {
@@ -109,7 +148,7 @@ class Header extends HTMLElement {
     const menuToggle = this.querySelector(".menu-toggle");
     const overlay = this.querySelector(".overlay");
 
-    if (navBar && navBar.classList.contains("active")) {
+    if (navBar.classList.contains("active")) {
       navBar.classList.remove("active");
       menuToggle.classList.remove("active");
       overlay.classList.remove("active");
@@ -123,7 +162,6 @@ class Header extends HTMLElement {
 
     links.forEach((link) => {
       link.classList.remove("active");
-
       if (
         (path === "/" && link.getAttribute("data-route") === "home") ||
         (path.includes("/produtos") &&
@@ -132,8 +170,16 @@ class Header extends HTMLElement {
           link.getAttribute("data-route") === "categorias") ||
         (path.includes("/receitas") &&
           link.getAttribute("data-route") === "receitas") ||
-        (path.includes("/sobre") &&
-          link.getAttribute("data-route") === "sobre")
+        (
+          path.includes("/sobre") && link.getAttribute("data-route") === "sobre"
+        )(
+          path.includes("/cadastrar-produtos") &&
+            link.getAttribute("data-route") === "cadastrar-produtos"
+        ) ||
+        (path.includes("/dashboard") &&
+          link.getAttribute("data-route") === "dashboard") ||
+        (path.includes("/usuarios") &&
+          link.getAttribute("data-route") === "usuarios")
       ) {
         link.classList.add("active");
       }
