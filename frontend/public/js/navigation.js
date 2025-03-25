@@ -1,21 +1,15 @@
 const Navigation = {
-  navegarParaProdutos: function () {
-    // Load the produtos.html page directly
-    window.carregarConteudoHTML('/produtos.html');
-    this.currentPage = 'produtos';
-    window.history.pushState({}, '', '/produtos');
-  },
+  
 
   navegarParaAdmin: function () {
     window.renderizarAdmin();
     this.currentPage = 'admin';
     window.history.pushState({}, '', '/admin');
   },
-
-  navegarParaRegistroProduct: function () {
-    window.renderizarRegistroProduct();
+  
+  navegarParaCadastrarProdutos: function () {
+    window.location.href = '/registerProduct.html';
     this.currentPage = 'registerProduct';
-    window.history.pushState({}, '', '/registerProduct');
   },
 
   navegarParaCategorias: function () {
@@ -58,6 +52,8 @@ const Navigation = {
       this.navegarParaProdutos();
     } else if (path === '/categorias') {
       this.navegarParaCategorias();
+    } else if (path === '/registerProduct') {
+      this.navegarParaRegistroProduct();
     } else if (path === '/receitas') {
       this.navegarParaReceitas();
     } else if (path === '/sobre') {
@@ -81,9 +77,9 @@ const Navigation = {
   },
 };
 
-window.navegarParaProdutos = function () {
-  Navigation.navegarParaProdutos();
-};
+window.navegarParaCadastrarProdutos = function () {
+  Navigation.navegarParaCadastrarProdutos();
+}
 window.navegarParaCategorias = function () {
   Navigation.navegarParaCategorias();
 };
