@@ -2,9 +2,8 @@ const Navigation = {
 
 
   navegarParaProdutos: function () {
-    // Remover estilos específicos de outras páginas ao navegar
-    window.removerEstilosEspecificos && window.removerEstilosEspecificos();
-    window.renderizarListaProdutos();
+    // Load the produtos.html page directly
+    window.carregarConteudoHTML("/produtos.html");
     this.currentPage = "produtos";
     window.history.pushState({}, "", "/produtos");
   },
