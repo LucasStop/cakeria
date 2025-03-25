@@ -1,5 +1,3 @@
-const API_URL = 'http://localhost:3001/api';
-
 document.addEventListener('DOMContentLoaded', () => {
   const registerForm = document.getElementById('register-form');
 
@@ -22,10 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('register-phone').addEventListener('input', function () {
+    formatPhone(this);
     validateField(this, validatePhone, 'phone-error', 'Use o formato (00) 00000-0000');
   });
 
   document.getElementById('register-cpf').addEventListener('input', function () {
+    formatCPF(this);
     validateField(this, validateCPF, 'cpf-error', 'Use o formato 000.000.000-00');
   });
 
@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('register-cep').addEventListener('input', function () {
+    formatCEP(this);
     validateField(this, validateCEP, 'cep-error', 'Use o formato 00000-000');
     if (validateCEP(this.value)) {
       fetchAddressInfo(this.value);
@@ -72,6 +73,65 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// Máscara para telefone
+function formatPhone(input) {
+  let value = input.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+  
+  // Limita o tamanho
+  if (value.length > 11) {
+    value = value.substring(0, 11);
+  }
+  
+  // Aplica a máscara (00) 00000-0000
+  if (value.length > 6) {
+    value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+  } else if (value.length > 2) {
+    value = value.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+  } else if (value.length > 0) {
+    value = value.replace(/^(\d{0,2})/, '($1');
+  }
+  
+  input.value = value;
+}
+
+// Máscara para CPF
+function formatCPF(input) {
+  let value = input.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+  
+  // Limita o tamanho
+  if (value.length > 11) {
+    value = value.substring(0, 11);
+  }
+  
+  // Aplica a máscara 000.000.000-00
+  if (value.length > 9) {
+    value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+  } else if (value.length > 6) {
+    value = value.replace(/(\d{3})(\d{3})(\d{0,3})/, '$1.$2.$3');
+  } else if (value.length > 3) {
+    value = value.replace(/(\d{3})(\d{0,3})/, '$1.$2');
+  }
+  
+  input.value = value;
+}
+
+// Máscara para CEP
+function formatCEP(input) {
+  let value = input.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+  
+  // Limita o tamanho
+  if (value.length > 8) {
+    value = value.substring(0, 8);
+  }
+  
+  // Aplica a máscara 00000-000
+  if (value.length > 5) {
+    value = value.replace(/(\d{5})(\d{0,3})/, '$1-$2');
+  }
+  
+  input.value = value;
+}
 
 // Função para alternar visibilidade da senha
 function togglePasswordVisibility(e) {
@@ -130,14 +190,14 @@ function validateEmail(email) {
 }
 
 function validatePhone(phone) {
-  // Aceita formatos: (00) 00000-0000 ou 00000000000
-  const regex = /^(?:\(\d{2}\)\s?)?\d{5}-?\d{4}$/;
+  // Aceita formatos: (00) 00000-0000
+  const regex = /^\(\d{2}\) \d{5}-\d{4}$/;
   return regex.test(phone);
 }
 
 function validateCPF(cpf) {
-  // Aceita formatos: 000.000.000-00 ou 00000000000
-  const regex = /^(\d{3}\.){2}\d{3}-\d{2}$|^\d{11}$/;
+  // Aceita formatos: 000.000.000-00
+  const regex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
   return regex.test(cpf);
 }
 
@@ -147,8 +207,8 @@ function validatePassword(password) {
 
 // Funções de validação adicionais para endereço
 function validateCEP(cep) {
-  // Aceita formatos: 00000-000 ou 00000000
-  const regex = /^\d{5}-?\d{3}$/;
+  // Aceita formatos: 00000-000
+  const regex = /^\d{5}-\d{3}$/;
   return regex.test(cep);
 }
 
