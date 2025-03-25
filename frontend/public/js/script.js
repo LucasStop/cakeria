@@ -7,18 +7,17 @@ const contentEl = document.getElementById('content');
 const produtosContainer = document.getElementById('produtos-container');
 const categoriasContainer = document.getElementById('categorias-container');
 const verProdutosBtn = document.getElementById('ver-produtos');
-const navProdutos = document.getElementById('nav-produtos');
+// const navRegiterProduct = document.getElementById('nav-register-product');
 const navCategorias = document.getElementById('nav-categorias');
 const navAdmin = document.getElementById('nav-admin');
 
-window.navegarParaProdutos = navegarParaProdutos;
 window.navegarParaCategorias = navegarParaCategorias;
 window.navegarParaLogin = navegarParaLogin;
 window.navegarParaRegistro = navegarParaRegistro;
 window.navegarParaReceitas = navegarParaReceitas;
 window.navegarParaSobre = navegarParaSobre;
 window.navegarParaAdmin = navegarParaAdmin;
-
+window.navegarParaCadastrarProdutos = navegarParaCadastrarProdutos;
 document.addEventListener('DOMContentLoaded', iniciarAplicacao);
 if (verProdutosBtn) verProdutosBtn.addEventListener('click', navegarParaProdutos);
 if (navProdutos)
@@ -230,8 +229,9 @@ function renderizarListaCategorias() {
   window.history.pushState({}, '', '/categorias');
 }
 
-function navegarParaProdutos() {
-  carregarConteudoHTML('/produtos.html');
+function navegarParaCadastrarProdutos() {
+  window.location.href = '/registerProduct.html';
+  currentPage = 'registerProduct';
 }
 
 function navegarParaCategorias() {
@@ -254,6 +254,10 @@ function navegarParaReceitas() {
 
 function navegarParaSobre() {
   carregarConteudoHTML('/sobre.html');
+}
+function navegarParaAdmin() {
+  window.location.href = '/admin.html';
+  currentPage = 'admin';
 }
 
 // Função para carregar conteúdo HTML de arquivos externos
@@ -416,10 +420,7 @@ function removerEstilosEspecificos() {
     document.querySelectorAll('style[data-page-specific], link[data-page-specific]')
   ).forEach(el => el.remove());
 }
-function navegarParaAdmin() {
-  window.location.href = '/admin';
-  currentPage = 'admin';
-}
+
 
 window.carregarDetalhesProduto = carregarDetalhesProduto;
 window.renderizarListaProdutos = renderizarListaProdutos;
@@ -587,5 +588,5 @@ window.verReceitaDetalhes = async function (id) {
   }
 };
 
-window.carregarConteudoHTML = carregarConteudoHTML; // Exportar para uso global
+window.carregarConteudoHTML = carregarConteudoHTML; 
 window.removerEstilosEspecificos = removerEstilosEspecificos;

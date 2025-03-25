@@ -17,7 +17,6 @@ class Header extends HTMLElement {
             <nav class="nav-bar">
               <ul class="nav-links">
                 <li><a href="/" class="nav-link" data-route="home"><i class="fa-solid fa-home"></i> Home</a></li>
-                <li><a href="/produtos" class="nav-link" id="nav-produtos" data-route="produtos"><i class="fa-solid fa-cake-candles"></i> Produtos</a></li>
                 <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
                 <li><a href="/receitas" class="nav-link" id="nav-receitas" data-route="receitas"><i class="fa-solid fa-book-open"></i> Receitas</a></li>
                 <li><a href="/sobre" class="nav-link" id="nav-sobre" data-route="sobre"><i class="fa-solid fa-info-circle"></i> Sobre</a></li>
@@ -50,19 +49,16 @@ class Header extends HTMLElement {
             
             <nav class="nav-bar">
               <ul class="nav-links">
-                <li><a href="/" class="nav-link" data-route="home"><i class="fa-solid fa-home"></i> Home</a></li>
-                <li><a href="/cadastrar-produtos" class="nav-link" id="nav-cadastrar-produtos" data-route="cadastrar-produtos"><i class="fa-solid fa-cake-candles"></i>Produtos</a></li>
+                <li><a href="/admin" class="nav-link" data-route="admin"><i class="fa-solid fa-home"></i> Home</a></li>
                 <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
+                <li><a href="/registerProduct" class="nav-link" data-route="registerProduct"><i class="fa-solid fa-cake-candles"></i> Produtos</a></li>
+
                 <li><a href="/dashboard" class="nav-link" id="nav-dashboard" data-route="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
                 <li><a href="/usuarios" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
               </ul>
             </nav>
             
-            <div class="auth-buttons">
-              <button class="logout-btn" data-route="logout">
-                <i class="fa-solid fa-sign-out-alt"></i> Sair
-              </button>
-            </div>
+            
             
             <button class="menu-toggle" aria-label="Menu">
               <span class="bar"></span>
@@ -126,9 +122,6 @@ class Header extends HTMLElement {
       case 'home':
         window.location.href = '/';
         break;
-      case 'produtos':
-        window.navegarParaProdutos();
-        break;
       case 'categorias':
         window.navegarParaCategorias();
         break;
@@ -141,7 +134,7 @@ class Header extends HTMLElement {
       case 'admin':
         window.navegarParaAdmin();
         break;
-      case 'cadastrar-produtos':
+      case 'registerProduct':
         window.navegarParaCadastrarProdutos();
         break;
       case 'dashboard':
@@ -227,7 +220,7 @@ class Header extends HTMLElement {
         (path.includes('/receitas') && route === 'receitas') ||
         (path.includes('/sobre') && route === 'sobre') ||
         (path.includes('/admin') && route === 'admin') ||
-        (path.includes('/cadastrar-produtos') && route === 'cadastrar-produtos') ||
+        (path.includes('/registerProduct') && route === 'registerProduct') ||
         (path.includes('/dashboard') && route === 'dashboard') ||
         (path.includes('/usuarios') && route === 'usuarios')
       ) {
