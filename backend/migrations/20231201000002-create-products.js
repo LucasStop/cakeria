@@ -31,10 +31,10 @@ module.exports = {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false
       },
-      image_url: {
-        type: Sequelize.TEXT,
-        allowNull: true
-      },
+      // image_id: {
+      //   type: Sequelize.TEXT,
+      //   allowNull: true
+      // },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,

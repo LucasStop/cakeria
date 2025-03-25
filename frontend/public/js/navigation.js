@@ -1,5 +1,5 @@
 const Navigation = {
-  currentPage: "home",
+
 
   navegarParaProdutos: function () {
     // Remover estilos específicos de outras páginas ao navegar
@@ -8,6 +8,19 @@ const Navigation = {
     this.currentPage = "produtos";
     window.history.pushState({}, "", "/produtos");
   },
+
+  navegarParaAdmin: function () {
+    window.renderizarAdmin();
+    this.currentPage = "admin";
+    window.history.pushState({}, "", "/admin");
+  },
+
+  navegarParaRegistroProduct: function () {
+    window.renderizarRegistroProduct();
+    this.currentPage = "registerProduct";
+    window.history.pushState({}, "", "/registerProduct");
+  },
+
 
   navegarParaCategorias: function () {
     // Remover estilos específicos de outras páginas ao navegar
@@ -60,6 +73,14 @@ const Navigation = {
       } else {
         this.navegarParaReceitas();
       }
+    } else if (path === "/login") {
+      this.navegarParaLogin();
+    } else if (path === "/registro") {
+      this.navegarParaRegistro();
+    } else if (path === "/admin") {
+      this.navegarParaAdmin();
+    } else {
+      window.renderizarListaProdutos();
     }
   },
 };
@@ -82,3 +103,7 @@ window.navegarParaLogin = function () {
 window.navegarParaRegistro = function () {
   Navigation.navegarParaRegistro();
 };
+window.navegarParaAdmin = function () {
+  Navigation.navegarParaAdmin();
+}
+

@@ -9,6 +9,7 @@ const categoriasContainer = document.getElementById("categorias-container");
 const verProdutosBtn = document.getElementById("ver-produtos");
 const navProdutos = document.getElementById("nav-produtos");
 const navCategorias = document.getElementById("nav-categorias");
+const navAdmin = document.getElementById("nav-admin");
 
 window.navegarParaProdutos = navegarParaProdutos;
 window.navegarParaCategorias = navegarParaCategorias;
@@ -16,6 +17,7 @@ window.navegarParaLogin = navegarParaLogin;
 window.navegarParaRegistro = navegarParaRegistro;
 window.navegarParaReceitas = navegarParaReceitas;
 window.navegarParaSobre = navegarParaSobre;
+window.navegarParaAdmin = navegarParaAdmin;
 
 document.addEventListener("DOMContentLoaded", iniciarAplicacao);
 if (verProdutosBtn)
@@ -73,37 +75,37 @@ async function carregarDetalhesProduto(id) {
   }
 }
 
-function renderizarProdutosDestaque(produtosDestaque) {
-  if (!produtosContainer) return;
+// function renderizarProdutosDestaque(produtosDestaque) {
+//   if (!produtosContainer) return;
 
-  if (produtosDestaque.length === 0) {
-    produtosContainer.innerHTML = "<p>Nenhum produto encontrado</p>";
-    return;
-  }
+//   if (produtosDestaque.length === 0) {
+//     produtosContainer.innerHTML = "<p>Nenhum produto encontrado</p>";
+//     return;
+//   }
 
-  const html = produtosDestaque
-    .map(
-      (produto) => `
-    <div class="product-card">
-      <div class="product-img" style="background-image: url('${
-        produto.image_url
-          ? `/imgs/${produto.image_url}`
-          : "/imgs/placeholder.png"
-      }')"></div>
-      <div class="product-info">
-        <h3>${produto.name}</h3>
-        <p class="product-price">R$ ${parseFloat(produto.price).toFixed(2)}</p>
-        <button class="btn btn-primary" onclick="verDetalhesProduto(${
-          produto.id
-        })">Ver Detalhes</button>
-      </div>
-    </div>
-  `
-    )
-    .join("");
+//   const html = produtosDestaque
+//     .map(
+//       (produto) => `
+//     <div class="product-card">
+//       <div class="product-img" style="background-image: url('${
+//         produto.image_id
+//           ? `/imgs/${produto.image_id}`
+//           : "/imgs/placeholder.png"
+//       }')"></div>
+//       <div class="product-info">
+//         <h3>${produto.name}</h3>
+//         <p class="product-price">R$ ${parseFloat(produto.price).toFixed(2)}</p>
+//         <button class="btn btn-primary" onclick="verDetalhesProduto(${
+//           produto.id
+//         })">Ver Detalhes</button>
+//       </div>
+//     </div>
+//   `
+//     )
+//     .join("");
 
-  produtosContainer.innerHTML = html;
-}
+//   produtosContainer.innerHTML = html;
+// }
 
 function renderizarCategorias(categoriasList) {
   if (!categoriasContainer) return;
@@ -130,75 +132,75 @@ function renderizarCategorias(categoriasList) {
   categoriasContainer.innerHTML = html;
 }
 
-function renderizarDetalhesProduto(produto) {
-  const mainContent = `
-    <section class="product-details">
-      <div class="product-image">
-        <img src="${
-          produto.image_url
-            ? `/imgs/${produto.image_url}`
-            : "/imgs/placeholder.png"
-        }" alt="${produto.name}">
-      </div>
-      <div class="product-details-info">
-        <h1>${produto.name}</h1>
-        <p class="product-category">Categoria: ${
-          produto.category?.name || "Não categorizado"
-        }</p>
-        <p class="product-details-price">R$ ${parseFloat(produto.price).toFixed(
-          2
-        )}</p>
-        <p class="product-details-description">${
-          produto.description || "Sem descrição disponível"
-        }</p>
-        <button class="btn btn-primary">Adicionar ao Carrinho</button>
-        <button class="btn btn-outline" onclick="navegarParaProdutos()">Voltar para Produtos</button>
-      </div>
-    </section>
-  `;
+// function renderizarDetalhesProduto(produto) {
+//   const mainContent = `
+//     <section class="product-details">
+//       <div class="product-image">
+//         <img src="${
+//           produto.image_id
+//             ? `/imgs/${produto.image_id}`
+//             : "/imgs/placeholder.png"
+//         }" alt="${produto.name}">
+//       </div>
+//       <div class="product-details-info">
+//         <h1>${produto.name}</h1>
+//         <p class="product-category">Categoria: ${
+//           produto.category?.name || "Não categorizado"
+//         }</p>
+//         <p class="product-details-price">R$ ${parseFloat(produto.price).toFixed(
+//           2
+//         )}</p>
+//         <p class="product-details-description">${
+//           produto.description || "Sem descrição disponível"
+//         }</p>
+//         <button class="btn btn-primary">Adicionar ao Carrinho</button>
+//         <button class="btn btn-outline" onclick="navegarParaProdutos()">Voltar para Produtos</button>
+//       </div>
+//     </section>
+//   `;
 
-  contentEl.innerHTML = mainContent;
-  currentPage = "produto";
-  window.history.pushState({}, "", `/produtos/${produto.id}`);
-}
+//   contentEl.innerHTML = mainContent;
+//   currentPage = "produto";
+//   window.history.pushState({}, "", `/produtos/${produto.id}`);
+// }
 
-function renderizarListaProdutos() {
-  const mainContent = `
-    <section class="products-list">
-      <div class="container">
-        <h1 class="section-title">Nossos Produtos</h1>
-        <div class="featured-products">
-          ${produtos
-            .map(
-              (produto) => `
-            <div class="product-card">
-              <div class="product-img" style="background-image: url('${
-                produto.image_url
-                  ? `/imgs/${produto.image_url}`
-                  : "/imgs/placeholder.png"
-              }')"></div>
-              <div class="product-info">
-                <h3>${produto.name}</h3>
-                <p class="product-price">R$ ${parseFloat(produto.price).toFixed(
-                  2
-                )}</p>
-                <button class="btn btn-primary" onclick="verDetalhesProduto(${
-                  produto.id
-                })">Ver Detalhes</button>
-              </div>
-            </div>
-          `
-            )
-            .join("")}
-        </div>
-      </div>
-    </section>
-  `;
+// function renderizarListaProdutos() {
+//   const mainContent = `
+//     <section class="products-list">
+//       <div class="container">
+//         <h1 class="section-title">Nossos Produtos</h1>
+//         <div class="featured-products">
+//           ${produtos
+//             .map(
+//               (produto) => `
+//             <div class="product-card">
+//               <div class="product-img" style="background-image: url('${
+//                 produto.image_id
+//                   ? `/imgs/${produto.image_id}`
+//                   : "/imgs/placeholder.png"
+//               }')"></div>
+//               <div class="product-info">
+//                 <h3>${produto.name}</h3>
+//                 <p class="product-price">R$ ${parseFloat(produto.price).toFixed(
+//                   2
+//                 )}</p>
+//                 <button class="btn btn-primary" onclick="verDetalhesProduto(${
+//                   produto.id
+//                 })">Ver Detalhes</button>
+//               </div>
+//             </div>
+//           `
+//             )
+//             .join("")}
+//         </div>
+//       </div>
+//     </section>
+//   `;
 
-  contentEl.innerHTML = mainContent;
-  currentPage = "produtos";
-  window.history.pushState({}, "", "/produtos");
-}
+//   contentEl.innerHTML = mainContent;
+//   currentPage = "produtos";
+//   window.history.pushState({}, "", "/produtos");
+// }
 
 function renderizarListaCategorias() {
   const mainContent = `
@@ -273,21 +275,29 @@ async function carregarConteudoHTML(url) {
     removerEstilosEspecificos();
 
     // Buscar e aplicar estilos específicos do documento
-    const styles = Array.from(doc.querySelectorAll('style, link[rel="stylesheet"]'));
-    
+    const styles = Array.from(
+      doc.querySelectorAll('style, link[rel="stylesheet"]')
+    );
+
     // Verificar quais estilos já existem para evitar duplicação
-    const existingStyleUrls = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
-      .map((link) => link.getAttribute("href"));
-    
+    const existingStyleUrls = Array.from(
+      document.querySelectorAll('link[rel="stylesheet"]')
+    ).map((link) => link.getAttribute("href"));
+
     // Aplicar estilos da página carregada
     styles.forEach((style) => {
       // Para link de stylesheet externo
-      if (style.tagName === "LINK" && style.getAttribute("rel") === "stylesheet") {
+      if (
+        style.tagName === "LINK" &&
+        style.getAttribute("rel") === "stylesheet"
+      ) {
         const href = style.getAttribute("href");
         // Só adiciona se não for o CSS principal (styles.css) ou components.css
-        if (!existingStyleUrls.includes(href) && 
-            !href.includes('styles.css') && 
-            !href.includes('components.css')) {
+        if (
+          !existingStyleUrls.includes(href) &&
+          !href.includes("styles.css") &&
+          !href.includes("components.css")
+        ) {
           console.log("Adicionando CSS:", href);
           const linkEl = document.createElement("link");
           linkEl.setAttribute("rel", "stylesheet");
@@ -328,13 +338,13 @@ async function carregarConteudoHTML(url) {
     if (url.includes("receitas")) {
       currentPage = "receitas";
       window.history.pushState({}, "", "/receitas");
-      
+
       // Adicionar CSS específico para receitas se não estiver já incluído
       adicionarCSS("/css/receitas.css");
     } else if (url.includes("sobre")) {
       currentPage = "sobre";
       window.history.pushState({}, "", "/sobre");
-      
+
       // Adicionar CSS específico para sobre se não estiver já incluído
       adicionarCSS("/css/sobre.css");
       adicionarCSS("/css/animations.css");
@@ -350,16 +360,16 @@ async function carregarConteudoHTML(url) {
       newScript.appendChild(document.createTextNode(oldScript.innerHTML));
       oldScript.parentNode.replaceChild(newScript, oldScript);
     });
-    
+
     // Se estiver na página sobre, inicializar animações de scroll
     if (url.includes("sobre")) {
       // Verificar se o script de animações já foi carregado
       setTimeout(() => {
-        if (typeof initScrollAnimations === 'function') {
+        if (typeof initScrollAnimations === "function") {
           initScrollAnimations();
         } else {
           carregarScript("/js/scroll-animations.js").then(() => {
-            if (typeof initScrollAnimations === 'function') {
+            if (typeof initScrollAnimations === "function") {
               initScrollAnimations();
             }
           });
@@ -380,8 +390,8 @@ async function carregarScript(src) {
       resolve();
       return;
     }
-    
-    const script = document.createElement('script');
+
+    const script = document.createElement("script");
     script.src = src;
     script.onload = resolve;
     script.onerror = reject;
@@ -391,9 +401,10 @@ async function carregarScript(src) {
 
 // Função auxiliar para adicionar CSS se não estiver já carregado
 function adicionarCSS(href) {
-  const existingLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
-    .map(link => link.getAttribute("href"));
-    
+  const existingLinks = Array.from(
+    document.querySelectorAll('link[rel="stylesheet"]')
+  ).map((link) => link.getAttribute("href"));
+
   if (!existingLinks.includes(href)) {
     console.log("Adicionando CSS faltante:", href);
     const linkEl = document.createElement("link");
@@ -414,6 +425,10 @@ function removerEstilosEspecificos() {
       "style[data-page-specific], link[data-page-specific]"
     )
   ).forEach((el) => el.remove());
+}
+function navegarParaAdmin() {
+  window.location.href = "/admin";
+  currentPage = "admin";
 }
 
 window.carregarDetalhesProduto = carregarDetalhesProduto;
