@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 module.exports = (sequelize, DataTypes) => {
   const Recipe = sequelize.define(
-    "Recipe",
+    'Recipe',
     {
       title: {
         type: DataTypes.STRING,
@@ -26,18 +26,18 @@ module.exports = (sequelize, DataTypes) => {
       },
       prepTime: {
         type: DataTypes.INTEGER,
-        comment: "Tempo de preparo em minutos",
+        comment: 'Tempo de preparo em minutos',
       },
       cookTime: {
         type: DataTypes.INTEGER,
-        comment: "Tempo de cozimento em minutos",
+        comment: 'Tempo de cozimento em minutos',
       },
       servings: {
         type: DataTypes.INTEGER,
       },
       difficulty: {
-        type: DataTypes.ENUM("Fácil", "Médio", "Difícil"),
-        defaultValue: "Médio",
+        type: DataTypes.ENUM('Fácil', 'Médio', 'Difícil'),
+        defaultValue: 'Médio',
       },
       // image_id: {
       //   type: DataTypes.STRING,
@@ -46,20 +46,20 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Users",
-          key: "id",
+          model: 'Users',
+          key: 'id',
         },
       },
       categoryId: {
         type: DataTypes.INTEGER,
         references: {
-          model: "Categories",
-          key: "id",
+          model: 'Categories',
+          key: 'id',
         },
       },
       status: {
-        type: DataTypes.ENUM("rascunho", "publicado"),
-        defaultValue: "publicado",
+        type: DataTypes.ENUM('rascunho', 'publicado'),
+        defaultValue: 'publicado',
       },
       views: {
         type: DataTypes.INTEGER,
@@ -67,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: "recipes",
+      tableName: 'recipes',
       timestamps: true,
       underscored: true,
     }
@@ -75,18 +75,18 @@ module.exports = (sequelize, DataTypes) => {
 
   Recipe.associate = function (models) {
     Recipe.belongsTo(models.User, {
-      foreignKey: "user_id",
-      as: "author",
+      foreignKey: 'user_id',
+      as: 'author',
     });
 
     Recipe.belongsTo(models.Category, {
-      foreignKey: "category_id",
-      as: "category",
+      foreignKey: 'category_id',
+      as: 'category',
     });
 
     Recipe.hasMany(models.Comment, {
-      foreignKey: "recipe_id",
-      as: "comments_recipes",
+      foreignKey: 'recipe_id',
+      as: 'comments_recipes',
     });
   };
 

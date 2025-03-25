@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 module.exports = (sequelize, DataTypes) => {
   const Admin = sequelize.define(
-    "Admin",
+    'Admin',
     {
       name: {
         type: DataTypes.STRING(100),
@@ -10,19 +10,18 @@ module.exports = (sequelize, DataTypes) => {
       },
       email: {
         type: DataTypes.STRING(150),
-        allowNull: false, 
+        allowNull: false,
         unique: true,
         validate: {
           isEmail: true,
         },
       },
-      
+
       phone: {
         type: DataTypes.STRING(20),
         allowNull: false,
         validate: {
-          
-          is: /^\(\d{2}\) \d{5}-\d{4}$/,  
+          is: /^\(\d{2}\) \d{5}-\d{4}$/,
         },
       },
       password: {
@@ -31,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: "admins",
+      tableName: 'admins',
       timestamps: true,
       paranoid: true,
       underscored: true,
