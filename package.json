@@ -7,9 +7,12 @@
     "frontend"
   ],
   "scripts": {
-    "dev": "concurrently \"yarn workspace cakeria-backend dev\" \"yarn workspace cakeria-frontend dev\""
+    "dev": "concurrently \"yarn workspace cakeria-backend dev\" \"yarn workspace cakeria-frontend dev\"",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "devDependencies": {
-    "concurrently": "^7.6.0"
+    "concurrently": "^7.6.0",
+    "prettier": "^3.5.3"
   }
 }

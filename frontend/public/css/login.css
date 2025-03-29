@@ -9,7 +9,7 @@ body {
   display: flex;
   width: 100%;
   min-height: 100vh;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 .logo-section {
@@ -31,7 +31,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
   z-index: 1;
 }
 
@@ -158,8 +158,8 @@ body {
   fill: currentColor;
 }
 
-.form-group input[type="password"],
-.form-group input[type="text"].password-input {
+.form-group input[type='password'],
+.form-group input[type='text'].password-input {
   padding-right: 40px;
 }
 
@@ -228,20 +228,20 @@ body {
   .split-layout {
     flex-direction: column;
   }
-  
+
   .logo-section {
     padding: 2rem 1rem;
     min-height: 250px;
   }
-  
+
   .logo-section img {
     max-width: 200px;
   }
-  
+
   .form-section {
     padding: 1.5rem 1rem;
   }
-  
+
   .login-card {
     padding: 1.5rem;
   }

@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 module.exports = (sequelize, DataTypes) => {
   const Order = sequelize.define(
-    "Order",
+    'Order',
     {
       user_id: {
         type: DataTypes.INTEGER,
@@ -14,9 +14,9 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.NOW,
       },
       status: {
-        type: DataTypes.ENUM("pending", "paid", "complete", "cancelled"),
+        type: DataTypes.ENUM('pending', 'paid', 'complete', 'cancelled'),
         allowNull: false,
-        defaultValue: "pending",
+        defaultValue: 'pending',
       },
       total: {
         type: DataTypes.DECIMAL(10, 2),
@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: "orders",
+      tableName: 'orders',
       timestamps: true,
       paranoid: true,
       underscored: true,
@@ -33,15 +33,15 @@ module.exports = (sequelize, DataTypes) => {
 
   Order.associate = function (models) {
     Order.belongsTo(models.User, {
-      foreignKey: "user_id",
-      as: "user",
+      foreignKey: 'user_id',
+      as: 'user',
     });
 
     Order.belongsToMany(models.Product, {
-      through: models.OrderProduct,
-      foreignKey: "order_id",
-      otherKey: "product_id",
-      as: "products",
+      through: models.order_product,
+      foreignKey: 'order_id',
+      otherKey: 'product_id',
+      as: 'products',
     });
   };
 
