@@ -16,6 +16,11 @@
   --font-family: 'Poppins', sans-serif;
 }
 
+html,
+body {
+  overflow-x: hidden !important;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -105,7 +110,7 @@ img {
 }
 
 .section-title::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: 0;
   left: 50%;
@@ -113,59 +118,6 @@ img {
   width: 70px;
   height: 4px;
   background-color: var(--accent-color);
-}
-
-/* Header */
-.header {
-  background-color: var(--secondary-color);
-  color: var(--text-color-light);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.header .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-}
-
-.logo {
-  font-size: 1.8rem;
-  color: var(--accent-color);
-}
-
-nav ul {
-  display: flex;
-}
-
-nav ul li {
-  margin-left: 25px;
-}
-
-nav ul li a {
-  font-weight: 500;
-  padding: 8px 0;
-  position: relative;
-  transition: var(--transition);
-}
-
-nav ul li a::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: var(--accent-color);
-  transition: var(--transition);
-}
-
-nav ul li a:hover::after,
-nav ul li a.active::after {
-  width: 100%;
 }
 
 /* Product Cards (shared across pages) */
@@ -269,7 +221,9 @@ nav ul li a.active::after {
   align-items: center;
   text-decoration: none;
   color: inherit; /* Mantém a cor do texto como está */
-  transition: transform 0.3s ease, color 0.3s ease; /* Transição para o efeito de hover */
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease; /* Transição para o efeito de hover */
 }
 
 /* Estilos para os ícones */
@@ -292,30 +246,30 @@ nav ul li a.active::after {
 /* Estilos para ícones específicos */
 
 /* Instagram */
-.social-link[title="Instagram"] .social-icon {
-  color: #E4405F; /* Cor do ícone do Instagram */
+.social-link[title='Instagram'] .social-icon {
+  color: #e4405f; /* Cor do ícone do Instagram */
 }
 
 /* Facebook */
-.social-link[title="Facebook"] .social-icon {
-  color: #1877F2; /* Cor do ícone do Facebook */
+.social-link[title='Facebook'] .social-icon {
+  color: #1877f2; /* Cor do ícone do Facebook */
 }
 
 /* WhatsApp */
-.social-link[title="WhatsApp"] .social-icon {
-  color: #25D366; /* Cor do ícone do WhatsApp */
+.social-link[title='WhatsApp'] .social-icon {
+  color: #25d366; /* Cor do ícone do WhatsApp */
 }
 /* Efeito de hover para cada ícone */
-.social-link[title="Instagram"]:hover .social-icon {
+.social-link[title='Instagram']:hover .social-icon {
   color: #c13584; /* Cor do Instagram ao passar o mouse */
 }
 
-.social-link[title="Facebook"]:hover .social-icon {
+.social-link[title='Facebook']:hover .social-icon {
   color: #3b5998; /* Cor do Facebook ao passar o mouse */
 }
 
-.social-link[title="WhatsApp"]:hover .social-icon {
-  color: #128C7E; /* Cor do WhatsApp ao passar o mouse */
+.social-link[title='WhatsApp']:hover .social-icon {
+  color: #128c7e; /* Cor do WhatsApp ao passar o mouse */
 }
 
 /* Responsive */
@@ -323,13 +277,4 @@ nav ul li a.active::after {
   .product-details {
     grid-template-columns: 1fr;
   }
-
-  .header .container {
-    flex-direction: column;
-  }
-
-  nav ul {
-    margin-top: 15px;
-  }
-
 }

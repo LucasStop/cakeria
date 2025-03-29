@@ -1,15 +1,13 @@
-const { User, Address } = require("../models");
+const { User, Address } = require('../models');
 
 exports.findAll = async (req, res) => {
   try {
     const users = await User.findAll({
-      attributes: { exclude: ["password"] },
+      attributes: { exclude: ['password'] },
     });
     res.json(users);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Erro ao buscar usuários", error: error.message });
+    res.status(500).json({ message: 'Erro ao buscar usuários', error: error.message });
   }
 };
 
@@ -17,17 +15,15 @@ exports.findOne = async (req, res) => {
   const { id } = req.params;
   try {
     const user = await User.findByPk(id, {
-      attributes: { exclude: ["password"] },
-      include: [{ model: Address, as: "addresses" }],
+      attributes: { exclude: ['password'] },
+      include: [{ model: Address, as: 'addresses' }],
     });
     if (!user) {
-      return res.status(404).json({ message: "Usuário não encontrado" });
+      return res.status(404).json({ message: 'Usuário não encontrado' });
     }
     res.json(user);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Erro ao buscar usuário", error: error.message });
+    res.status(500).json({ message: 'Erro ao buscar usuário', error: error.message });
   }
 };
 
@@ -40,9 +36,7 @@ exports.create = async (req, res) => {
 
     res.status(201).json(userResponse);
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Erro ao criar usuário", error: error.message });
+    res.status(400).json({ message: 'Erro ao criar usuário', error: error.message });
   }
 };
 
@@ -51,17 +45,15 @@ exports.update = async (req, res) => {
   try {
     const [updated] = await User.update(req.body, { where: { id } });
     if (!updated) {
-      return res.status(404).json({ message: "Usuário não encontrado" });
+      return res.status(404).json({ message: 'Usuário não encontrado' });
     }
 
     const user = await User.findByPk(id, {
-      attributes: { exclude: ["password"] },
+      attributes: { exclude: ['password'] },
     });
     res.json(user);
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Erro ao atualizar usuário", error: error.message });
+    res.status(400).json({ message: 'Erro ao atualizar usuário', error: error.message });
   }
 };
 
@@ -70,12 +62,10 @@ exports.delete = async (req, res) => {
   try {
     const deleted = await User.destroy({ where: { id } });
     if (!deleted) {
-      return res.status(404).json({ message: "Usuário não encontrado" });
+      return res.status(404).json({ message: 'Usuário não encontrado' });
     }
     res.status(204).send();
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Erro ao remover usuário", error: error.message });
+    res.status(500).json({ message: 'Erro ao remover usuário', error: error.message });
   }
 };

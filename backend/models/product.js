@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 module.exports = (sequelize, DataTypes) => {
   const Product = sequelize.define(
-    "Product",
+    'Product',
     {
       category_id: {
         type: DataTypes.INTEGER,
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       // },
     },
     {
-      tableName: "products",
+      tableName: 'products',
       timestamps: true,
       paranoid: true,
       underscored: true,
@@ -35,15 +35,15 @@ module.exports = (sequelize, DataTypes) => {
 
   Product.associate = function (models) {
     Product.belongsTo(models.Category, {
-      foreignKey: "category_id",
-      as: "category",
+      foreignKey: 'category_id',
+      as: 'category',
     });
 
     Product.belongsToMany(models.Order, {
-      through: models.OrderProduct,
-      foreignKey: "product_id",
-      otherKey: "order_id",
-      as: "orders",
+      through: models.order_product,
+      foreignKey: 'product_id',
+      otherKey: 'order_id',
+      as: 'orders',
     });
   };
 
