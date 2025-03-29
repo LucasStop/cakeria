@@ -1,4 +1,4 @@
-const { Product, Category } = require("../models");
+const { Product, Category } = require('../models');
 
 exports.findAll = async (req, res) => {
   try {
@@ -6,15 +6,13 @@ exports.findAll = async (req, res) => {
       include: [
         {
           model: Category,
-          as: "category",
+          as: 'category',
         },
       ],
     });
     res.json(products);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Erro ao buscar produtos", error: error.message });
+    res.status(500).json({ message: 'Erro ao buscar produtos', error: error.message });
   }
 };
 
@@ -25,18 +23,16 @@ exports.findOne = async (req, res) => {
       include: [
         {
           model: Category,
-          as: "category",
+          as: 'category',
         },
       ],
     });
     if (!product) {
-      return res.status(404).json({ message: "Produto não encontrado" });
+      return res.status(404).json({ message: 'Produto não encontrado' });
     }
     res.json(product);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Erro ao buscar produto", error: error.message });
+    res.status(500).json({ message: 'Erro ao buscar produto', error: error.message });
   }
 };
 
@@ -45,9 +41,7 @@ exports.create = async (req, res) => {
     const product = await Product.create(req.body);
     res.status(201).json(product);
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Erro ao criar produto", error: error.message });
+    res.status(400).json({ message: 'Erro ao criar produto', error: error.message });
   }
 };
 
@@ -56,14 +50,12 @@ exports.update = async (req, res) => {
   try {
     const [updated] = await Product.update(req.body, { where: { id } });
     if (!updated) {
-      return res.status(404).json({ message: "Produto não encontrado" });
+      return res.status(404).json({ message: 'Produto não encontrado' });
     }
     const product = await Product.findByPk(id);
     res.json(product);
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Erro ao atualizar produto", error: error.message });
+    res.status(400).json({ message: 'Erro ao atualizar produto', error: error.message });
   }
 };
 
@@ -72,13 +64,11 @@ exports.delete = async (req, res) => {
   try {
     const deleted = await Product.destroy({ where: { id } });
     if (!deleted) {
-      return res.status(404).json({ message: "Produto não encontrado" });
+      return res.status(404).json({ message: 'Produto não encontrado' });
     }
     res.status(204).send();
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Erro ao remover produto", error: error.message });
+    res.status(500).json({ message: 'Erro ao remover produto', error: error.message });
   }
 };
 
@@ -90,17 +80,15 @@ exports.findByCategory = async (req, res) => {
       include: [
         {
           model: Category,
-          as: "category",
+          as: 'category',
         },
       ],
     });
     res.json(products);
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Erro ao buscar produtos por categoria",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: 'Erro ao buscar produtos por categoria',
+      error: error.message,
+    });
   }
 };

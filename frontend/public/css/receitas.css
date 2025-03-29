@@ -94,8 +94,10 @@
   background-color: white;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -103,7 +105,7 @@
 
 .recipe-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 .recipe-image {
@@ -250,7 +252,8 @@
   background: #f5f5f5;
 }
 
-.pagination .prev-btn, .pagination .next-btn {
+.pagination .prev-btn,
+.pagination .next-btn {
   width: auto;
   padding: 0 1rem;
   border-radius: 20px;
@@ -276,18 +279,24 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Mensagens de erro e vazio */
-.error-message, .no-recipes-message {
+.error-message,
+.no-recipes-message {
   grid-column: 1 / -1;
   text-align: center;
   padding: 3rem 0;
 }
 
-.error-message i, .no-recipes-message i {
+.error-message i,
+.no-recipes-message i {
   font-size: 3rem;
   color: #ddd;
   margin-bottom: 1rem;
@@ -299,19 +308,19 @@
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .filters {
     flex-direction: column;
   }
-  
+
   .recipes-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
-  
+
   .search-box {
     max-width: 100%;
   }
-  
+
   #new-recipe-btn {
     width: 100%;
   }

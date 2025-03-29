@@ -1,17 +1,17 @@
 function initScrollAnimations() {
-  console.log("Inicializando animações de scroll");
-  
+  console.log('Inicializando animações de scroll');
+
   const animatedElements = document.querySelectorAll('.animate-on-scroll');
-  
+
   // Função para verificar se um elemento está visível na viewport
-  const isElementInViewport = (el) => {
+  const isElementInViewport = el => {
     const rect = el.getBoundingClientRect();
     return (
       rect.top <= (window.innerHeight || document.documentElement.clientHeight) * 0.8 &&
       rect.bottom >= 0
     );
   };
-  
+
   // Função para animar elementos visíveis
   const animateElements = () => {
     animatedElements.forEach(element => {
@@ -20,17 +20,17 @@ function initScrollAnimations() {
       }
     });
   };
-  
+
   // Verificar na carga inicial
   animateElements();
-  
+
   // Adicionar evento de scroll
   window.addEventListener('scroll', animateElements);
-  
+
   return {
-    destroy: function() {
+    destroy: function () {
       window.removeEventListener('scroll', animateElements);
-    }
+    },
   };
 }
 

@@ -1,7 +1,8 @@
 /* Hero Section */
 .hero {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1089&q=80");
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1089&q=80');
   background-position: center;
   background-size: cover;
   color: var(--white-color);
@@ -497,8 +498,9 @@
 /* Call to Action Section */
 .cta {
   padding: 6rem 0;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-    url("https://images.unsplash.com/photo-1550617931-e17a7b70dce2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url('https://images.unsplash.com/photo-1550617931-e17a7b70dce2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80');
   background-position: center;
   background-size: cover;
   text-align: center;
@@ -719,24 +721,24 @@
   .hero h1 {
     font-size: 2.8rem;
   }
-  
+
   .section-title {
     font-size: 2.2rem;
   }
-  
+
   .feature-icon {
     height: 70px;
     width: 70px;
     line-height: 70px;
     font-size: 2rem;
   }
-  
+
   .step-container {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
-  
+
   .option-circles {
     justify-content: center;
   }
@@ -744,7 +746,7 @@
   .cake-steps {
     gap: 1.5rem;
   }
-  
+
   .step-card {
     width: 180px;
   }
@@ -754,7 +756,7 @@
     align-items: flex-start;
     gap: 20px;
   }
-  
+
   .split-layout .header-left,
   .split-layout .header-right {
     width: 100%;
@@ -763,34 +765,34 @@
   .brand-intro-greeting h2 {
     font-size: 2.4rem;
   }
-  
+
   .brand-intro-description {
     padding: 1.5rem;
   }
-  
+
   .brand-intro-description p {
     font-size: 1.2rem;
   }
-  
+
   .brand-intro-highlights {
     gap: 2rem;
   }
-  
+
   .highlight-item {
     min-width: 120px;
     padding: 0.5rem;
   }
-  
+
   .highlight-icon {
     height: 55px;
     width: 55px;
     font-size: 1.5rem;
   }
-  
+
   .highlight-item h3 {
     font-size: 1rem;
   }
-  
+
   .brand-tagline p {
     font-size: 1.3rem;
   }
@@ -800,42 +802,42 @@
   .hero {
     padding: 120px 0;
   }
-  
+
   .hero h1 {
     font-size: 2.5rem;
   }
-  
+
   .hero p {
     font-size: 1.2rem;
   }
-  
+
   .hero-buttons {
     flex-direction: column;
     width: 80%;
     margin: 0 auto;
   }
-  
+
   .section-title {
     font-size: 2rem;
   }
-  
+
   .instagram-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .features-grid,
   .testimonials-container {
     grid-template-columns: 1fr;
   }
-  
+
   .option-circles {
     gap: 1.5rem;
   }
-  
+
   .option-circle {
     width: 100px;
   }
-  
+
   .option-circle img {
     width: 80px;
     height: 80px;
@@ -847,11 +849,11 @@
     justify-content: center;
     gap: 2rem;
   }
-  
+
   .step-card {
     width: 160px;
   }
-  
+
   .step-image {
     width: 100px;
     height: 100px;
@@ -860,40 +862,40 @@
   .brand-intro-greeting h2 {
     font-size: 2.2rem;
   }
-  
+
   .brand-intro-description {
     padding: 1.5rem;
     margin: 2rem auto;
   }
-  
+
   .brand-intro-description p {
     font-size: 1.1rem;
   }
-  
+
   .brand-intro-highlights {
     gap: 1.5rem;
     margin: 3rem 0 1.5rem;
   }
-  
+
   .highlight-item {
     min-width: 110px;
   }
-  
+
   .highlight-icon {
     height: 50px;
     width: 50px;
     font-size: 1.3rem;
     margin-bottom: 0.8rem;
   }
-  
+
   .highlight-item h3 {
     font-size: 0.9rem;
   }
-  
+
   .highlight-caption {
     font-size: 0.75rem;
   }
-  
+
   .brand-tagline p {
     font-size: 1.2rem;
   }
@@ -903,40 +905,40 @@
   .hero h1 {
     font-size: 2rem;
   }
-  
+
   .hero p {
     font-size: 1rem;
   }
-  
+
   .section-title {
     font-size: 1.8rem;
   }
-  
+
   .section-subtitle {
     font-size: 1rem;
   }
-  
+
   .cta h2 {
     font-size: 1.8rem;
   }
-  
+
   .cta p {
     font-size: 1rem;
   }
-  
+
   .option-circles {
     gap: 1rem;
   }
-  
+
   .option-circle {
     width: 80px;
   }
-  
+
   .option-circle img {
     width: 60px;
     height: 60px;
   }
-  
+
   .option-circle span {
     font-size: 0.8rem;
   }
@@ -944,16 +946,16 @@
   .step-card {
     width: 140px;
   }
-  
+
   .step-image {
     width: 80px;
     height: 80px;
   }
-  
+
   .step-card h3 {
     font-size: 1rem;
   }
-  
+
   .step-number {
     width: 35px;
     height: 35px;
@@ -963,38 +965,38 @@
   .brand-intro-greeting h2 {
     font-size: 1.8rem;
   }
-  
+
   .brand-intro-description {
     padding: 1.2rem;
   }
-  
+
   .brand-intro-description p {
     font-size: 1rem;
   }
-  
+
   .brand-intro-highlights {
     flex-direction: row;
     flex-wrap: wrap;
     gap: 1.5rem;
   }
-  
+
   .highlight-item {
     width: calc(50% - 1.5rem);
     min-width: auto;
     max-width: none;
     padding: 0.5rem;
   }
-  
+
   .highlight-icon {
     height: 45px;
     width: 45px;
     font-size: 1.2rem;
   }
-  
+
   .highlight-item h3 {
     font-size: 0.85rem;
   }
-  
+
   .brand-tagline p {
     font-size: 1.1rem;
   }

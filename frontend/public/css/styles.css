@@ -16,8 +16,9 @@
   --font-family: 'Poppins', sans-serif;
 }
 
-html, body {
-  overflow-x: hidden !important; 
+html,
+body {
+  overflow-x: hidden !important;
 }
 
 * {
@@ -109,7 +110,7 @@ img {
 }
 
 .section-title::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: 0;
   left: 50%;
@@ -118,7 +119,6 @@ img {
   height: 4px;
   background-color: var(--accent-color);
 }
-
 
 /* Product Cards (shared across pages) */
 .product-card {
@@ -221,7 +221,9 @@ img {
   align-items: center;
   text-decoration: none;
   color: inherit; /* Mantém a cor do texto como está */
-  transition: transform 0.3s ease, color 0.3s ease; /* Transição para o efeito de hover */
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease; /* Transição para o efeito de hover */
 }
 
 /* Estilos para os ícones */
@@ -244,30 +246,30 @@ img {
 /* Estilos para ícones específicos */
 
 /* Instagram */
-.social-link[title="Instagram"] .social-icon {
-  color: #E4405F; /* Cor do ícone do Instagram */
+.social-link[title='Instagram'] .social-icon {
+  color: #e4405f; /* Cor do ícone do Instagram */
 }
 
 /* Facebook */
-.social-link[title="Facebook"] .social-icon {
-  color: #1877F2; /* Cor do ícone do Facebook */
+.social-link[title='Facebook'] .social-icon {
+  color: #1877f2; /* Cor do ícone do Facebook */
 }
 
 /* WhatsApp */
-.social-link[title="WhatsApp"] .social-icon {
-  color: #25D366; /* Cor do ícone do WhatsApp */
+.social-link[title='WhatsApp'] .social-icon {
+  color: #25d366; /* Cor do ícone do WhatsApp */
 }
 /* Efeito de hover para cada ícone */
-.social-link[title="Instagram"]:hover .social-icon {
+.social-link[title='Instagram']:hover .social-icon {
   color: #c13584; /* Cor do Instagram ao passar o mouse */
 }
 
-.social-link[title="Facebook"]:hover .social-icon {
+.social-link[title='Facebook']:hover .social-icon {
   color: #3b5998; /* Cor do Facebook ao passar o mouse */
 }
 
-.social-link[title="WhatsApp"]:hover .social-icon {
-  color: #128C7E; /* Cor do WhatsApp ao passar o mouse */
+.social-link[title='WhatsApp']:hover .social-icon {
+  color: #128c7e; /* Cor do WhatsApp ao passar o mouse */
 }
 
 /* Responsive */

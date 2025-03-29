@@ -8,7 +8,7 @@ body {
   display: flex;
   width: 100%;
   min-height: 100vh;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 .logo-section {
@@ -30,7 +30,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
   z-index: 1;
 }
 
@@ -95,14 +95,14 @@ body {
 
 .login-header p {
   color: #777;
-  font-size: 0.85rem; 
+  font-size: 0.85rem;
 }
 
 /* Estilos para o formulário em duas colunas */
 .form-row {
   display: flex;
-  gap: 16px; 
-  margin-bottom: 6px; 
+  gap: 16px;
+  margin-bottom: 6px;
 }
 
 .form-col {
@@ -116,7 +116,7 @@ body {
 
 .form-group label {
   display: block;
-  margin-bottom: 4px; 
+  margin-bottom: 4px;
   font-weight: 500;
   color: #444;
   font-size: 0.85rem;
@@ -124,7 +124,7 @@ body {
 
 .form-group input {
   width: 100%;
-  padding: 10px 12px; 
+  padding: 10px 12px;
   border: 1px solid #ddd;
   border-radius: 8px;
   font-size: 14px;
@@ -154,10 +154,10 @@ body {
 .error-message {
   display: block;
   color: #ff3333;
-  font-size: 0.7rem; 
+  font-size: 0.7rem;
   margin-top: 2px;
   font-weight: 500;
-  min-height: 15px; 
+  min-height: 15px;
 }
 
 .full-width {
@@ -175,7 +175,7 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-top: 8px; 
+  margin-top: 8px;
 }
 
 .btn-login:hover {
@@ -184,7 +184,7 @@ body {
 
 .login-footer {
   text-align: center;
-  margin-top: 1rem; 
+  margin-top: 1rem;
 }
 
 .login-footer p {
@@ -215,46 +215,48 @@ body {
 }
 
 .street-col {
-  flex: 0.55
+  flex: 0.55;
 }
 
 .number-col {
-  flex: 0.2; 
+  flex: 0.2;
 }
 
 @media (max-width: 768px) {
   .split-layout {
     flex-direction: column;
   }
-  
+
   .logo-section {
     padding: 2rem 1rem;
     min-height: 250px;
   }
-  
+
   .logo-section img {
     max-width: 200px;
   }
-  
+
   .form-section {
     padding: 1.5rem 1rem;
   }
-  
+
   .form-row {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .login-card {
     padding: 1.5rem;
   }
-  
+
   .address-row {
     flex-direction: column;
     gap: 15px;
   }
-  
-  .cep-col, .street-col, .number-col {
+
+  .cep-col,
+  .street-col,
+  .number-col {
     flex: 1;
     width: 100%;
   }
@@ -289,7 +291,7 @@ body {
   fill: currentColor;
 }
 
-.form-group input[type="password"],
-.form-group input[type="text"].password-input {
+.form-group input[type='password'],
+.form-group input[type='text'].password-input {
   padding-right: 40px;
 }

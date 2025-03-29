@@ -3,85 +3,177 @@ class Header extends HTMLElement {
     super();
   }
 
-  async connectedCallback() {
-    try {
-      const response = await fetch("/components/Header.html");
-      if (!response.ok) {
-        throw new Error(
-          `Erro ao carregar o template do Header: ${response.status}`
-        );
-      }
+  connectedCallback() {
+    const variant = this.getAttribute('variant') || 'user';
 
-      const html = await response.text();
-      this.innerHTML = html;
+    if (variant === 'user') {
+      this.innerHTML = `
+        <header class="header">
+          <div class="container">
+            <div class="logo-container">
+              <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo">
+            </div>
+            
+            <nav class="nav-bar">
+              <ul class="nav-links">
+                <li><a href="/" class="nav-link" data-route="home"><i class="fa-solid fa-home"></i> Home</a></li>
+                <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
+                <li><a href="/receitas" class="nav-link" id="nav-receitas" data-route="receitas"><i class="fa-solid fa-book-open"></i> Receitas</a></li>
+                <li><a href="/sobre" class="nav-link" id="nav-sobre" data-route="sobre"><i class="fa-solid fa-info-circle"></i> Sobre</a></li>
+                <li><a href="/admin" class="nav-link" id="nav-admin" data-route="admin"><i class="fa-solid fa-user-shield"></i> Admin</a></li>
+              </ul>
+            </nav>
+            
+            <div class="auth-buttons">
+              <button class="login-btn" data-route="login">
+                <i class="fa-solid fa-user"></i> Login
+              </button>
+            </div>
+            
+            <button class="menu-toggle" aria-label="Menu">
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+            </button>
+          </div>
+          <div class="overlay"></div>
+        </header>
+      `;
+    } else if (variant === 'admin') {
+      this.innerHTML = `
+        <header class="header">
+          <div class="container">
+            <div class="logo-container">
+              <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo">
+            </div>
+            
+            <nav class="nav-bar">
+              <ul class="nav-links">
+                <li><a href="/admin" class="nav-link" data-route="admin"><i class="fa-solid fa-home"></i> Home</a></li>
+                <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
+                <li><a href="/registerProduct" class="nav-link" data-route="registerProduct"><i class="fa-solid fa-cake-candles"></i> Produtos</a></li>
 
-      this.setupEventListeners();
-      this.highlightCurrentPage();
-    } catch (error) {
-      console.error("Não foi possível carregar o componente Header:", error);
-      this.innerHTML = "<p>Erro ao carregar o componente Header</p>";
+                <li><a href="/dashboard" class="nav-link" id="nav-dashboard" data-route="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="/usuarios" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
+              </ul>
+            </nav>
+            
+            
+            
+            <button class="menu-toggle" aria-label="Menu">
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+            </button>
+          </div>
+          <div class="overlay"></div>
+        </header>
+      `;
     }
+
+    this.setupEventListeners();
+    this.highlightCurrentPage();
   }
 
   setupEventListeners() {
-    const links = this.querySelectorAll(".nav-link");
-    links.forEach((link) => {
-      link.addEventListener("click", (e) => {
+    const links = this.querySelectorAll('.nav-link');
+    links.forEach(link => {
+      link.addEventListener('click', e => {
         e.preventDefault();
-        const route = link.getAttribute("data-route");
-        
-        links.forEach((l) => l.classList.remove("active"));
-        link.classList.add("active");
-        
+        const route = link.getAttribute('data-route');
+
+        // Remover classe 'active' de todos os links
+        links.forEach(l => l.classList.remove('active'));
+
+        // Adicionar classe 'active' ao link clicado
+        link.classList.add('active');
+
+        // Fechar o menu mobile se estiver aberto
         this.closeMenu();
 
-        if (route === "home") {
-          window.location.href = "/";
-        } else if (route === "produtos") {
-          window.navegarParaProdutos();
-        } else if (route === "categorias") {
-          window.navegarParaCategorias();
-        } else if (route === "receitas") {
-          window.navegarParaReceitas();
-        } else if (route === "sobre") {
-          window.navegarParaSobre();
-        }
+        // Navegar para a rota
+        this.navigateToRoute(route);
       });
     });
 
-    const loginBtn = this.querySelector(".login-btn");
+    // Adicionar eventos para os botões de autenticação
+    const loginBtn = this.querySelector('.login-btn');
     if (loginBtn) {
-      loginBtn.addEventListener("click", () => {
+      loginBtn.addEventListener('click', () => {
         this.closeMenu();
         window.navegarParaLogin();
       });
     }
 
+    const logoutBtn = this.querySelector('.logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        this.closeMenu();
+        this.handleLogout();
+      });
+    }
+
+    // Configurar menu mobile
     this.setupMobileMenu();
   }
 
+  navigateToRoute(route) {
+    switch (route) {
+      case 'home':
+        window.location.href = '/';
+        break;
+      case 'categorias':
+        window.navegarParaCategorias();
+        break;
+      case 'receitas':
+        window.navegarParaReceitas();
+        break;
+      case 'sobre':
+        window.navegarParaSobre();
+        break;
+      case 'admin':
+        window.navegarParaAdmin();
+        break;
+      case 'registerProduct':
+        window.navegarParaCadastrarProdutos();
+        break;
+      case 'dashboard':
+        window.navegarParaDashboard();
+        break;
+      case 'usuarios':
+        window.navegarParaUsuarios();
+        break;
+      default:
+        console.warn(`Rota desconhecida: ${route}`);
+    }
+  }
+
+  handleLogout() {
+    // Remover token e dados do usuário
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+
+    // Redirecionar para a página inicial
+    window.location.href = '/';
+  }
+
   setupMobileMenu() {
-    const menuToggle = this.querySelector(".menu-toggle");
-    const navBar = this.querySelector(".nav-bar");
-    const overlay = this.querySelector(".overlay");
+    const menuToggle = this.querySelector('.menu-toggle');
+    const navBar = this.querySelector('.nav-bar');
+    const overlay = this.querySelector('.overlay');
 
     if (menuToggle && navBar && overlay) {
-      menuToggle.addEventListener("click", () => {
-        this.toggleMenu();
+      menuToggle.addEventListener('click', () => this.toggleMenu());
+      overlay.addEventListener('click', () => this.closeMenu());
+
+      // Fechar menu ao pressionar ESC
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') this.closeMenu();
       });
 
-      overlay.addEventListener("click", () => {
-        this.closeMenu();
-      });
-
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-          this.closeMenu();
-        }
-      });
-
-      window.addEventListener("resize", () => {
-        if (window.innerWidth > 900 && navBar.classList.contains("active")) {
+      // Ajustar menu ao redimensionar a janela
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 900 && navBar.classList.contains('active')) {
           this.closeMenu();
         }
       });
@@ -89,56 +181,53 @@ class Header extends HTMLElement {
   }
 
   toggleMenu() {
-    const navBar = this.querySelector(".nav-bar");
-    const menuToggle = this.querySelector(".menu-toggle");
-    const overlay = this.querySelector(".overlay");
+    const navBar = this.querySelector('.nav-bar');
+    const menuToggle = this.querySelector('.menu-toggle');
+    const overlay = this.querySelector('.overlay');
 
-    navBar.classList.toggle("active");
-    menuToggle.classList.toggle("active");
-    overlay.classList.toggle("active");
+    navBar.classList.toggle('active');
+    menuToggle.classList.toggle('active');
+    overlay.classList.toggle('active');
 
-    if (navBar.classList.contains("active")) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = navBar.classList.contains('active') ? 'hidden' : '';
   }
 
   closeMenu() {
-    const navBar = this.querySelector(".nav-bar");
-    const menuToggle = this.querySelector(".menu-toggle");
-    const overlay = this.querySelector(".overlay");
+    const navBar = this.querySelector('.nav-bar');
+    if (!navBar || !navBar.classList.contains('active')) return;
 
-    if (navBar && navBar.classList.contains("active")) {
-      navBar.classList.remove("active");
-      menuToggle.classList.remove("active");
-      overlay.classList.remove("active");
-      document.body.style.overflow = "";
-    }
+    const menuToggle = this.querySelector('.menu-toggle');
+    const overlay = this.querySelector('.overlay');
+
+    navBar.classList.remove('active');
+    menuToggle.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
   }
 
   highlightCurrentPage() {
     const path = window.location.pathname;
-    const links = this.querySelectorAll(".nav-link");
+    const links = this.querySelectorAll('.nav-link');
 
-    links.forEach((link) => {
-      link.classList.remove("active");
+    links.forEach(link => {
+      link.classList.remove('active');
+      const route = link.getAttribute('data-route');
 
       if (
-        (path === "/" && link.getAttribute("data-route") === "home") ||
-        (path.includes("/produtos") &&
-          link.getAttribute("data-route") === "produtos") ||
-        (path.includes("/categorias") &&
-          link.getAttribute("data-route") === "categorias") ||
-        (path.includes("/receitas") &&
-          link.getAttribute("data-route") === "receitas") ||
-        (path.includes("/sobre") &&
-          link.getAttribute("data-route") === "sobre")
+        (path === '/' && route === 'home') ||
+        (path.includes('/produtos') && route === 'produtos') ||
+        (path.includes('/categorias') && route === 'categorias') ||
+        (path.includes('/receitas') && route === 'receitas') ||
+        (path.includes('/sobre') && route === 'sobre') ||
+        (path.includes('/admin') && route === 'admin') ||
+        (path.includes('/registerProduct') && route === 'registerProduct') ||
+        (path.includes('/dashboard') && route === 'dashboard') ||
+        (path.includes('/usuarios') && route === 'usuarios')
       ) {
-        link.classList.add("active");
+        link.classList.add('active');
       }
     });
   }
 }
 
-customElements.define("header-component", Header);
+customElements.define('header-component', Header);

@@ -5,35 +5,33 @@ class Footer extends HTMLElement {
 
   async connectedCallback() {
     try {
-      const response = await fetch("/components/Footer.html");
+      const response = await fetch('/components/Footer.html');
       if (!response.ok) {
-        throw new Error(
-          `Erro ao carregar o template do Footer: ${response.status}`
-        );
+        throw new Error(`Erro ao carregar o template do Footer: ${response.status}`);
       }
 
       const html = await response.text();
       this.innerHTML = html;
-      
+
       this.setupEventListeners();
     } catch (error) {
-      console.error("Não foi possível carregar o componente Footer:", error);
-      this.innerHTML = "<p>Erro ao carregar o componente Footer</p>";
+      console.error('Não foi possível carregar o componente Footer:', error);
+      this.innerHTML = '<p>Erro ao carregar o componente Footer</p>';
     }
   }
-  
+
   setupEventListeners() {
     const links = this.querySelectorAll('.footer-links a');
     links.forEach(link => {
-      link.addEventListener('click', (e) => {
+      link.addEventListener('click', e => {
         const href = link.getAttribute('href');
-        
+
         if (href === '/') {
           return; // Permite navegação normal para home
         }
-        
+
         e.preventDefault();
-        
+
         if (href.includes('/produtos')) {
           window.navegarParaProdutos();
         } else if (href.includes('/categorias')) {
@@ -52,4 +50,4 @@ class Footer extends HTMLElement {
   }
 }
 
-customElements.define("footer-component", Footer);
+customElements.define('footer-component', Footer);
