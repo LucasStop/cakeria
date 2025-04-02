@@ -24,8 +24,43 @@ app.use('/api/addresses', addressRoutes);
 app.use('/api/orders', orderRoutes);
 
 app.get('/', (req, res) => {
-  res.send('API Cakeria - Confeitaria');
+  res.send(`
+    <html>
+      <head>
+        <title>API Cakeria</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f8f8f8;
+          }
+          h1 {
+            color: #d2691e;
+          }
+          p {
+            color: #555;
+          }
+          .container {
+            padding: 20px;
+            background: white;
+            display: inline-block;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>🍰 API Cakeria - Confeitaria 🍰</h1>
+          <p>Bem-vindo à API da Cakeria! Use as rotas disponíveis para interagir com o sistema.</p>
+    
+        </div>  
+      </body>
+    </html>
+  `);
 });
+
 
 sequelize
   .sync({ force: false })
