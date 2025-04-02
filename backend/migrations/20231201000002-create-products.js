@@ -25,16 +25,32 @@ module.exports = {
       },
       description: {
         type: Sequelize.TEXT,
-        allowNull: true,
+        allowNull: false,
       },
       price: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
-      // image_id: {
-      //   type: Sequelize.TEXT,
-      //   allowNull: true
-      // },
+      size: {
+        type: Sequelize.STRING(50),
+        allowNull: false,
+        comment: 'Peso ou tamanho do produto (ex: 500g, 1kg, 30cm)'
+      },
+      stock: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
+      expiry_date: {
+        type: Sequelize.DATEONLY,
+        allowNull: false,
+        comment: 'Data de validade do produto'
+      },
+      image_url: {
+        type: Sequelize.STRING(255),
+        allowNull: true,
+        comment: 'URL da imagem do produto'
+      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
