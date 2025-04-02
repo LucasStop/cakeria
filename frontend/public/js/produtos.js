@@ -1,222 +1,181 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', initProductForm);
+
+function initProductForm() {
   const registerForm = document.getElementById('register-form');
+  if (!registerForm) return;
 
-  if (registerForm) {
-    registerForm.addEventListener('submit', handleRegisterSubmit);
-  }
-
-  // Adiciona validação em tempo real para cada campo
-  document.getElementById('product-name').addEventListener('input', function () {
-    validateField(this, validateName, 'name-error', 'Digite o nome do produto');
-  });
-
-  document.getElementById('product-description').addEventListener('input', function () {
-    validateField(this, validateDescription, 'description-error', 'Digite a descrição do produto');
-  });
-
-  document.getElementById('product-price').addEventListener('input', function () {
-    formatPrice(this);
-    validateField(this, validatePrice, 'price-error', 'Digite um preço válido no formato R$ 10,00');
-  });
-
-  document.getElementById('product-size').addEventListener('input', function () {
-    formatWeight(this);
-    validateField(this, validateSize, 'size-error', 'Digite o peso ou tamanho do produto');
-  });
-
-  document.getElementById('product-stock').addEventListener('input', function () {
-    validateField(this, validateStock, 'stock-error', 'Digite a quantidade disponível');
-  });
-
-  document.getElementById('product-expiry').addEventListener('input', function () {
-    formatDate(this);
-    validateField(this, validateExpiry, 'expiry-error', 'Selecione uma data de validade');
-  });
-
-  document.getElementById('product-image').addEventListener('change', function () {
-    validateField(this, validateImage, 'image-error', 'Selecione uma imagem válida');
-  });
-});
-
-// Máscara para o preço
-function formatPrice(input) {
-  let value = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
-  if (value.length > 2) {
-    value = value.replace(/(\d{2})$/, ',$1'); // Adiciona vírgula antes dos dois últimos dígitos
-  }
-  if (value.length > 6) {
-    value = value.replace(/(\d)(\d{3})(\d{2})$/, '$1.$2,$3'); // Adiciona ponto de milhar
-  }
-  if (value.length > 3) {
-    value = 'R$ ' + value; // Adiciona o prefixo "R$"
-  } else {
-    value = 'R$ ' + value; // Para valores com menos de 3 dígitos
-  }
-  input.value = value;
+  setupFormListeners();
+  
+  registerForm.addEventListener('submit', handleRegisterSubmit);
 }
 
-// Máscara para o peso
-function formatWeight(input) {
-  let value = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
-  if (value.length > 2) {
-    value = value.replace(/(\d{2})$/, ',$1'); // Adiciona vírgula antes dos dois últimos dígitos
-  }
-  input.value = value;
-}
-
-// Máscara para a data
-function formatDate(input) {
-  let value = input.value.replace(/\D/g, ''); // Remove qualquer caractere não numérico
-  if (value.length > 2 && value.length <= 4) {
-    value = value.replace(/(\d{2})(\d{0,2})$/, '$1/$2'); // Adiciona a barra após o mês
-  } else if (value.length > 4) {
-    value = value.replace(/(\d{2})(\d{2})(\d{0,4})$/, '$1/$2/$3'); // Adiciona a barra após o dia e o mês
-  }
-  input.value = value;
-}
-
-// Funções de validação
-function validateName(name) {
-  return name.trim().length >= 3; // O nome do produto deve ter pelo menos 3 caracteres
-}
-
-function validateDescription(description) {
-  return description.trim().length >= 3; // A descrição do produto deve ter pelo menos 3 caracteres
-}
-
-function validatePrice(price) {
-  // Verifica se o preço está no formato "R$" seguido de um número positivo
-  const pricePattern = /^R\$\s?\d+(\,\d{2})?$/; // Aceita R$ 10 ou R$ 10,00
-  return pricePattern.test(price);
-}
-
-function validateSize(size) {
-  return size.trim().length >= 3; // Peso ou tamanho deve ter pelo menos 3 caracteres
-}
-
-function validateStock(stock) {
-  return !isNaN(stock) && parseInt(stock) > 0; // O estoque deve ser um número maior que 0
-}
-
-function validateExpiry(expiry) {
-  return new Date(expiry) > new Date(); // A data de validade deve ser maior que a data atual
-}
-
-function validateImage(image) {
-  return image.length > 0; // Deve ser selecionada uma imagem
-}
-
-// Função para validar os campos
-function validateField(inputElement, validationFunction, errorElementId, errorMessage) {
-  const value = inputElement.value.trim();
-  const errorElement = document.getElementById(errorElementId);
-
-  if (value === '') {
-    errorElement.textContent = '';
-    inputElement.classList.remove('invalid-input');
-    return;
-  }
-
-  if (!validationFunction(value)) {
-    inputElement.classList.add('invalid-input');
-    errorElement.textContent = errorMessage;
-  } else {
-    inputElement.classList.remove('invalid-input');
-    errorElement.textContent = '';
-  }
-}
-
-// Função para tratar o envio do formulário
-async function handleRegisterSubmit(e) {
-  e.preventDefault();
-
-  const nameInput = document.getElementById('product-name');
-  const descriptionInput = document.getElementById('product-description');
-  const priceInput = document.getElementById('product-price');
-  const sizeInput = document.getElementById('product-size');
-  const stockInput = document.getElementById('product-stock');
-  const expiryInput = document.getElementById('product-expiry');
-  const imageInput = document.getElementById('product-image');
-
-  // Limpa as mensagens de erro
-  clearAllErrors();
-
-  const name = nameInput.value.trim();
-  const description = descriptionInput.value.trim();
-  const price = priceInput.value;
-  const size = sizeInput.value.trim();
-  const stock = stockInput.value;
-  const expiry = expiryInput.value;
-  const image = imageInput.files[0];
-
-  let isValid = true;
-
-  if (!validateName(name)) {
-    isValid = false;
-    showError(nameInput, 'name-error', 'Digite o nome do produto');
-  }
-
-  if (!validateDescription(description)) {
-    isValid = false;
-    showError(descriptionInput, 'description-error', 'Digite a descrição do produto');
-  }
-
-  if (!validatePrice(price)) {
-    isValid = false;
-    showError(priceInput, 'price-error', 'Digite um preço válido no formato R$ 10,00');
-  }
-
-  if (!validateSize(size)) {
-    isValid = false;
-    showError(sizeInput, 'size-error', 'Digite o peso ou tamanho do produto');
-  }
-
-  if (!validateStock(stock)) {
-    isValid = false;
-    showError(stockInput, 'stock-error', 'Digite a quantidade disponível');
-  }
-
-  if (!validateExpiry(expiry)) {
-    isValid = false;
-    showError(expiryInput, 'expiry-error', 'Selecione uma data de validade válida');
-  }
-
-  if (!image) {
-    isValid = false;
-    showError(imageInput, 'image-error', 'Selecione uma imagem válida');
-  }
-
-  if (!isValid) {
-    return;
-  }
-
-  const productData = {
-    name: name,
-    description: description,
-    price: price,
-    size: size,
-    stock: stock,
-    expiry: expiry,
-    image: image,
+function setupFormListeners() {
+  const fieldValidations = {
+    'product-name': { validator: validateName, errorMsg: 'Digite o nome do produto' },
+    'product-description': { validator: validateDescription, errorMsg: 'Digite a descrição do produto' },
+    'product-price': { 
+      formatter: formatPrice, 
+      validator: validatePrice, 
+      errorMsg: 'Digite um preço válido no formato R$ 10,00' 
+    },
+    'product-size': { 
+      formatter: formatWeight, 
+      validator: validateSize, 
+      errorMsg: 'Digite um peso válido em gramas ou kg' 
+    },
+    'product-stock': { validator: validateStock, errorMsg: 'Digite a quantidade disponível' },
+    'product-expiry': { 
+      formatter: formatDate, 
+      validator: validateExpiry, 
+      errorMsg: 'Formato DD/MM/AAAA (não pode ser anterior a hoje)' 
+    },
+    'product-image': { validator: validateImage, errorMsg: 'Selecione uma imagem válida' }
   };
 
-  console.log('Dados do produto:', productData);
+  Object.entries(fieldValidations).forEach(([fieldId, { formatter, validator, errorMsg }]) => {
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+
+    const eventType = fieldId === 'product-image' ? 'change' : 'input';
+    
+    field.addEventListener(eventType, () => {
+      if (formatter) formatter(field);
+      validateField(field, validator, `${fieldId}-error`, errorMsg);
+    });
+  });
+
+  // Listener especial para a imagem
+  document.getElementById('product-image').addEventListener('change', function() {
+    const errorElement = document.getElementById('image-error');
+    if (this.files.length === 0) {
+      errorElement.textContent = 'Selecione uma imagem válida';
+      this.classList.add('invalid-input');
+    } else if (!this.files[0].type.startsWith('image/')) {
+      errorElement.textContent = 'O arquivo deve ser uma imagem';
+      this.classList.add('invalid-input');
+    } else {
+      errorElement.textContent = '';
+      this.classList.remove('invalid-input');
+    }
+  });
+}
+
+function formatPrice(input) {
+  let value = input.value.replace(/\D/g, '');
+  value = value.length > 2 ? value.replace(/(\d{2})$/, ',$1') : value;
+  value = value.length > 6 ? value.replace(/(\d)(\d{3})(\d{2})$/, '$1.$2,$3') : value;
+  input.value = `R$ ${value}`;
+}
+
+function formatWeight(input) {
+  let value = input.value.replace(/\D/g, '');
+  value = value.length > 3 ? value.replace(/(\d{1,3})(\d{10})$/, '$1.$2') : value;
+  input.value = value.length > 0 ? `${value}g` : value;
+}
+
+function formatDate(input) {
+  let value = input.value.replace(/\D/g, '');
+  if (value.length > 2 && value.length <= 4) {
+    value = value.replace(/(\d{2})(\d{0,2})/, '$1/$2');
+  } else if (value.length > 4) {
+    value = value.replace(/(\d{2})(\d{2})(\d{0,4})/, '$1/$2/$3');
+  }
+  input.value = value;
+}
+
+const validateName = (name) => name.trim().length >= 3;
+const validateDescription = (description) => description.trim().length >= 3;
+const validatePrice = (price) => /^R\$\s?\d+(\,\d{2})?$/.test(price);
+const validateSize = (size) => /^\d+(\,\d{1,2})?\s?(g|kg|ml|l)?$/i.test(size.trim());
+const validateStock = (stock) => !isNaN(stock) && parseInt(stock) > 0;
+const validateImage = (image) => image && image.length > 0 && image[0].type.startsWith('image/');
+
+function validateExpiry(expiry) {
+  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(expiry)) return false;
+  
+  const [day, month, year] = expiry.split('/');
+  const expiryDate = new Date(year, month - 1, day);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  return !isNaN(expiryDate.getTime()) && expiryDate >= today;
+}
+
+function validateField(inputElement, validator, errorElementId, errorMessage) {
+  let value;
+  if (inputElement.type === 'file') {
+    value = inputElement.files;
+  } else {
+    value = inputElement.value.trim();
+  }
+  
+  const errorElement = document.getElementById(errorElementId);
+  const isValid = value === '' || (inputElement.type === 'file' ? value.length === 0 : validator(value));
+
+  inputElement.classList.toggle('invalid-input', !isValid);
+  errorElement.textContent = isValid ? '' : errorMessage;
+}
+
+async function handleRegisterSubmit(e) {
+  e.preventDefault();
+  clearAllErrors();
+
+  const fields = {
+    name: { element: 'product-name', validator: validateName, error: 'name-error', message: 'Digite o nome do produto' },
+    description: { element: 'product-description', validator: validateDescription, error: 'description-error', message: 'Digite a descrição do produto' },
+    price: { element: 'product-price', validator: validatePrice, error: 'price-error', message: 'Digite um preço válido no formato R$ 10,00' },
+    size: { element: 'product-size', validator: validateSize, error: 'size-error', message: 'Digite o peso ou tamanho do produto' },
+    stock: { element: 'product-stock', validator: validateStock, error: 'stock-error', message: 'Digite a quantidade disponível' },
+    expiry: { element: 'product-expiry', validator: validateExpiry, error: 'expiry-error', message: 'A data de validade não pode ser anterior a hoje e deve estar no formato DD/MM/AAAA' },
+    image: { element: 'product-image', validator: validateImage, error: 'image-error', message: 'Selecione uma imagem válida' }
+  };
+
+  const formData = new FormData();
+  let isValid = true;
+
+  Object.entries(fields).forEach(([key, { element, validator, error, message }]) => {
+    const field = document.getElementById(element);
+    let value;
+    
+    if (element === 'product-image') {
+      value = field.files;
+      if (value.length > 0) {
+        formData.append('image', value[0]);
+      }
+    } else {
+      value = field.value.trim();
+      formData.append(key, value);
+    }
+
+    if (!validator(value)) {
+      showError(field, error, message);
+      isValid = false;
+    }
+  });
+
+  if (!isValid) return;
+
+  console.log('Dados do produto:', Object.fromEntries(formData));
+  
+  // Aqui você pode enviar os dados para o servidor
+  // try {
+  //   const response = await fetch('/api/products', {
+  //     method: 'POST',
+  //     body: formData
+  //   });
+  //   const result = await response.json();
+  //   console.log('Sucesso:', result);
+  // } catch (error) {  
+  //   console.error('Erro:', error);
+  // }
 }
 
 function showError(inputElement, errorElementId, errorMessage) {
   inputElement.classList.add('invalid-input');
-  const errorElement = document.getElementById(errorElementId);
-  errorElement.textContent = errorMessage;
+  document.getElementById(errorElementId).textContent = errorMessage;
 }
 
 function clearAllErrors() {
-  const errorMessages = document.querySelectorAll('.error-message');
-  errorMessages.forEach(element => {
-    element.textContent = '';
-  });
-
-  const invalidInputs = document.querySelectorAll('.invalid-input');
-  invalidInputs.forEach(element => {
-    element.classList.remove('invalid-input');
-  });
+  document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+  document.querySelectorAll('.invalid-input').forEach(el => el.classList.remove('invalid-input'));
 }
