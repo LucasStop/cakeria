@@ -316,20 +316,45 @@ async function handleRegisterSubmit(e) {
     return;
   }
 
+  // Preparar dados para enviar à API
   const userData = {
     name: name,
     email: email,
-    phone: phone,
-    cpf: cpf,
+    phone: phone.replace(/\D/g, ''), // Remove caracteres não numéricos
+    cpf: cpf.replace(/\D/g, ''), // Remove pontos e traço
     address: {
-      cep: cep,
+      cep: cep.replace('-', ''),
       street: street,
       number: number,
     },
     password: password,
   };
 
-  console.log('Dados do formulário:', userData);
+  try {
+    // Enviar dados para a API
+    const response = await fetch('http://localhost:3001/api/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData)
+    });
+
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log('Usuário registrado com sucesso:', responseData);
+      
+      // Redirecionar para a página de login após um pequeno delay
+      setTimeout(() => {
+        window.location.href = '/login.html';
+      }, 2000);
+    } else {
+      const errorData = await response.json();
+      console.error('Erro ao registrar usuário:', errorData);
+    }
+  } catch (error) {
+    console.error('Erro na requisição:', error);
+  }
 }
 
 // Funções auxiliares
