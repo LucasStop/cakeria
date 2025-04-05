@@ -211,15 +211,19 @@ body {
 }
 
 .cep-col {
-  flex: 0.25;
+  flex: 0.20;
 }
 
 .street-col {
-  flex: 0.55;
+  flex: 0.40;
 }
 
 .number-col {
-  flex: 0.2;
+  flex: 0.15;
+}
+
+.complement-col {
+  flex: 0.25;
 }
 
 @media (max-width: 768px) {
@@ -256,7 +260,8 @@ body {
 
   .cep-col,
   .street-col,
-  .number-col {
+  .number-col,
+  .complement-col {
     flex: 1;
     width: 100%;
   }
