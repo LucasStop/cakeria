@@ -34,9 +34,9 @@ function addInputEvents() {
   addValidation('register-cep', isValidCEP, 'cep-error', 'Formato correto: 00000-000', formatCEPandFetch);
   addValidation('register-street', isNotEmpty, 'street-error', 'Digite o nome da rua');
   addValidation('register-number', isValidNumber, 'number-error', 'Digite um número válido', formatNumber);
-  addValidation('register-neighborhood', isNotEmpty, 'neighborhood-error', 'Digite o bairro');
-  addValidation('register-city', isNotEmpty, 'city-error', 'Digite a cidade');
-  addValidation('register-state', isNotEmpty, 'state-error', 'Digite o estado');
+  addValidation('register-neighborhood', isValidLettersOnly, 'neighborhood-error', 'Digite um bairro válido (sem números)', formatLettersOnly);
+  addValidation('register-city', isValidLettersOnly, 'city-error', 'Digite uma cidade válida (sem números)', formatLettersOnly);
+  addValidation('register-state', isValidLettersOnly, 'state-error', 'Digite um estado válido (sem números)', formatLettersOnly);
 
   const complement = document.getElementById('register-complement');
   if (complement) {
@@ -81,6 +81,7 @@ const isValidCPF = (val) => /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(val);
 const isValidPassword = (val) => val.length >= 5;
 const isValidCEP = (val) => /^\d{5}-\d{3}$/.test(val);
 const isValidNumber = (val) => /^\d+$/.test(val);
+const isValidLettersOnly = (val) => val.trim() !== '' && /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ ]+$/.test(val);
 
 // Formatações
 function formatPhone(input) {
@@ -104,6 +105,10 @@ function formatCEPandFetch(input) {
 
 function formatNumber(input) {
   input.value = input.value.replace(/\D/g, '');
+}
+
+function formatLettersOnly(input) {
+  input.value = input.value.replace(/[0-9]/g, '');
 }
 
 // Erros
@@ -171,9 +176,9 @@ function handleSubmit(e) {
     'register-cep': isValidCEP,
     'register-street': isNotEmpty,
     'register-number': isValidNumber,
-    'register-neighborhood': isNotEmpty,
-    'register-city': isNotEmpty,
-    'register-state': isNotEmpty
+    'register-neighborhood': isValidLettersOnly,
+    'register-city': isValidLettersOnly,
+    'register-state': isValidLettersOnly
   };
   
   for (const [id, validateFn] of Object.entries(fields)) {
