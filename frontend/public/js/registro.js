@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('register-cpf').addEventListener('input', function () {
     formatCPF(this);
-    validateField(this, validateCPF, 'cpf-error', 'Use o formato 000.000.000-00');
+    validateField(this, validateCPF, 'cpf-error', 'CPF inválido');
   });
 
   document.getElementById('register-password').addEventListener('input', function () {
@@ -62,7 +62,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('register-number').addEventListener('input', function () {
+    // Permitir apenas números
+    this.value = this.value.replace(/\D/g, '');
     validateField(this, validateNumber, 'number-error', 'Digite um número válido');
+  });
+  
+  document.getElementById('register-complement').addEventListener('input', function () {
+    // O complemento é opcional, mas pode ser validado se necessário
+    if (this.value.trim() !== '') {
+      validateField(this, validateComplement, 'complement-error', 'Complemento inválido');
+    } else {
+      document.getElementById('complement-error').textContent = '';
+      this.classList.remove('invalid-input');
+    }
   });
 
   // Adiciona funcionalidade aos botões de toggle de senha
@@ -196,9 +208,38 @@ function validatePhone(phone) {
 }
 
 function validateCPF(cpf) {
-  // Aceita formatos: 000.000.000-00
+  // Verifica o formato
   const regex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
-  return regex.test(cpf);
+  if (!regex.test(cpf)) return false;
+  
+  // Remove caracteres não numéricos
+  cpf = cpf.replace(/\D/g, '');
+  
+  // Verifica se todos os dígitos são iguais
+  if (/^(\d)\1+$/.test(cpf)) return false;
+  
+  // Algoritmo de validação de CPF
+  let sum = 0;
+  let remainder;
+  
+  // Primeiro dígito verificador
+  for (let i = 1; i <= 9; i++) {
+    sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+  }
+  remainder = (sum * 10) % 11;
+  if (remainder === 10 || remainder === 11) remainder = 0;
+  if (remainder !== parseInt(cpf.substring(9, 10))) return false;
+  
+  // Segundo dígito verificador
+  sum = 0;
+  for (let i = 1; i <= 10; i++) {
+    sum += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+  }
+  remainder = (sum * 10) % 11;
+  if (remainder === 10 || remainder === 11) remainder = 0;
+  if (remainder !== parseInt(cpf.substring(10, 11))) return false;
+  
+  return true;
 }
 
 function validatePassword(password) {
@@ -217,7 +258,13 @@ function validateStreet(street) {
 }
 
 function validateNumber(number) {
-  return /^\d+$/.test(number) || /^\d+[a-zA-Z]$/.test(number); // Aceita números ou números seguidos de uma letra
+  // Somente números
+  return /^\d+$/.test(number);
+}
+
+function validateComplement(complement) {
+  // Complemento deve ter pelo menos 2 caracteres se não estiver vazio
+  return complement.trim().length >= 2;
 }
 
 // Função para consultar CEP e preencher endereço automaticamente
@@ -232,7 +279,7 @@ function fetchAddressInfo(cep) {
     .then(data => {
       if (!data.erro) {
         document.getElementById('register-street').value = data.logradouro;
-        // Não preenchemos o número automaticamente
+        // Não preenchemos o número e complemento automaticamente
       }
     })
     .catch(error => console.error('Erro ao buscar CEP:', error));
@@ -250,6 +297,7 @@ async function handleRegisterSubmit(e) {
   const cepInput = document.getElementById('register-cep');
   const streetInput = document.getElementById('register-street');
   const numberInput = document.getElementById('register-number');
+  const complementInput = document.getElementById('register-complement');
 
   // Limpa todas as mensagens de erro anteriores
   clearAllErrors();
@@ -263,6 +311,7 @@ async function handleRegisterSubmit(e) {
   const cep = cepInput.value.trim();
   const street = streetInput.value.trim();
   const number = numberInput.value.trim();
+  const complement = complementInput.value.trim();
 
   // Validar todos os campos
   let isValid = true;
@@ -284,7 +333,7 @@ async function handleRegisterSubmit(e) {
 
   if (!validateCPF(cpf)) {
     isValid = false;
-    showError(cpfInput, 'cpf-error', 'Use o formato 000.000.000-00');
+    showError(cpfInput, 'cpf-error', 'CPF inválido');
   }
 
   if (!validatePassword(password)) {
@@ -312,6 +361,12 @@ async function handleRegisterSubmit(e) {
     showError(numberInput, 'number-error', 'Digite um número válido');
   }
 
+  // Complemento é opcional, mas validamos se fornecido
+  if (complement && !validateComplement(complement)) {
+    isValid = false;
+    showError(complementInput, 'complement-error', 'Complemento inválido');
+  }
+
   if (!isValid) {
     return;
   }
@@ -326,6 +381,7 @@ async function handleRegisterSubmit(e) {
       cep: cep.replace('-', ''),
       street: street,
       number: number,
+      complement: complement || '',  // Garante que sempre tenha um valor
     },
     password: password,
   };
