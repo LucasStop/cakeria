@@ -220,7 +220,30 @@ function handleSubmit(e) {
     }
   };
 
-  console.log('Dados cadastrados:', userData);
-  
+  fetch(`http://localhost:3001/api/users`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData)
+  })
+    .then(async (response) => {
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log('Usuário registrado com sucesso:', responseData);
+
+        // Redirecionar para a página de login após um pequeno delay
+        setTimeout(() => {
+          window.location.href = '/login.html';
+        }, 2000);
+      } else {
+        const errorData = await response.json();
+        console.error('Erro ao registrar usuário:', errorData);
+      }
+    })
+    .catch((error) => {
+      console.error('Erro na requisição:', error);
+    });
+
   form.reset();
 }
