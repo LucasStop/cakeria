@@ -31,6 +31,12 @@ module.exports = {
         type: Sequelize.STRING(20),
         allowNull: true,
       },
+      last_login: {
+        type: Sequelize.DATE,
+        allowNull: true,
+        defaultValue: null,
+        comment: 'Data e hora do último login do usuário',
+      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
