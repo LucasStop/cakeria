@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user.controller');
+const { authenticate } = require('../middlewares/auth.middleware');
 
-router.get('/', userController.findAll);
-router.get('/:id', userController.findOne);
+// Rota pública para criar usuários (registro)
 router.post('/', userController.create);
-router.put('/:id', userController.update);
-router.delete('/:id', userController.delete);
+
+// Rotas que precisam de autenticação
+router.get('/', authenticate, userController.findAll);
+router.get('/:id', authenticate, userController.findOne);
+router.put('/:id', authenticate, userController.update);
+router.delete('/:id', authenticate, userController.delete);
 
 module.exports = router;
