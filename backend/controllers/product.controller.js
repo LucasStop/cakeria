@@ -1,5 +1,4 @@
 const { Product, Category } = require('../models');
-const upload = require('../services/file-upload'); 
 exports.findAll = async (req, res) => {
   try {
     const products = await Product.findAll({
