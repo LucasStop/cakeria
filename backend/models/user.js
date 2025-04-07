@@ -29,6 +29,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(20),
         allowNull: true,
       },
+      last_login: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: null,
+        comment: 'Data e hora do último login do usuário',
+      },
     },
     {
       tableName: 'users',

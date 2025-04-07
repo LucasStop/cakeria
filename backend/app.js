@@ -16,12 +16,14 @@ const categoryRoutes = require('./routes/category.routes');
 const userRoutes = require('./routes/user.routes');
 const addressRoutes = require('./routes/address.routes');
 const orderRoutes = require('./routes/order.routes');
+const authRoutes = require('./routes/auth.routes');
 
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/addresses', addressRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/auth', authRoutes);
 
 app.get('/', (req, res) => {
   res.send(`

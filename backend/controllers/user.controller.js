@@ -1,4 +1,5 @@
 const { User, Address } = require('../models');
+const bcrypt = require('bcryptjs');
 
 exports.findAll = async (req, res) => {
   try {
@@ -29,6 +30,11 @@ exports.findOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
+    // Criptografa a senha antes de salvar
+    if (req.body.password) {
+      req.body.password = await bcrypt.hash(req.body.password, 10);
+    }
+    
     const user = await User.create(req.body);
 
     const userResponse = user.toJSON();
@@ -43,6 +49,11 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
   const { id } = req.params;
   try {
+    // Criptografa a senha se estiver sendo atualizada
+    if (req.body.password) {
+      req.body.password = await bcrypt.hash(req.body.password, 10);
+    }
+    
     const [updated] = await User.update(req.body, { where: { id } });
     if (!updated) {
       return res.status(404).json({ message: 'Usuário não encontrado' });

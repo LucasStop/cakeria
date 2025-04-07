@@ -1,5 +1,3 @@
-const API_URL = 'http://localhost:3001/api';
-
 document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('login-form');
 
@@ -94,8 +92,6 @@ async function handleLoginSubmit(e) {
   const emailInput = document.getElementById('email');
   const passwordInput = document.getElementById('password');
 
-  // Limpa todas as mensagens de erro anteriores
-  clearAllErrors();
 
   const email = emailInput.value.trim();
   const password = passwordInput.value;
@@ -122,24 +118,41 @@ async function handleLoginSubmit(e) {
     password: password,
   };
 
-  console.log('Dados do formulário:', userData);
-}
+  try {
+    // Envia credenciais para a API de autenticação
+    const response = await fetch(`http://localhost:3001/api/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
 
-// Funções auxiliares
-function showError(inputElement, errorElementId, errorMessage) {
-  inputElement.classList.add('invalid-input');
-  const errorElement = document.getElementById(errorElementId);
-  errorElement.textContent = errorMessage;
-}
+    const data = await response.json();
 
-function clearAllErrors() {
-  const errorMessages = document.querySelectorAll('.error-message');
-  errorMessages.forEach(element => {
-    element.textContent = '';
-  });
+    if (!response.ok) {
+      // Trata erro de autenticação
+      showError(emailInput, 'email-error', data.message || 'Credenciais inválidas');
+      return;
+    }
 
-  const invalidInputs = document.querySelectorAll('.invalid-input');
-  invalidInputs.forEach(element => {
-    element.classList.remove('invalid-input');
-  });
+    // Login bem-sucedido
+    // Armazena o token no localStorage
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+
+    // Verifica se há redirecionamento na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectUrl = urlParams.get('redirect');
+
+    // Redireciona para a página apropriada
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    } else {
+      window.location.href = '/';
+    }
+  } catch (error) {
+    console.error('Erro durante login:', error);
+    showError(emailInput, 'email-error', 'Erro ao conectar com o servidor');
+  }
 }
