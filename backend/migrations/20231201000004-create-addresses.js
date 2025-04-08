@@ -27,6 +27,14 @@ module.exports = {
         type: Sequelize.STRING(10),
         allowNull: false,
       },
+      neighborhood: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
+      },
+      complement: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+      },
       city: {
         type: Sequelize.STRING(100),
         allowNull: false,
