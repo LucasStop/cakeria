@@ -16,6 +16,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(10),
         allowNull: false,
       },
+      neighborhood: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+      },
+      complement: {
+        type: DataTypes.STRING(200),
+        allowNull: true,
+      },
       city: {
         type: DataTypes.STRING(100),
         allowNull: false,
