@@ -1,4 +1,4 @@
-const { User, Address } = require('../models');
+const { User, Address, sequelize } = require('../models');
 const bcrypt = require('bcryptjs');
 
 // User finding options without password
