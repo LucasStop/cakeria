@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cakeria </title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="/assets/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png">
+  
+  <!-- Google Fonts - Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+  <header class="dashboard-header">
+    <div class="container">
+      <div class="logo">
+        <a href="/">
+          <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo">
+        </a>
+      </div>
+      <nav class="user-nav">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <div class="avatar-placeholder">
+              <span class="avatar-initial"></span>
+            </div>
+          </div>
+          <span id="username">Carregando...</span>
+        </div>
+        <button id="logout-btn" class="btn btn-outline">Sair</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="container">
+      <h1>Bem-vindo à sua área de cliente</h1>
+      <div class="dashboard-cards">
+        <div class="dashboard-card">
+          <h2>Seus Pedidos</h2>
+          <p>Veja o histórico de pedidos e status.</p>
+          <a href="/pedidos.html" class="btn btn-primary">Ver Pedidos</a>
+        </div>
+        <div class="dashboard-card">
+          <h2>Seus Dados</h2>
+          <p>Atualize suas informações pessoais.</p>
+          <a href="/perfil.html" class="btn btn-primary">Editar Perfil</a>
+        </div>
+        <div class="dashboard-card">
+          <h2>Favoritos</h2>
+          <p>Veja seus produtos favoritos.</p>
+          <a href="/favoritos.html" class="btn btn-primary">Ver Favoritos</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="dashboard-footer">
+    <div class="container">
+      <p>&copy; 2023 Cakeria - Todos os direitos reservados</p>
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/home.js"></script>
+</body>
+</html>
