@@ -17,7 +17,7 @@ const recipeCardTemplate = document.getElementById('recipe-card-template');
 document.addEventListener('DOMContentLoaded', async () => {
   // Verificar autenticação para o botão de nova receita
   checkAuthStatus();
-
+  
   // Carregar categorias para o filtro
   await loadCategories();
 
@@ -36,37 +36,57 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function checkAuthStatus() {
   try {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      newRecipeBtn.addEventListener('click', () => {
-        window.location.href = '/login.html?redirect=/nova-receita.html';
-      });
+    // Verificar se o botão existe na página
+    if (!newRecipeBtn) {
+      console.error("Erro: Botão 'Compartilhar receita' não encontrado");
       return;
     }
+    
+    const token = localStorage.getItem('token');
 
-    // Verificar se o token é válido
-    const response = await fetch(`${API.BASE_URL}/auth/validate`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    // Configurar o evento de clique diretamente sem clonar o botão
+    newRecipeBtn.onclick = function(e) {
+      e.preventDefault(); // Prevenir comportamento padrão
+      
+      console.log("Botão Compartilhar Receita clicado");
+      
+      // Define o caminho completo para garantir que a navegação seja correta
+      const compartilharReceitasPath = `${window.location.origin}/compartilharReceitas.html`;
+      const loginPath = `${window.location.origin}/login.html?redirect=/compartilharReceitas.html`;
+      
+      // Decidir para qual URL redirecionar com base na autenticação
+      const redirectTo = token ? compartilharReceitasPath : loginPath;
+      
+      console.log(`Redirecionando para: ${redirectTo}`);
+      
+      // Usar setTimeout para garantir que o redirecionamento aconteça após os logs
+      setTimeout(() => {
+        // Usar location.assign em vez de location.href
+        window.location.assign(redirectTo);
+      }, 100);
+    };
+    
+    console.log("Evento de clique configurado para o botão");
+    
+    // Se houver token, verificar sua validade em segundo plano
+    if (token) {
+      try {
+        const response = await fetch(`${API.BASE_URL}/auth/validate`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-    if (response.ok) {
-      newRecipeBtn.addEventListener('click', () => {
-        window.location.href = '/nova-receita.html';
-      });
-    } else {
-      localStorage.removeItem('token');
-      newRecipeBtn.addEventListener('click', () => {
-        window.location.href = '/login.html?redirect=/nova-receita.html';
-      });
+        if (!response.ok) {
+          console.log("Token inválido - removendo do localStorage");
+          localStorage.removeItem('token');
+        }
+      } catch (error) {
+        console.error('Erro ao validar token:', error);
+      }
     }
   } catch (error) {
-    console.error('Erro ao verificar autenticação:', error);
-    newRecipeBtn.addEventListener('click', () => {
-      window.location.href = '/login.html?redirect=/nova-receita.html';
-    });
+    console.error('Erro ao configurar o botão de compartilhar receita:', error);
   }
 }
 

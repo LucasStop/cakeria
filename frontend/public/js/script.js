@@ -16,8 +16,10 @@ window.navegarParaLogin = navegarParaLogin;
 window.navegarParaRegistro = navegarParaRegistro;
 window.navegarParaReceitas = navegarParaReceitas;
 window.navegarParaSobre = navegarParaSobre;
+window.navegarParaCompartilharReceitas = navegarParaCompartilharReceitas;
 window.navegarParaAdmin = navegarParaAdmin;
 window.navegarParaCadastrarProdutos = navegarParaCadastrarProdutos;
+
 document.addEventListener('DOMContentLoaded', iniciarAplicacao);
 if (verProdutosBtn) verProdutosBtn.addEventListener('click', navegarParaProdutos);
 if (navProdutos)
@@ -255,6 +257,16 @@ function navegarParaReceitas() {
 function navegarParaSobre() {
   carregarConteudoHTML('/sobre.html');
 }
+
+function navegarParaCompartilharReceitas() {
+  console.log('Navegando para compartilhar receitas...');
+  window.location.href = '/compartilharReceitas.html';
+  currentPage = 'compartilharReceitas';
+}
+
+// Garantir que a função esteja disponível globalmente
+window.navegarParaCompartilharReceitas = navegarParaCompartilharReceitas;
+
 function navegarParaAdmin() {
   window.location.href = '/admin.html';
   currentPage = 'admin';
@@ -420,7 +432,6 @@ function removerEstilosEspecificos() {
     document.querySelectorAll('style[data-page-specific], link[data-page-specific]')
   ).forEach(el => el.remove());
 }
-
 
 window.carregarDetalhesProduto = carregarDetalhesProduto;
 window.renderizarListaProdutos = renderizarListaProdutos;
