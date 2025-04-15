@@ -42,6 +42,11 @@ const Navigation = {
     this.currentPage = 'registro';
   },
 
+  navegarParaCompartilharReceitas: function () {
+    window.location.href = '/compartilharReceitas.html';
+    this.currentPage = 'compartilharReceitas';
+  },
+
   handleNavigation: function () {
     const path = window.location.pathname;
 
@@ -58,6 +63,8 @@ const Navigation = {
       this.navegarParaReceitas();
     } else if (path === '/sobre') {
       this.navegarParaSobre();
+    } else if (path === '/compartilharReceitas') {
+      this.navegarParaCompartilharReceitas();
     } else if (path.startsWith('/receitas/')) {
       const receitaId = parseInt(path.split('/').pop());
       if (!isNaN(receitaId)) {
@@ -75,6 +82,10 @@ const Navigation = {
       window.renderizarListaProdutos();
     }
   },
+};
+
+window.navegarParaCompartilharReceitas = function () {
+  Navigation.navegarParaCompartilharReceitas();
 };
 
 window.navegarParaCadastrarProdutos = function () {
