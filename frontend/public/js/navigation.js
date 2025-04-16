@@ -13,7 +13,7 @@ const Navigation = {
   },
 
   navegarParaCategorias: function () {
-    // Remover estilos específicos de outras páginas ao navegar
+
     window.removerEstilosEspecificos && window.removerEstilosEspecificos();
     window.renderizarListaCategorias();
     this.currentPage = 'categorias';
