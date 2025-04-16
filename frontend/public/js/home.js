@@ -41,18 +41,7 @@ function updateUserDisplay(user) {
 
 async function loadDashboardData() {
   try {
-    // Aqui você pode adicionar chamadas à API para carregar
-    // dados específicos do usuário, como pedidos recentes
-    
-    // Exemplo:
-    // const token = localStorage.getItem('token');
-    // const response = await fetch('http://localhost:3001/api/user/dashboard', {
-    //   headers: {
-    //     'Authorization': `Bearer ${token}`
-    //   }
-    // });
-    // const data = await response.json();
-    // renderDashboardData(data);
+    // logica para implementar 
     
   } catch (error) {
     console.error('Erro ao carregar dados da dashboard:', error);
