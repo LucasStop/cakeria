@@ -30,16 +30,8 @@ async function loadCategories() {
     try {
         const categorySelect = document.getElementById('recipe-category');
         
-        // Simulando dados (substitua por uma chamada API real)
-        const categories = [
-            { id: 1, name: 'Bolos' },
-            { id: 2, name: 'Tortas' },
-            { id: 3, name: 'Cookies' },
-            { id: 4, name: 'Doces' },
-            { id: 5, name: 'Salgados' },
-            { id: 6, name: 'Pães' },
-            { id: 7, name: 'Sobremesas' }
-        ];
+        // Usar a API real para buscar categorias
+        const categories = await API.get('/categories');
         
         // Preencher o dropdown de categorias
         categories.forEach(category => {
@@ -48,9 +40,6 @@ async function loadCategories() {
             option.textContent = category.name;
             categorySelect.appendChild(option);
         });
-        
-        // Quando tiver API real, use:
-        // const categories = await API.get('/categories');
     } catch (error) {
         console.error('Erro ao carregar categorias:', error);
         showError('category-error', 'Não foi possível carregar as categorias. Tente novamente.');
@@ -186,23 +175,57 @@ async function handleFormSubmit(e) {
         // Construir objeto de dados
         const recipeData = {
             title: formData.get('title'),
-            category: formData.get('category'),
+            categoryId: formData.get('category'),
             difficulty: formData.get('difficulty'),
-            prepTime: formData.get('prepTime'),
-            cookTime: formData.get('cookTime'),
-            servings: formData.get('servings'),
+            prepTime: parseInt(formData.get('prepTime')),
+            cookTime: parseInt(formData.get('cookTime')),
+            servings: parseInt(formData.get('servings')),
             description: formData.get('description'),
             ingredients: ingredients,
             steps: steps,
-            tags: tags
+            tags: tags,
+            authorId: JSON.parse(localStorage.getItem('user'))?.id // Adicionar ID do autor
         };
         
-        // Exibir mensagem de sucesso (para testes)
-        alert('Receita enviada com sucesso! (Simulação)');
-        console.log('Dados da receita:', recipeData);
+        // Usar a API real para enviar a receita
+        const token = localStorage.getItem('token');
+        const imageFile = formData.get('image');
         
-        // Quando tiver API real, use:
-        // await API.post('/recipes', recipeData, formData.get('image'));
+        // Primeiro enviar os dados da receita
+        const response = await fetch(`${API.BASE_URL}/recipes`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(recipeData)
+        });
+        
+        if (!response.ok) {
+            throw new Error('Falha ao salvar receita');
+        }
+        
+        const savedRecipe = await response.json();
+        
+        // Se houver imagem, fazer upload em uma segunda requisição
+        if (imageFile) {
+            const imageFormData = new FormData();
+            imageFormData.append('image', imageFile);
+            
+            const imageUploadResponse = await fetch(`${API.BASE_URL}/recipes/${savedRecipe.id}/image`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: imageFormData
+            });
+            
+            if (!imageUploadResponse.ok) {
+                console.warn('A receita foi salva, mas houve um problema ao enviar a imagem');
+            }
+        }
+        
+        alert('Receita enviada com sucesso!');
         
         // Redirecionar após sucesso
         window.location.href = '/receitas.html';
