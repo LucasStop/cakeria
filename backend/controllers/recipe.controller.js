@@ -1,9 +1,17 @@
-const { Recipe } = require('../models'); // Corrigido para acessar o modelo Recipe do objeto exportado por models
+const { Recipe, User } = require('../models'); // Corrigido para acessar o modelo Recipe do objeto exportado por models
 
 // Renomear funções para ficarem consistentes com as rotas
 exports.getAllRecipes = async (req, res) => {
   try {
-    const recipes = await Recipe.findAll();
+    const recipes = await Recipe.findAll({
+      include: [
+        {
+          model: User,
+          as: 'author',
+          attributes: ['id', 'name', 'email']
+        }
+      ]
+    });
     res.status(200).json(recipes);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -12,7 +20,15 @@ exports.getAllRecipes = async (req, res) => {
 
 exports.getRecipeById = async (req, res) => {
   try {
-    const recipe = await Recipe.findByPk(req.params.id);
+    const recipe = await Recipe.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: 'author',
+          attributes: ['id', 'name', 'email']
+        }
+      ]
+    });
     if (!recipe) {
       return res.status(404).json({ message: 'Receita não encontrada' });
     }
@@ -62,4 +78,10 @@ exports.deleteRecipe = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+// Adicionar método para buscar detalhes do usuário
+exports.addImage = async (req, res) => {
+  // Implementação para adicionar imagens (será implementada mais tarde)
+  res.status(501).json({ message: 'Funcionalidade ainda não implementada' });
 };
