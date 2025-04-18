@@ -200,6 +200,7 @@ async function handleFormSubmit(e) {
         }
         
         // Construir objeto de dados alinhado com o backend - usando camelCase
+        // Converter ingredientes e instruções para texto simples em vez de JSON
         const recipeData = {
             title: formData.get('title'),
             categoryId: parseInt(formData.get('category')),
@@ -208,9 +209,10 @@ async function handleFormSubmit(e) {
             cookTime: parseInt(formData.get('cookTime')),
             servings: parseInt(formData.get('servings')),
             description: formData.get('description'),
-            ingredients: JSON.stringify(ingredients),  // Converter array para string JSON
-            instructions: JSON.stringify(steps),      // Converter array para string JSON
-            userId: user.id                           // ID do usuário logado
+            // Converter arrays para texto com quebras de linha
+            ingredients: ingredients.join('\n'),  // Usar quebra de linha como separador
+            instructions: steps.join('\n'),      // Usar quebra de linha como separador
+            userId: user.id                      // ID do usuário logado
         };
         
         console.log('Dados da receita a serem enviados:', recipeData);
