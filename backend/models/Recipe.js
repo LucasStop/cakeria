@@ -19,10 +19,12 @@ module.exports = (sequelize, DataTypes) => {
       ingredients: {
         type: DataTypes.TEXT,
         allowNull: false,
+        // Remover qualquer conversão automática para JSON
       },
       instructions: {
         type: DataTypes.TEXT,
         allowNull: false,
+        // Remover qualquer conversão automática para JSON
       },
       prepTime: {
         type: DataTypes.INTEGER,
