@@ -18,7 +18,10 @@ function checkAuthStatus() {
     
     if (!token) {
         // Redirecionar para a página de login se não estiver autenticado
-        window.location.href = '/login.html?redirect=/compartilharReceitas.html';
+        Notifications.warning('Você precisa estar logado para compartilhar receitas', 'Acesso restrito');
+        setTimeout(() => {
+            window.location.href = '/login.html?redirect=/compartilharReceitas.html';
+        }, 2000);
     }
     
     // Verificar se o token é válido (opcional)
@@ -87,11 +90,23 @@ function setupEventListeners() {
         });
     });
     
-    // Botão cancelar
+    // Botão cancelar - usar o sistema de confirmação
     document.getElementById('cancel-btn').addEventListener('click', function() {
-        if (confirm('Tem certeza que deseja cancelar? Todas as informações serão perdidas.')) {
-            window.location.href = '/receitas.html';
-        }
+        Notifications.confirm(
+            'Tem certeza que deseja cancelar? Todas as informações preenchidas serão perdidas.',
+            // Callback quando confirmado
+            function() {
+                window.location.href = '/receitas.html';
+            },
+            // Callback quando cancelado
+            null,
+            // Opções adicionais
+            {
+                title: 'Cancelar edição',
+                confirmText: 'Sim, cancelar',
+                cancelText: 'Continuar editando'
+            }
+        );
     });
     
     // Submissão do formulário
@@ -254,12 +269,19 @@ async function handleFormSubmit(e) {
             }
         }
         
-        alert('Receita compartilhada com sucesso!');
-        window.location.href = '/receitas.html';
+        Notifications.success('Sua receita foi compartilhada com sucesso!', 'Receita salva');
+        
+        // Redirecionar após alguns segundos
+        setTimeout(() => {
+            window.location.href = '/receitas.html';
+        }, 2000);
         
     } catch (error) {
         console.error('Erro ao enviar receita:', error);
-        alert(`Erro ao enviar receita: ${error.message}\nVerifique o console para mais detalhes.`);
+        Notifications.error(
+            error.message || 'Verifique os dados e tente novamente.',
+            'Erro ao compartilhar receita'
+        );
     }
 }
 
@@ -268,6 +290,11 @@ function showError(elementId, message) {
     const errorElement = document.getElementById(elementId);
     errorElement.textContent = message;
     errorElement.classList.add('active');
+    
+    // Notificação toast para erros críticos
+    if (elementId === 'form-error') {
+        Notifications.error(message, 'Erro no formulário');
+    }
     
     // Remover depois de 5 segundos
     setTimeout(() => {
