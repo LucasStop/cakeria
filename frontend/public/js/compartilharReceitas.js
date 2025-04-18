@@ -172,26 +172,35 @@ async function handleFormSubmit(e) {
         const tags = tagsString ? tagsString.split(',').map(tag => tag.trim()) : [];
         formData.delete('tags');
         
-        // Construir objeto de dados
+        // Obter o token de autenticação
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('Você precisa estar autenticado para compartilhar receitas');
+        }
+        
+        // Obter dados do usuário do localStorage
+        const user = JSON.parse(localStorage.getItem('user')) || {};
+        if (!user.id) {
+            throw new Error('Informações do usuário não encontradas. Tente fazer login novamente');
+        }
+        
+        // Construir objeto de dados alinhado com o backend - usando camelCase
         const recipeData = {
             title: formData.get('title'),
-            categoryId: formData.get('category'),
+            categoryId: parseInt(formData.get('category')),
             difficulty: formData.get('difficulty'),
             prepTime: parseInt(formData.get('prepTime')),
             cookTime: parseInt(formData.get('cookTime')),
             servings: parseInt(formData.get('servings')),
             description: formData.get('description'),
-            ingredients: ingredients,
-            steps: steps,
-            tags: tags,
-            authorId: JSON.parse(localStorage.getItem('user'))?.id // Adicionar ID do autor
+            ingredients: JSON.stringify(ingredients),  // Converter array para string JSON
+            instructions: JSON.stringify(steps),      // Converter array para string JSON
+            userId: user.id                           // ID do usuário logado
         };
         
-        // Usar a API real para enviar a receita
-        const token = localStorage.getItem('token');
-        const imageFile = formData.get('image');
+        console.log('Dados da receita a serem enviados:', recipeData);
         
-        // Primeiro enviar os dados da receita
+        // Enviar dados da receita para o servidor
         const response = await fetch(`${API.BASE_URL}/recipes`, {
             method: 'POST',
             headers: {
@@ -201,38 +210,56 @@ async function handleFormSubmit(e) {
             body: JSON.stringify(recipeData)
         });
         
+        // Verificar resposta para erros
         if (!response.ok) {
-            throw new Error('Falha ao salvar receita');
+            let errorMessage = 'Falha ao salvar receita';
+            
+            try {
+                // Tentar obter mensagem de erro detalhada do servidor
+                const errorData = await response.json();
+                errorMessage = errorData.message || errorMessage;
+                console.error('Detalhes do erro:', errorData);
+            } catch (jsonError) {
+                console.error('Erro ao processar resposta de erro:', jsonError);
+            }
+            
+            throw new Error(errorMessage);
         }
         
         const savedRecipe = await response.json();
+        console.log('Receita salva com sucesso:', savedRecipe);
         
         // Se houver imagem, fazer upload em uma segunda requisição
-        if (imageFile) {
+        const imageFile = document.getElementById('recipe-image').files[0];
+        if (imageFile && savedRecipe.id) {
             const imageFormData = new FormData();
             imageFormData.append('image', imageFile);
             
-            const imageUploadResponse = await fetch(`${API.BASE_URL}/recipes/${savedRecipe.id}/image`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: imageFormData
-            });
-            
-            if (!imageUploadResponse.ok) {
-                console.warn('A receita foi salva, mas houve um problema ao enviar a imagem');
+            try {
+                const imageResponse = await fetch(`${API.BASE_URL}/recipes/${savedRecipe.id}/image`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: imageFormData
+                });
+                
+                if (!imageResponse.ok) {
+                    console.warn('A receita foi salva, mas houve problema ao enviar a imagem');
+                } else {
+                    console.log('Imagem enviada com sucesso');
+                }
+            } catch (imageError) {
+                console.warn('Erro ao enviar imagem:', imageError);
             }
         }
         
-        alert('Receita enviada com sucesso!');
-        
-        // Redirecionar após sucesso
+        alert('Receita compartilhada com sucesso!');
         window.location.href = '/receitas.html';
         
     } catch (error) {
         console.error('Erro ao enviar receita:', error);
-        alert('Ocorreu um erro ao enviar sua receita. Por favor, tente novamente.');
+        alert(`Erro ao enviar receita: ${error.message}\nVerifique o console para mais detalhes.`);
     }
 }
 
