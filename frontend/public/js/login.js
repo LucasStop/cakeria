@@ -9,7 +9,7 @@ function isAuthenticated() {
 
 /**
  * Obtém as informações do usuário atual
- * @returns {Object|null} Dados do usuário ou null se não estiver autenticado
+ * @returns {Object|null}
  */
 function getCurrentUser() {
   try {
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
   
-  const protectedPages = ['/home.html', '/pedidos.html', '/perfil.html', '/favoritos.html'];
+  const protectedPages = ['/home.html', '/pedidos.html', '/perfil.html', '/favoritos.html', 'footer.html'];
   if (protectedPages.some(page => window.location.pathname.includes(page)) && !isAuthenticated()) {
     window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
     return;
