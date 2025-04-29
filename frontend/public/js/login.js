@@ -161,11 +161,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
   
-  const protectedPages = ['/home.html', '/pedidos.html', '/perfil.html', '/favoritos.html', 'footer.html'];
-  if (protectedPages.some(page => window.location.pathname.includes(page)) && !isAuthenticated()) {
-    window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
-    return;
-  }
+  // const protectedPages = ['/home.html', '/pedidos.html', '/perfil.html', '/favoritos.html', 'footer.html'];
+  // if (protectedPages.some(page => window.location.pathname.includes(page)) && !isAuthenticated()) {
+  //   window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
+  //   return;
+  // }
 
   const loginForm = document.getElementById('login-form');
   if (loginForm) {

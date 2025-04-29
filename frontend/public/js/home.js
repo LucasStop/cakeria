@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Verifica se o usuário está autenticado
+    
     protectPage();
   
-    // Obtém os dados do usuário
+    
     const user = getCurrentUser();
     
-    // Atualiza o nome do usuário na página
+    
     updateUserDisplay(user);
   
     const logoutBtn = document.getElementById('logout-btn');

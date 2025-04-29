@@ -39,8 +39,6 @@ class Footer extends HTMLElement {
           window.navegarParaProdutos();
         } else if (href.includes('/categorias')) {
           window.navegarParaCategorias();
-        } else if (href.includes('/receitas')) {
-          window.navegarParaReceitas();
         } else if (href.includes('/sobre')) {
           window.navegarParaSobre();
         } else if (href.includes('/login')) {
