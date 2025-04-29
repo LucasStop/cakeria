@@ -30,68 +30,10 @@
     <script src="/components/Footer.js"></script>
   </head>
   <body>
-    <header class="dashboard-header">
-      <div class="container">
-        <div class="welcome-content">
-         
-          <div class="quick-actions">
-            <a href="./receitas.html" class="quick-action-btn" target="_blank">
-              <i class="fas fa-search"></i>
-              <span>Explorar Receitas</span>
-            </a>
-            <a href="/pedidos/novo.html" class="quick-action-btn">
-              <i class="fas fa-shopping-cart"></i>
-              <span>Fazer Pedido</span>
-            </a>
-            <a href="./compartilharReceitas.html" class="quick-action-btn">
-              <i class="fas fa-share-alt"></i>
-              <span>Compartilhar Receita</span>
-            </a>
-            <a href="/favoritos.html" class="quick-action-btn">
-              <i class="fas fa-heart"></i>
-              <span>Favoritos</span>
-            </a>
-          </div>
-        </div>
-        <nav class="user-nav">
-          <div class="user-profile">
-            <div class="user-avatar">
-              <div class="avatar-placeholder">
-                <span class="avatar-initial"></span>
-              </div>
-            </div>
-            <span id="username">Carregando...</span>
-          </div>
-          <button id="logout-btn" class="btn btn-outline">Sair</button>
-        </nav>
-      </div>
-    </header>
+    <header-component></header-component>
 
     <main class="home-main">
-      <section class="welcome-section">
-        <div class="container">
-          <div class="welcome-content">
-            <div class="quick-actions">
-              <a href="./receitas.html" class="quick-action-btn" target="_blank">
-                <i class="fas fa-search"></i>
-                <span>Explorar Receitas</span>
-              </a>
-              <a href="/pedidos/novo.html" class="quick-action-btn">
-                <i class="fas fa-shopping-cart"></i>
-                <span>Fazer Pedido</span>
-              </a>
-              <a href="/compartilhar-receita.html" class="quick-action-btn">
-                <i class="fas fa-share-alt"></i>
-                <span>Compartilhar Receita</span>
-              </a>
-              <a href="/favoritos.html" class="quick-action-btn">
-                <i class="fas fa-heart"></i>
-                <span>Favoritos</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+    
 
       <!-- Receitas Section -->
       <section id="receitas" class="section-receitas">
@@ -503,6 +445,7 @@
 
     <!-- Scripts -->
     <script src="./js/api.js"></script>
+    <script src="./components/Header.js"></script>
     <script src="./js/login.js"></script>
     <script src="./js/authGuard.js"></script>
     <script src="./js/navigation.js"></script>
