@@ -16,9 +16,20 @@ module.exports = (sequelize, DataTypes) => {
           isEmail: true,
         },
       },
+      cpf: {
+        type: DataTypes.STRING(14),
+        allowNull: true,
+        unique: true,
+        validate: {
+          is: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/, // Validação para o formato 000.000.000-00
+        },
+      },
       password: {
         type: DataTypes.STRING(256),
         allowNull: false,
+        validate: {
+          len: [6, 256], // Senha deve ter entre 6 e 256 caracteres
+        },
       },
       type: {
         type: DataTypes.ENUM('client', 'admin'),
@@ -28,6 +39,9 @@ module.exports = (sequelize, DataTypes) => {
       phone: {
         type: DataTypes.STRING(20),
         allowNull: true,
+        validate: {
+          is: /^\(\d{2}\) \d{4,5}-\d{4}$/, // Validação para o formato (00) 0000-0000 ou (00) 00000-0000
+        },
       },
       last_login: {
         type: DataTypes.DATE,
