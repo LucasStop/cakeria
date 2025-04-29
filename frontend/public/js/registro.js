@@ -232,7 +232,7 @@ function handleSubmit(e) {
         const responseData = await response.json();
         console.log('Usuário registrado com sucesso:', responseData);
 
-        // Redirecionar para a página de login após um pequeno delay
+       
         setTimeout(() => {
           window.location.href = '/login.html';
         }, 2000);

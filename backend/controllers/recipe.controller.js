@@ -1,32 +1,36 @@
-const Recipe = require('../models');
+const { Recipe, User } = require('../models'); // Corrigido para acessar o modelo Recipe do objeto exportado por models
 
-// Create a new recipe
-exports.create = async (req, res) => {
+// Renomear funções para ficarem consistentes com as rotas
+exports.getAllRecipes = async (req, res) => {
   try {
-    const recipe = new Recipe(req.body);
-    const savedRecipe = await recipe.save();
-    res.status(201).json(savedRecipe);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-// Get all recipes
-exports.findAll = async (req, res) => {
-  try {
-    const recipes = await Recipe.find();
+    const recipes = await Recipe.findAll({
+      include: [
+        {
+          model: User,
+          as: 'author',
+          attributes: ['id', 'name', 'email']
+        }
+      ]
+    });
     res.status(200).json(recipes);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Get a single recipe by id
-exports.findOne = async (req, res) => {
+exports.getRecipeById = async (req, res) => {
   try {
-    const recipe = await Recipe.findById(req.params.id);
+    const recipe = await Recipe.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: 'author',
+          attributes: ['id', 'name', 'email']
+        }
+      ]
+    });
     if (!recipe) {
-      return res.status(404).json({ message: 'Recipe not found' });
+      return res.status(404).json({ message: 'Receita não encontrada' });
     }
     res.status(200).json(recipe);
   } catch (error) {
@@ -34,31 +38,50 @@ exports.findOne = async (req, res) => {
   }
 };
 
-// Update a recipe
-exports.update = async (req, res) => {
+exports.createRecipe = async (req, res) => {
   try {
-    const recipe = await Recipe.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!recipe) {
-      return res.status(404).json({ message: 'Recipe not found' });
-    }
-    res.status(200).json(recipe);
+    const recipe = await Recipe.create(req.body);
+    res.status(201).json(recipe);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-// Delete a recipe
-exports.delete = async (req, res) => {
+exports.updateRecipe = async (req, res) => {
   try {
-    const recipe = await Recipe.findByIdAndDelete(req.params.id);
-    if (!recipe) {
-      return res.status(404).json({ message: 'Recipe not found' });
+    const [updated] = await Recipe.update(req.body, {
+      where: { id: req.params.id }
+    });
+    
+    if (updated === 0) {
+      return res.status(404).json({ message: 'Receita não encontrada' });
     }
-    res.status(200).json({ message: 'Recipe deleted successfully' });
+    
+    const updatedRecipe = await Recipe.findByPk(req.params.id);
+    res.status(200).json(updatedRecipe);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.deleteRecipe = async (req, res) => {
+  try {
+    const deleted = await Recipe.destroy({
+      where: { id: req.params.id }
+    });
+    
+    if (deleted === 0) {
+      return res.status(404).json({ message: 'Receita não encontrada' });
+    }
+    
+    res.status(200).json({ message: 'Receita deletada com sucesso' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+// Adicionar método para buscar detalhes do usuário
+exports.addImage = async (req, res) => {
+  // Implementação para adicionar imagens (será implementada mais tarde)
+  res.status(501).json({ message: 'Funcionalidade ainda não implementada' });
 };

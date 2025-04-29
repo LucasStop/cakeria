@@ -30,12 +30,10 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" >
 
-    <!-- CSS -->
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/index.css" />
     <link rel="stylesheet" href="/components/components.css" />
 
-    <!-- Meta tags para SEO -->
     <meta
       name="description"
       content="Cakeria - Os mais deliciosos bolos e doces artesanais para todas as ocasiões. Conheça nossos produtos, receitas e faça seu pedido!"
@@ -44,13 +42,16 @@
       name="keywords"
       content="bolos, doces, confeitaria, artesanal, brigadeiro, torta"
     />
+
+    <script>
+      if (localStorage.getItem('token')) {
+        window.location.href = '/home.html';
+      }
+    </script>
   </head>
   <body>
     <header-component variant="user"></header-component>
-
-
     <main id="content">
-      <!-- Hero Banner -->
       <section class="hero">
         <div class="overlay"></div>
         <div class="container">
@@ -66,7 +67,6 @@
         </div>
       </section>
 
-      <!-- Cake Builder Section -->
       <section class="cake-builder" id="cake-builder">
         <div class="container">
           <div class="section-header split-layout">
@@ -344,5 +344,6 @@
     <script src="./js/api.js"></script>
     <script src="./js/navigation.js"></script>
     <script src="./js/script.js"></script>
+    <script src="/js/login.js"></script>
   </body>
 </html>

@@ -44,7 +44,7 @@ function setupFormListeners() {
     });
   });
 
-  // Listener especial para a imagem
+
   document.getElementById('product-image').addEventListener('change', function() {
     const errorElement = document.getElementById('image-error');
     if (this.files.length === 0) {

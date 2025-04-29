@@ -13,18 +13,13 @@ const Navigation = {
   },
 
   navegarParaCategorias: function () {
-    // Remover estilos específicos de outras páginas ao navegar
+
     window.removerEstilosEspecificos && window.removerEstilosEspecificos();
     window.renderizarListaCategorias();
     this.currentPage = 'categorias';
     window.history.pushState({}, '', '/categorias');
   },
 
-  navegarParaReceitas: function () {
-    window.carregarConteudoHTML('/receitas.html');
-    this.currentPage = 'receitas';
-    window.history.pushState({}, '', '/receitas');
-  },
 
   navegarParaSobre: function () {
     window.carregarConteudoHTML('/sobre.html');
@@ -42,6 +37,11 @@ const Navigation = {
     this.currentPage = 'registro';
   },
 
+  navegarParaCompartilharReceitas: function () {
+    window.location.href = '/compartilharReceitas.html';
+    this.currentPage = 'compartilharReceitas';
+  },
+
   handleNavigation: function () {
     const path = window.location.pathname;
 
@@ -54,16 +54,15 @@ const Navigation = {
       this.navegarParaCategorias();
     } else if (path === '/registerProduct') {
       this.navegarParaRegistroProduct();
-    } else if (path === '/receitas') {
-      this.navegarParaReceitas();
+    
     } else if (path === '/sobre') {
       this.navegarParaSobre();
+    } else if (path === '/compartilharReceitas') {
+      this.navegarParaCompartilharReceitas();
     } else if (path.startsWith('/receitas/')) {
       const receitaId = parseInt(path.split('/').pop());
       if (!isNaN(receitaId)) {
         window.verReceitaDetalhes(receitaId);
-      } else {
-        this.navegarParaReceitas();
       }
     } else if (path === '/login') {
       this.navegarParaLogin();
@@ -77,15 +76,17 @@ const Navigation = {
   },
 };
 
+window.navegarParaCompartilharReceitas = function () {
+  Navigation.navegarParaCompartilharReceitas();
+};
+
 window.navegarParaCadastrarProdutos = function () {
   Navigation.navegarParaCadastrarProdutos();
 }
 window.navegarParaCategorias = function () {
   Navigation.navegarParaCategorias();
 };
-window.navegarParaReceitas = function () {
-  Navigation.navegarParaReceitas();
-};
+
 window.navegarParaSobre = function () {
   Navigation.navegarParaSobre();
 };
