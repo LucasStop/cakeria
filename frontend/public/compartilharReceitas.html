@@ -37,53 +37,11 @@
 
   </head>
   <body>
-    <header class="dashboard-header">
-      <div class="container">
-        <div class="logo">
-          <a href="/">
-            <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo">
-          </a>
-        </div>
-        <nav class="user-nav">
-          <div class="user-profile">
-            <div class="user-avatar">
-              <div class="avatar-placeholder">
-                <span class="avatar-initial"></span>
-              </div>
-            </div>
-            <span id="username">Carregando...</span>
-          </div>
-          <button id="logout-btn" class="btn btn-outline">Sair</button>
-        </nav>
-      </div>
-    </header>
+    <header-component></header-component>
+
 
     <main class="share-recipe-container">
-      <section class="welcome-section">
-        <div class="container">
-          <div class="welcome-content">
-           
-            <div class="quick-actions">
-              <a href="./receitas.html" class="quick-action-btn" target="_blank">
-                <i class="fas fa-search"></i>
-                <span>Explorar Receitas</span>
-              </a>
-              <a href="/pedidos/novo.html" class="quick-action-btn">
-                <i class="fas fa-shopping-cart"></i>
-                <span>Fazer Pedido</span>
-              </a>
-              <a href="/compartilhar-receita.html" class="quick-action-btn">
-                <i class="fas fa-share-alt"></i>
-                <span>Compartilhar Receita</span>
-              </a>
-              <a href="/favoritos.html" class="quick-action-btn">
-                <i class="fas fa-heart"></i>
-                <span>Favoritos</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      
       <div class="container">
         <section class="page-header">
           <h1 class="page-title">Compartilhar Receita</h1>
@@ -267,7 +225,7 @@
     <script src="./js/navigation.js"></script>
     <script src="./js/script.js"></script>
     <script src="./js/logout.js"></script>
-
+    <script src="./components/Header.js"></script>
     <script src="./js/compartilharReceitas.js"></script>
     <script src="./js/home.js"></script>
     <script src="./js/authGuard.js"></script>
