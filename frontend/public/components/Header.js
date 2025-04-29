@@ -20,7 +20,7 @@ class Header extends HTMLElement {
             
             <nav class="nav-bar">
               <ul class="nav-links">
-                <li><a href="/" class="nav-link" data-route="home"><i class="fa-solid fa-home"></i> Home</a></li>
+                <li><a href="/index.html" class="nav-link" data-route="home"><i class="fa-solid fa-home"></i> Home</a></li>
                 <li><a href="/receitas.html" class="nav-link" data-route="receitas"><i class="fa-solid fa-utensils"></i> Receitas</a></li>
                 <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
                 <li><a href="/sobre.html" class="nav-link" id="nav-sobre" data-route="sobre"><i class="fa-solid fa-info-circle"></i> Sobre</a></li>
@@ -198,7 +198,7 @@ class Header extends HTMLElement {
   navigateToRoute(route) {
     switch (route) {
       case 'home':
-        window.location.href = '/';
+        window.location.href = '/index.html';
         break;
       case 'categorias':
         window.navegarParaCategorias();
@@ -227,7 +227,7 @@ class Header extends HTMLElement {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
 
-    window.location.href = '/';
+    window.location.href = '/index.html';
   }
 
   setupMobileMenu() {
@@ -285,7 +285,7 @@ class Header extends HTMLElement {
       const route = link.getAttribute('data-route');
 
       if (
-        (path === '/' && route === 'home') ||
+        ((path === '/' || path === '/index.html') && route === 'home') ||
         (path.includes('/produtos') && route === 'produtos') ||
         (path.includes('/categorias') && route === 'categorias') ||
         (path.includes('/sobre') && route === 'sobre') ||
