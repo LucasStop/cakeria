@@ -47,4 +47,34 @@ const API = {
     login: async credentials => API.post('/auth/login', credentials),
     registro: async userData => API.post('/auth/register', userData),
   },
+  
+  // Adicionar métodos para receitas
+  recipes: {
+    listar: async () => API.get('/recipes'),
+    obterPorId: async id => API.get(`/recipes/${id}`),
+    criar: async recipeData => API.post('/recipes', recipeData),
+    
+    // Método para upload de imagem de receita
+    uploadImage: async (recipeId, imageFile) => {
+      try {
+        const formData = new FormData();
+        formData.append('image', imageFile);
+        
+        const response = await fetch(`${API.BASE_URL}/recipes/${recipeId}/image`, {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => null);
+          throw new Error(errorData?.message || `Erro ao fazer upload: ${response.status}`);
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error(`Erro no upload de imagem:`, error);
+        throw error;
+      }
+    }
+  }
 };
