@@ -3,7 +3,7 @@ const { verifyToken } = require('../utils/auth');
 exports.authenticate = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    
+
     if (!authHeader) {
       return res.status(401).json({ message: 'Token de autenticação não fornecido' });
     }

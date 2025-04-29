@@ -1,6 +1,6 @@
 /**
  * Verifica se o usuário está autenticado
- * @returns {boolean} 
+ * @returns {boolean}
  */
 function isAuthenticated() {
   const token = localStorage.getItem('token');
@@ -23,7 +23,6 @@ function getCurrentUser() {
 
 function protectPage() {
   if (!isAuthenticated()) {
-
     const currentPath = window.location.pathname;
     window.location.href = `/login.html?redirect=${encodeURIComponent(currentPath)}`;
   }
@@ -120,7 +119,7 @@ async function handleLoginSubmit(e) {
     if (redirectUrl) {
       window.location.href = redirectUrl;
     } else {
-      window.location.href = '/home.html';
+      window.location.href = '/index.html';
     }
   } catch (error) {
     console.error('Erro durante login:', error);
@@ -150,27 +149,21 @@ function togglePasswordVisibility(e) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
- 
   const isLoginPage = window.location.pathname.includes('login.html');
-  const isIndexPage = window.location.pathname === '/' || 
-                      window.location.pathname === '/index.html' || 
-                      window.location.pathname === '';
-  
+  const isIndexPage =
+    window.location.pathname === '/' ||
+    window.location.pathname === '/index.html' ||
+    window.location.pathname === '';
+
   if ((isIndexPage || isLoginPage) && isAuthenticated()) {
-    window.location.href = '/home.html';
+    window.location.href = '/index.html';
     return;
   }
-  
-  // const protectedPages = ['/home.html', '/pedidos.html', '/perfil.html', '/favoritos.html', 'footer.html'];
-  // if (protectedPages.some(page => window.location.pathname.includes(page)) && !isAuthenticated()) {
-  //   window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
-  //   return;
-  // }
 
   const loginForm = document.getElementById('login-form');
   if (loginForm) {
     loginForm.addEventListener('submit', handleLoginSubmit);
-    
+
     document.getElementById('email')?.addEventListener('input', function () {
       validateField(
         this,

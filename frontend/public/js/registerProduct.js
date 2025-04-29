@@ -1,40 +1,40 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const registerForm = document.getElementById("register-form");
+document.addEventListener('DOMContentLoaded', () => {
+  const registerForm = document.getElementById('register-form');
 
   if (registerForm) {
-    registerForm.addEventListener("submit", handleRegisterSubmit);
+    registerForm.addEventListener('submit', handleRegisterSubmit);
   }
 
   // Adiciona validação em tempo real para cada campo
-  document.getElementById("product-name").addEventListener("input", function() {
-    validateField(this, validateName, "name-error", "Digite o nome do produto");
+  document.getElementById('product-name').addEventListener('input', function () {
+    validateField(this, validateName, 'name-error', 'Digite o nome do produto');
   });
 
-  document.getElementById("product-description").addEventListener("input", function() {
-    validateField(this, validateDescription, "description-error", "Digite a descrição do produto");
+  document.getElementById('product-description').addEventListener('input', function () {
+    validateField(this, validateDescription, 'description-error', 'Digite a descrição do produto');
   });
 
-  document.getElementById("product-price").addEventListener("input", function() {
+  document.getElementById('product-price').addEventListener('input', function () {
     formatPrice(this);
-    validateField(this, validatePrice, "price-error", "Digite um preço válido no formato R$ 10,00");
+    validateField(this, validatePrice, 'price-error', 'Digite um preço válido no formato R$ 10,00');
   });
 
-  document.getElementById("product-size").addEventListener("input", function() {
+  document.getElementById('product-size').addEventListener('input', function () {
     formatWeight(this);
-    validateField(this, validateSize, "size-error", "Digite o peso ou tamanho do produto");
+    validateField(this, validateSize, 'size-error', 'Digite o peso ou tamanho do produto');
   });
 
-  document.getElementById("product-stock").addEventListener("input", function() {
-    validateField(this, validateStock, "stock-error", "Digite a quantidade disponível");
+  document.getElementById('product-stock').addEventListener('input', function () {
+    validateField(this, validateStock, 'stock-error', 'Digite a quantidade disponível');
   });
 
-  document.getElementById("product-expiry").addEventListener("input", function() {
+  document.getElementById('product-expiry').addEventListener('input', function () {
     formatDate(this);
-    validateField(this, validateExpiry, "expiry-error", "Selecione uma data de validade");
+    validateField(this, validateExpiry, 'expiry-error', 'Selecione uma data de validade');
   });
 
-  document.getElementById("product-image").addEventListener("change", function() {
-    validateField(this, validateImage, "image-error", "Selecione uma imagem válida");
+  document.getElementById('product-image').addEventListener('change', function () {
+    validateField(this, validateImage, 'image-error', 'Selecione uma imagem válida');
   });
 });
 
@@ -111,18 +111,18 @@ function validateField(inputElement, validationFunction, errorElementId, errorMe
   const value = inputElement.value.trim();
   const errorElement = document.getElementById(errorElementId);
 
-  if (value === "") {
-    errorElement.textContent = "";
-    inputElement.classList.remove("invalid-input");
+  if (value === '') {
+    errorElement.textContent = '';
+    inputElement.classList.remove('invalid-input');
     return;
   }
 
   if (!validationFunction(value)) {
-    inputElement.classList.add("invalid-input");
+    inputElement.classList.add('invalid-input');
     errorElement.textContent = errorMessage;
   } else {
-    inputElement.classList.remove("invalid-input");
-    errorElement.textContent = "";
+    inputElement.classList.remove('invalid-input');
+    errorElement.textContent = '';
   }
 }
 
@@ -130,13 +130,13 @@ function validateField(inputElement, validationFunction, errorElementId, errorMe
 async function handleRegisterSubmit(e) {
   e.preventDefault();
 
-  const nameInput = document.getElementById("product-name");
-  const descriptionInput = document.getElementById("product-description");
-  const priceInput = document.getElementById("product-price");
-  const sizeInput = document.getElementById("product-size");
-  const stockInput = document.getElementById("product-stock");
-  const expiryInput = document.getElementById("product-expiry");
-  const imageInput = document.getElementById("product-image");
+  const nameInput = document.getElementById('product-name');
+  const descriptionInput = document.getElementById('product-description');
+  const priceInput = document.getElementById('product-price');
+  const sizeInput = document.getElementById('product-size');
+  const stockInput = document.getElementById('product-stock');
+  const expiryInput = document.getElementById('product-expiry');
+  const imageInput = document.getElementById('product-image');
 
   // Limpa as mensagens de erro
   clearAllErrors();
@@ -153,37 +153,37 @@ async function handleRegisterSubmit(e) {
 
   if (!validateName(name)) {
     isValid = false;
-    showError(nameInput, "name-error", "Digite o nome do produto");
+    showError(nameInput, 'name-error', 'Digite o nome do produto');
   }
 
   if (!validateDescription(description)) {
     isValid = false;
-    showError(descriptionInput, "description-error", "Digite a descrição do produto");
+    showError(descriptionInput, 'description-error', 'Digite a descrição do produto');
   }
 
   if (!validatePrice(price)) {
     isValid = false;
-    showError(priceInput, "price-error", "Digite um preço válido no formato R$ 10,00");
+    showError(priceInput, 'price-error', 'Digite um preço válido no formato R$ 10,00');
   }
 
   if (!validateSize(size)) {
     isValid = false;
-    showError(sizeInput, "size-error", "Digite o peso ou tamanho do produto");
+    showError(sizeInput, 'size-error', 'Digite o peso ou tamanho do produto');
   }
 
   if (!validateStock(stock)) {
     isValid = false;
-    showError(stockInput, "stock-error", "Digite a quantidade disponível");
+    showError(stockInput, 'stock-error', 'Digite a quantidade disponível');
   }
 
   if (!validateExpiry(expiry)) {
     isValid = false;
-    showError(expiryInput, "expiry-error", "Selecione uma data de validade válida");
+    showError(expiryInput, 'expiry-error', 'Selecione uma data de validade válida');
   }
 
   if (!image) {
     isValid = false;
-    showError(imageInput, "image-error", "Selecione uma imagem válida");
+    showError(imageInput, 'image-error', 'Selecione uma imagem válida');
   }
 
   if (!isValid) {
@@ -197,26 +197,26 @@ async function handleRegisterSubmit(e) {
     size: size,
     stock: stock,
     expiry: expiry,
-    image: image
+    image: image,
   };
 
-  console.log("Dados do produto:", productData);
+  console.log('Dados do produto:', productData);
 }
 
 function showError(inputElement, errorElementId, errorMessage) {
-  inputElement.classList.add("invalid-input");
+  inputElement.classList.add('invalid-input');
   const errorElement = document.getElementById(errorElementId);
   errorElement.textContent = errorMessage;
 }
 
 function clearAllErrors() {
-  const errorMessages = document.querySelectorAll(".error-message");
+  const errorMessages = document.querySelectorAll('.error-message');
   errorMessages.forEach(element => {
-    element.textContent = "";
+    element.textContent = '';
   });
 
-  const invalidInputs = document.querySelectorAll(".invalid-input");
+  const invalidInputs = document.querySelectorAll('.invalid-input');
   invalidInputs.forEach(element => {
-    element.classList.remove("invalid-input");
+    element.classList.remove('invalid-input');
   });
 }

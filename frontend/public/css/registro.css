@@ -211,11 +211,11 @@ body {
 }
 
 .cep-col {
-  flex: 0.20;
+  flex: 0.2;
 }
 
 .street-col {
-  flex: 0.40;
+  flex: 0.4;
 }
 
 .number-col {
