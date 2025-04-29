@@ -842,8 +842,7 @@ ul {
 
 /* ===== NEWSLETTER SECTION ===== */
 .section-newsletter {
-  background-color: var(--dark);
-  color: white;
+  color: var(--dark);
   padding: 3rem 0;
   border-radius: var(--radius-lg);
   margin-bottom: 3rem;
