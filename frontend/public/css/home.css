@@ -47,13 +47,11 @@ img {
   padding: 1rem 0;
 }
 
-
 .dashboard-header .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
 
 a {
   text-decoration: none;
@@ -440,7 +438,9 @@ ul {
   border-radius: var(--radius);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .receita-card:hover {
@@ -657,7 +657,8 @@ ul {
   color: var(--dark);
 }
 
-.order-date, .order-id {
+.order-date,
+.order-id {
   font-size: 0.9rem;
   color: var(--gray);
   margin-bottom: 0.25rem;
@@ -880,15 +881,11 @@ ul {
   font-family: var(--font-family);
 }
 
-
-
 .social-icons {
   display: flex;
   gap: 1rem;
   justify-content: center;
 }
-
-
 
 .header-logo {
   height: 40px;
@@ -899,8 +896,6 @@ ul {
   align-items: center;
   gap: 1rem;
 }
-
-
 
 .user-profile {
   display: flex;
@@ -953,25 +948,19 @@ ul {
   text-overflow: ellipsis;
 }
 
-
-
-
 @media (max-width: 768px) {
- 
-
   .user-profile {
     margin-left: auto;
   }
-  
+
   #username {
     display: none;
   }
-  
+
   .user-avatar {
     margin-right: 0;
   }
 }
-
 
 .social-icon {
   width: 40px;
@@ -986,15 +975,12 @@ ul {
   transition: all 0.2s ease;
 }
 
-
-
-
 /* ===== MEDIA QUERIES ===== */
 @media (min-width: 576px) {
   .quick-actions {
     grid-template-columns: repeat(4, 1fr);
   }
-  
+
   .pedidos-status {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -1004,35 +990,33 @@ ul {
   .main-nav {
     display: block;
   }
-  
+
   .username {
     display: block;
   }
-  
+
   .menu-toggle {
     display: none;
   }
-  
+
   .compartilhar-content {
     flex-direction: row;
     align-items: center;
   }
-  
+
   .compartilhar-image {
     display: block;
     flex: 1;
   }
 
-  
   .social-icons {
     justify-content: flex-start;
   }
-  
+
   .newsletter-form {
     flex-direction: row;
   }
 }
-
 
 .header-logo {
   height: 40px;
@@ -1043,7 +1027,6 @@ ul {
   align-items: center;
   gap: 1rem;
 }
-
 
 @media (min-width: 992px) {
   .order-item {

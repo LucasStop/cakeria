@@ -85,10 +85,8 @@ class Header extends HTMLElement {
 
         link.classList.add('active');
 
-        
         this.closeMenu();
 
-       
         this.navigateToRoute(route);
       });
     });
@@ -120,7 +118,7 @@ class Header extends HTMLElement {
       case 'categorias':
         window.navegarParaCategorias();
         break;
-   
+
       case 'sobre':
         window.navegarParaSobre();
         break;

@@ -8,9 +8,9 @@ exports.getAllRecipes = async (req, res) => {
         {
           model: User,
           as: 'author',
-          attributes: ['id', 'name', 'email']
-        }
-      ]
+          attributes: ['id', 'name', 'email'],
+        },
+      ],
     });
     res.status(200).json(recipes);
   } catch (error) {
@@ -25,9 +25,9 @@ exports.getRecipeById = async (req, res) => {
         {
           model: User,
           as: 'author',
-          attributes: ['id', 'name', 'email']
-        }
-      ]
+          attributes: ['id', 'name', 'email'],
+        },
+      ],
     });
     if (!recipe) {
       return res.status(404).json({ message: 'Receita não encontrada' });
@@ -50,13 +50,13 @@ exports.createRecipe = async (req, res) => {
 exports.updateRecipe = async (req, res) => {
   try {
     const [updated] = await Recipe.update(req.body, {
-      where: { id: req.params.id }
+      where: { id: req.params.id },
     });
-    
+
     if (updated === 0) {
       return res.status(404).json({ message: 'Receita não encontrada' });
     }
-    
+
     const updatedRecipe = await Recipe.findByPk(req.params.id);
     res.status(200).json(updatedRecipe);
   } catch (error) {
@@ -67,13 +67,13 @@ exports.updateRecipe = async (req, res) => {
 exports.deleteRecipe = async (req, res) => {
   try {
     const deleted = await Recipe.destroy({
-      where: { id: req.params.id }
+      where: { id: req.params.id },
     });
-    
+
     if (deleted === 0) {
       return res.status(404).json({ message: 'Receita não encontrada' });
     }
-    
+
     res.status(200).json({ message: 'Receita deletada com sucesso' });
   } catch (error) {
     res.status(500).json({ message: error.message });

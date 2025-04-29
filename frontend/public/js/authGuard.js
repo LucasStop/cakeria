@@ -1,6 +1,6 @@
 /**
  * Verifica se o usuário está autenticado
- * @returns {boolean} 
+ * @returns {boolean}
  */
 function isAuthenticated() {
   const token = localStorage.getItem('token');
@@ -37,25 +37,26 @@ function protectPage() {
  */
 function initAuthGuard() {
   const isLoginPage = window.location.pathname.includes('login.html');
-  const isIndexPage = window.location.pathname === '/' || 
-                    window.location.pathname === '/index.html' || 
-                    window.location.pathname === '';
-  
+  const isIndexPage =
+    window.location.pathname === '/' ||
+    window.location.pathname === '/index.html' ||
+    window.location.pathname === '';
+
   if ((isIndexPage || isLoginPage) && isAuthenticated()) {
     window.location.href = '/home.html';
     return;
   }
-  
+
   const protectedPages = [
-    '/home.html', 
-    '/pedidos.html', 
-    '/perfil.html', 
-    '/favoritos.html', 
+    '/home.html',
+    '/pedidos.html',
+    '/perfil.html',
+    '/favoritos.html',
     '/footer.html',
     '/receita.html',
-    '/receitas.html'
+    '/receitas.html',
   ];
-  
+
   if (protectedPages.some(page => window.location.pathname.includes(page)) && !isAuthenticated()) {
     window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
     return;

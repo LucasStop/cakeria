@@ -249,7 +249,6 @@ function navegarParaRegistro() {
   currentPage = 'registro';
 }
 
-
 function navegarParaSobre() {
   carregarConteudoHTML('/sobre.html');
 }
@@ -595,5 +594,5 @@ window.verReceitaDetalhes = async function (id) {
   }
 };
 
-window.carregarConteudoHTML = carregarConteudoHTML; 
+window.carregarConteudoHTML = carregarConteudoHTML;
 window.removerEstilosEspecificos = removerEstilosEspecificos;

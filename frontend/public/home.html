@@ -1,482 +1,496 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cakeria - Minha Área | Dashboard</title>
-  
-  <!-- Favicon -->
-  <link rel="icon" href="/assets/favicon.ico">
-  
-  <!-- Google Fonts - Poppins -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Font Awesome para ícones -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- CSS -->
-  <link rel="stylesheet" href="./css/styles.css">
-  <link rel="stylesheet" href="./css/home.css">
-  <link rel="stylesheet" href="/components/components.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cakeria - Minha Área | Dashboard</title>
 
-  <script src="/components/Footer.js"></script>
-</head>
-<body>
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/favicon.ico" />
 
-  <header class="dashboard-header">
-    <div class="container">
-      <div class="logo">
-        <a href="/">
-          <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo">
-        </a>
-      </div>
-      <nav class="user-nav">
-        <div class="user-profile">
-          <div class="user-avatar">
-            <div class="avatar-placeholder">
-              <span class="avatar-initial"></span>
-            </div>
-          </div>
-          <span id="username">Carregando...</span>
-        </div>
-        <button id="logout-btn" class="btn btn-outline">Sair</button>
-      </nav>
-    </div>
-  </header>
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-  <main class="home-main">
+    <!-- Font Awesome para ícones -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
 
-    <section class="welcome-section">
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/home.css" />
+    <link rel="stylesheet" href="/components/components.css" />
+
+    <script src="/components/Footer.js"></script>
+  </head>
+  <body>
+    <header class="dashboard-header">
       <div class="container">
-        <div class="welcome-content">
-         
-          <div class="quick-actions">
-            <a href="./receitas.html" class="quick-action-btn" target="_blank">
-              <i class="fas fa-search"></i>
-              <span>Explorar Receitas</span>
-            </a>
-            <a href="/pedidos/novo.html" class="quick-action-btn">
-              <i class="fas fa-shopping-cart"></i>
-              <span>Fazer Pedido</span>
-            </a>
-            <a href="/compartilhar-receita.html" class="quick-action-btn">
-              <i class="fas fa-share-alt"></i>
-              <span>Compartilhar Receita</span>
-            </a>
-            <a href="/favoritos.html" class="quick-action-btn">
-              <i class="fas fa-heart"></i>
-              <span>Favoritos</span>
-            </a>
-          </div>
+        <div class="logo">
+          <a href="/">
+            <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo" />
+          </a>
         </div>
+        <nav class="user-nav">
+          <div class="user-profile">
+            <div class="user-avatar">
+              <div class="avatar-placeholder">
+                <span class="avatar-initial"></span>
+              </div>
+            </div>
+            <span id="username">Carregando...</span>
+          </div>
+          <button id="logout-btn" class="btn btn-outline">Sair</button>
+        </nav>
       </div>
-    </section>
+    </header>
 
-    <!-- Receitas Section -->
-    <section id="receitas" class="section-receitas">
-      <div class="container">
-        <div class="section-header">
-          <h2>Receitas em Destaque</h2>
-          <a href="/receitas.html" class="view-all">Ver Todas</a>
-        </div>
-        
-        <div class="receitas-grid">
-          <!-- Receita Card 1 -->
-          <div class="receita-card">
-            <div class="receita-img">
-              <img src="/assets/receitas/bolo-chocolate.jpg" alt="Bolo de Chocolate">
-              <span class="receita-badge">Popular</span>
-            </div>
-            <div class="receita-content">
-              <h3>Bolo de Chocolate Trufado</h3>
-              <div class="receita-meta">
-                <span><i class="fas fa-clock"></i> 60 min</span>
-                <span><i class="fas fa-signal"></i> Médio</span>
-              </div>
-              <p>Um delicioso bolo de chocolate com recheio cremoso de trufa e cobertura ganache.</p>
-              <div class="receita-actions">
-                <a href="/receita.html?id=1" class="btn btn-primary">Ver Receita</a>
-                <button class="btn-icon" title="Adicionar aos favoritos">
-                  <i class="icon-heart"></i>
-                </button>
-                <button class="btn-icon" title="Compartilhar">
-                  <i class="fas fa-share-alt"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Receita Card 2 -->
-          <div class="receita-card">
-            <div class="receita-img">
-              <img src="/assets/receitas/cupcake-morango.jpg" alt="Cupcake de Morango">
-            </div>
-            <div class="receita-content">
-              <h3>Cupcake de Morango</h3>
-              <div class="receita-meta">
-                <span><i class="fas fa-clock"></i> 40 min</span>
-                <span><i class="fas fa-signal"></i> Fácil</span>
-              </div>
-              <p>Cupcakes macios com cobertura de creme de morango fresco e decoração delicada.</p>
-              <div class="receita-actions">
-                <a href="/receita.html?id=2" class="btn btn-primary">Ver Receita</a>
-                <button class="btn-icon" title="Adicionar aos favoritos">
-                  <i class="icon-heart"></i>
-                </button>
-                <button class="btn-icon" title="Compartilhar">
-                  <i class="fas fa-share-alt"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Receita Card 3 -->
-          <div class="receita-card">
-            <div class="receita-img">
-              <img src="/assets/receitas/torta-limao.jpg" alt="Torta de Limão">
-            </div>
-            <div class="receita-content">
-              <h3>Torta de Limão</h3>
-              <div class="receita-meta">
-                <span><i class="fas fa-clock"></i> 50 min</span>
-                <span><i class="fas fa-signal"></i> Médio</span>
-              </div>
-              <p>Torta de limão com base crocante e cobertura de merengue italiano perfeito.</p>
-              <div class="receita-actions">
-                <a href="/receita.html?id=3" class="btn btn-primary">Ver Receita</a>
-                <button class="btn-icon" title="Adicionar aos favoritos">
-                  <i class="icon-heart"></i>
-                </button>
-                <button class="btn-icon" title="Compartilhar">
-                  <i class="fas fa-share-alt"></i>
-                </button>
-              </div>
+    <main class="home-main">
+      <section class="welcome-section">
+        <div class="container">
+          <div class="welcome-content">
+            <div class="quick-actions">
+              <a href="./receitas.html" class="quick-action-btn" target="_blank">
+                <i class="fas fa-search"></i>
+                <span>Explorar Receitas</span>
+              </a>
+              <a href="/pedidos/novo.html" class="quick-action-btn">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Fazer Pedido</span>
+              </a>
+              <a href="/compartilhar-receita.html" class="quick-action-btn">
+                <i class="fas fa-share-alt"></i>
+                <span>Compartilhar Receita</span>
+              </a>
+              <a href="/favoritos.html" class="quick-action-btn">
+                <i class="fas fa-heart"></i>
+                <span>Favoritos</span>
+              </a>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Pedidos Section -->
-    <section id="pedidos" class="section-pedidos">
-      <div class="container">
-        <div class="section-header">
-          <h2>Meus Pedidos</h2>
-          <a href="/pedidos.html" class="view-all">Ver Todos</a>
-        </div>
-        
-        <div class="pedidos-status">
-          <div class="status-card">
-            <div class="status-icon pending">
-              <i class="fas fa-clock"></i>
-            </div>
-            <div class="status-info">
-              <h3>Pendentes</h3>
-              <p class="status-count">2</p>
-            </div>
+      <!-- Receitas Section -->
+      <section id="receitas" class="section-receitas">
+        <div class="container">
+          <div class="section-header">
+            <h2>Receitas em Destaque</h2>
+            <a href="/receitas.html" class="view-all">Ver Todas</a>
           </div>
-          
-          <div class="status-card">
-            <div class="status-icon processing">
-              <i class="fas fa-spinner"></i>
-            </div>
-            <div class="status-info">
-              <h3>Em Preparo</h3>
-              <p class="status-count">1</p>
-            </div>
-          </div>
-          
-          <div class="status-card">
-            <div class="status-icon delivered">
-              <i class="fas fa-check-circle"></i>
-            </div>
-            <div class="status-info">
-              <h3>Entregues</h3>
-              <p class="status-count">8</p>
-            </div>
-          </div>
-          
-          <div class="status-card">
-            <div class="status-icon new-order">
-              <i class="fas fa-plus-circle"></i>
-            </div>
-            <div class="status-info">
-              <h3>Novo Pedido</h3>
-              <a href="/pedidos/novo.html" class="btn btn-sm btn-primary">Fazer Pedido</a>
-            </div>
-          </div>
-        </div>
-        
-        <div class="recent-orders">
-          <h3>Pedidos Recentes</h3>
-          
-          <div class="order-list">
-            <div class="order-item">
-              <div class="order-img">
-                <img src="/assets/pedidos/bolo-aniversario.jpg" alt="Bolo de Aniversário">
-              </div>
-              <div class="order-details">
-                <h4>Bolo de Aniversário</h4>
-                <p class="order-date">Pedido em: 15/04/2023</p>
-                <p class="order-id">Pedido #12345</p>
-              </div>
-              <div class="order-status">
-                <span class="status-badge processing">Em Preparo</span>
-                <p class="delivery-date">Entrega: 20/04/2023</p>
-              </div>
-              <div class="order-actions">
-                <a href="/pedidos/12345" class="btn btn-sm btn-outline">Detalhes</a>
-              </div>
-            </div>
-            
-            <div class="order-item">
-              <div class="order-img">
-                <img src="/assets/pedidos/cupcakes-festa.jpg" alt="Cupcakes para Festa">
-              </div>
-              <div class="order-details">
-                <h4>Cupcakes para Festa</h4>
-                <p class="order-date">Pedido em: 10/04/2023</p>
-                <p class="order-id">Pedido #12344</p>
-              </div>
-              <div class="order-status">
-                <span class="status-badge pending">Pendente</span>
-                <p class="delivery-date">Entrega: 18/04/2023</p>
-              </div>
-              <div class="order-actions">
-                <a href="/pedidos/12344" class="btn btn-sm btn-outline">Detalhes</a>
-              </div>
-            </div>
-            
-            <div class="order-item">
-              <div class="order-img">
-                <img src="/assets/pedidos/torta-morango.jpg" alt="Torta de Morango">
-              </div>
-              <div class="order-details">
-                <h4>Torta de Morango</h4>
-                <p class="order-date">Pedido em: 05/04/2023</p>
-                <p class="order-id">Pedido #12343</p>
-              </div>
-              <div class="order-status">
-                <span class="status-badge delivered">Entregue</span>
-                <p class="delivery-date">Entregue em: 08/04/2023</p>
-              </div>
-              <div class="order-actions">
-                <a href="/pedidos/12343" class="btn btn-sm btn-outline">Detalhes</a>
-                <button class="btn btn-sm btn-primary">Pedir Novamente</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- Compartilhar Section -->
-    <section id="compartilhar" class="section-compartilhar">
-      <div class="container">
-        <div class="compartilhar-content">
-          <div class="compartilhar-info">
-            <h2>Compartilhe Suas Receitas</h2>
-            <p>Mostre seu talento culinário para a comunidade Cakeria. Compartilhe suas criações e inspire outros confeiteiros.</p>
-            
-            <ul class="compartilhar-benefits">
-              <li>Ganhe reconhecimento da comunidade</li>
-              <li>Receba feedback de outros confeiteiros</li>
-              <li>Participe de desafios mensais</li>
-              <li>Concorra a prêmios exclusivos</li>
-            </ul>
-            
-            <a href="/compartilhar-receita.html" class="btn btn-primary">Compartilhar Receita</a>
-          </div>
-          
-          <div class="compartilhar-image">
-            <img src="./assets/share-menu.svg" alt="compartilhar receita" >
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Minhas Receitas Section -->
-    <section id="minhas-receitas" class="section-minhas-receitas">
-      <div class="container">
-        <div class="section-header">
-          <h2>Minhas Receitas</h2>
-          <a href="/minhas-receitas.html" class="view-all">Ver Todas</a>
-        </div>
-        
-        <div class="receitas-tabs">
-          <button class="tab-btn active" data-tab="publicadas">Publicadas</button>
-          <button class="tab-btn" data-tab="favoritas">Favoritas</button>
-          <button class="tab-btn" data-tab="rascunhos">Rascunhos</button>
-          <button class="tab-btn" data-tab="feitas">Receitas que Fiz</button>
-        </div>
-        
-        <div id="publicadas" class="tab-content active">
           <div class="receitas-grid">
-            <!-- Receita Publicada 1 -->
+            <!-- Receita Card 1 -->
             <div class="receita-card">
               <div class="receita-img">
-                <img src="/assets/minhas-receitas/bolo-cenoura.jpg" alt="Bolo de Cenoura">
-              </div>
-              <div class="receita-content">
-                <h3>Bolo de Cenoura com Cobertura de Chocolate</h3>
-                <div class="receita-meta">
-                  <span><i class="fas fa-clock"></i> 45 min</span>
-                  <span><i class="fas fa-eye"></i> 128 visualizações</span>
-                </div>
-                <p>Meu bolo de cenoura super fofinho com cobertura de chocolate meio amargo.</p>
-                <div class="receita-actions">
-                  <a href="/minhas-receitas/1" class="btn btn-primary">Ver Receita</a>
-                  <button class="btn-icon" title="Editar">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button class="btn-icon" title="Excluir">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Receita Publicada 2 -->
-            <div class="receita-card">
-              <div class="receita-img">
-                <img src="/assets/minhas-receitas/cookies.jpg" alt="Cookies">
-              </div>
-              <div class="receita-content">
-                <h3>Cookies com Gotas de Chocolate</h3>
-                <div class="receita-meta">
-                  <span><i class="fas fa-clock"></i> 30 min</span>
-                  <span><i class="fas fa-eye"></i> 95 visualizações</span>
-                </div>
-                <p>Cookies crocantes por fora e macios por dentro com gotas de chocolate.</p>
-                <div class="receita-actions">
-                  <a href="/minhas-receitas/2" class="btn btn-primary">Ver Receita</a>
-                  <button class="btn-icon" title="Editar">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button class="btn-icon" title="Excluir">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div id="favoritas" class="tab-content">
-          <div class="receitas-grid">
-            <!-- Receita Favorita 1 -->
-            <div class="receita-card">
-              <div class="receita-img">
-                <img src="/assets/receitas/bolo-chocolate.jpg" alt="Bolo de Chocolate">
+                <img src="/assets/receitas/bolo-chocolate.jpg" alt="Bolo de Chocolate" />
+                <span class="receita-badge">Popular</span>
               </div>
               <div class="receita-content">
                 <h3>Bolo de Chocolate Trufado</h3>
                 <div class="receita-meta">
-                  <span><i class="fas fa-user"></i> Por Ana Oliveira</span>
-                  <span><i class="fas fa-heart"></i> Favoritado em 10/04/2023</span>
+                  <span><i class="fas fa-clock"></i> 60 min</span>
+                  <span><i class="fas fa-signal"></i> Médio</span>
                 </div>
-                <p>Um delicioso bolo de chocolate com recheio cremoso de trufa e cobertura ganache.</p>
+                <p>
+                  Um delicioso bolo de chocolate com recheio cremoso de trufa e cobertura ganache.
+                </p>
                 <div class="receita-actions">
                   <a href="/receita.html?id=1" class="btn btn-primary">Ver Receita</a>
-                  <button class="btn-icon active" title="Remover dos favoritos">
-                    <i class="icon-heart-filled"></i>
+                  <button class="btn-icon" title="Adicionar aos favoritos">
+                    <i class="icon-heart"></i>
+                  </button>
+                  <button class="btn-icon" title="Compartilhar">
+                    <i class="fas fa-share-alt"></i>
                   </button>
                 </div>
               </div>
             </div>
-            
-            <!-- Receita Favorita 2 -->
+
+            <!-- Receita Card 2 -->
             <div class="receita-card">
               <div class="receita-img">
-                <img src="/assets/receitas/torta-limao.jpg" alt="Torta de Limão">
+                <img src="/assets/receitas/cupcake-morango.jpg" alt="Cupcake de Morango" />
+              </div>
+              <div class="receita-content">
+                <h3>Cupcake de Morango</h3>
+                <div class="receita-meta">
+                  <span><i class="fas fa-clock"></i> 40 min</span>
+                  <span><i class="fas fa-signal"></i> Fácil</span>
+                </div>
+                <p>
+                  Cupcakes macios com cobertura de creme de morango fresco e decoração delicada.
+                </p>
+                <div class="receita-actions">
+                  <a href="/receita.html?id=2" class="btn btn-primary">Ver Receita</a>
+                  <button class="btn-icon" title="Adicionar aos favoritos">
+                    <i class="icon-heart"></i>
+                  </button>
+                  <button class="btn-icon" title="Compartilhar">
+                    <i class="fas fa-share-alt"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Receita Card 3 -->
+            <div class="receita-card">
+              <div class="receita-img">
+                <img src="/assets/receitas/torta-limao.jpg" alt="Torta de Limão" />
               </div>
               <div class="receita-content">
                 <h3>Torta de Limão</h3>
                 <div class="receita-meta">
-                  <span><i class="fas fa-user"></i> Por Carlos Mendes</span>
-                  <span><i class="fas fa-heart"></i> Favoritado em 08/04/2023</span>
+                  <span><i class="fas fa-clock"></i> 50 min</span>
+                  <span><i class="fas fa-signal"></i> Médio</span>
                 </div>
                 <p>Torta de limão com base crocante e cobertura de merengue italiano perfeito.</p>
                 <div class="receita-actions">
                   <a href="/receita.html?id=3" class="btn btn-primary">Ver Receita</a>
-                  <button class="btn-icon active" title="Remover dos favoritos">
-                    <i class="icon-heart-filled"></i>
+                  <button class="btn-icon" title="Adicionar aos favoritos">
+                    <i class="icon-heart"></i>
+                  </button>
+                  <button class="btn-icon" title="Compartilhar">
+                    <i class="fas fa-share-alt"></i>
                   </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        
-        <div id="rascunhos" class="tab-content">
-          <div class="receitas-grid">
-            <!-- Rascunho 1 -->
-            <div class="receita-card">
-              <div class="receita-img">
-                <img src="/assets/minhas-receitas/cheesecake.jpg" alt="Cheesecake">
-                <span class="receita-badge draft">Rascunho</span>
+      </section>
+
+      <!-- Pedidos Section -->
+      <section id="pedidos" class="section-pedidos">
+        <div class="container">
+          <div class="section-header">
+            <h2>Meus Pedidos</h2>
+            <a href="/pedidos.html" class="view-all">Ver Todos</a>
+          </div>
+
+          <div class="pedidos-status">
+            <div class="status-card">
+              <div class="status-icon pending">
+                <i class="fas fa-clock"></i>
               </div>
-              <div class="receita-content">
-                <h3>Cheesecake de Frutas Vermelhas</h3>
-                <div class="receita-meta">
-                  <span><i class="fas fa-clock"></i> Última edição: 12/04/2023</span>
+              <div class="status-info">
+                <h3>Pendentes</h3>
+                <p class="status-count">2</p>
+              </div>
+            </div>
+
+            <div class="status-card">
+              <div class="status-icon processing">
+                <i class="fas fa-spinner"></i>
+              </div>
+              <div class="status-info">
+                <h3>Em Preparo</h3>
+                <p class="status-count">1</p>
+              </div>
+            </div>
+
+            <div class="status-card">
+              <div class="status-icon delivered">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="status-info">
+                <h3>Entregues</h3>
+                <p class="status-count">8</p>
+              </div>
+            </div>
+
+            <div class="status-card">
+              <div class="status-icon new-order">
+                <i class="fas fa-plus-circle"></i>
+              </div>
+              <div class="status-info">
+                <h3>Novo Pedido</h3>
+                <a href="/pedidos/novo.html" class="btn btn-sm btn-primary">Fazer Pedido</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="recent-orders">
+            <h3>Pedidos Recentes</h3>
+
+            <div class="order-list">
+              <div class="order-item">
+                <div class="order-img">
+                  <img src="/assets/pedidos/bolo-aniversario.jpg" alt="Bolo de Aniversário" />
                 </div>
-                <p>Cheesecake cremoso com cobertura de frutas vermelhas frescas.</p>
-                <div class="receita-actions">
-                  <a href="/minhas-receitas/editar/3" class="btn btn-primary">Continuar Editando</a>
-                  <button class="btn-icon" title="Publicar">
-                    <i class="fas fa-paper-plane"></i>
-                  </button>
-                  <button class="btn-icon" title="Excluir">
-                    <i class="fas fa-trash"></i>
-                  </button>
+                <div class="order-details">
+                  <h4>Bolo de Aniversário</h4>
+                  <p class="order-date">Pedido em: 15/04/2023</p>
+                  <p class="order-id">Pedido #12345</p>
+                </div>
+                <div class="order-status">
+                  <span class="status-badge processing">Em Preparo</span>
+                  <p class="delivery-date">Entrega: 20/04/2023</p>
+                </div>
+                <div class="order-actions">
+                  <a href="/pedidos/12345" class="btn btn-sm btn-outline">Detalhes</a>
+                </div>
+              </div>
+
+              <div class="order-item">
+                <div class="order-img">
+                  <img src="/assets/pedidos/cupcakes-festa.jpg" alt="Cupcakes para Festa" />
+                </div>
+                <div class="order-details">
+                  <h4>Cupcakes para Festa</h4>
+                  <p class="order-date">Pedido em: 10/04/2023</p>
+                  <p class="order-id">Pedido #12344</p>
+                </div>
+                <div class="order-status">
+                  <span class="status-badge pending">Pendente</span>
+                  <p class="delivery-date">Entrega: 18/04/2023</p>
+                </div>
+                <div class="order-actions">
+                  <a href="/pedidos/12344" class="btn btn-sm btn-outline">Detalhes</a>
+                </div>
+              </div>
+
+              <div class="order-item">
+                <div class="order-img">
+                  <img src="/assets/pedidos/torta-morango.jpg" alt="Torta de Morango" />
+                </div>
+                <div class="order-details">
+                  <h4>Torta de Morango</h4>
+                  <p class="order-date">Pedido em: 05/04/2023</p>
+                  <p class="order-id">Pedido #12343</p>
+                </div>
+                <div class="order-status">
+                  <span class="status-badge delivered">Entregue</span>
+                  <p class="delivery-date">Entregue em: 08/04/2023</p>
+                </div>
+                <div class="order-actions">
+                  <a href="/pedidos/12343" class="btn btn-sm btn-outline">Detalhes</a>
+                  <button class="btn btn-sm btn-primary">Pedir Novamente</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        
-        <div id="feitas" class="tab-content">
-          <!-- Estado vazio -->
-          <div class="empty-state">
-            <img src="/assets/icons/cooking.svg" alt="Cozinhando" class="empty-icon">
-            <h3>Nenhuma receita marcada como feita</h3>
-            <p>Quando você fizer uma receita, marque-a como "Feita" para registrar aqui.</p>
-            <a href="./receitas.html" class="btn btn-primary">Explorar Receitas</a>
+      </section>
+
+      <!-- Compartilhar Section -->
+      <section id="compartilhar" class="section-compartilhar">
+        <div class="container">
+          <div class="compartilhar-content">
+            <div class="compartilhar-info">
+              <h2>Compartilhe Suas Receitas</h2>
+              <p>
+                Mostre seu talento culinário para a comunidade Cakeria. Compartilhe suas criações e
+                inspire outros confeiteiros.
+              </p>
+
+              <ul class="compartilhar-benefits">
+                <li>Ganhe reconhecimento da comunidade</li>
+                <li>Receba feedback de outros confeiteiros</li>
+                <li>Participe de desafios mensais</li>
+                <li>Concorra a prêmios exclusivos</li>
+              </ul>
+
+              <a href="/compartilhar-receita.html" class="btn btn-primary">Compartilhar Receita</a>
+            </div>
+
+            <div class="compartilhar-image">
+              <img src="./assets/share-menu.svg" alt="compartilhar receita" />
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Newsletter Section -->
-    <section class="section-newsletter">
-      <div class="container">
-        <div class="newsletter-content">
-          <h2>Receba Nossas Novidades</h2>
-          <p>Inscreva-se para receber receitas exclusivas, dicas de confeitaria e novidades da Cakeria.</p>
-          
-          <form class="newsletter-form">
-            <input type="email" placeholder="Seu melhor e-mail" required>
-            <button type="submit" class="btn btn-primary">Inscrever-se</button>
-          </form>
+      <!-- Minhas Receitas Section -->
+      <section id="minhas-receitas" class="section-minhas-receitas">
+        <div class="container">
+          <div class="section-header">
+            <h2>Minhas Receitas</h2>
+            <a href="/minhas-receitas.html" class="view-all">Ver Todas</a>
+          </div>
+
+          <div class="receitas-tabs">
+            <button class="tab-btn active" data-tab="publicadas">Publicadas</button>
+            <button class="tab-btn" data-tab="favoritas">Favoritas</button>
+            <button class="tab-btn" data-tab="rascunhos">Rascunhos</button>
+            <button class="tab-btn" data-tab="feitas">Receitas que Fiz</button>
+          </div>
+
+          <div id="publicadas" class="tab-content active">
+            <div class="receitas-grid">
+              <!-- Receita Publicada 1 -->
+              <div class="receita-card">
+                <div class="receita-img">
+                  <img src="/assets/minhas-receitas/bolo-cenoura.jpg" alt="Bolo de Cenoura" />
+                </div>
+                <div class="receita-content">
+                  <h3>Bolo de Cenoura com Cobertura de Chocolate</h3>
+                  <div class="receita-meta">
+                    <span><i class="fas fa-clock"></i> 45 min</span>
+                    <span><i class="fas fa-eye"></i> 128 visualizações</span>
+                  </div>
+                  <p>Meu bolo de cenoura super fofinho com cobertura de chocolate meio amargo.</p>
+                  <div class="receita-actions">
+                    <a href="/minhas-receitas/1" class="btn btn-primary">Ver Receita</a>
+                    <button class="btn-icon" title="Editar">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon" title="Excluir">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Receita Publicada 2 -->
+              <div class="receita-card">
+                <div class="receita-img">
+                  <img src="/assets/minhas-receitas/cookies.jpg" alt="Cookies" />
+                </div>
+                <div class="receita-content">
+                  <h3>Cookies com Gotas de Chocolate</h3>
+                  <div class="receita-meta">
+                    <span><i class="fas fa-clock"></i> 30 min</span>
+                    <span><i class="fas fa-eye"></i> 95 visualizações</span>
+                  </div>
+                  <p>Cookies crocantes por fora e macios por dentro com gotas de chocolate.</p>
+                  <div class="receita-actions">
+                    <a href="/minhas-receitas/2" class="btn btn-primary">Ver Receita</a>
+                    <button class="btn-icon" title="Editar">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon" title="Excluir">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="favoritas" class="tab-content">
+            <div class="receitas-grid">
+              <!-- Receita Favorita 1 -->
+              <div class="receita-card">
+                <div class="receita-img">
+                  <img src="/assets/receitas/bolo-chocolate.jpg" alt="Bolo de Chocolate" />
+                </div>
+                <div class="receita-content">
+                  <h3>Bolo de Chocolate Trufado</h3>
+                  <div class="receita-meta">
+                    <span><i class="fas fa-user"></i> Por Ana Oliveira</span>
+                    <span><i class="fas fa-heart"></i> Favoritado em 10/04/2023</span>
+                  </div>
+                  <p>
+                    Um delicioso bolo de chocolate com recheio cremoso de trufa e cobertura ganache.
+                  </p>
+                  <div class="receita-actions">
+                    <a href="/receita.html?id=1" class="btn btn-primary">Ver Receita</a>
+                    <button class="btn-icon active" title="Remover dos favoritos">
+                      <i class="icon-heart-filled"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Receita Favorita 2 -->
+              <div class="receita-card">
+                <div class="receita-img">
+                  <img src="/assets/receitas/torta-limao.jpg" alt="Torta de Limão" />
+                </div>
+                <div class="receita-content">
+                  <h3>Torta de Limão</h3>
+                  <div class="receita-meta">
+                    <span><i class="fas fa-user"></i> Por Carlos Mendes</span>
+                    <span><i class="fas fa-heart"></i> Favoritado em 08/04/2023</span>
+                  </div>
+                  <p>Torta de limão com base crocante e cobertura de merengue italiano perfeito.</p>
+                  <div class="receita-actions">
+                    <a href="/receita.html?id=3" class="btn btn-primary">Ver Receita</a>
+                    <button class="btn-icon active" title="Remover dos favoritos">
+                      <i class="icon-heart-filled"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="rascunhos" class="tab-content">
+            <div class="receitas-grid">
+              <!-- Rascunho 1 -->
+              <div class="receita-card">
+                <div class="receita-img">
+                  <img src="/assets/minhas-receitas/cheesecake.jpg" alt="Cheesecake" />
+                  <span class="receita-badge draft">Rascunho</span>
+                </div>
+                <div class="receita-content">
+                  <h3>Cheesecake de Frutas Vermelhas</h3>
+                  <div class="receita-meta">
+                    <span><i class="fas fa-clock"></i> Última edição: 12/04/2023</span>
+                  </div>
+                  <p>Cheesecake cremoso com cobertura de frutas vermelhas frescas.</p>
+                  <div class="receita-actions">
+                    <a href="/minhas-receitas/editar/3" class="btn btn-primary"
+                      >Continuar Editando</a
+                    >
+                    <button class="btn-icon" title="Publicar">
+                      <i class="fas fa-paper-plane"></i>
+                    </button>
+                    <button class="btn-icon" title="Excluir">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="feitas" class="tab-content">
+            <!-- Estado vazio -->
+            <div class="empty-state">
+              <img src="/assets/icons/cooking.svg" alt="Cozinhando" class="empty-icon" />
+              <h3>Nenhuma receita marcada como feita</h3>
+              <p>Quando você fizer uma receita, marque-a como "Feita" para registrar aqui.</p>
+              <a href="./receitas.html" class="btn btn-primary">Explorar Receitas</a>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
 
+      <!-- Newsletter Section -->
+      <section class="section-newsletter">
+        <div class="container">
+          <div class="newsletter-content">
+            <h2>Receba Nossas Novidades</h2>
+            <p>
+              Inscreva-se para receber receitas exclusivas, dicas de confeitaria e novidades da
+              Cakeria.
+            </p>
 
-  <footer-component></footer-component>
+            <form class="newsletter-form">
+              <input type="email" placeholder="Seu melhor e-mail" required />
+              <button type="submit" class="btn btn-primary">Inscrever-se</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
 
-  <!-- Scripts -->
-  <script src="./js/api.js"></script>
-  <script src="./js/login.js"></script>
-  <script src="./js/authGuard.js"></script>
-  <script src="./js/navigation.js"></script>
-  <script src="./js/logout.js"></script>
-  <script src="./js/home.js"></script>
+    <footer-component></footer-component>
 
-</body>
-
+    <!-- Scripts -->
+    <script src="./js/api.js"></script>
+    <script src="./js/login.js"></script>
+    <script src="./js/authGuard.js"></script>
+    <script src="./js/navigation.js"></script>
+    <script src="./js/logout.js"></script>
+    <script src="./js/home.js"></script>
+  </body>
 </html>
