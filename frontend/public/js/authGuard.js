@@ -53,7 +53,8 @@ function initAuthGuard() {
     '/favoritos.html', 
     '/footer.html',
     '/receita.html',
-    '/receitas.html'
+    '/receitas.html',
+    '/compartilharReceitas.html'  
   ];
   
   if (protectedPages.some(page => window.location.pathname.includes(page)) && !isAuthenticated()) {
