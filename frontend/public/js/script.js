@@ -14,7 +14,6 @@ const navAdmin = document.getElementById('nav-admin');
 window.navegarParaCategorias = navegarParaCategorias;
 window.navegarParaLogin = navegarParaLogin;
 window.navegarParaRegistro = navegarParaRegistro;
-window.navegarParaReceitas = navegarParaReceitas;
 window.navegarParaSobre = navegarParaSobre;
 window.navegarParaAdmin = navegarParaAdmin;
 window.navegarParaCadastrarProdutos = navegarParaCadastrarProdutos;
@@ -248,9 +247,6 @@ function navegarParaRegistro() {
   currentPage = 'registro';
 }
 
-function navegarParaReceitas() {
-  carregarConteudoHTML('/receitas.html');
-}
 
 function navegarParaSobre() {
   carregarConteudoHTML('/sobre.html');

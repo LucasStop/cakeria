@@ -18,7 +18,6 @@ class Header extends HTMLElement {
               <ul class="nav-links">
                 <li><a href="/" class="nav-link" data-route="home"><i class="fa-solid fa-home"></i> Home</a></li>
                 <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
-                <li><a href="/receitas" class="nav-link" id="nav-receitas" data-route="receitas"><i class="fa-solid fa-book-open"></i> Receitas</a></li>
                 <li><a href="/sobre" class="nav-link" id="nav-sobre" data-route="sobre"><i class="fa-solid fa-info-circle"></i> Sobre</a></li>
                 <li><a href="/admin" class="nav-link" id="nav-admin" data-route="admin"><i class="fa-solid fa-user-shield"></i> Admin</a></li>
               </ul>
@@ -82,21 +81,18 @@ class Header extends HTMLElement {
         e.preventDefault();
         const route = link.getAttribute('data-route');
 
-        // Remover classe 'active' de todos os links
         links.forEach(l => l.classList.remove('active'));
 
-        // Adicionar classe 'active' ao link clicado
         link.classList.add('active');
 
-        // Fechar o menu mobile se estiver aberto
+        
         this.closeMenu();
 
-        // Navegar para a rota
+       
         this.navigateToRoute(route);
       });
     });
 
-    // Adicionar eventos para os botões de autenticação
     const loginBtn = this.querySelector('.login-btn');
     if (loginBtn) {
       loginBtn.addEventListener('click', () => {
@@ -113,7 +109,6 @@ class Header extends HTMLElement {
       });
     }
 
-    // Configurar menu mobile
     this.setupMobileMenu();
   }
 
@@ -125,9 +120,7 @@ class Header extends HTMLElement {
       case 'categorias':
         window.navegarParaCategorias();
         break;
-      case 'receitas':
-        window.navegarParaReceitas();
-        break;
+   
       case 'sobre':
         window.navegarParaSobre();
         break;
@@ -149,11 +142,9 @@ class Header extends HTMLElement {
   }
 
   handleLogout() {
-    // Remover token e dados do usuário
     localStorage.removeItem('token');
     localStorage.removeItem('user');
 
-    // Redirecionar para a página inicial
     window.location.href = '/';
   }
 
@@ -166,12 +157,10 @@ class Header extends HTMLElement {
       menuToggle.addEventListener('click', () => this.toggleMenu());
       overlay.addEventListener('click', () => this.closeMenu());
 
-      // Fechar menu ao pressionar ESC
       document.addEventListener('keydown', e => {
         if (e.key === 'Escape') this.closeMenu();
       });
 
-      // Ajustar menu ao redimensionar a janela
       window.addEventListener('resize', () => {
         if (window.innerWidth > 900 && navBar.classList.contains('active')) {
           this.closeMenu();
@@ -217,7 +206,6 @@ class Header extends HTMLElement {
         (path === '/' && route === 'home') ||
         (path.includes('/produtos') && route === 'produtos') ||
         (path.includes('/categorias') && route === 'categorias') ||
-        (path.includes('/receitas') && route === 'receitas') ||
         (path.includes('/sobre') && route === 'sobre') ||
         (path.includes('/admin') && route === 'admin') ||
         (path.includes('/registerProduct') && route === 'registerProduct') ||

@@ -20,11 +20,6 @@ const Navigation = {
     window.history.pushState({}, '', '/categorias');
   },
 
-  navegarParaReceitas: function () {
-    window.carregarConteudoHTML('/receitas.html');
-    this.currentPage = 'receitas';
-    window.history.pushState({}, '', '/receitas');
-  },
 
   navegarParaSobre: function () {
     window.carregarConteudoHTML('/sobre.html');
@@ -54,16 +49,13 @@ const Navigation = {
       this.navegarParaCategorias();
     } else if (path === '/registerProduct') {
       this.navegarParaRegistroProduct();
-    } else if (path === '/receitas') {
-      this.navegarParaReceitas();
+    
     } else if (path === '/sobre') {
       this.navegarParaSobre();
     } else if (path.startsWith('/receitas/')) {
       const receitaId = parseInt(path.split('/').pop());
       if (!isNaN(receitaId)) {
         window.verReceitaDetalhes(receitaId);
-      } else {
-        this.navegarParaReceitas();
       }
     } else if (path === '/login') {
       this.navegarParaLogin();
@@ -83,9 +75,7 @@ window.navegarParaCadastrarProdutos = function () {
 window.navegarParaCategorias = function () {
   Navigation.navegarParaCategorias();
 };
-window.navegarParaReceitas = function () {
-  Navigation.navegarParaReceitas();
-};
+
 window.navegarParaSobre = function () {
   Navigation.navegarParaSobre();
 };

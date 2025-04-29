@@ -1,277 +1,222 @@
-// Variáveis globais
-let currentPage = 1;
-let totalPages = 0;
+// scripts.js
 
-// Seletores
-const recipesGrid = document.getElementById('recipes-grid');
-const paginationEl = document.getElementById('recipes-pagination');
-const searchInput = document.getElementById('search-recipes');
-const searchBtn = document.getElementById('search-btn');
-const categoryFilter = document.getElementById('category-filter');
-const sortSelect = document.getElementById('sort-recipes');
-const newRecipeBtn = document.getElementById('new-recipe-btn');
+// Proteger a página - verificar se o usuário está autenticado
+function protectPage() {
+  const user = getCurrentUser();
+  if (!user) {
+    window.location.href = '/login.html';
+  }
+}
 
-// Template
-const recipeCardTemplate = document.getElementById('recipe-card-template');
+// Obtém o usuário atual do armazenamento local
+function getCurrentUser() {
+  const userJson = localStorage.getItem('user');
+  return userJson ? JSON.parse(userJson) : null;
+}
 
-document.addEventListener('DOMContentLoaded', async () => {
-  // Verificar autenticação para o botão de nova receita
-  checkAuthStatus();
+// Atualiza a exibição do usuário no cabeçalho
+function updateUserDisplay(user) {
+  const userNameEl = document.getElementById('user-name');
+  if (userNameEl) {
+    userNameEl.textContent = user.name;
+  }
+}
 
-  // Carregar categorias para o filtro
-  await loadCategories();
+// scripts/receitas.js
 
-  // Carregar receitas iniciais
-  await loadRecipes();
-
-  // Configurar event listeners
-  searchBtn.addEventListener('click', handleSearch);
-  searchInput.addEventListener('keypress', e => {
-    if (e.key === 'Enter') handleSearch();
-  });
-
-  categoryFilter.addEventListener('change', handleFiltersChange);
-  sortSelect.addEventListener('change', handleFiltersChange);
+document.addEventListener('DOMContentLoaded', () => {
+  // Proteger a página - verificar se o usuário está autenticado
+  protectPage();
+  
+  // Obtém o usuário atual
+  const user = getCurrentUser();
+  
+  // Atualizar exibição do usuário se necessário
+  if (typeof updateUserDisplay === 'function') {
+    updateUserDisplay(user);
+  }
+  
+  // Inicializar a página de receitas
+  initRecipesPage();
 });
 
-async function checkAuthStatus() {
-  try {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      newRecipeBtn.addEventListener('click', () => {
-        window.location.href = '/login.html?redirect=/nova-receita.html';
-      });
-      return;
-    }
-
-    // Verificar se o token é válido
-    const response = await fetch(`${API.BASE_URL}/auth/validate`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (response.ok) {
-      newRecipeBtn.addEventListener('click', () => {
-        window.location.href = '/nova-receita.html';
-      });
-    } else {
-      localStorage.removeItem('token');
-      newRecipeBtn.addEventListener('click', () => {
-        window.location.href = '/login.html?redirect=/nova-receita.html';
-      });
-    }
-  } catch (error) {
-    console.error('Erro ao verificar autenticação:', error);
-    newRecipeBtn.addEventListener('click', () => {
-      window.location.href = '/login.html?redirect=/nova-receita.html';
-    });
-  }
+// Inicializa a página de receitas
+function initRecipesPage() {
+  loadRecipes();
+  setupEventListeners();
 }
 
-async function loadCategories() {
-  try {
-    const categories = await API.get('/categories');
-
-    categories.forEach(category => {
-      const option = document.createElement('option');
-      option.value = category.id;
-      option.textContent = category.name;
-      categoryFilter.appendChild(option);
-    });
-  } catch (error) {
-    console.error('Erro ao carregar categorias:', error);
-  }
-}
-
+// Carrega as receitas do servidor ou de dados estáticos
 async function loadRecipes() {
-  showLoading();
-
   try {
-    // Obter parâmetros de filtro e paginação
-    const searchTerm = searchInput.value.trim();
-    const categoryId = categoryFilter.value;
-    const sortBy = sortSelect.value;
-
-    // Construir URL com parâmetros
-    let url = `/recipes?page=${currentPage}`;
-    if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
-    if (categoryId) url += `&category=${categoryId}`;
-    if (sortBy) url += `&sort=${sortBy}`;
-
-    // Buscar receitas do servidor
-    const data = await API.get(url);
-
-    // Atualizar paginação
-    totalPages = data.totalPages;
-
-    // Renderizar receitas
-    renderRecipes(data.recipes);
-    renderPagination();
-  } catch (error) {
-    console.error('Erro ao carregar receitas:', error);
-    showError('Não foi possível carregar as receitas. Tente novamente mais tarde.');
-  }
-}
-
-function showLoading() {
-  recipesGrid.innerHTML = `
-    <div class="loading-indicator">
-      <div class="spinner"></div>
-      <p>Carregando receitas...</p>
-    </div>
-  `;
-}
-
-function showError(message) {
-  recipesGrid.innerHTML = `
-    <div class="error-message">
-      <i class="fas fa-exclamation-circle"></i>
-      <p>${message}</p>
-    </div>
-  `;
-}
-
-function renderRecipes(recipes) {
-  if (!recipes || recipes.length === 0) {
+    const recipesGrid = document.getElementById('recipes-grid');
+    if (!recipesGrid) return;
+    
+    // Mostrar indicador de carregamento
     recipesGrid.innerHTML = `
-      <div class="no-recipes-message">
-        <i class="fas fa-search"></i>
-        <p>Nenhuma receita encontrada com os filtros selecionados.</p>
+      <div class="loading-indicator">
+        <div class="spinner"></div>
+        <p>Carregando receitas...</p>
       </div>
     `;
-    return;
+    
+    // Dados estáticos para demonstração
+    // Posteriormente, isso seria substituído por uma chamada API
+    const recipes = [
+      {
+        id: 1,
+        title: 'Bolo de Chocolate Fofinho',
+        image: '/imgs/bolo_chocolate_receita.jpg',
+        author: 'Maria Silva',
+        date: '10/05/2023',
+        views: 1250,
+        excerpt: 'Um delicioso bolo de chocolate fofinho, perfeito para qualquer ocasião.',
+        difficulty: 'Fácil',
+        time: '40 minutos'
+      },
+      {
+        id: 2,
+        title: 'Brigadeiro Gourmet',
+        image: '/imgs/brigadeiro_receita.jpg',
+        author: 'João Santos',
+        date: '23/09/2023',
+        views: 856,
+        excerpt: 'Brigadeiro gourmet com chocolate premium para impressionar seus convidados.',
+        difficulty: 'Fácil',
+        time: '30 minutos'
+      },
+      {
+        id: 3,
+        title: 'Torta de Limão',
+        image: '/imgs/torta_limao_receita.jpg',
+        author: 'Ana Oliveira',
+        date: '05/12/2023',
+        views: 930,
+        excerpt: 'Uma refrescante torta de limão com massa crocante e recheio cremoso.',
+        difficulty: 'Médio',
+        time: '60 minutos'
+      }
+    ];
+    
+    // Aguardar um tempo simulando carregamento
+    setTimeout(() => {
+      renderRecipes(recipes);
+    }, 800);
+    
+  } catch (error) {
+    console.error('Erro ao carregar receitas:', error);
+    const recipesGrid = document.getElementById('recipes-grid');
+    if (recipesGrid) {
+      recipesGrid.innerHTML = '<p class="error">Erro ao carregar receitas. Tente novamente mais tarde.</p>';
+    }
   }
+}
 
+// Renderiza as receitas na grade
+function renderRecipes(recipes) {
+  const recipesGrid = document.getElementById('recipes-grid');
+  const template = document.getElementById('recipe-card-template');
+  
+  if (!recipesGrid || !template) return;
+  
+  // Limpar a grade
   recipesGrid.innerHTML = '';
-
-  recipes.forEach(recipe => {
-    // Clonar o template
-    const recipeCard = recipeCardTemplate.content.cloneNode(true);
-
-    // Imagem
-    const img = recipeCard.querySelector('.recipe-image img');
-    img.src = recipe.imageUrl || '/assets/default-recipe.jpg';
-    img.alt = recipe.title;
-
-    // Título e metadados
-    recipeCard.querySelector('.recipe-title').textContent = recipe.title;
-    recipeCard.querySelector('.author-name').textContent = recipe.author?.name || 'Anônimo';
-
-    // Data formatada
-    const createdAt = new Date(recipe.createdAt);
-    recipeCard.querySelector('.date-text').textContent = createdAt.toLocaleDateString('pt-BR');
-
-    // Visualizações
-    recipeCard.querySelector('.views-count').textContent = recipe.views || 0;
-
-    // Descrição resumida
-    const excerpt =
-      recipe.description.substring(0, 120) + (recipe.description.length > 120 ? '...' : '');
-    recipeCard.querySelector('.recipe-excerpt').textContent = excerpt;
-
-    // Dificuldade
-    const difficultyEl = recipeCard.querySelector('.recipe-difficulty');
-    difficultyEl.textContent = recipe.difficulty || 'Médio';
-    difficultyEl.classList.add(`difficulty-${(recipe.difficulty || 'Médio').toLowerCase()}`);
-
-    // Tempo de preparo
-    const totalTime = (recipe.prepTime || 0) + (recipe.cookTime || 0);
-    recipeCard.querySelector('.time-text').textContent = totalTime > 0 ? `${totalTime} min` : 'N/A';
-
-    // Link para detalhes
-    const recipeLink = recipeCard.querySelector('.recipe-link');
-    recipeLink.href = `/receita.html?slug=${recipe.slug}`;
-
-    recipesGrid.appendChild(recipeCard);
-  });
-}
-
-function renderPagination() {
-  if (totalPages <= 1) {
-    paginationEl.style.display = 'none';
+  
+  if (recipes.length === 0) {
+    recipesGrid.innerHTML = '<p class="no-results">Nenhuma receita encontrada.</p>';
     return;
   }
-
-  paginationEl.style.display = 'flex';
-  paginationEl.innerHTML = '';
-
-  // Botão anterior
-  const prevBtn = document.createElement('button');
-  prevBtn.classList.add('prev-btn');
-  prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-  prevBtn.disabled = currentPage === 1;
-  prevBtn.addEventListener('click', () => {
-    if (currentPage > 1) {
-      currentPage--;
-      loadRecipes();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+  
+  recipes.forEach(recipe => {
+    const clone = document.importNode(template.content, true);
+    
+    // Preencher dados na receita
+    clone.querySelector('.recipe-image img').src = recipe.image;
+    clone.querySelector('.recipe-image img').alt = recipe.title;
+    clone.querySelector('.recipe-title').textContent = recipe.title;
+    clone.querySelector('.author-name').textContent = recipe.author;
+    clone.querySelector('.date-text').textContent = recipe.date;
+    clone.querySelector('.views-count').textContent = recipe.views;
+    clone.querySelector('.recipe-excerpt').textContent = recipe.excerpt;
+    clone.querySelector('.recipe-difficulty').textContent = recipe.difficulty;
+    clone.querySelector('.time-text').textContent = recipe.time;
+    
+    // Configurar link para ver detalhes da receita
+    const recipeLink = clone.querySelector('.recipe-link');
+    recipeLink.href = `/receitas/${recipe.id}`;
+    recipeLink.onclick = function(e) {
+      e.preventDefault();
+      window.verReceitaDetalhes(recipe.id);
+    };
+    
+    recipesGrid.appendChild(clone);
   });
-  paginationEl.appendChild(prevBtn);
+}
 
-  // Botões de páginas
-  const maxVisiblePages = 5;
-  let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-  let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-  if (endPage - startPage + 1 < maxVisiblePages) {
-    startPage = Math.max(1, endPage - maxVisiblePages + 1);
-  }
-
-  for (let i = startPage; i <= endPage; i++) {
-    const pageBtn = document.createElement('button');
-    pageBtn.textContent = i;
-    if (i === currentPage) {
-      pageBtn.classList.add('active');
-    }
-    pageBtn.addEventListener('click', () => {
-      currentPage = i;
-      loadRecipes();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+// Configura os event listeners
+function setupEventListeners() {
+  // Busca de receitas
+  const searchInput = document.getElementById('search-recipes');
+  const searchBtn = document.getElementById('search-btn');
+  
+  if (searchBtn && searchInput) {
+    searchBtn.addEventListener('click', () => {
+      const searchTerm = searchInput.value.trim();
+      if (searchTerm) {
+        // Implementar busca de receitas
+        console.log(`Buscando por: ${searchTerm}`);
+        // searchRecipes(searchTerm);
+      }
     });
-    paginationEl.appendChild(pageBtn);
+    
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const searchTerm = searchInput.value.trim();
+        if (searchTerm) {
+          // Implementar busca de receitas
+          console.log(`Buscando por: ${searchTerm}`);
+          // searchRecipes(searchTerm);
+        }
+      }
+    });
   }
-
-  // Botão próxima
-  const nextBtn = document.createElement('button');
-  nextBtn.classList.add('next-btn');
-  nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-  nextBtn.disabled = currentPage === totalPages;
-  nextBtn.addEventListener('click', () => {
-    if (currentPage < totalPages) {
-      currentPage++;
-      loadRecipes();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  });
-  paginationEl.appendChild(nextBtn);
-}
-
-function handleSearch() {
-  currentPage = 1;
-  loadRecipes();
-}
-
-function handleFiltersChange() {
-  currentPage = 1;
-  loadRecipes();
-}
-
-// Extender o objeto API para validação do token
-if (API) {
-  API.validateToken = async token => {
-    try {
-      const response = await fetch(`${API.BASE_URL}/auth/validate`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.ok;
-    } catch (error) {
-      console.error('Erro ao validar token:', error);
-      return false;
-    }
-  };
+  
+  // Botão para compartilhar nova receita
+  const newRecipeBtn = document.getElementById('new-recipe-btn');
+  if (newRecipeBtn) {
+    newRecipeBtn.addEventListener('click', () => {
+      // Implementar compartilhamento de nova receita
+      console.log('Compartilhar nova receita');
+      // showNewRecipeModal();
+    });
+  }
+  
+  // Filtro por categoria
+  const categoryFilter = document.getElementById('category-filter');
+  if (categoryFilter) {
+    // Adicionar categorias dinamicamente
+    const categories = ['Bolos', 'Tortas', 'Doces', 'Salgados', 'Bebidas', 'Sem Glúten', 'Veganos'];
+    categories.forEach(category => {
+      const option = document.createElement('option');
+      option.value = category.toLowerCase();
+      option.textContent = category;
+      categoryFilter.appendChild(option);
+    });
+    
+    categoryFilter.addEventListener('change', () => {
+      const selectedCategory = categoryFilter.value;
+      console.log(`Filtrando por categoria: ${selectedCategory}`);
+      // filterRecipesByCategory(selectedCategory);
+    });
+  }
+  
+  // Ordenação de receitas
+  const sortSelect = document.getElementById('sort-recipes');
+  if (sortSelect) {
+    sortSelect.addEventListener('change', () => {
+      const sortOption = sortSelect.value;
+      console.log(`Ordenando por: ${sortOption}`);
+      // sortRecipes(sortOption);
+    });
+  }
 }
