@@ -37,7 +37,7 @@ exports.findOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const { name, email, password, type, phone, address = {}, addresses = [] } = req.body;
+    const { name, email, cpf, password, type, phone, address = {}, addresses = [] } = req.body;
 
     // Utiliza transação para garantir consistência
     const result = await sequelize.transaction(async t => {
@@ -46,7 +46,7 @@ exports.create = async (req, res) => {
 
       // Cria o usuário
       const user = await User.create(
-        { name, email, password: hashedPassword, type, phone },
+        { name, email, cpf, password: hashedPassword, type, phone },
         { transaction: t }
       );
 
