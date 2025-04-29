@@ -7,9 +7,9 @@ exports.findAll = async (req, res) => {
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'name', 'email']
-        }
-      ]
+          attributes: ['id', 'name', 'email'],
+        },
+      ],
     });
     res.json(addresses);
   } catch (error) {
@@ -25,20 +25,20 @@ exports.findOne = async (req, res) => {
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'name', 'email']
-        }
-      ]
+          attributes: ['id', 'name', 'email'],
+        },
+      ],
     });
     if (!address) {
       return res.status(404).json({ message: 'Endereço não encontrado' });
     }
-    
+
     // Verificar se o usuário atual é o dono do endereço (comentado porque depende da implementação de autenticação)
     // const userId = req.user.id; // Supondo que a informação do usuário está disponível via middleware de autenticação
     // if (address.user_id !== userId && req.user.type !== 'admin') {
     //   return res.status(403).json({ message: 'Acesso não autorizado a este endereço' });
     // }
-    
+
     res.json(address);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar endereço', error: error.message });
@@ -53,21 +53,21 @@ exports.findByUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
-    
+
     // Verificar autorização (comentado porque depende da implementação de autenticação)
     // if (req.user.id !== parseInt(userId) && req.user.type !== 'admin') {
     //   return res.status(403).json({ message: 'Acesso não autorizado aos endereços deste usuário' });
     // }
-    
+
     const addresses = await Address.findAll({
       where: { user_id: userId },
       include: [
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'name', 'email']
-        }
-      ]
+          attributes: ['id', 'name', 'email'],
+        },
+      ],
     });
     res.json(addresses);
   } catch (error) {
@@ -77,19 +77,20 @@ exports.findByUser = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const { user_id, street, number, neighborhood, complement, city, state, postal_code, country } = req.body;
-    
+    const { user_id, street, number, neighborhood, complement, city, state, postal_code, country } =
+      req.body;
+
     // Verificar se o usuário existe
     const user = await User.findByPk(user_id);
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
-    
+
     // Verificar autorização (comentado porque depende da implementação de autenticação)
     // if (req.user.id !== user_id && req.user.type !== 'admin') {
     //   return res.status(403).json({ message: 'Não autorizado a criar endereço para este usuário' });
     // }
-    
+
     const address = await Address.create({
       user_id,
       street,
@@ -99,20 +100,20 @@ exports.create = async (req, res) => {
       city,
       state,
       postal_code,
-      country
+      country,
     });
-    
+
     // Retornar o endereço criado com informações do usuário
     const addressWithUser = await Address.findByPk(address.id, {
       include: [
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'name', 'email']
-        }
-      ]
+          attributes: ['id', 'name', 'email'],
+        },
+      ],
     });
-    
+
     res.status(201).json(addressWithUser);
   } catch (error) {
     res.status(400).json({ message: 'Erro ao criar endereço', error: error.message });
@@ -126,23 +127,23 @@ exports.update = async (req, res) => {
     if (!address) {
       return res.status(404).json({ message: 'Endereço não encontrado' });
     }
-    
+
     // Verificar autorização (comentado porque depende da implementação de autenticação)
     // if (req.user.id !== address.user_id && req.user.type !== 'admin') {
     //   return res.status(403).json({ message: 'Não autorizado a atualizar este endereço' });
     // }
-    
+
     const [updated] = await Address.update(req.body, { where: { id } });
-    
+
     if (updated) {
       const updatedAddress = await Address.findByPk(id, {
         include: [
           {
             model: User,
             as: 'user',
-            attributes: ['id', 'name', 'email']
-          }
-        ]
+            attributes: ['id', 'name', 'email'],
+          },
+        ],
       });
       res.json(updatedAddress);
     } else {
@@ -160,12 +161,12 @@ exports.delete = async (req, res) => {
     if (!address) {
       return res.status(404).json({ message: 'Endereço não encontrado' });
     }
-    
+
     // Verificar autorização (comentado porque depende da implementação de autenticação)
     // if (req.user.id !== address.user_id && req.user.type !== 'admin') {
     //   return res.status(403).json({ message: 'Não autorizado a remover este endereço' });
     // }
-    
+
     await Address.destroy({ where: { id } });
     res.status(204).send();
   } catch (error) {

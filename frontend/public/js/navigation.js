@@ -1,25 +1,21 @@
 const Navigation = {
-  
-
   navegarParaAdmin: function () {
     window.renderizarAdmin();
     this.currentPage = 'admin';
     window.history.pushState({}, '', '/admin');
   },
-  
+
   navegarParaCadastrarProdutos: function () {
     window.location.href = '/registerProduct.html';
     this.currentPage = 'registerProduct';
   },
 
   navegarParaCategorias: function () {
-
     window.removerEstilosEspecificos && window.removerEstilosEspecificos();
     window.renderizarListaCategorias();
     this.currentPage = 'categorias';
     window.history.pushState({}, '', '/categorias');
   },
-
 
   navegarParaSobre: function () {
     window.carregarConteudoHTML('/sobre.html');
@@ -54,7 +50,6 @@ const Navigation = {
       this.navegarParaCategorias();
     } else if (path === '/registerProduct') {
       this.navegarParaRegistroProduct();
-    
     } else if (path === '/sobre') {
       this.navegarParaSobre();
     } else if (path === '/compartilharReceitas') {
@@ -82,7 +77,7 @@ window.navegarParaCompartilharReceitas = function () {
 
 window.navegarParaCadastrarProdutos = function () {
   Navigation.navegarParaCadastrarProdutos();
-}
+};
 window.navegarParaCategorias = function () {
   Navigation.navegarParaCategorias();
 };

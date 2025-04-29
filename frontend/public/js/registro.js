@@ -8,18 +8,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initPasswordToggles() {
   const toggleButtons = document.querySelectorAll('.password-toggle');
-  
+
   toggleButtons.forEach(button => {
-    button.addEventListener('click', function() {
+    button.addEventListener('click', function () {
       const input = this.previousElementSibling;
-      
+
       // Botão de mostrar/esconder senha
       if (input.type === 'password') {
         input.type = 'text';
-        this.querySelector('svg').innerHTML = '<path d="M12 4.5c-5 0-9.3 3-11 7.5 1.7 4.5 6 7.5 11 7.5s9.3-3 11-7.5c-1.7-4.5-6-7.5-11-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/>';
+        this.querySelector('svg').innerHTML =
+          '<path d="M12 4.5c-5 0-9.3 3-11 7.5 1.7 4.5 6 7.5 11 7.5s9.3-3 11-7.5c-1.7-4.5-6-7.5-11-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/>';
       } else {
         input.type = 'password';
-        this.querySelector('svg').innerHTML = '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>';
+        this.querySelector('svg').innerHTML =
+          '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>';
       }
     });
   });
@@ -27,16 +29,57 @@ function initPasswordToggles() {
 
 function addInputEvents() {
   addValidation('register-name', isValidName, 'name-error', 'Digite pelo menos nome e sobrenome');
-  addValidation('register-email', isValidEmail, 'email-error', 'Formato inválido (ex: usuario@email.com)');
-  addValidation('register-phone', isValidPhone, 'phone-error', 'Formato correto: (00) 00000-0000', formatPhone);
+  addValidation(
+    'register-email',
+    isValidEmail,
+    'email-error',
+    'Formato inválido (ex: usuario@email.com)'
+  );
+  addValidation(
+    'register-phone',
+    isValidPhone,
+    'phone-error',
+    'Formato correto: (00) 00000-0000',
+    formatPhone
+  );
   addValidation('register-cpf', isValidCPF, 'cpf-error', 'CPF inválido', formatCPF);
   addValidation('register-password', isValidPassword, 'password-error', 'Mínimo 5 caracteres');
-  addValidation('register-cep', isValidCEP, 'cep-error', 'Formato correto: 00000-000', formatCEPandFetch);
+  addValidation(
+    'register-cep',
+    isValidCEP,
+    'cep-error',
+    'Formato correto: 00000-000',
+    formatCEPandFetch
+  );
   addValidation('register-street', isNotEmpty, 'street-error', 'Digite o nome da rua');
-  addValidation('register-number', isValidNumber, 'number-error', 'Digite um número válido', formatNumber);
-  addValidation('register-neighborhood', isValidLettersOnly, 'neighborhood-error', 'Digite um bairro válido (sem números)', formatLettersOnly);
-  addValidation('register-city', isValidLettersOnly, 'city-error', 'Digite uma cidade válida (sem números)', formatLettersOnly);
-  addValidation('register-state', isValidLettersOnly, 'state-error', 'Digite um estado válido (sem números)', formatLettersOnly);
+  addValidation(
+    'register-number',
+    isValidNumber,
+    'number-error',
+    'Digite um número válido',
+    formatNumber
+  );
+  addValidation(
+    'register-neighborhood',
+    isValidLettersOnly,
+    'neighborhood-error',
+    'Digite um bairro válido (sem números)',
+    formatLettersOnly
+  );
+  addValidation(
+    'register-city',
+    isValidLettersOnly,
+    'city-error',
+    'Digite uma cidade válida (sem números)',
+    formatLettersOnly
+  );
+  addValidation(
+    'register-state',
+    isValidLettersOnly,
+    'state-error',
+    'Digite um estado válido (sem números)',
+    formatLettersOnly
+  );
 
   const complement = document.getElementById('register-complement');
   if (complement) {
@@ -73,33 +116,35 @@ function addValidation(id, validateFn, errorId, errorMsg, formatFn = null) {
 }
 
 // Validações
-const isNotEmpty = (val) => val.trim() !== '';
-const isValidName = (val) => val.trim().split(' ').length >= 2;
-const isValidEmail = (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
-const isValidPhone = (val) => /^\(\d{2}\) \d{5}-\d{4}$/.test(val);
-const isValidCPF = (val) => /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(val);
-const isValidPassword = (val) => val.length >= 5;
-const isValidCEP = (val) => /^\d{5}-\d{3}$/.test(val);
-const isValidNumber = (val) => /^\d+$/.test(val);
-const isValidLettersOnly = (val) => val.trim() !== '' && /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ ]+$/.test(val);
+const isNotEmpty = val => val.trim() !== '';
+const isValidName = val => val.trim().split(' ').length >= 2;
+const isValidEmail = val => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+const isValidPhone = val => /^\(\d{2}\) \d{5}-\d{4}$/.test(val);
+const isValidCPF = val => /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(val);
+const isValidPassword = val => val.length >= 5;
+const isValidCEP = val => /^\d{5}-\d{3}$/.test(val);
+const isValidNumber = val => /^\d+$/.test(val);
+const isValidLettersOnly = val =>
+  val.trim() !== '' && /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ ]+$/.test(val);
 
 // Formatações
 function formatPhone(input) {
-  input.value = input.value.replace(/\D/g, '')
+  input.value = input.value
+    .replace(/\D/g, '')
     .replace(/^(\d{2})(\d)/, '($1) $2')
     .replace(/(\d{5})(\d{1,4})$/, '$1-$2');
 }
 
 function formatCPF(input) {
-  input.value = input.value.replace(/\D/g, '')
+  input.value = input.value
+    .replace(/\D/g, '')
     .replace(/^(\d{3})(\d)/, '$1.$2')
     .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
     .replace(/\.(\d{3})(\d)/, '.$1-$2');
 }
 
 function formatCEPandFetch(input) {
-  input.value = input.value.replace(/\D/g, '')
-    .replace(/^(\d{5})(\d)/, '$1-$2');
+  input.value = input.value.replace(/\D/g, '').replace(/^(\d{5})(\d)/, '$1-$2');
   if (isValidCEP(input.value)) fetchAddress(input.value);
 }
 
@@ -125,7 +170,7 @@ function clearError(id, input) {
 // Busca CEP
 function fetchAddress(cep) {
   cep = cep.replace(/\D/g, '');
-  
+
   fetch(`https://viacep.com.br/ws/${cep}/json/`)
     .then(response => {
       if (!response.ok) {
@@ -138,17 +183,17 @@ function fetchAddress(cep) {
         showError('cep-error', document.getElementById('register-cep'), 'CEP não encontrado');
         return;
       }
-      
+
       const streetField = document.getElementById('register-street');
       const neighborhoodField = document.getElementById('register-neighborhood');
       const cityField = document.getElementById('register-city');
       const stateField = document.getElementById('register-state');
-      
+
       if (streetField) streetField.value = data.logradouro || '';
       if (neighborhoodField) neighborhoodField.value = data.bairro || '';
       if (cityField) cityField.value = data.localidade || '';
       if (stateField) stateField.value = data.uf || '';
-      
+
       // Limpar erros dos campos preenchidos automaticamente
       if (data.logradouro) clearError('street-error', streetField);
       if (data.bairro) clearError('neighborhood-error', neighborhoodField);
@@ -163,10 +208,10 @@ function fetchAddress(cep) {
 
 function handleSubmit(e) {
   e.preventDefault();
-  
+
   // Validar todos os campos
   let isValid = true;
-  
+
   const fields = {
     'register-name': isValidName,
     'register-email': isValidEmail,
@@ -178,28 +223,32 @@ function handleSubmit(e) {
     'register-number': isValidNumber,
     'register-neighborhood': isValidLettersOnly,
     'register-city': isValidLettersOnly,
-    'register-state': isValidLettersOnly
+    'register-state': isValidLettersOnly,
   };
-  
+
   for (const [id, validateFn] of Object.entries(fields)) {
     const input = document.getElementById(id);
     if (!input) continue;
-    
+
     if (!validateFn(input.value)) {
       const errorId = id.replace('register-', '') + '-error';
       showError(errorId, input, 'Campo inválido');
       isValid = false;
     }
   }
-  
+
   const password = document.getElementById('register-password').value;
   const confirm = document.getElementById('register-confirm-password').value;
 
   if (password !== confirm) {
-    showError('confirm-password-error', document.getElementById('register-confirm-password'), 'As senhas não coincidem');
+    showError(
+      'confirm-password-error',
+      document.getElementById('register-confirm-password'),
+      'As senhas não coincidem'
+    );
     isValid = false;
   }
-  
+
   if (!isValid) return;
 
   const form = e.target;
@@ -216,8 +265,8 @@ function handleSubmit(e) {
       complement: form.elements.complement.value,
       neighborhood: form.elements.neighborhood.value,
       city: form.elements.city.value,
-      state: form.elements.state.value
-    }
+      state: form.elements.state.value,
+    },
   };
 
   fetch(`http://localhost:3001/api/users`, {
@@ -225,14 +274,13 @@ function handleSubmit(e) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(userData)
+    body: JSON.stringify(userData),
   })
-    .then(async (response) => {
+    .then(async response => {
       if (response.ok) {
         const responseData = await response.json();
         console.log('Usuário registrado com sucesso:', responseData);
 
-       
         setTimeout(() => {
           window.location.href = '/login.html';
         }, 2000);
@@ -241,7 +289,7 @@ function handleSubmit(e) {
         console.error('Erro ao registrar usuário:', errorData);
       }
     })
-    .catch((error) => {
+    .catch(error => {
       console.error('Erro na requisição:', error);
     });
 

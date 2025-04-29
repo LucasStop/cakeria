@@ -65,7 +65,6 @@ app.get('/', (req, res) => {
   `);
 });
 
-
 sequelize
   .sync({ force: false })
   .then(() => {

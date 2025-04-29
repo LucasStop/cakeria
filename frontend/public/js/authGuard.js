@@ -1,16 +1,35 @@
-/**
- * Verifica se o usuário está autenticado
- * @returns {boolean} 
- */
+// authGuard.js - Proteção de páginas que requerem autenticação
+
+document.addEventListener('DOMContentLoaded', () => {
+  const currentPath = window.location.pathname;
+  
+  // Páginas que requerem autenticação
+  const protectedPages = [
+    '/home.html',
+    '/pedidos/novo.html',
+    '/perfil.html',
+    '/favoritos.html',
+    '/compartilharReceitas.html'
+  ];
+  
+  // Verifica se a página atual está na lista de páginas protegidas
+  const requiresAuth = protectedPages.some(page => 
+    currentPath.endsWith(page) || currentPath === page
+  );
+  
+  // Se a página requer autenticação e o usuário não está autenticado
+  if (requiresAuth && !isAuthenticated()) {
+    // Redirecionar para a página de login
+    window.location.href = `/login.html?redirect=${encodeURIComponent(currentPath)}`;
+  }
+});
+
+// Verifica se o usuário está autenticado
 function isAuthenticated() {
-  const token = localStorage.getItem('token');
-  return !!token; // Converte para booleano
+  return localStorage.getItem('token') !== null;
 }
 
-/**
- * Obtém as informações do usuário atual
- * @returns {Object|null}
- */
+// Obtém as informações do usuário atual
 function getCurrentUser() {
   try {
     const userStr = localStorage.getItem('user');
@@ -21,15 +40,11 @@ function getCurrentUser() {
   }
 }
 
-/**
- * Protege uma página que requer autenticação
- * Redireciona para a página de login caso o usuário não esteja autenticado
- */
-function protectPage() {
-  if (!isAuthenticated()) {
-    const currentPath = window.location.pathname;
-    window.location.href = `/login.html?redirect=${encodeURIComponent(currentPath)}`;
-  }
+// Função para fazer logout
+function handleLogout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/login.html';
 }
 
 /**

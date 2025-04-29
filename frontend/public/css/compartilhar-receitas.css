@@ -64,7 +64,7 @@
   padding: 12px 15px;
   border: 1px solid #ddd;
   border-radius: 6px;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.95rem;
   transition: border-color 0.3s;
 }
@@ -160,7 +160,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.95rem;
   transition: background-color 0.2s;
   margin-top: 5px;
@@ -176,7 +176,7 @@
   margin-bottom: 15px;
 }
 
-.file-input-wrapper input[type="file"] {
+.file-input-wrapper input[type='file'] {
   display: block;
   margin-bottom: 10px;
 }
@@ -214,30 +214,30 @@
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .form-row .form-group {
     width: 100%;
   }
-  
+
   .ingredient-item,
   .step-item {
     flex-wrap: wrap;
   }
-  
+
   .step-item {
     padding-left: 0;
     padding-top: 40px;
   }
-  
+
   .step-number {
     top: 0;
     left: 15px;
   }
-  
+
   .form-actions {
     flex-direction: column;
   }
-  
+
   .form-actions button {
     width: 100%;
   }

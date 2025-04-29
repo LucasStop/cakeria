@@ -34,22 +34,22 @@ module.exports = {
       size: {
         type: Sequelize.STRING(50),
         allowNull: false,
-        comment: 'Peso ou tamanho do produto (ex: 500g, 1kg, 30cm)'
+        comment: 'Peso ou tamanho do produto (ex: 500g, 1kg, 30cm)',
       },
       stock: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: 0
+        defaultValue: 0,
       },
       expiry_date: {
         type: Sequelize.DATEONLY,
         allowNull: false,
-        comment: 'Data de validade do produto'
+        comment: 'Data de validade do produto',
       },
       image_url: {
         type: Sequelize.STRING(255),
         allowNull: true,
-        comment: 'URL da imagem do produto'
+        comment: 'URL da imagem do produto',
       },
       created_at: {
         type: Sequelize.DATE,

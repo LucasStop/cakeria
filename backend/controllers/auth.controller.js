@@ -9,24 +9,24 @@ exports.login = async (req, res) => {
 
     // Valida os dados de entrada
     if (!email || !password) {
-      return res.status(400).json({ 
-        message: 'Email e senha são obrigatórios' 
+      return res.status(400).json({
+        message: 'Email e senha são obrigatórios',
       });
     }
 
     // Procura usuário pelo email
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(401).json({ 
-        message: 'Credenciais inválidas' 
+      return res.status(401).json({
+        message: 'Credenciais inválidas',
       });
     }
 
     // Compara a senha
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ 
-        message: 'Credenciais inválidas' 
+      return res.status(401).json({
+        message: 'Credenciais inválidas',
       });
     }
 
@@ -42,12 +42,12 @@ exports.login = async (req, res) => {
 
     res.json({
       user: userData,
-      token: token
+      token: token,
     });
   } catch (error) {
-    res.status(500).json({ 
-      message: 'Erro durante login', 
-      error: error.message 
+    res.status(500).json({
+      message: 'Erro durante login',
+      error: error.message,
     });
   }
 };
@@ -62,4 +62,4 @@ async function updateLastLogin(userId) {
   } catch (error) {
     console.error('Erro ao atualizar último login:', error);
   }
-};
+}

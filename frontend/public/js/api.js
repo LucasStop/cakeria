@@ -1,80 +1,121 @@
+// API Helper for interacting with the backend
+
 const API = {
   BASE_URL: 'http://localhost:3001/api',
 
-  async get(endpoint) {
+  // Método genérico para requisições
+  async request(endpoint, options = {}) {
     try {
-      const response = await fetch(`${this.BASE_URL}${endpoint}`);
-      if (!response.ok) throw new Error(`Erro na requisição: ${response.status}`);
+      // Adiciona o token de autenticação se disponível
+      const token = localStorage.getItem('token');
+      if (token) {
+        options.headers = {
+          ...options.headers,
+          'Authorization': `Bearer ${token}`
+        };
+      }
+
+      // Adiciona o Content-Type se estiver enviando JSON
+      if (options.body && !(options.body instanceof FormData)) {
+        options.headers = {
+          ...options.headers,
+          'Content-Type': 'application/json'
+        };
+        options.body = JSON.stringify(options.body);
+      }
+
+      const response = await fetch(`${this.BASE_URL}${endpoint}`, options);
+      
+      // Se for 204 (No Content), retorna true
+      if (response.status === 204) {
+        return true;
+      }
+      
+      // Se for uma resposta de erro
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Erro ${response.status}`);
+      }
+
+      // Retorna os dados
       return await response.json();
     } catch (error) {
-      console.error(`Erro na API (GET ${endpoint}):`, error);
+      console.error('API Error:', error);
       throw error;
     }
   },
 
-  async post(endpoint, data) {
-    try {
-      const response = await fetch(`${this.BASE_URL}${endpoint}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+  // Métodos para Users
+  Users: {
+    get(userId) {
+      return API.request(`/users/${userId}`);
+    },
+    update(userId, userData) {
+      return API.request(`/users/${userId}`, {
+        method: 'PUT',
+        body: userData
       });
-
-      const responseData = await response.json();
-      if (!response.ok)
-        throw new Error(responseData.message || `Erro na requisição: ${response.status}`);
-
-      return responseData;
-    } catch (error) {
-      console.error(`Erro na API (POST ${endpoint}):`, error);
-      throw error;
+    },
+    changePassword(userId, passwordData) {
+      return API.request(`/users/${userId}/password`, {
+        method: 'PUT',
+        body: passwordData
+      });
     }
   },
 
-  produtos: {
-    listar: async () => API.get('/products'),
-    obterPorId: async id => API.get(`/products/${id}`),
-    obterPorCategoria: async categoriaId => API.get(`/products/category/${categoriaId}`),
-  },
-
-  categorias: {
-    listar: async () => API.get('/categories'),
-  },
-
-  auth: {
-    login: async credentials => API.post('/auth/login', credentials),
-    registro: async userData => API.post('/auth/register', userData),
+  // Métodos para Addresses
+  Addresses: {
+    getByUser(userId) {
+      return API.request(`/addresses/user/${userId}`);
+    },
+    create(addressData) {
+      return API.request(`/addresses`, {
+        method: 'POST',
+        body: addressData
+      });
+    },
+    update(addressId, addressData) {
+      return API.request(`/addresses/${addressId}`, {
+        method: 'PUT',
+        body: addressData
+      });
+    },
+    delete(addressId) {
+      return API.request(`/addresses/${addressId}`, {
+        method: 'DELETE'
+      });
+    }
   },
   
-  // Adicionar métodos para receitas
-  recipes: {
-    listar: async () => API.get('/recipes'),
-    obterPorId: async id => API.get(`/recipes/${id}`),
-    criar: async recipeData => API.post('/recipes', recipeData),
-    
-    // Método para upload de imagem de receita
-    uploadImage: async (recipeId, imageFile) => {
-      try {
-        const formData = new FormData();
-        formData.append('image', imageFile);
-        
-        const response = await fetch(`${API.BASE_URL}/recipes/${recipeId}/image`, {
-          method: 'POST',
-          body: formData,
-        });
-        
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => null);
-          throw new Error(errorData?.message || `Erro ao fazer upload: ${response.status}`);
-        }
-        
-        return await response.json();
-      } catch (error) {
-        console.error(`Erro no upload de imagem:`, error);
-        throw error;
-      }
-    }
+  // Método genérico para GET
+  get(endpoint) {
+    return this.request(endpoint);
+  },
+
+  // Método genérico para POST
+  post(endpoint, data) {
+    return this.request(endpoint, {
+      method: 'POST',
+      body: data
+    });
+  },
+
+  // Método genérico para PUT
+  put(endpoint, data) {
+    return this.request(endpoint, {
+      method: 'PUT',
+      body: data
+    });
+  },
+
+  // Método genérico para DELETE
+  delete(endpoint) {
+    return this.request(endpoint, {
+      method: 'DELETE'
+    });
   }
 };
+
+// Exportar para uso em outros arquivos
+window.API = API;
