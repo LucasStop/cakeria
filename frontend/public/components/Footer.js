@@ -1,9 +1,11 @@
 class Footer extends HTMLElement {
   constructor() {
     super();
+    console.log('Footer component constructor initialized');
   }
 
   async connectedCallback() {
+    console.log('Footer component connected to DOM');
     try {
       const response = await fetch('/components/Footer.html');
       if (!response.ok) {
@@ -14,6 +16,7 @@ class Footer extends HTMLElement {
       this.innerHTML = html;
 
       this.setupEventListeners();
+      console.log('Footer template carregado com sucesso');
     } catch (error) {
       console.error('Não foi possível carregar o componente Footer:', error);
       this.innerHTML = '<p>Erro ao carregar o componente Footer</p>';
@@ -36,8 +39,6 @@ class Footer extends HTMLElement {
           window.navegarParaProdutos();
         } else if (href.includes('/categorias')) {
           window.navegarParaCategorias();
-        } else if (href.includes('/receitas')) {
-          window.navegarParaReceitas();
         } else if (href.includes('/sobre')) {
           window.navegarParaSobre();
         } else if (href.includes('/login')) {
@@ -50,4 +51,8 @@ class Footer extends HTMLElement {
   }
 }
 
-customElements.define('footer-component', Footer);
+// Garantimos que o componente é definido apenas uma vez
+if (!customElements.get('footer-component')) {
+  customElements.define('footer-component', Footer);
+  console.log('Footer component registrado');
+}

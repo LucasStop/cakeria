@@ -31,10 +31,48 @@ exports.findOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const category = await Category.create(req.body);
-    res.status(201).json(category);
+    // Validar se há dados no corpo da requisição
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({ 
+        message: 'Dados da categoria não podem estar vazios',
+        expected: {
+          name: "String (obrigatório)",
+          description: "String (opcional)"
+        }
+      });
+    }
+
+    // Verificar se o nome da categoria foi fornecido
+    if (!req.body.name || req.body.name.trim() === '') {
+      return res.status(400).json({ message: 'O nome da categoria é obrigatório' });
+    }
+
+    // Verificar se já existe uma categoria com este nome
+    const existingCategory = await Category.findOne({
+      where: {
+        name: req.body.name
+      }
+    });
+
+    if (existingCategory) {
+      return res.status(409).json({ message: 'Já existe uma categoria com este nome' });
+    }
+
+    // Criar a categoria
+    const category = await Category.create({
+      name: req.body.name,
+      description: req.body.description || null
+    });
+
+    res.status(201).json({
+      message: 'Categoria criada com sucesso',
+      data: category
+    });
   } catch (error) {
-    res.status(400).json({ message: 'Erro ao criar categoria', error: error.message });
+    res.status(400).json({ 
+      message: 'Erro ao criar categoria', 
+      error: error.message 
+    });
   }
 };
 
