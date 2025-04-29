@@ -804,7 +804,7 @@ ul {
 }
 
 .tab-btn.active {
-  background-color: var(--primary);
+  /* background-color: var(--primary); */
   color: white;
 }
 
