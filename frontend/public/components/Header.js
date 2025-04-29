@@ -24,7 +24,6 @@ class Header extends HTMLElement {
                 <li><a href="/receitas.html" class="nav-link" data-route="receitas"><i class="fa-solid fa-utensils"></i> Receitas</a></li>
                 <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
                 <li><a href="/sobre.html" class="nav-link" id="nav-sobre" data-route="sobre"><i class="fa-solid fa-info-circle"></i> Sobre</a></li>
-                ${isLoggedIn ? `<li><a href="/compartilharReceitas.html" class="nav-link" data-route="compartilhar"><i class="fa-solid fa-share-alt"></i> Compartilhar Receitas</a></li>` : ''}
                 ${isLoggedIn && user?.isAdmin ? `<li><a href="/admin.html" class="nav-link" id="nav-admin" data-route="admin"><i class="fa-solid fa-user-shield"></i> Admin</a></li>` : ''}
               </ul>
             </nav>
