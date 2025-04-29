@@ -111,7 +111,7 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
   const { id } = req.params;
   try {
-    const { address = {}, addresses = [], ...userData } = req.body;
+    const { address = {}, addresses = [], currentPassword, password, ...userData } = req.body;
 
     // Utiliza transação para garantir consistência
     await sequelize.transaction(async t => {
@@ -121,9 +121,23 @@ exports.update = async (req, res) => {
         return res.status(404).json({ message: 'Usuário não encontrado' });
       }
 
-      // Criptografa a senha se estiver sendo atualizada
-      if (userData.password) {
-        userData.password = await bcrypt.hash(userData.password, 10);
+      // Se estiver alterando a senha, verifica a senha atual
+      if (password) {
+        // Verifica se a senha atual foi fornecida
+        if (!currentPassword) {
+          return res.status(400).json({ 
+            message: 'A senha atual é obrigatória para alterar a senha' 
+          });
+        }
+
+        // Verifica se a senha atual está correta
+        const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+        if (!isValidPassword) {
+          return res.status(400).json({ message: 'Senha atual incorreta' });
+        }
+
+        // Criptografa a nova senha
+        userData.password = await bcrypt.hash(password, 10);
       }
 
       // Atualiza os dados do usuário

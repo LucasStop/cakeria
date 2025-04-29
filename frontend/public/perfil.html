@@ -25,7 +25,7 @@
     <!-- Font Awesome -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     />
 
     <!-- CSS -->
@@ -177,20 +177,11 @@
                       <div class="form-col" style="flex: 0.5;">
                         <div class="form-group">
                           <label for="address-state">UF</label>
-                          <input type="text" id="address-state" name="state" placeholder="UF" required>
+                          <input type="text" id="address-state" name="state" placeholder="UF" maxlength="2" required>
                           <span class="error-message" id="state-error"></span>
                         </div>
                       </div>
-                    </div>
-                    
-                    <div class="form-row">
-                      <div class="form-col">
-                        <div class="form-group">
-                          <label for="address-country">País</label>
-                          <input type="text" id="address-country" name="country" placeholder="País" value="Brasil">
-                          <span class="error-message" id="country-error"></span>
-                        </div>
-                      </div>
+                      <input type="hidden" id="address-country" name="country" value="Brasil">
                     </div>
                     
                     <div class="form-actions">
@@ -282,7 +273,7 @@
     <div class="modal" id="delete-confirm-modal">
       <div class="modal-content">
         <h3>Confirmar exclusão</h3>
-        <p>Tem certeza que deseja excluir este endereço?</p>
+        <p>Tem certeza que deseja excluir este endereço? Esta ação não pode ser desfeita.</p>
         <div class="modal-actions">
           <button id="cancel-delete-btn" class="btn btn-outline">Cancelar</button>
           <button id="confirm-delete-btn" class="btn btn-primary">Excluir</button>
@@ -293,7 +284,7 @@
     <!-- Mensagem de notificação -->
     <div class="notification" id="notification">
       <div class="notification-content">
-        <i id="notification-icon"></i>
+        <i id="notification-icon" class="fas fa-info-circle"></i>
         <span id="notification-message"></span>
       </div>
     </div>

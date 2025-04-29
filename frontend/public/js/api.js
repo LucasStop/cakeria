@@ -1,95 +1,119 @@
-// Módulo para gerenciar chamadas à API
+// API Helper for interacting with the backend
 
 const API = {
   BASE_URL: 'http://localhost:3001/api',
 
-  // Helper para obter o token de autenticação
-  getToken() {
-    return localStorage.getItem('token');
-  },
-
-  // Helper para fazer chamadas autenticadas à API
-  async call(endpoint, method = 'GET', data = null) {
-    const headers = {
-      'Content-Type': 'application/json'
-    };
-
-    // Adiciona token de autenticação se disponível
-    const token = this.getToken();
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const config = {
-      method,
-      headers
-    };
-
-    if (data && (method === 'POST' || method === 'PUT')) {
-      config.body = JSON.stringify(data);
-    }
-
+  // Método genérico para requisições
+  async request(endpoint, options = {}) {
     try {
-      const response = await fetch(`${this.BASE_URL}${endpoint}`, config);
-      
-      // Para métodos que não retornam conteúdo
-      if (method === 'DELETE' && response.status === 204) {
-        return { success: true };
+      // Adiciona o token de autenticação se disponível
+      const token = localStorage.getItem('token');
+      if (token) {
+        options.headers = {
+          ...options.headers,
+          'Authorization': `Bearer ${token}`
+        };
       }
 
-      const result = await response.json();
+      // Adiciona o Content-Type se estiver enviando JSON
+      if (options.body && !(options.body instanceof FormData)) {
+        options.headers = {
+          ...options.headers,
+          'Content-Type': 'application/json'
+        };
+        options.body = JSON.stringify(options.body);
+      }
+
+      const response = await fetch(`${this.BASE_URL}${endpoint}`, options);
       
-      if (!response.ok) {
-        throw new Error(result.message || 'Erro na requisição');
+      // Se for 204 (No Content), retorna true
+      if (response.status === 204) {
+        return true;
       }
       
-      return result;
+      // Se for uma resposta de erro
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Erro ${response.status}`);
+      }
+
+      // Retorna os dados
+      return await response.json();
     } catch (error) {
-      console.error(`Erro na chamada à API (${endpoint}):`, error);
+      console.error('API Error:', error);
       throw error;
     }
   },
 
-  // Usuários
+  // Métodos para Users
   Users: {
-    get(id) {
-      return API.call(`/users/${id}`);
+    get(userId) {
+      return API.request(`/users/${userId}`);
     },
-    update(id, userData) {
-      return API.call(`/users/${id}`, 'PUT', userData);
+    update(userId, userData) {
+      return API.request(`/users/${userId}`, {
+        method: 'PUT',
+        body: userData
+      });
     },
-    changePassword(id, passwordData) {
-      return API.call(`/users/${id}/change-password`, 'PUT', passwordData);
+    changePassword(userId, passwordData) {
+      return API.request(`/users/${userId}/password`, {
+        method: 'PUT',
+        body: passwordData
+      });
     }
   },
 
-  // Endereços
+  // Métodos para Addresses
   Addresses: {
     getByUser(userId) {
-      return API.call(`/addresses/user/${userId}`);
-    },
-    get(id) {
-      return API.call(`/addresses/${id}`);
+      return API.request(`/addresses/user/${userId}`);
     },
     create(addressData) {
-      return API.call('/addresses', 'POST', addressData);
+      return API.request(`/addresses`, {
+        method: 'POST',
+        body: addressData
+      });
     },
-    update(id, addressData) {
-      return API.call(`/addresses/${id}`, 'PUT', addressData);
+    update(addressId, addressData) {
+      return API.request(`/addresses/${addressId}`, {
+        method: 'PUT',
+        body: addressData
+      });
     },
-    delete(id) {
-      return API.call(`/addresses/${id}`, 'DELETE');
+    delete(addressId) {
+      return API.request(`/addresses/${addressId}`, {
+        method: 'DELETE'
+      });
     }
   },
+  
+  // Método genérico para GET
+  get(endpoint) {
+    return this.request(endpoint);
+  },
 
-  // Autenticação
-  Auth: {
-    login(credentials) {
-      return API.call('/auth/login', 'POST', credentials);
-    },
-    register(userData) {
-      return API.call('/users', 'POST', userData);
-    }
+  // Método genérico para POST
+  post(endpoint, data) {
+    return this.request(endpoint, {
+      method: 'POST',
+      body: data
+    });
+  },
+
+  // Método genérico para PUT
+  put(endpoint, data) {
+    return this.request(endpoint, {
+      method: 'PUT',
+      body: data
+    });
+  },
+
+  // Método genérico para DELETE
+  delete(endpoint) {
+    return this.request(endpoint, {
+      method: 'DELETE'
+    });
   }
 };
 

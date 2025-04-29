@@ -51,7 +51,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f8b4b4;
+  background-color: var(--primary-color);
   color: white;
   font-weight: 600;
   font-size: 16px;
@@ -113,6 +113,7 @@
 .profile-header {
   margin-bottom: 30px;
   text-align: center;
+  position: relative;
 }
 
 .page-title {
@@ -127,12 +128,26 @@
   color: #666;
 }
 
+/* Adicionando um ícone decorativo no cabeçalho */
+.profile-header::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background-color: var(--primary-color);
+  border-radius: 2px;
+}
+
 /* Conteúdo do perfil */
 .profile-content {
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
   overflow: hidden;
+  border: 1px solid #f0f0f0;
 }
 
 /* Abas de navegação */
@@ -182,6 +197,7 @@
 
 .tab-btn:hover {
   color: var(--primary-color);
+  background-color: rgba(248, 180, 180, 0.05);
 }
 
 /* Conteúdo das abas */
@@ -195,6 +211,12 @@
 
 .tab-content.active {
   display: block;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Formulários */
@@ -238,6 +260,12 @@
 .form-group input:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(248, 180, 180, 0.2);
+  outline: none;
+}
+
+.form-group input.invalid-input {
+  border-color: #e74c3c;
+  background-color: rgba(231, 76, 60, 0.05);
 }
 
 .error-message {
@@ -264,6 +292,13 @@
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn i {
+  font-size: 14px;
 }
 
 .btn-primary {
@@ -273,6 +308,12 @@
 
 .btn-primary:hover {
   background-color: #e5666d;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
 }
 
 .btn-outline {
@@ -284,6 +325,7 @@
 .btn-outline:hover {
   border-color: var(--primary-color);
   color: var(--primary-color);
+  background-color: rgba(248, 180, 180, 0.05);
 }
 
 /* Seção de Endereços */
@@ -299,11 +341,30 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 16px 20px;
+  padding: 20px;
   margin-bottom: 15px;
   background-color: #f9f9f9;
   border-radius: 8px;
   border-left: 4px solid var(--primary-color);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.address-card:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.address-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: var(--primary-color);
+  transition: all 0.3s ease;
 }
 
 .address-content h3 {
@@ -331,13 +392,14 @@
   justify-content: center;
   border-radius: 50%;
   border: none;
-  background: none;
+  background: rgba(0, 0, 0, 0.03);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .btn-icon:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.08);
+  transform: scale(1.1);
 }
 
 .edit-address i {
@@ -362,9 +424,33 @@
 
 .address-form-container {
   margin-top: 30px;
-  padding: 20px;
+  padding: 25px;
   background-color: #f9f9f9;
   border-radius: 8px;
+  border: 1px solid #eee;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Formulário de endereço */
+.address-row {
+  flex-wrap: wrap;
+}
+
+.cep-col {
+  flex: 0 0 30%;
+}
+
+.street-col {
+  flex: 0 0 50%;
+}
+
+.number-col {
+  flex: 0 0 15%;
 }
 
 /* Senha e toggles */
@@ -417,6 +503,28 @@
   }
 }
 
+/* Estados vazios e de erro */
+.empty-state, .error-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.empty-state p, .error-state p {
+  margin-bottom: 20px;
+}
+
+.empty-state i, .error-state i {
+  font-size: 48px;
+  color: #ddd;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.error-state i {
+  color: #e74c3c;
+}
+
 /* Modal de confirmação */
 .modal {
   position: fixed;
@@ -429,10 +537,13 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .modal.show {
   display: flex;
+  opacity: 1;
 }
 
 .modal-content {
@@ -443,6 +554,12 @@
   max-width: 400px;
   width: 100%;
   text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal.show .modal-content {
+  transform: scale(1);
 }
 
 .modal-content h3 {
@@ -540,6 +657,14 @@
   
   .quick-actions {
     justify-content: center;
+  }
+  
+  .address-row {
+    flex-direction: column;
+  }
+  
+  .cep-col, .street-col, .number-col {
+    flex: 1;
   }
 }
 
