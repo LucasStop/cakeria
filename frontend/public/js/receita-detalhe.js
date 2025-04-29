@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
   const recipeId = getRecipeIdFromUrl();
   if (recipeId) {
     await fetchRecipeDetails(recipeId);
@@ -27,7 +27,7 @@ async function fetchRecipeDetails(id) {
 function renderRecipeDetails(recipe) {
   const recipeDetail = document.getElementById('recipe-detail');
   if (!recipeDetail) return;
-  
+
   // Atualizar o breadcrumb com o título da receita
   document.getElementById('recipe-breadcrumb-title').textContent = recipe.title;
 
@@ -63,28 +63,28 @@ function renderRecipeDetails(recipe) {
   const ingredientsList = document.querySelector('.recipe-ingredients');
   if (ingredientsList) {
     ingredientsList.innerHTML = '';
-    
+
     // Processar ingredientes de maneira mais robusta
     const formattedIngredients = formatArrayOrString(recipe.ingredients);
-    
+
     formattedIngredients.forEach(ingredient => {
       const li = document.createElement('li');
       li.innerHTML = `<i class="fas fa-check"></i> ${ingredient.trim()}`;
       ingredientsList.appendChild(li);
     });
   }
-  
+
   // Processar instruções com melhor formatação
   const instructionsList = document.querySelector('.recipe-instructions');
   if (instructionsList) {
     instructionsList.innerHTML = '';
-    
+
     // Processar instruções de maneira mais robusta
     const formattedInstructions = formatArrayOrString(recipe.instructions);
-    
+
     formattedInstructions.forEach((step, index) => {
       const li = document.createElement('li');
-      li.innerHTML = `<span class="step-number">${index+1}</span> ${step.trim()}`;
+      li.innerHTML = `<span class="step-number">${index + 1}</span> ${step.trim()}`;
       instructionsList.appendChild(li);
     });
   }
@@ -93,12 +93,12 @@ function renderRecipeDetails(recipe) {
 // Função para formatar arrays ou strings de forma mais robusta
 function formatArrayOrString(data) {
   if (!data) return [];
-  
+
   // Se já é array, limpar itens vazios
   if (Array.isArray(data)) {
     return data.filter(item => item && item.trim());
   }
-  
+
   // Se é string
   if (typeof data === 'string') {
     // Verificar se parece JSON
@@ -113,7 +113,7 @@ function formatArrayOrString(data) {
         // Se falhar ao analisar JSON, tratamos como string normal
       }
     }
-    
+
     // Tentar diferentes separadores para dividir a string
     if (data.includes('\n')) {
       return data.split('\n').filter(item => item.trim());
@@ -122,23 +122,23 @@ function formatArrayOrString(data) {
     } else if (data.includes(',')) {
       return data.split(',').filter(item => item.trim());
     }
-    
+
     // Se não possui separadores comuns, retornar como um único item
     return [data];
   }
-  
+
   // Caso não seja string nem array, converter para string
   return [String(data)];
 }
 
 // Formatar data de forma mais amigável
 function formatDate(dateString) {
-  const options = { 
-    year: 'numeric', 
-    month: 'long', 
+  const options = {
+    year: 'numeric',
+    month: 'long',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   };
   return new Date(dateString).toLocaleDateString('pt-BR', options);
 }

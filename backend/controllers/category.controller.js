@@ -33,12 +33,12 @@ exports.create = async (req, res) => {
   try {
     // Validar se há dados no corpo da requisição
     if (!req.body || Object.keys(req.body).length === 0) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: 'Dados da categoria não podem estar vazios',
         expected: {
-          name: "String (obrigatório)",
-          description: "String (opcional)"
-        }
+          name: 'String (obrigatório)',
+          description: 'String (opcional)',
+        },
       });
     }
 
@@ -50,8 +50,8 @@ exports.create = async (req, res) => {
     // Verificar se já existe uma categoria com este nome
     const existingCategory = await Category.findOne({
       where: {
-        name: req.body.name
-      }
+        name: req.body.name,
+      },
     });
 
     if (existingCategory) {
@@ -61,17 +61,17 @@ exports.create = async (req, res) => {
     // Criar a categoria
     const category = await Category.create({
       name: req.body.name,
-      description: req.body.description || null
+      description: req.body.description || null,
     });
 
     res.status(201).json({
       message: 'Categoria criada com sucesso',
-      data: category
+      data: category,
     });
   } catch (error) {
-    res.status(400).json({ 
-      message: 'Erro ao criar categoria', 
-      error: error.message 
+    res.status(400).json({
+      message: 'Erro ao criar categoria',
+      error: error.message,
     });
   }
 };

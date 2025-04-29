@@ -25,15 +25,15 @@ function updateUserDisplay(user) {
 document.addEventListener('DOMContentLoaded', () => {
   // Proteger a página - verificar se o usuário está autenticado
   protectPage();
-  
+
   // Obtém o usuário atual
   const user = getCurrentUser();
-  
+
   // Atualizar exibição do usuário se necessário
   if (typeof updateUserDisplay === 'function') {
     updateUserDisplay(user);
   }
-  
+
   // Inicializar a página de receitas
   initRecipesPage();
 });
@@ -70,8 +70,8 @@ function setupEventListeners() {
         fetchRecipes();
       }
     });
-    
-    searchInput.addEventListener('keypress', (e) => {
+
+    searchInput.addEventListener('keypress', e => {
       if (e.key === 'Enter') {
         const searchTerm = searchInput.value.trim();
         if (searchTerm) {
@@ -82,7 +82,7 @@ function setupEventListeners() {
       }
     });
   }
-  
+
   // Botão para compartilhar nova receita
   const newRecipeBtn = document.getElementById('new-recipe-btn');
   if (newRecipeBtn) {
@@ -92,7 +92,7 @@ function setupEventListeners() {
       // showNewRecipeModal();
     });
   }
-  
+
   // Filtro por categoria
   if (categoryFilter) {
     // Adicionar categorias dinamicamente
@@ -103,7 +103,7 @@ function setupEventListeners() {
       option.textContent = category;
       categoryFilter.appendChild(option);
     });
-    
+
     categoryFilter.addEventListener('change', () => {
       const selectedCategory = categoryFilter.value;
       console.log(`Filtrando por categoria: ${selectedCategory}`);
@@ -111,7 +111,7 @@ function setupEventListeners() {
       fetchRecipes();
     });
   }
-  
+
   // Ordenação de receitas
   if (sortSelect) {
     sortSelect.addEventListener('change', () => {
@@ -127,7 +127,7 @@ function setupEventListeners() {
 async function fetchRecipes() {
   console.log('Buscando receitas do servidor...');
   showLoading();
-  
+
   try {
     // Para demonstração, ainda usaremos dados estáticos
     // Posteriormente seria trocado por uma chamada de API real
@@ -142,7 +142,7 @@ async function fetchRecipes() {
         description: 'Um delicioso bolo de chocolate fofinho, perfeito para qualquer ocasião.',
         difficulty: 'Fácil',
         prep_time: 20,
-        cook_time: 20
+        cook_time: 20,
       },
       {
         id: 2,
@@ -154,7 +154,7 @@ async function fetchRecipes() {
         description: 'Brigadeiro gourmet com chocolate premium para impressionar seus convidados.',
         difficulty: 'Fácil',
         prep_time: 15,
-        cook_time: 15
+        cook_time: 15,
       },
       {
         id: 3,
@@ -166,10 +166,10 @@ async function fetchRecipes() {
         description: 'Uma refrescante torta de limão com massa crocante e recheio cremoso.',
         difficulty: 'Médio',
         prep_time: 30,
-        cook_time: 30
-      }
+        cook_time: 30,
+      },
     ];
-    
+
     // Aguardar um tempo simulando carregamento
     setTimeout(() => {
       if (Array.isArray(recipes) && recipes.length > 0) {
@@ -178,7 +178,6 @@ async function fetchRecipes() {
         showEmptyState();
       }
     }, 800);
-    
   } catch (error) {
     console.error('Erro ao buscar receitas:', error);
     showError();
@@ -229,22 +228,22 @@ const userCache = {};
 // Função para buscar detalhes do usuário por ID
 async function getUserById(userId) {
   console.log(`Tentando buscar usuário com ID ${userId}...`);
-  
+
   if (userCache[userId]) {
     return userCache[userId];
   }
-  
+
   try {
     // Simulação de resposta para desenvolvimento
     // Em produção, seria substituído pela chamada real da API
     const user = { id: userId, name: `Usuário #${userId}` };
-    
+
     // Valores específicos para testes
     if (userId === 27) {
       user.name = 'Renan Herculano';
       user.email = 'renan@gmail.com';
     }
-    
+
     userCache[userId] = user;
     return user;
   } catch (error) {
@@ -258,25 +257,25 @@ async function displayRecipes(recipes) {
   // Limpar o grid
   if (!recipesGrid) return;
   recipesGrid.innerHTML = '';
-  
-  console.log("Começando a exibir receitas. Total:", recipes.length);
-  
+
+  console.log('Começando a exibir receitas. Total:', recipes.length);
+
   // Para cada receita, criar um card
   for (const recipe of recipes) {
-    console.log("Processando receita:", recipe);
-    
+    console.log('Processando receita:', recipe);
+
     // Verificar se temos o template
     if (!recipeTemplate) {
       // Se não tivermos o template, criar um HTML básico
       const card = document.createElement('div');
       card.className = 'recipe-card';
-      
+
       // Dados da receita
       const title = recipe.title || 'Sem título';
       const description = recipe.description || 'Sem descrição';
       const author = recipe.author?.name || 'Autor desconhecido';
-      const image = recipe.image_url || '/assets/placeholder.jpg'; 
-      
+      const image = recipe.image_url || '/assets/placeholder.jpg';
+
       card.innerHTML = `
         <div class="recipe-image">
           <img src="${image}" alt="${title}" onerror="this.src='/assets/placeholder.jpg'">
@@ -292,24 +291,24 @@ async function displayRecipes(recipes) {
           </div>
         </div>
       `;
-      
+
       recipesGrid.appendChild(card);
     } else {
       // Se temos o template, usamos ele
       const card = recipeTemplate.content.cloneNode(true);
-      
+
       // Preencher dados
       const img = card.querySelector('.recipe-image img');
       img.src = recipe.image_url || '/assets/placeholder.jpg';
       img.alt = recipe.title;
-      
+
       card.querySelector('.recipe-title').textContent = recipe.title;
-      
+
       // Autor - Melhor tratamento para diferentes formatos de dados
       const authorSpan = card.querySelector('.author-name');
       if (authorSpan) {
         let authorName = null;
-        
+
         // Verificar diferentes possibilidades para o nome do autor
         if (recipe.author?.name) {
           authorName = recipe.author.name;
@@ -320,7 +319,7 @@ async function displayRecipes(recipes) {
         } else if (recipe.userId || recipe.user_id) {
           // Se tiver apenas o ID do usuário, buscar o nome na API
           const userId = recipe.userId || recipe.user_id;
-          
+
           // Verificar primeiro no cache
           if (userCache[userId]) {
             authorName = userCache[userId].name;
@@ -343,30 +342,30 @@ async function displayRecipes(recipes) {
         } else {
           authorName = 'Autor desconhecido';
         }
-        
-        console.log("Nome do autor encontrado:", authorName);
+
+        console.log('Nome do autor encontrado:', authorName);
         authorSpan.textContent = authorName;
       }
-      
+
       // Data de criação - Melhorada a lógica para lidar com diferentes formatos
       const dateSpan = card.querySelector('.date-text');
       if (dateSpan) {
         // Log para debugging do formato da data
-        console.log("Data original:", recipe.created_at || recipe.createdAt);
-        
+        console.log('Data original:', recipe.created_at || recipe.createdAt);
+
         // Tentar vários formatos possíveis
         let dateString = recipe.created_at || recipe.createdAt;
         let date;
-        
+
         if (dateString) {
           date = new Date(dateString);
-          
+
           // Se a conversão falhou, tente outro formato
           if (isNaN(date.getTime())) {
             // Verificar se é um timestamp numérico
             if (!isNaN(dateString)) {
               date = new Date(parseInt(dateString));
-            } 
+            }
             // Verificar formato DD/MM/YYYY
             else if (typeof dateString === 'string' && dateString.includes('/')) {
               const [day, month, year] = dateString.split('/');
@@ -377,7 +376,7 @@ async function displayRecipes(recipes) {
           // Se não há data na receita, use a data atual como fallback
           date = new Date();
         }
-        
+
         // Formatar a data para exibição
         try {
           if (!isNaN(date.getTime())) {
@@ -386,33 +385,33 @@ async function displayRecipes(recipes) {
             dateSpan.textContent = 'Data desconhecida';
           }
         } catch (e) {
-          console.error("Erro ao formatar data:", e);
+          console.error('Erro ao formatar data:', e);
           dateSpan.textContent = 'Data desconhecida';
         }
       }
-      
+
       // Visualizações
       const viewsSpan = card.querySelector('.views-count');
       if (viewsSpan) viewsSpan.textContent = recipe.views || 0;
-      
+
       // Descrição
       const excerpt = card.querySelector('.recipe-excerpt');
       if (excerpt) excerpt.textContent = recipe.description?.substring(0, 120) + '...';
-      
+
       // Dificuldade
       const difficultySpan = card.querySelector('.recipe-difficulty');
       if (difficultySpan) difficultySpan.textContent = recipe.difficulty || 'Médio';
-      
+
       // Tempo - Melhor tratamento para diferentes formatos
       const timeSpan = card.querySelector('.time-text');
       if (timeSpan) {
         // Considerar todas as possibilidades de nomenclatura
         const prepTime = recipe.prep_time || recipe.prepTime || 0;
         const cookTime = recipe.cook_time || recipe.cookTime || 0;
-        
+
         // Ajuste para garantir que os valores são tratados como números
         const totalTime = parseInt(prepTime) + parseInt(cookTime);
-        
+
         // Formatação melhorada
         if (totalTime > 0) {
           timeSpan.textContent = `${totalTime} min`;
@@ -424,23 +423,23 @@ async function displayRecipes(recipes) {
           timeSpan.textContent = 'Tempo não informado';
         }
       }
-      
+
       // Link para a receita
       const recipeLink = card.querySelector('.recipe-link');
       if (recipeLink) {
         recipeLink.href = `/receita.html?id=${recipe.id}`;
       }
-      
+
       recipesGrid.appendChild(card);
     }
   }
-  
+
   console.log(`${recipes.length} receitas exibidas com sucesso`);
 }
 
 // Exportar funções para uso global
 window.fetchRecipes = fetchRecipes;
-window.verReceitaDetalhes = function(id) {
+window.verReceitaDetalhes = function (id) {
   console.log(`Ver detalhes da receita ${id}`);
   window.location.href = `/receita.html?id=${id}`;
 };
