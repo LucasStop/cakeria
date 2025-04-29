@@ -46,3 +46,41 @@ function handleLogout() {
   localStorage.removeItem('user');
   window.location.href = '/login.html';
 }
+
+/**
+ * Inicializa a verificação de autenticação nas páginas
+ */
+function initAuthGuard() {
+  const isLoginPage = window.location.pathname.includes('login.html');
+  const isIndexPage = window.location.pathname === '/' || 
+                    window.location.pathname === '/index.html' || 
+                    window.location.pathname === '';
+  
+  if ((isIndexPage || isLoginPage) && isAuthenticated()) {
+    window.location.href = '/home.html';
+    return;
+  }
+  
+  const protectedPages = [
+    '/home.html', 
+    '/pedidos.html', 
+    '/perfil.html', 
+    '/favoritos.html', 
+    '/footer.html',
+    '/receita.html',
+    '/receitas.html',
+    '/compartilharReceitas.html',
+    '/perfil.html', 
+  ];
+  
+  if (protectedPages.some(page => window.location.pathname.includes(page)) && !isAuthenticated()) {
+    window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
+    return;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initAuthGuard);
+
+window.isAuthenticated = isAuthenticated;
+window.getCurrentUser = getCurrentUser;
+window.protectPage = protectPage;
