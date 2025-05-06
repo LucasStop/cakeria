@@ -259,6 +259,34 @@ class Header extends HTMLElement {
     menuToggle.classList.toggle('active');
     overlay.classList.toggle('active');
 
+    if (navBar.classList.contains('active')) {
+      const isLoggedIn = localStorage.getItem('token') !== null;
+      const loginButtonExists = navBar.querySelector('.mobile-login-btn');
+      
+      if (!isLoggedIn && !loginButtonExists) {
+        const navLinks = navBar.querySelector('.nav-links');
+        const loginButton = document.createElement('li');
+        loginButton.className = 'mobile-login-item';
+        loginButton.innerHTML = `
+          <a href="/login.html" class="nav-link mobile-login-btn">
+            <i class="fa-solid fa-user"></i> Login
+          </a>
+        `;
+        navLinks.appendChild(loginButton);
+        
+        const loginBtn = loginButton.querySelector('.mobile-login-btn');
+        loginBtn.addEventListener('click', () => {
+          this.closeMenu();
+          window.location.href = '/login.html';
+        });
+      }
+    } else {
+      const mobileLoginItem = navBar.querySelector('.mobile-login-item');
+      if (mobileLoginItem) {
+        mobileLoginItem.remove();
+      }
+    }
+
     document.body.style.overflow = navBar.classList.contains('active') ? 'hidden' : '';
   }
 
@@ -272,6 +300,12 @@ class Header extends HTMLElement {
     navBar.classList.remove('active');
     menuToggle.classList.remove('active');
     overlay.classList.remove('active');
+    
+    const mobileLoginItem = navBar.querySelector('.mobile-login-item');
+    if (mobileLoginItem) {
+      mobileLoginItem.remove();
+    }
+    
     document.body.style.overflow = '';
   }
 
