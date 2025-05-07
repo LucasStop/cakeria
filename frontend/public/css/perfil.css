@@ -531,7 +531,7 @@ body {
 }
 
 .modal-content p {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   color: var(--text-medium);
   line-height: 1.6;
 }
@@ -594,6 +594,57 @@ body {
 
 .notification.warning i {
   color: var(--warning);
+}
+
+/* Danger Zone */
+.danger-zone {
+  margin-top: 3rem;
+  padding: 1.5rem;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-lg);
+  background-color: #fff5f5;
+}
+
+.danger-zone h3 {
+  color: var(--error);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.danger-zone p {
+  margin-bottom: 1.5rem;
+  color: var(--text-medium);
+  line-height: 1.6;
+}
+
+.danger-zone .btn-danger {
+  background-color: var(--error);
+  color: white;
+}
+
+.danger-zone .btn-danger:hover {
+  background-color: #dc2626;
+}
+
+/* Warning message in modal */
+.warning {
+  background-color: #fff5f5;
+  border-left: 3px solid var(--error);
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-medium);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.95rem;
+}
+
+.warning i {
+  color: var(--error);
+  font-size: 1.1rem;
 }
 
 /* Responsividade */
