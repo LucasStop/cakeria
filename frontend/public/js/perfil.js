@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupPasswordToggles();
   setupFormSubmissions();
   setupAddressManagement();
+  setupDeleteUserModal();
   
   // Carregar dados do usuário
   await loadUserData();
@@ -107,6 +108,12 @@ function setupFormSubmissions() {
   const securityForm = document.getElementById('security-form');
   if (securityForm) {
     securityForm.addEventListener('submit', handleSecurityFormSubmit);
+  }
+
+  // Botão de exclusão de conta
+  const deleteAccountBtn = document.getElementById('delete-account-btn');
+  if (deleteAccountBtn) {
+    deleteAccountBtn.addEventListener('click', confirmDeleteUser);
   }
 }
 
@@ -636,6 +643,87 @@ async function handleDeleteAddress() {
     
     // Fechar modal
     hideModal(modal);
+  }
+}
+
+// === Gerenciamento de exclusão de usuário ===
+
+function setupDeleteUserModal() {
+  const modal = document.getElementById('delete-user-modal');
+  const cancelBtn = document.getElementById('cancel-delete-user-btn');
+  const confirmBtn = document.getElementById('confirm-delete-user-btn');
+  
+  if (!modal || !cancelBtn || !confirmBtn) return;
+  
+  // Botão para cancelar exclusão
+  cancelBtn.addEventListener('click', () => hideModal(modal));
+  
+  // Fechar modal ao clicar fora
+  window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      hideModal(modal);
+    }
+  });
+
+  // Configurar evento de confirmação
+  confirmBtn.addEventListener('click', handleDeleteUser);
+}
+
+function confirmDeleteUser() {
+  // Mostrar modal de confirmação
+  const modal = document.getElementById('delete-user-modal');
+  showModal(modal);
+}
+
+async function handleDeleteUser() {
+  try {
+    const user = getCurrentUser();
+    if (!user || !user.id) {
+      showNotification('Sessão expirada. Por favor, faça login novamente.', 'error');
+      return;
+    }
+    
+    const modal = document.getElementById('delete-user-modal');
+    const confirmBtn = document.getElementById('confirm-delete-user-btn');
+    
+    // Mostrar carregando
+    const originalText = confirmBtn.innerHTML;
+    confirmBtn.disabled = true;
+    confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
+    
+    // Enviar requisição para excluir usuário
+    await API.Users.delete(user.id);
+    
+    // Fechar modal
+    hideModal(modal);
+    
+    // Limpar dados de autenticação
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    // Mostrar notificação e redirecionar
+    showNotification('Sua conta foi excluída com sucesso!', 'success');
+    
+    setTimeout(() => {
+      window.location.href = '/index.html';
+    }, 2000);
+    
+  } catch (error) {
+    console.error('Erro ao excluir conta:', error);
+    
+    // Restaurar botão
+    const confirmBtn = document.getElementById('confirm-delete-user-btn');
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+      confirmBtn.innerHTML = 'Excluir Minha Conta';
+    }
+    
+    // Esconder modal
+    const modal = document.getElementById('delete-user-modal');
+    hideModal(modal);
+    
+    // Mostrar mensagem de erro
+    showNotification(`Erro ao excluir conta: ${error.message || 'Tente novamente mais tarde.'}`, 'error');
   }
 }
 

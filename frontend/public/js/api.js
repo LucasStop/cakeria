@@ -61,6 +61,11 @@ const API = {
         method: 'PUT',
         body: passwordData
       });
+    },
+    delete(userId) {
+      return API.request(`/users/${userId}`, {
+        method: 'DELETE'
+      });
     }
   },
 
