@@ -120,7 +120,26 @@ const isNotEmpty = val => val.trim() !== '';
 const isValidName = val => val.trim().split(' ').length >= 2;
 const isValidEmail = val => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
 const isValidPhone = val => /^\(\d{2}\) \d{5}-\d{4}$/.test(val);
-const isValidCPF = val => /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(val);
+const isValidCPF = val => {
+  const cpf = val.replace(/\D/g, '');
+  if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+
+  let sum = 0;
+  for (let i = 0; i < 9; i++) {
+    sum += parseInt(cpf.charAt(i)) * (10 - i);
+  }
+  let firstVerifier = (sum * 10) % 11;
+  if (firstVerifier === 10) firstVerifier = 0;
+  if (firstVerifier !== parseInt(cpf.charAt(9))) return false;
+
+  sum = 0;
+  for (let i = 0; i < 10; i++) {
+    sum += parseInt(cpf.charAt(i)) * (11 - i);
+  }
+  let secondVerifier = (sum * 10) % 11;
+  if (secondVerifier === 10) secondVerifier = 0;
+  return secondVerifier === parseInt(cpf.charAt(10));
+};
 const isValidPassword = val => val.length >= 5;
 const isValidCEP = val => /^\d{5}-\d{3}$/.test(val);
 const isValidNumber = val => /^\d+$/.test(val);
