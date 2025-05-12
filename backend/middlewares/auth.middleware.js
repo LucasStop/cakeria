@@ -8,7 +8,7 @@ exports.authenticate = (req, res, next) => {
       return res.status(401).json({ message: 'Token de autenticação não fornecido' });
     }
 
-    // Verifica se o formato do header está correto (Bearer [token])
+
     const parts = authHeader.split(' ');
     if (parts.length !== 2 || parts[0] !== 'Bearer') {
       return res.status(401).json({ message: 'Formato de token inválido' });
@@ -21,7 +21,7 @@ exports.authenticate = (req, res, next) => {
       return res.status(401).json({ message: 'Token inválido ou expirado' });
     }
 
-    // Adiciona informações do usuário à requisição
+   
     req.user = decoded;
     next();
   } catch (error) {
