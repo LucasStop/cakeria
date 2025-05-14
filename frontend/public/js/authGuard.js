@@ -9,27 +9,42 @@ document.addEventListener('DOMContentLoaded', () => {
     '/pedidos/novo.html',
     '/perfil.html',
     '/favoritos.html',
-    '/compartilharReceitas.html'
+    '/compartilharReceitas.html',
+    '/receita.html',
+    '/receitas.html'
   ];
   
-  // Verifica se a página atual está na lista de páginas protegidas
   const requiresAuth = protectedPages.some(page => 
     currentPath.endsWith(page) || currentPath === page
   );
   
-  // Se a página requer autenticação e o usuário não está autenticado
+
   if (requiresAuth && !isAuthenticated()) {
-    // Redirecionar para a página de login
+   
     window.location.href = `/login.html?redirect=${encodeURIComponent(currentPath)}`;
   }
 });
 
 // Verifica se o usuário está autenticado
 function isAuthenticated() {
-  return localStorage.getItem('token') !== null;
+  const token = localStorage.getItem('token');
+  
+  if (!token) {
+    return false;
+  }
+  
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const currentTime = Math.floor(Date.now() / 1000);
+    
+    return payload.exp > currentTime;
+  } catch (error) {
+    console.error('Erro ao verificar token:', error);
+    return false;
+  }
 }
 
-// Obtém as informações do usuário atual
+
 function getCurrentUser() {
   try {
     const userStr = localStorage.getItem('user');
@@ -40,11 +55,24 @@ function getCurrentUser() {
   }
 }
 
-// Função para fazer logout
+
 function handleLogout() {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   window.location.href = '/login.html';
+}
+
+/**
+ * Função para proteger páginas específicas
+ * Esta função pode ser chamada em qualquer página para verificar autenticação
+ */
+function protectPage() {
+  if (!isAuthenticated()) {
+    const currentPath = window.location.pathname;
+    window.location.href = `/login.html?redirect=${encodeURIComponent(currentPath)}`;
+    return false;
+  }
+  return true;
 }
 
 /**
@@ -56,6 +84,7 @@ function initAuthGuard() {
                     window.location.pathname === '/index.html' || 
                     window.location.pathname === '';
   
+  // Redirecionar para home se já estiver autenticado e estiver na página de login
   if ((isIndexPage || isLoginPage) && isAuthenticated()) {
     window.location.href = '/home.html';
     return;
@@ -68,10 +97,12 @@ function initAuthGuard() {
     '/favoritos.html', 
     '/footer.html',
     '/receita.html',
-    '/receitas.html',
     '/compartilharReceitas.html',
-    '/perfil.html', 
+    '/perfil.html'
   ];
+  
+  // Nota: Removemos '/receitas.html' desta lista, pois parece que essa página
+  // deveria ser acessível mesmo sem login (apenas compartilhar receitas requer login)
   
   if (protectedPages.some(page => window.location.pathname.includes(page)) && !isAuthenticated()) {
     window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
@@ -79,8 +110,11 @@ function initAuthGuard() {
   }
 }
 
+// Inicializa a verificação de autenticação quando a página carrega
 document.addEventListener('DOMContentLoaded', initAuthGuard);
 
+// Exportar funções para uso global
 window.isAuthenticated = isAuthenticated;
 window.getCurrentUser = getCurrentUser;
 window.protectPage = protectPage;
+window.handleLogout = handleLogout;
