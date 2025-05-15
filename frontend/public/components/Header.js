@@ -7,7 +7,6 @@ class Header extends HTMLElement {
     const variant = this.getAttribute('variant') || 'user';
 
     if (variant === 'user') {
-      // Verificar se o usuário está logado
       const isLoggedIn = localStorage.getItem('token') !== null;
       const user = this.getCurrentUser();
       
