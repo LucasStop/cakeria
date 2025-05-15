@@ -66,9 +66,60 @@
     </div>
   </div>
 
+  <!-- Script Toast -->
+  <script src="/js/utils/toast.js"></script>
+  
+  <!-- Scripts existentes -->
   <script src="./js/api.js"></script>
   <script src="./js/login.js"></script>
   <script src="./js/authGuard.js"></script>
   
+  <!-- Script para adicionar notificações toast à lógica existente -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Verificar se há parâmetros na URL
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      // Se foi redirecionado por expiração de sessão
+      if (urlParams.has('expired') || urlParams.get('reason') === 'session_expired') {
+        if (window.Toast) {
+          Toast.warning('Sua sessão expirou. Por favor, faça login novamente.', {
+            position: 'top-center',
+            duration: 5000
+          });
+        }
+      } 
+      // Se fez logout
+      else if (urlParams.has('logout')) {
+        if (window.Toast) {
+          Toast.info('Você saiu do sistema com sucesso!', {
+            position: 'top-center',
+            duration: 3000
+          });
+        }
+      }
+      
+      // Adicionar toast aos eventos de login
+      const loginForm = document.getElementById('login-form');
+      if (loginForm) {
+        // Preservar o handler original
+        const originalSubmit = loginForm.onsubmit;
+        
+        loginForm.addEventListener('submit', function(e) {
+          // Não previne o comportamento padrão para manter a lógica original
+          
+          if (window.Toast) {
+            // Mostrar toast de carregamento
+            Toast.info('Realizando login...', {
+              position: 'top-center',
+              duration: 3000
+            });
+          }
+          
+          // A lógica original de login continua funcionando normalmente
+        });
+      }
+    });
+  </script>
 </body>
 </html>

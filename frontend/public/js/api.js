@@ -3,10 +3,25 @@
 const API = {
   BASE_URL: 'http://localhost:3001/api',
 
-  // Método genérico para requisições
   async request(endpoint, options = {}) {
     try {
-      // Adiciona o token de autenticação se disponível
+      if (this.isTokenExpired() && endpoint !== '/auth/login' && endpoint !== '/auth/refresh') {
+        console.log('Token expirado, redirecionando para login...');
+        this.clearSession();
+
+        if (window.Toast) {
+          Toast.error('Sua sessão expirou. Por favor, faça login novamente.', {
+            position: 'top-center',
+            duration: 5000
+          });
+        } else {
+          alert('Sua sessão expirou. Por favor, faça login novamente.');
+        }
+
+        window.location.href = '/login.html?expired=true';
+        throw new Error('Sessão expirada. Por favor, faça login novamente.');
+      }
+
       const token = localStorage.getItem('token');
       if (token) {
         options.headers = {
@@ -15,7 +30,6 @@ const API = {
         };
       }
 
-      // Adiciona o Content-Type se estiver enviando JSON
       if (options.body && !(options.body instanceof FormData)) {
         options.headers = {
           ...options.headers,
@@ -25,19 +39,33 @@ const API = {
       }
 
       const response = await fetch(`${this.BASE_URL}${endpoint}`, options);
-      
-      // Se for 204 (No Content), retorna true
+
       if (response.status === 204) {
         return true;
       }
-      
-      // Se for uma resposta de erro
-      if (!response.ok) {
+
+      if (response.status === 401) {
         const errorData = await response.json();
+        if (errorData.message.includes('expirado') || errorData.message.includes('inválido')) {
+          this.clearSession();
+          window.location.href = '/login.html';
+        }
         throw new Error(errorData.message || `Erro ${response.status}`);
       }
 
-      // Retorna os dados
+      if (!response.ok) {
+        const errorData = await response.json();
+
+        if (window.Toast) {
+          Toast.error(errorData.message || `Erro ${response.status}`, {
+            duration: 5000,
+            position: 'bottom-right'
+          });
+        }
+
+        throw new Error(errorData.message || `Erro ${response.status}`);
+      }
+
       return await response.json();
     } catch (error) {
       console.error('API Error:', error);
@@ -45,7 +73,100 @@ const API = {
     }
   },
 
-  // Métodos para Users
+  isTokenExpired() {
+    const token = localStorage.getItem('token');
+    if (!token) return true;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const currentTime = Math.floor(Date.now() / 1000);
+      const isExpired = payload.exp < currentTime;
+
+      if (isExpired) {
+        console.log('Token expirado:', {
+          expiração: new Date(payload.exp * 1000).toLocaleString(),
+          agora: new Date().toLocaleString()
+        });
+      }
+
+      return isExpired;
+    } catch (error) {
+      console.error('Erro ao verificar token:', error);
+      return true;
+    }
+  },
+
+  clearSession() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    console.log('Sessão limpa');
+  },
+
+  async refreshToken() {
+    try {
+      console.log('Tentando renovar o token...');
+      const response = await this.request('/auth/refresh', {
+        method: 'POST',
+      });
+
+      if (response && response.token) {
+        localStorage.setItem('token', response.token);
+        console.log('Token renovado com sucesso!');
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Erro ao renovar token:', error);
+      return false;
+    }
+  },
+
+  
+  startExpirationChecker() {
+    
+    if (this.expirationCheckerId) {
+      clearInterval(this.expirationCheckerId);
+    }
+
+  
+    this.expirationCheckerId = setInterval(() => {
+     
+      if (window.location.pathname.includes('login')) {
+        return;
+      }
+
+
+      if (this.isTokenExpired()) {
+
+        this.stopExpirationChecker();
+
+      
+        if (window.Toast) {
+          Toast.error('Sua sessão expirou. Por favor, faça login novamente.', {
+            position: 'top-center',
+            duration: 6000
+          });
+        } else {
+          alert('Sua sessão expirou. Por favor, faça login novamente.');
+        }
+
+        
+        this.clearSession();
+        window.location.href = '/login.html?expired=true';
+      }
+    }, 30000); 
+
+    console.log('Verificador de expiração de token iniciado.');
+  },
+
+  stopExpirationChecker() {
+    if (this.expirationCheckerId) {
+      clearInterval(this.expirationCheckerId);
+      this.expirationCheckerId = null;
+      console.log('Verificador de expiração de token parado.');
+    }
+  },
+
   Users: {
     get(userId) {
       return API.request(`/users/${userId}`);
@@ -69,7 +190,6 @@ const API = {
     }
   },
 
-  // Métodos para Addresses
   Addresses: {
     getByUser(userId) {
       return API.request(`/addresses/user/${userId}`);
@@ -92,13 +212,11 @@ const API = {
       });
     }
   },
-  
-  // Método genérico para GET
+
   get(endpoint) {
     return this.request(endpoint);
   },
 
-  // Método genérico para POST
   post(endpoint, data) {
     return this.request(endpoint, {
       method: 'POST',
@@ -106,7 +224,6 @@ const API = {
     });
   },
 
-  // Método genérico para PUT
   put(endpoint, data) {
     return this.request(endpoint, {
       method: 'PUT',
@@ -114,13 +231,18 @@ const API = {
     });
   },
 
-  // Método genérico para DELETE
   delete(endpoint) {
     return this.request(endpoint, {
       method: 'DELETE'
     });
-  }
+  },
+
 };
 
-// Exportar para uso em outros arquivos
 window.API = API;
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (!window.location.pathname.includes('login')) {
+    API.startExpirationChecker();
+  }
+});
