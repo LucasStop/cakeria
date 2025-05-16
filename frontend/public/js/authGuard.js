@@ -33,6 +33,12 @@ function isAuthenticated() {
     return false;
   }
   
+  // Verificar se acabamos de fazer logout (baseado em um parâmetro URL)
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('logout')) {
+    return false;
+  }
+  
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
     const currentTime = Math.floor(Date.now() / 1000);

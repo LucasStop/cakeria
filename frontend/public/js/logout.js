@@ -3,8 +3,9 @@ function logout() {
 
   localStorage.removeItem('token');
   localStorage.removeItem('user');
+  sessionStorage.removeItem('justLoggedIn');
 
-  window.location.href = '/index.html';
+  window.location.href = '/index.html?logout=true';
 }
 
 document.addEventListener('DOMContentLoaded', () => {

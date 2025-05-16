@@ -1,11 +1,11 @@
 // API Helper for interacting with the backend
 
 const API = {
-  BASE_URL: 'http://localhost:3001/api',
-
-  async request(endpoint, options = {}) {
+  BASE_URL: 'http://localhost:3001/api',  async request(endpoint, options = {}) {
     try {
-      if (this.isTokenExpired() && endpoint !== '/auth/login' && endpoint !== '/auth/refresh') {
+      const token = localStorage.getItem('token');
+      // Verificar se o token existe e se está expirado (apenas para endpoints que exigem autenticação)
+      if (token && this.isTokenExpired() && endpoint !== '/auth/login' && endpoint !== '/auth/refresh') {
         console.log('Token expirado, redirecionando para login...');
         this.clearSession();
 
@@ -21,8 +21,6 @@ const API = {
         window.location.href = '/login.html?expired=true';
         throw new Error('Sessão expirada. Por favor, faça login novamente.');
       }
-
-      const token = localStorage.getItem('token');
       if (token) {
         options.headers = {
           ...options.headers,
@@ -72,10 +70,11 @@ const API = {
       throw error;
     }
   },
-
   isTokenExpired() {
     const token = localStorage.getItem('token');
-    if (!token) return true;
+    // Se não há token, considerar que não está "expirado" para não exibir mensagem de expiração
+    // Isso é diferente de estar autenticado, pois isAuthenticated() ainda retornará false
+    if (!token) return false;
 
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
@@ -92,13 +91,13 @@ const API = {
       return isExpired;
     } catch (error) {
       console.error('Erro ao verificar token:', error);
-      return true;
+      return false; // Em caso de erro, não considerar expirado
     }
   },
-
   clearSession() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    sessionStorage.removeItem('justLoggedIn');
     console.log('Sessão limpa');
   },
 
@@ -121,26 +120,42 @@ const API = {
     }
   },
 
-  
-  startExpirationChecker() {
+    startExpirationChecker() {
     
     if (this.expirationCheckerId) {
       clearInterval(this.expirationCheckerId);
     }
 
-  
+    // Verificar se há token antes de iniciar o verificador
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.log('Sem token, verificador de expiração não será iniciado.');
+      return;
+    }
+
     this.expirationCheckerId = setInterval(() => {
-     
-      if (window.location.pathname.includes('login')) {
+      // Não verificar em páginas públicas ou de login
+      const publicPages = ['/login.html', '/registro.html', '/index.html', '/'];
+      const currentPath = window.location.pathname;
+      
+      const isPublicPage = publicPages.some(page => 
+        currentPath === page || currentPath.endsWith(page)
+      );
+      
+      if (isPublicPage) {
         return;
       }
 
+      // Verificar se o token ainda existe e não foi removido manualmente (por exemplo, via logout)
+      const currentToken = localStorage.getItem('token');
+      if (!currentToken) {
+        this.stopExpirationChecker();
+        return;
+      }
 
       if (this.isTokenExpired()) {
-
         this.stopExpirationChecker();
-
-      
+        
         if (window.Toast) {
           Toast.error('Sua sessão expirou. Por favor, faça login novamente.', {
             position: 'top-center',
@@ -149,7 +164,6 @@ const API = {
         } else {
           alert('Sua sessão expirou. Por favor, faça login novamente.');
         }
-
         
         this.clearSession();
         window.location.href = '/login.html?expired=true';
@@ -242,7 +256,26 @@ const API = {
 window.API = API;
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (!window.location.pathname.includes('login')) {
+  // Verificar se o usuário está deslogado após uma ação explícita de logout
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('logout')) {
+    // Não iniciar o verificador se o usuário acabou de fazer logout
+    console.log('Usuário acabou de fazer logout, não verificando expiração');
+    return;
+  }
+  
+  // Obter token atual
+  const token = localStorage.getItem('token');
+  
+  // Não iniciar o verificador na página de login, páginas públicas ou quando não há token
+  const publicPages = ['/login.html', '/registro.html', '/index.html', '/'];
+  const currentPath = window.location.pathname;
+  
+  const isPublicPage = publicPages.some(page => 
+    currentPath === page || currentPath.endsWith(page)
+  );
+  
+  if (!isPublicPage && token) {
     API.startExpirationChecker();
   }
 });
