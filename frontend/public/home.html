@@ -452,28 +452,29 @@
     <script src="./js/navigation.js"></script>
     <script src="./js/logout.js"></script>
     <script src="./js/home.js"></script>
-    
-    <!-- Script para adicionar toast -->
+      <!-- Script para adicionar toast -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         try {
-          // Exibir toast de boas-vindas usando os dados do usuário
-          const user = JSON.parse(localStorage.getItem('user'));
-          if (user && user.name && window.Toast) {
-            Toast.success(`Bem-vindo(a), ${user.name}!`, {
-              position: 'top-center',
-              duration: 4000
-            });
+          const justLoggedIn = sessionStorage.getItem('justLoggedIn');
+          
+          if (justLoggedIn === 'true') {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.name && window.Toast) {
+              Toast.success(`Bem-vindo(a), ${user.name}!`, {
+                position: 'top-center',
+                duration: 4000
+              });
+            }
+            sessionStorage.removeItem('justLoggedIn');
           }
           
-          // Verificar se é o primeiro login do dia
           const lastLogin = localStorage.getItem('lastLoginDate');
           const today = new Date().toDateString();
           
           if (lastLogin !== today && window.Toast) {
             localStorage.setItem('lastLoginDate', today);
             
-            // Mostrar mensagem do dia apenas no primeiro login do dia
             setTimeout(() => {
               Toast.info('Confira nossas novidades!', {
                 title: 'Sugestão do dia',
@@ -483,7 +484,6 @@
             }, 2000);
           }
           
-          // Adicionar toast nas interações das tabs de receitas
           const tabButtons = document.querySelectorAll('.tab-btn');
           if (tabButtons.length > 0) {
             tabButtons.forEach(btn => {
