@@ -129,55 +129,48 @@ async function fetchRecipes() {
   showLoading();
 
   try {
-    // Para demonstração, ainda usaremos dados estáticos
-    // Posteriormente seria trocado por uma chamada de API real
-    const recipes = [
-      {
-        id: 1,
-        title: 'Bolo de Chocolate Fofinho',
-        image_url: '/imgs/bolo_chocolate_receita.jpg',
-        author: { name: 'Maria Silva' },
-        created_at: '10/05/2023',
-        views: 1250,
-        description: 'Um delicioso bolo de chocolate fofinho, perfeito para qualquer ocasião.',
-        difficulty: 'Fácil',
-        prep_time: 20,
-        cook_time: 20,
-      },
-      {
-        id: 2,
-        title: 'Brigadeiro Gourmet',
-        image_url: '/imgs/brigadeiro_receita.jpg',
-        author: { name: 'João Santos' },
-        created_at: '23/09/2023',
-        views: 856,
-        description: 'Brigadeiro gourmet com chocolate premium para impressionar seus convidados.',
-        difficulty: 'Fácil',
-        prep_time: 15,
-        cook_time: 15,
-      },
-      {
-        id: 3,
-        title: 'Torta de Limão',
-        image_url: '/imgs/torta_limao_receita.jpg',
-        author: { name: 'Ana Oliveira' },
-        created_at: '05/12/2023',
-        views: 930,
-        description: 'Uma refrescante torta de limão com massa crocante e recheio cremoso.',
-        difficulty: 'Médio',
-        prep_time: 30,
-        cook_time: 30,
-      },
-    ];
-
-    // Aguardar um tempo simulando carregamento
-    setTimeout(() => {
-      if (Array.isArray(recipes) && recipes.length > 0) {
-        displayRecipes(recipes);
-      } else {
-        showEmptyState();
-      }
-    }, 800);
+    let endpoint = '/recipes';
+    
+    const queryParams = [];
+    
+    if (categoryFilter && categoryFilter.value && categoryFilter.value !== 'todas') {
+      queryParams.push(`category=${encodeURIComponent(categoryFilter.value)}`);
+    }
+    
+    if (searchInput && searchInput.value.trim()) {
+      queryParams.push(`search=${encodeURIComponent(searchInput.value.trim())}`);
+    }
+    
+    if (sortSelect && sortSelect.value) {
+      queryParams.push(`sort=${encodeURIComponent(sortSelect.value)}`);
+    }
+    
+    queryParams.push(`page=${currentPage}`);
+    
+    if (queryParams.length > 0) {
+      endpoint += `?${queryParams.join('&')}`;
+    }
+    
+    console.log('Endpoint da API:', endpoint);
+    
+    const data = await API.get(endpoint);
+    console.log('Dados recebidos da API:', data);
+    
+    let recipes;
+    if (data.recipes) {
+      recipes = data.recipes;
+      totalPages = data.totalPages || 1;
+    } else if (Array.isArray(data)) {
+      recipes = data;
+    } else {
+      recipes = [];
+    }
+    
+    if (Array.isArray(recipes) && recipes.length > 0) {
+      displayRecipes(recipes);
+    } else {
+      showEmptyState();
+    }
   } catch (error) {
     console.error('Erro ao buscar receitas:', error);
     showError();
