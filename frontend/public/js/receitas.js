@@ -344,16 +344,13 @@ async function displayRecipes(recipes) {
           // Se tiver apenas o ID do usuário, buscar o nome na API
           const userId = recipe.userId || recipe.user_id;
 
-          // Verificar primeiro no cache
           if (userCache[userId]) {
             authorName = userCache[userId].name;
           } else {
-            // Buscar o usuário da API
             try {
               const user = await getUserById(userId);
               if (user && user.name) {
                 authorName = user.name;
-                // Salvar no cache para futuras referências
                 userCache[userId] = user;
               } else {
                 authorName = `Usuário #${userId}`;
