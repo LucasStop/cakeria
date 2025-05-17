@@ -4,7 +4,6 @@ const API = {
   BASE_URL: 'http://localhost:3001/api',  async request(endpoint, options = {}) {
     try {
       const token = localStorage.getItem('token');
-      // Verificar se o token existe e se está expirado (apenas para endpoints que exigem autenticação)
       if (token && this.isTokenExpired() && endpoint !== '/auth/login' && endpoint !== '/auth/refresh') {
         console.log('Token expirado, redirecionando para login...');
         this.clearSession();
@@ -126,7 +125,6 @@ const API = {
       clearInterval(this.expirationCheckerId);
     }
 
-    // Verificar se há token antes de iniciar o verificador
     const token = localStorage.getItem('token');
     if (!token) {
       console.log('Sem token, verificador de expiração não será iniciado.');
@@ -134,7 +132,6 @@ const API = {
     }
 
     this.expirationCheckerId = setInterval(() => {
-      // Não verificar em páginas públicas ou de login
       const publicPages = ['/login.html', '/registro.html', '/index.html', '/'];
       const currentPath = window.location.pathname;
       
@@ -146,7 +143,6 @@ const API = {
         return;
       }
 
-      // Verificar se o token ainda existe e não foi removido manualmente (por exemplo, via logout)
       const currentToken = localStorage.getItem('token');
       if (!currentToken) {
         this.stopExpirationChecker();
@@ -256,10 +252,8 @@ const API = {
 window.API = API;
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Verificar se o usuário está deslogado após uma ação explícita de logout
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has('logout')) {
-    // Não iniciar o verificador se o usuário acabou de fazer logout
     console.log('Usuário acabou de fazer logout, não verificando expiração');
     return;
   }
@@ -267,7 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Obter token atual
   const token = localStorage.getItem('token');
   
-  // Não iniciar o verificador na página de login, páginas públicas ou quando não há token
   const publicPages = ['/login.html', '/registro.html', '/index.html', '/'];
   const currentPath = window.location.pathname;
   

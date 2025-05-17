@@ -145,27 +145,20 @@ const Toast = {
     }
   },
 
-  // Criar um toast
   show(message, options = {}) {
-    // Garantir que o sistema esteja inicializado
     this.init();
     
-    // Mesclar opções padrão com opções fornecidas
     const settings = {...this.defaultOptions, ...options};
     
-    // Atualizar a posição do contêiner
     this.container.className = `toast-container ${settings.position}`;
     
-    // Limitar o número de toasts visíveis
     while (this.activeToasts.length >= settings.maxVisible) {
       this.dismiss(this.activeToasts[0]);
     }
     
-    // Criar elemento toast
     const toast = document.createElement('div');
     toast.className = `toast ${settings.type || 'info'}`;
     
-    // Criar conteúdo do toast
     const icon = this.getIconForType(settings.type);
     
     toast.innerHTML = `
@@ -178,14 +171,11 @@ const Toast = {
       ${settings.showProgress ? `<div class="toast-progress"></div>` : ''}
     `;
     
-    // Adicionar ao contêiner
     this.container.appendChild(toast);
     
-    // Adicionar à lista de toasts ativos
     const toastId = Date.now();
     this.activeToasts.push(toastId);
     
-    // Referência ao toast para uso em escopos internos
     toast.dataset.id = toastId;
     
  
@@ -283,7 +273,6 @@ const Toast = {
     });
   },
   
-  // Ícones para os diferentes tipos
   getIconForType(type) {
     switch (type) {
       case 'success':

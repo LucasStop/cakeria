@@ -322,7 +322,6 @@
         </div>
       </section>
 
-      <!-- Call to Action -->
       <section class="cta">
         <div class="overlay gradient"></div>
         <div class="container">
@@ -338,7 +337,6 @@
 
     <footer-component></footer-component>
 
-    <!-- Carregar componentes primeiro -->
     <script src="./js/utils/toast.js"></script>
     <script src="./components/Header.js"></script>
     <script src="./components/Footer.js"></script>
@@ -347,13 +345,10 @@
     <script src="./js/script.js"></script>
     <script src="/js/login.js"></script>
     
-    <!-- Script para adicionar toast -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        // Verificar se há mensagem de boas-vindas na URL
         const urlParams = new URLSearchParams(window.location.search);
         
-        // Se for uma visita de primeira vez ou redirecionado com parâmetro welcome
         if (urlParams.has('welcome') && window.Toast) {
           Toast.info('Seja bem-vindo à Cakeria! Navegue por nossas delícias!', {
             position: 'top-center',
@@ -364,7 +359,7 @@
       
         setTimeout(() => {
           if (window.Toast) {
-            Toast.info('Faça seu pedido especial hoje! Entregamos em até 24h.', {
+            Toast.info('Para acessar a tela de receitas faça login ou cadastre-se <i class="fas fa-star" style="color:#ffb400;margin-right:8px;"></i>', {
               position: 'bottom-right',
               duration: 5000,
               title: 'Pedido Especial'
@@ -372,7 +367,6 @@
           }
         }, 3000);
         
-        // Adicionar toast ao clicar nos botões de Monte seu Bolo
         const monteBoloButtons = document.querySelectorAll('a[href="#cake-builder"], a.btn-primary:contains("Monte seu Bolo")');
         
         monteBoloButtons.forEach(btn => {

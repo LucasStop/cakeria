@@ -1,9 +1,7 @@
-// authGuard.js - Proteção de páginas que requerem autenticação
 
 document.addEventListener('DOMContentLoaded', () => {
   const currentPath = window.location.pathname;
   
-  // Páginas que requerem autenticação
   const protectedPages = [
     '/home.html',
     '/pedidos/novo.html',
@@ -25,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Verifica se o usuário está autenticado
 function isAuthenticated() {
   const token = localStorage.getItem('token');
   
@@ -33,7 +30,6 @@ function isAuthenticated() {
     return false;
   }
   
-  // Verificar se acabamos de fazer logout (baseado em um parâmetro URL)
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has('logout')) {
     return false;
@@ -82,7 +78,6 @@ function protectPage() {
 }
 
 /**
- * Inicializa a verificação de autenticação nas páginas
  */
 function initAuthGuard() {
   const isLoginPage = window.location.pathname.includes('login.html');
@@ -90,7 +85,6 @@ function initAuthGuard() {
                     window.location.pathname === '/index.html' || 
                     window.location.pathname === '';
   
-  // Redirecionar para home se já estiver autenticado e estiver na página de login
   if ((isIndexPage || isLoginPage) && isAuthenticated()) {
     window.location.href = '/home.html';
     return;
@@ -107,8 +101,6 @@ function initAuthGuard() {
     '/perfil.html'
   ];
   
-  // Nota: Removemos '/receitas.html' desta lista, pois parece que essa página
-  // deveria ser acessível mesmo sem login (apenas compartilhar receitas requer login)
   
   if (protectedPages.some(page => window.location.pathname.includes(page)) && !isAuthenticated()) {
     window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
