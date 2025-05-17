@@ -19,8 +19,8 @@ module.exports = {
 
       const comment = await Comment.create({
         content,
-        userId: req.user.id,
-        recipeId,
+        user_id: req.user.id,
+        recipe_id: recipeId,
       });
 
       // Buscar o comentário com dados do autor
@@ -46,7 +46,7 @@ module.exports = {
       }
 
       // Verificar se o usuário é o autor do comentário
-      if (!req.user || comment.userId !== req.user.id) {
+      if (!req.user || comment.user_id !== req.user.id) {
         return res.status(403).json({ message: 'Não autorizado a excluir este comentário' });
       }
 
@@ -60,17 +60,17 @@ module.exports = {
   },
 
   // Listar comentários de uma receita
-  getRecipecomments_recipes: async (req, res) => {
+  getRecipeComments: async (req, res) => {
     try {
       const { recipeId } = req.params;
 
-      const comments_recipes = await Comment.findAll({
-        where: { recipeId },
+      const comments = await Comment.findAll({
+        where: { recipe_id: recipeId },
         include: [{ model: User, as: 'author', attributes: ['id', 'name'] }],
         order: [['createdAt', 'DESC']],
       });
 
-      res.json(comments_recipes);
+      res.json(comments);
     } catch (error) {
       console.error('Erro ao listar comentários:', error);
       res.status(500).json({ message: 'Erro ao listar comentários' });

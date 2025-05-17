@@ -1,8 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const commentController = require('../controllers/comment_recipe.controller');
+const commentController = require('../controllers/comments_recipes.controller');
+const { authenticate } = require('../middlewares/auth.middleware');
 
-router.post('/:recipeId', commentController.addComment);
-router.delete('/:id', commentController.deleteComment);
+// Rota para obter comentários de uma receita (pública)
+router.get('/recipe/:recipeId', commentController.getRecipeComments);
 
-module.exports = router; // Adicionando a exportação que estava faltando
+// Rotas protegidas que exigem autenticação
+router.post('/:recipeId', authenticate, commentController.addComment);
+router.delete('/:id', authenticate, commentController.deleteComment);
+
+module.exports = router;

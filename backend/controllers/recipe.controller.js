@@ -32,6 +32,19 @@ exports.getRecipeById = async (req, res) => {
     if (!recipe) {
       return res.status(404).json({ message: 'Receita não encontrada' });
     }
+    
+    // Incrementar a contagem de visualizações
+    if (recipe.views === null || recipe.views === undefined) {
+      recipe.views = 1;
+    } else {
+      recipe.views += 1;
+    }
+    
+    // Salvar a atualização da contagem de visualizações
+    await recipe.save();
+    
+    console.log(`Visualizações da receita ${recipe.id} incrementadas para ${recipe.views}`);
+    
     res.status(200).json(recipe);
   } catch (error) {
     res.status(500).json({ message: error.message });
