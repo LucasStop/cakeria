@@ -130,7 +130,8 @@
       </div>
     </template>
 
-    <!-- Carregar componentes primeiro -->
+    <!-- Scripts -->
+    <script src="./js/utils/toast.js"></script>
     <script src="./components/Header.js"></script>
     <script src="./components/Footer.js"></script>
     <script src="./js/api.js"></script>
@@ -141,5 +142,43 @@
     <script src="./js/script.js"></script>
     <script src="./js/login.js"></script>
     <script src="./js/home.js"></script>
+    
+    <!-- Script para demonstrar toast na página -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Mostrar toast quando a página carregar
+        setTimeout(() => {
+          if (window.Toast) {
+            Toast.info('Descubra novas receitas deliciosas!', {
+              position: 'bottom-right',
+              duration: 5000
+            });
+          }
+        }, 1000);
+        
+        // Adicionar toast ao botão de busca
+        const searchBtn = document.getElementById('search-btn');
+        const searchInput = document.getElementById('search-recipes');
+        
+        if (searchBtn && searchInput) {
+          const originalClick = searchBtn.onclick;
+          
+          searchBtn.addEventListener('click', function(e) {
+            const searchTerm = searchInput.value.trim();
+            if (searchTerm && window.Toast) {
+              Toast.info(`Buscando por: "${searchTerm}"`, {
+                position: 'top-right',
+                duration: 3000
+              });
+            }
+            
+            // Preserva comportamento original se existir
+            if (typeof originalClick === 'function') {
+              originalClick.call(this, e);
+            }
+          });
+        }
+      });
+    </script>
   </body>
 </html>

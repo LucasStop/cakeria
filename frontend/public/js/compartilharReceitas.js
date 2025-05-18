@@ -52,8 +52,7 @@ function checkAuthStatus() {
     }, 2000);
   }
 
-  // Verificar se o token é válido (opcional)
-  // Esta função pode ser expandida para verificar a validade do token com o backend
+
 }
 
 // Verificar se estamos no modo de edição
@@ -537,25 +536,25 @@ function setupEventListeners() {
         `;
     container.appendChild(newStep);
 
-    // Adicionar evento de remoção
+
     newStep.querySelector('.remove-btn').addEventListener('click', function () {
       container.removeChild(newStep);
-      // Atualizar números dos passos
+ 
       updateStepNumbers();
     });
   });
 
-  // Botão cancelar - usar o sistema de confirmação
+
   document.getElementById('cancel-btn').addEventListener('click', function () {
     Notifications.confirm(
       'Tem certeza que deseja cancelar? Todas as informações preenchidas serão perdidas.',
-      // Callback quando confirmado
+    
       function () {
         window.location.href = '/receitas.html';
       },
-      // Callback quando cancelado
+    
       null,
-      // Opções adicionais
+ 
       {
         title: 'Cancelar edição',
         confirmText: 'Sim, cancelar',
@@ -584,7 +583,7 @@ function setupEventListeners() {
     handleFormSubmit(e);
   });
 
-  // Configurar eventos de remoção para os itens iniciais
+
   document.querySelectorAll('.remove-btn').forEach(btn => {
     btn.addEventListener('click', function () {
       const item = this.closest('.ingredient-item, .step-item');

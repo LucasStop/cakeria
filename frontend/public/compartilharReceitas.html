@@ -232,6 +232,7 @@
     <footer-component></footer-component>
 
     <!-- Carregar componentes primeiro -->
+    <script src="./js/utils/toast.js"></script>
     <script src="./components/Footer.js"></script>
     <script src="./js/notifications.js"></script>
     <script src="./js/api.js"></script>
@@ -247,5 +248,105 @@
     <script src="./js/compartilharReceitas.js"></script>
     <script src="./js/home.js"></script>
     <script src="./js/authGuard.js"></script>
+    
+    <!-- Script para adicionar toast à página -->
+    <script>
+      // Verificação de autenticação imediata para esta página
+      document.addEventListener('DOMContentLoaded', () => {
+        if (!isAuthenticated()) {
+          // Se o usuário não estiver autenticado, redireciona para login
+          const currentPath = window.location.pathname;
+          window.location.href = `/login.html?redirect=${encodeURIComponent(currentPath)}`;
+          return;
+        }
+
+        // Se chegou aqui, o usuário está autenticado
+        if (window.Toast) {
+          Toast.info('Compartilhe sua receita com a comunidade!', { 
+            position: 'top-center', 
+            duration: 4000 
+          });
+        }
+
+        // Exibir toast de boas-vindas
+        if (window.Toast) {
+          Toast.info('Compartilhe sua receita com a comunidade!', {
+            position: 'top-center',
+            duration: 4000
+          });
+        }
+        
+        // Melhorar feedback de erros com toast
+        const showErrorOriginal = window.showError;
+        
+        // Se existir uma função showError no escopo global, vamos melhorá-la
+        if (typeof showError === 'function') {
+          window.showError = function(elementId, message) {
+            // Manter o comportamento original
+            if (typeof showErrorOriginal === 'function') {
+              showErrorOriginal(elementId, message);
+            }
+            
+            // Adicionar toast para erros críticos
+            if (elementId === 'form-error' && window.Toast) {
+              Toast.error(message, {
+                title: 'Erro no formulário',
+                position: 'bottom-right',
+                duration: 5000
+              });
+            }
+          };
+        }
+        
+        // Adicionar toast ao formulário
+        const form = document.getElementById('recipe-form');
+        if (form) {
+          // Preservar submit original
+          const originalSubmit = form.onsubmit;
+          
+          form.addEventListener('submit', function(e) {
+            // Não vamos prevenir o comportamento padrão para manter a lógica original
+            
+            // Adicionar toast de envio
+            if (window.Toast) {
+              Toast.info('Enviando receita...', {
+                position: 'top-center',
+                duration: 3000
+              });
+            }
+          });
+          
+          // Adicionar confirmação ao botão Cancelar
+          const cancelBtn = document.getElementById('cancel-btn');
+          if (cancelBtn) {
+            const originalClick = cancelBtn.onclick;
+            
+            cancelBtn.addEventListener('click', function(e) {
+              e.preventDefault(); // Prevenir comportamento padrão
+              
+              if (window.Toast) {
+                Toast.warning('Deseja realmente cancelar? Os dados não serão salvos.', {
+                  position: 'top-center',
+                  duration: 5000,
+                  closeButton: true
+                });
+                
+                // Após 2 segundos para dar tempo de ler, executa o comportamento original
+                setTimeout(() => {
+                  if (typeof originalClick === 'function') {
+                    originalClick.call(this);
+                  } else {
+                    // Comportamento padrão se não houver handler
+                    window.location.href = '/receitas.html';
+                  }
+                }, 2000);
+              } else if (typeof originalClick === 'function') {
+                originalClick.call(this);
+              }
+            });
+          }
+        }
+      });
+    </script>
   </body>
 </html>

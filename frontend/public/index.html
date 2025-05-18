@@ -322,7 +322,6 @@
         </div>
       </section>
 
-      <!-- Call to Action -->
       <section class="cta">
         <div class="overlay gradient"></div>
         <div class="container">
@@ -338,12 +337,49 @@
 
     <footer-component></footer-component>
 
-    <!-- Carregar componentes primeiro -->
+    <script src="./js/utils/toast.js"></script>
     <script src="./components/Header.js"></script>
     <script src="./components/Footer.js"></script>
     <script src="./js/api.js"></script>
     <script src="./js/navigation.js"></script>
     <script src="./js/script.js"></script>
     <script src="/js/login.js"></script>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams.has('welcome') && window.Toast) {
+          Toast.info('Seja bem-vindo à Cakeria! Navegue por nossas delícias!', {
+            position: 'top-center',
+            duration: 5000
+          });
+        }
+        
+      
+        setTimeout(() => {
+          if (window.Toast) {
+            Toast.info('Para acessar a tela de receitas faça login ou cadastre-se <i class="fas fa-star" style="color:#ffb400;margin-right:8px;"></i>', {
+              position: 'bottom-right',
+              duration: 5000,
+              title: 'Pedido Especial'
+            });
+          }
+        }, 3000);
+        
+        const monteBoloButtons = document.querySelectorAll('a[href="#cake-builder"], a.btn-primary:contains("Monte seu Bolo")');
+        
+        monteBoloButtons.forEach(btn => {
+          btn.addEventListener('click', function() {
+            if (window.Toast) {
+              Toast.success('Monte seu bolo personalizado em 4 passos simples!', {
+                position: 'top-center',
+                duration: 2000
+              });
+            }
+          });
+        });
+      });
+    </script>
   </body>
 </html>

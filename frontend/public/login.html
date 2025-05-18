@@ -66,9 +66,49 @@
     </div>
   </div>
 
+  <script src="/js/utils/toast.js"></script>
+  
   <script src="./js/api.js"></script>
   <script src="./js/login.js"></script>
   <script src="./js/authGuard.js"></script>
   
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      if (urlParams.has('expired') || urlParams.get('reason') === 'session_expired') {
+        if (window.Toast) {
+          Toast.warning('Sua sessão expirou. Por favor, faça login novamente.', {
+            position: 'top-center',
+            duration: 5000
+          });
+        }
+      } 
+      else if (urlParams.has('logout')) {
+        if (window.Toast) {
+          Toast.info('Você saiu do sistema com sucesso!', {
+            position: 'top-center',
+            duration: 3000
+          });
+        }
+      }
+      
+      const loginForm = document.getElementById('login-form');
+      if (loginForm) {
+        const originalSubmit = loginForm.onsubmit;
+        
+        loginForm.addEventListener('submit', function(e) {
+          
+          if (window.Toast) {
+            Toast.info('Realizando login...', {
+              position: 'top-center',
+              duration: 3000
+            });
+          }
+          
+        });
+      }
+    });
+  </script>
 </body>
 </html>
