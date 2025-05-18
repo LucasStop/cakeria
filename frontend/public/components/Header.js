@@ -2,14 +2,13 @@ class Header extends HTMLElement {
   constructor() {
     super();
   }
-
   connectedCallback() {
-    const variant = this.getAttribute('variant') || 'user';
+    const isLoggedIn = localStorage.getItem('token') !== null;
+    const user = this.getCurrentUser();
+    // Obtenha o atributo de variante ou determine com base na função isAdmin
+    const variant = this.getAttribute('variant') || (this.isAdmin(user) ? 'admin' : 'client');
 
-    if (variant === 'user') {
-      const isLoggedIn = localStorage.getItem('token') !== null;
-      const user = this.getCurrentUser();
-      
+    if (variant === 'client') {
       this.innerHTML = `
         <header class="header">
           <div class="container">
@@ -18,18 +17,18 @@ class Header extends HTMLElement {
             </div>
             
             <nav class="nav-bar">
-              <ul class="nav-links">
-                <li><a href="/index.html" class="nav-link" data-route="home"><i class="fa-solid fa-home"></i> Home</a></li>
+              <ul class="nav-links">                <li><a href="/index.html" class="nav-link" data-route="home"><i class="fa-solid fa-home"></i> Home</a></li>
                 <li><a href="/receitas.html" class="nav-link" data-route="receitas"><i class="fa-solid fa-utensils"></i> Receitas</a></li>
                 <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
                 <li><a href="/sobre.html" class="nav-link" id="nav-sobre" data-route="sobre"><i class="fa-solid fa-info-circle"></i> Sobre</a></li>
-                ${isLoggedIn && user?.isAdmin ? `<li><a href="/admin.html" class="nav-link" id="nav-admin" data-route="admin"><i class="fa-solid fa-user-shield"></i> Admin</a></li>` : ''}
+                ${isLoggedIn && this.isAdmin(user) ? `<li><a href="/admin.html" class="nav-link" id="nav-admin" data-route="admin"><i class="fa-solid fa-user-shield"></i> Admin</a></li>` : ''}
               </ul>
             </nav>
             
             <div class="auth-buttons">
-              ${isLoggedIn 
-                ? `<div class="user-menu">
+              ${
+                isLoggedIn
+                  ? `<div class="user-menu">
                     <div class="user-profile" id="user-profile-toggle">
                       <div class="user-avatar">
                         <div class="avatar-placeholder">
@@ -42,20 +41,24 @@ class Header extends HTMLElement {
                     <div class="dropdown-menu">
                       <a href="/perfil.html" class="dropdown-item">
                         <i class="fa-solid fa-user"></i> Meu Perfil
-                      </a>
-                      <a href="/pedidos/meus-pedidos.html" class="dropdown-item">
+                      </a>                      <a href="/pedidos/meus-pedidos.html" class="dropdown-item">
                         <i class="fa-solid fa-shopping-bag"></i> Meus Pedidos
                       </a>
-                      <a href="/favoritos.html" class="dropdown-item">
-                        <i class="fa-solid fa-heart"></i> Favoritos
-                      </a>
+                      ${
+                        this.isAdmin(user)
+                          ? `
+                      <a href="/admin.html" class="dropdown-item">
+                        <i class="fa-solid fa-user-shield"></i> Área Admin
+                      </a>`
+                          : ''
+                      }
                       <div class="dropdown-divider"></div>
                       <button class="dropdown-item logout-btn">
                         <i class="fa-solid fa-sign-out-alt"></i> Sair
                       </button>
                     </div>
                   </div>`
-                : `<button class="login-btn" data-route="login">
+                  : `<button class="login-btn" data-route="login">
                     <i class="fa-solid fa-user"></i> Login
                   </button>`
               }
@@ -76,10 +79,12 @@ class Header extends HTMLElement {
       let userImageUrl = '';
       if (isLoggedIn && user && user.id) {
         const token = localStorage.getItem('token');
-        userImageUrl = `${window.API.BASE_URL}/users/${user.id}/image` + (token ? `?token=${token}` : '');
+        userImageUrl =
+          `${window.API?.BASE_URL || 'http://localhost:3001/api'}/users/${user.id}/image` +
+          (token ? `?token=${token}` : '');
       }
       this.innerHTML = `
-        <header class="header">
+        <header class="header admin-header">
           <div class="container">
             <div class="logo-container">
               <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo">
@@ -87,20 +92,39 @@ class Header extends HTMLElement {
             
             <nav class="nav-bar">
               <ul class="nav-links">
-                <li><a href="/admin" class="nav-link" data-route="admin"><i class="fa-solid fa-home"></i> Home</a></li>
+                <li><a href="/admin.html" class="nav-link" data-route="admin"><i class="fa-solid fa-home"></i> Dashboard</a></li>
                 <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
-                <li><a href="/registerProduct" class="nav-link" data-route="registerProduct"><i class="fa-solid fa-cake-candles"></i> Produtos</a></li>
-                <li><a href="/dashboard" class="nav-link" id="nav-dashboard" data-route="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="/registerProduct.html" class="nav-link" data-route="registerProduct"><i class="fa-solid fa-cake-candles"></i> Produtos</a></li>
+                <li><a href="/pedidos/gerenciar.html" class="nav-link" id="nav-pedidos" data-route="pedidos"><i class="fa-solid fa-shopping-cart"></i> Pedidos</a></li>
                 <li><a href="/usuarios" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
+                <li><a href="/index.html" class="nav-link" data-route="site"><i class="fa-solid fa-globe"></i> Ver Site</a></li>
               </ul>
             </nav>
-            <div class="user-avatar" style="margin-left:16px;">
-              <img src="${userImageUrl}" alt="Avatar" class="user-avatar-img" style="display:${userImageUrl ? 'block' : 'none'};width:40px;height:40px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-              <div class="avatar-placeholder" style="${userImageUrl ? 'display:none;' : 'display:flex;'};width:40px;height:40px;align-items:center;justify-content:center;">
-                <span class="avatar-initial">${this.getUserInitials(user)}</span>
+            <div class="user-menu">
+              <div class="user-profile" id="user-profile-toggle">
+                <div class="user-avatar">
+                  <img src="${userImageUrl}" alt="Avatar" class="user-avatar-img" style="display:${userImageUrl ? 'block' : 'none'};width:40px;height:40px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                  <div class="avatar-placeholder" style="${userImageUrl ? 'display:none;' : 'display:flex;'};width:40px;height:40px;align-items:center;justify-content:center;">
+                    <span class="avatar-initial">${this.getUserInitials(user)}</span>
+                  </div>
+                </div>
+                <span class="username">${user?.name || user?.email || 'Administrador'}</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="dropdown-menu">
+                <a href="/perfil.html" class="dropdown-item">
+                  <i class="fa-solid fa-user"></i> Meu Perfil
+                </a>
+                <a href="/index.html" class="dropdown-item">
+                  <i class="fa-solid fa-home"></i> Voltar ao Site
+                </a>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item logout-btn">
+                  <i class="fa-solid fa-sign-out-alt"></i> Sair
+                </button>
               </div>
             </div>
-            <button class="menu-toggle" aria-label="Menu">
+            </div>            <button class="menu-toggle" aria-label="Menu">
               <span class="bar"></span>
               <span class="bar"></span>
               <span class="bar"></span>
@@ -113,8 +137,14 @@ class Header extends HTMLElement {
 
     this.setupEventListeners();
     this.highlightCurrentPage();
-  }
 
+    // Adicionar a folha de estilo para o header de admin
+    if (this.getAttribute('variant') === 'admin') {
+      const linkElement = document.createElement('link');
+      linkElement.rel = 'stylesheet';
+      document.head.appendChild(linkElement);
+    }
+  }
   getCurrentUser() {
     try {
       const userStr = localStorage.getItem('user');
@@ -125,22 +155,26 @@ class Header extends HTMLElement {
     }
   }
 
+  isAdmin(user) {
+    return user && (user.type === 'admin' || user.isAdmin === true);
+  }
+
   getUserInitials(user) {
     if (!user) return '?';
-    
+
     if (user.name) {
       const nameParts = user.name.split(' ');
       let initials = nameParts[0][0];
-      
+
       if (nameParts.length > 1) {
         initials += nameParts[nameParts.length - 1][0];
       }
-      
+
       return initials.toUpperCase();
     } else if (user.email) {
       return user.email[0].toUpperCase();
     }
-    
+
     return '?';
   }
 
@@ -148,23 +182,23 @@ class Header extends HTMLElement {
     const userProfileToggle = this.querySelector('#user-profile-toggle');
     if (userProfileToggle) {
       const dropdownMenu = this.querySelector('.dropdown-menu');
-      
-      userProfileToggle.addEventListener('click', (e) => {
+
+      userProfileToggle.addEventListener('click', e => {
         e.stopPropagation();
         dropdownMenu.classList.toggle('show');
       });
-      
+
       document.addEventListener('click', () => {
         if (dropdownMenu.classList.contains('show')) {
           dropdownMenu.classList.remove('show');
         }
       });
-      
-      dropdownMenu.addEventListener('click', (e) => {
+
+      dropdownMenu.addEventListener('click', e => {
         e.stopPropagation();
       });
     }
-    
+
     const links = this.querySelectorAll('.nav-link');
     links.forEach(link => {
       link.addEventListener('click', e => {
@@ -172,7 +206,7 @@ class Header extends HTMLElement {
         if (href && href.includes('.html')) {
           return;
         }
-        
+
         e.preventDefault();
         const route = link.getAttribute('data-route');
 
@@ -273,7 +307,7 @@ class Header extends HTMLElement {
     if (navBar.classList.contains('active')) {
       const isLoggedIn = localStorage.getItem('token') !== null;
       const loginButtonExists = navBar.querySelector('.mobile-login-btn');
-      
+
       if (!isLoggedIn && !loginButtonExists) {
         const navLinks = navBar.querySelector('.nav-links');
         const loginButton = document.createElement('li');
@@ -284,7 +318,7 @@ class Header extends HTMLElement {
           </a>
         `;
         navLinks.appendChild(loginButton);
-        
+
         const loginBtn = loginButton.querySelector('.mobile-login-btn');
         loginBtn.addEventListener('click', () => {
           this.closeMenu();
@@ -311,13 +345,22 @@ class Header extends HTMLElement {
     navBar.classList.remove('active');
     menuToggle.classList.remove('active');
     overlay.classList.remove('active');
-    
+
     const mobileLoginItem = navBar.querySelector('.mobile-login-item');
     if (mobileLoginItem) {
       mobileLoginItem.remove();
     }
-    
+
     document.body.style.overflow = '';
+  }
+  handleLogout() {
+    // Remover dados de autenticação
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    sessionStorage.removeItem('justLoggedIn');
+
+    // Redirecionar para a página inicial
+    window.location.href = '/index.html?logout=true';
   }
 
   highlightCurrentPage() {
@@ -345,3 +388,10 @@ class Header extends HTMLElement {
 }
 
 customElements.define('header-component', Header);
+
+// Carregar o script de controle do header
+if (typeof window !== 'undefined') {
+  const scriptElement = document.createElement('script');
+  scriptElement.src = '/js/headerController.js';
+  document.head.appendChild(scriptElement);
+}
