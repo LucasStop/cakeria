@@ -37,18 +37,35 @@ exports.findOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const { name, email, cpf, password, type, phone, address = {}, addresses = [] } = req.body;
+    const {
+      name,
+      email,
+      cpf,
+      password,
+      type,
+      phone,
+      address = {},
+      addresses = []
+    } = req.body;
+
+    // Validação básica
+    if (!password || typeof password !== 'string') {
+      return res.status(400).json({ message: 'Senha é obrigatória e deve ser uma string' });
+    }
+
+    let image = null;
+    if (req.file) {
+      image = req.file.buffer;
+    }
 
     // Utiliza transação para garantir consistência
     const result = await sequelize.transaction(async t => {
-      // Criptografa a senha
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      // Cria o usuário
-      const user = await User.create(
-        { name, email, cpf, password: hashedPassword, type, phone },
-        { transaction: t }
-      );
+      const userData = { name, email, cpf, password: hashedPassword, type, phone };
+      if (image) userData.image = image;
+
+      const user = await User.create(userData, { transaction: t });
 
       // Processa múltiplos endereços se fornecidos
       if (Array.isArray(addresses) && addresses.length > 0) {
@@ -104,14 +121,30 @@ exports.create = async (req, res) => {
 
     res.status(201).json(userWithAddresses);
   } catch (error) {
-    res.status(400).json({ message: 'Erro ao criar usuário', error: error.message });
+    res.status(400).json({
+      message: 'Erro ao criar usuário',
+      error: error.message,
+      type: error.name,
+      stack: error.stack,
+    });
   }
 };
 
 exports.update = async (req, res) => {
   const { id } = req.params;
   try {
-    const { address = {}, addresses = [], currentPassword, password, ...userData } = req.body;
+    const {
+      address = {},
+      addresses = [],
+      currentPassword,
+      password,
+      ...userData
+    } = req.body;
+
+    let image = null;
+    if (req.file) {
+      image = req.file.buffer;
+    }
 
     // Utiliza transação para garantir consistência
     await sequelize.transaction(async t => {
@@ -125,8 +158,8 @@ exports.update = async (req, res) => {
       if (password) {
         // Verifica se a senha atual foi fornecida
         if (!currentPassword) {
-          return res.status(400).json({ 
-            message: 'A senha atual é obrigatória para alterar a senha' 
+          return res.status(400).json({
+            message: 'A senha atual é obrigatória para alterar a senha',
           });
         }
 
@@ -140,6 +173,11 @@ exports.update = async (req, res) => {
         userData.password = await bcrypt.hash(password, 10);
       }
 
+      // Adiciona/atualiza a imagem se enviada
+      if (image) {
+        userData.image = image;
+      }
+
       // Atualiza os dados do usuário
       await User.update(userData, { where: { id }, transaction: t });
 
@@ -149,11 +187,11 @@ exports.update = async (req, res) => {
           if ((addr.postal_code || addr.cep) && (addr.street || addr.number)) {
             // Se o endereço tem um ID, atualiza o endereço existente
             if (addr.id) {
-              const addressExists = await Address.findOne({ 
+              const addressExists = await Address.findOne({
                 where: { id: addr.id, user_id: id },
-                transaction: t
+                transaction: t,
               });
-              
+
               if (addressExists) {
                 // Atualiza o endereço existente
                 await Address.update(
@@ -198,11 +236,11 @@ exports.update = async (req, res) => {
       ) {
         // Se o endereço tem um ID, atualiza o endereço existente
         if (address.id) {
-          const addressExists = await Address.findOne({ 
+          const addressExists = await Address.findOne({
             where: { id: address.id, user_id: id },
-            transaction: t
+            transaction: t,
           });
-          
+
           if (addressExists) {
             // Atualiza o endereço existente
             await Address.update(
