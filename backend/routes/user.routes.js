@@ -13,5 +13,6 @@ router.get('/', authenticate, userController.findAll);
 router.get('/:id', authenticate, userController.findOne);
 router.put('/:id', authenticate, upload.single('image'), userController.update);
 router.delete('/:id', authenticate, userController.delete);
+router.get('/:id/image', authenticate, userController.getUserImage);
 
 module.exports = router;
