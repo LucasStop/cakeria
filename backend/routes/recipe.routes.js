@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const recipeController = require('../controllers/recipe.controller');
+const { authenticate } = require('../middlewares/auth.middleware');
 
+// Rotas públicas
 router.get('/', recipeController.getAllRecipes);
 router.get('/:id', recipeController.getRecipeById);
-router.post('/', recipeController.createRecipe);
-router.put('/:id', recipeController.updateRecipe);
-router.delete('/:id', recipeController.deleteRecipe);
+
+// Rotas protegidas que requerem autenticação
+router.post('/', authenticate, recipeController.createRecipe);
+router.put('/:id', authenticate, recipeController.updateRecipe);
+router.delete('/:id', authenticate, recipeController.deleteRecipe);
 
 module.exports = router;
