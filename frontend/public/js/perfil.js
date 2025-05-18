@@ -88,11 +88,63 @@ async function loadUserData() {
   }
 }
 
+async function loadUserImage(userId) {
+  const userImage = document.getElementById('profile-user-image');
+  const avatarPlaceholder = document.getElementById('profile-avatar-placeholder');
+  const avatarInitials = document.getElementById('profile-avatar-initials');
+  if (!userImage || !userId) return;
+  const token = localStorage.getItem('token');
+  try {
+    const response = await fetch(`${window.API.BASE_URL}/users/${userId}/image`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (response.ok) {
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      userImage.src = imageUrl;
+      userImage.style.display = 'block';
+      if (avatarPlaceholder) avatarPlaceholder.style.display = 'none';
+    } else {
+      // Se não houver imagem, mostrar as iniciais
+      if (avatarPlaceholder && avatarInitials) {
+        const user = getCurrentUser();
+        avatarInitials.textContent = getUserInitials(user);
+        avatarPlaceholder.style.display = 'flex';
+      }
+      userImage.style.display = 'none';
+    }
+  } catch (e) {
+    // Em caso de erro, mostrar as iniciais
+    if (avatarPlaceholder && avatarInitials) {
+      const user = getCurrentUser();
+      avatarInitials.textContent = getUserInitials(user);
+      avatarPlaceholder.style.display = 'flex';
+    }
+    userImage.style.display = 'none';
+  }
+}
+
 function fillPersonalInfoForm(userData) {
   document.getElementById('profile-name').value = userData.name || '';
   document.getElementById('profile-email').value = userData.email || '';
   document.getElementById('profile-phone').value = userData.phone || '';
   document.getElementById('profile-cpf').value = userData.cpf || '';
+  loadUserImage(userData.id);
+}
+
+function getUserInitials(user) {
+  if (!user) return '?';
+  if (user.name) {
+    const nameParts = user.name.split(' ');
+    let initials = nameParts[0][0];
+    if (nameParts.length > 1) {
+      initials += nameParts[nameParts.length - 1][0];
+    }
+    return initials.toUpperCase();
+  } else if (user.email) {
+    return user.email[0].toUpperCase();
+  }
+  return '?';
 }
 
 // === Gerenciamento de formulários ===
