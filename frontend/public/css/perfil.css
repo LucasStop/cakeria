@@ -647,6 +647,39 @@ body {
   font-size: 1.1rem;
 }
 
+/* Estilos para o botão de upload de imagem de perfil */
+.profile-image-wrapper {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.change-profile-image-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: white;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
+}
+
+.change-profile-image-btn:hover {
+  background: var(--primary-hover);
+  transform: scale(1.05);
+}
+
+.change-profile-image-btn:active {
+  transform: scale(0.95);
+}
+
 /* Responsividade */
 @media (max-width: 992px) {
   .profile-container {
