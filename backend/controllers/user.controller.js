@@ -21,7 +21,7 @@ exports.findOne = async (req, res) => {
   const { id } = req.params;
   try {
     const user = await User.findByPk(id, {
-      attributes: { exclude: ['password', 'image'] },
+      attributes: { exclude: ['password'] },
       include: [{ model: Address, as: 'addresses' }],
     });
 
