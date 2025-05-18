@@ -3,12 +3,15 @@
 module.exports = (sequelize, DataTypes) => {
   const Product = sequelize.define(
     'Product',
-    {
-      category_id: {
+    {      category_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      name: {
+      image: {
+        type: DataTypes.BLOB('medium'), // MEDIUMBLOB - até 16MB
+        allowNull: true,
+        // Removemos a validação isUrl já que agora é um binário
+      },      name: {
         type: DataTypes.STRING(100),
         allowNull: false,
         validate: {
@@ -20,6 +23,20 @@ module.exports = (sequelize, DataTypes) => {
             msg: 'O nome deve ter entre 3 e 100 caracteres',
           },
         },
+      },      slug: {
+        type: DataTypes.STRING(120),
+        allowNull: false,
+        unique: true,
+        validate: {
+          notEmpty: {
+            msg: 'O slug não pode estar vazio',
+          },
+        },
+      },
+      is_active: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
       },
       description: {
         type: DataTypes.TEXT,
@@ -66,8 +83,7 @@ module.exports = (sequelize, DataTypes) => {
           },
           min: {
             args: [0],
-            msg: 'O estoque não pode ser negativo',
-          },
+            msg: 'O estoque não pode ser negativo',          },
         },
       },
       expiry_date: {
@@ -80,16 +96,6 @@ module.exports = (sequelize, DataTypes) => {
           isAfter: {
             args: new Date().toISOString().split('T')[0],
             msg: 'A data de validade deve ser futura',
-          },
-        },
-      },
-      image_url: {
-        type: DataTypes.STRING(255),
-        allowNull: true,
-        validate: {
-          isUrl: {
-            msg: 'A URL da imagem deve ser válida',
-            allowEmpty: true,
           },
         },
       },
@@ -115,7 +121,6 @@ module.exports = (sequelize, DataTypes) => {
       as: 'orders',
     });
   };
-
   Product.beforeSave(async (product, options) => {
     if (product.price) {
       product.price = parseFloat(product.price).toFixed(2);
@@ -123,6 +128,16 @@ module.exports = (sequelize, DataTypes) => {
 
     if (product.expiry_date && !(product.expiry_date instanceof Date)) {
       product.expiry_date = new Date(product.expiry_date);
+    }
+
+    // Gerar slug a partir do nome do produto se o nome foi alterado ou se o produto é novo
+    if (product.changed('name') || product.isNewRecord) {
+      product.slug = product.name
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '') // Remove caracteres especiais
+        .replace(/\s+/g, '-')     // Substitui espaços por hífens
+        .replace(/--+/g, '-')     // Remove hífens duplicados
+        .trim();
     }
   });
 
