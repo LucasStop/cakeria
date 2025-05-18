@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupFormSubmissions();
   setupAddressManagement();
   setupDeleteUserModal();
+  setupProfileImageUpload(); // Adicionar configuração de upload de imagem
   
   // Carregar dados do usuário
   await loadUserData();
@@ -169,6 +170,63 @@ function setupFormSubmissions() {
   }
 }
 
+// Função para configurar o upload de imagem de perfil
+function setupProfileImageUpload() {
+  const uploadButton = document.getElementById('change-profile-image-btn');
+  const fileInput = document.getElementById('profile-image-upload');
+  const imageInfo = document.getElementById('profile-image-info');
+  
+  if (!uploadButton || !fileInput || !imageInfo) return;
+  
+  // Abrir seletor de arquivo ao clicar no botão
+  uploadButton.addEventListener('click', () => {
+    fileInput.click();
+  });
+  
+  // Processar imagem selecionada
+  fileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    // Verificar tamanho (máximo 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      showNotification('A imagem é muito grande. O tamanho máximo é 5MB.', 'error');
+      fileInput.value = '';
+      return;
+    }
+    
+    // Verificar tipo
+    if (!file.type.startsWith('image/')) {
+      showNotification('Por favor, selecione um arquivo de imagem válido.', 'error');
+      fileInput.value = '';
+      return;
+    }
+    
+    // Mostrar pré-visualização da imagem
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const userImage = document.getElementById('profile-user-image');
+      const avatarPlaceholder = document.getElementById('profile-avatar-placeholder');
+      
+      if (userImage) {
+        userImage.src = e.target.result;
+        userImage.style.display = 'block';
+      }
+      
+      if (avatarPlaceholder) {
+        avatarPlaceholder.style.display = 'none';
+      }
+      
+      // Atualizar informação da imagem
+      imageInfo.textContent = 'Nova imagem selecionada. Clique em Salvar Alterações para atualizar.';
+      imageInfo.style.color = '#f87171';
+    };
+    
+    reader.readAsDataURL(file);
+  });
+}
+
 async function handlePersonalInfoSubmit(event) {
   event.preventDefault();
   
@@ -179,18 +237,9 @@ async function handlePersonalInfoSubmit(event) {
       return;
     }
     
-    const formData = new FormData(event.target);
-    const userData = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      cpf: formData.get('cpf')
-    };
-    
-    // Validar dados
-    if (!validatePersonalInfo(userData)) {
-      return;
-    }
+    // Verificar se há uma imagem de perfil para upload
+    const fileInput = document.getElementById('profile-image-upload');
+    const hasNewImage = fileInput && fileInput.files && fileInput.files.length > 0;
     
     // Mostrar carregando
     const submitButton = event.target.querySelector('button[type="submit"]');
@@ -198,13 +247,80 @@ async function handlePersonalInfoSubmit(event) {
     submitButton.disabled = true;
     submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
     
-    // Enviar requisição para atualizar usuário
-    const updatedUser = await API.Users.update(user.id, userData);
-    
-    // Atualizar dados no localStorage
-    const currentUser = getCurrentUser();
-    const mergedUser = { ...currentUser, ...updatedUser };
-    localStorage.setItem('user', JSON.stringify(mergedUser));
+    // Enviar os dados do perfil e, se houver, a imagem
+    if (hasNewImage) {
+      // Se tivermos nova imagem, precisamos usar FormData
+      const formData = new FormData();
+      formData.append('name', document.getElementById('profile-name').value);
+      formData.append('email', document.getElementById('profile-email').value);
+      formData.append('phone', document.getElementById('profile-phone').value);
+      formData.append('cpf', document.getElementById('profile-cpf').value);
+      formData.append('image', fileInput.files[0]);
+      
+      // Fazer upload usando fetch diretamente, pois a API helper pode não suportar FormData corretamente
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API.BASE_URL}/users/${user.id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Erro ao atualizar perfil');
+      }
+      
+      const updatedUser = await response.json();
+      
+      // Atualizar dados no localStorage
+      const currentUser = getCurrentUser();
+      const mergedUser = { ...currentUser, ...updatedUser };
+      localStorage.setItem('user', JSON.stringify(mergedUser));
+      
+      // Limpar o input de arquivo
+      fileInput.value = '';
+      
+      // Limpar mensagem de informação da imagem
+      const imageInfo = document.getElementById('profile-image-info');
+      if (imageInfo) {
+        imageInfo.textContent = 'Imagem de perfil atualizada com sucesso.';
+        imageInfo.style.color = '#10b981';
+        
+        // Esconder a mensagem após 5 segundos
+        setTimeout(() => {
+          imageInfo.textContent = '';
+        }, 5000);
+      }
+      
+      // Recarregar a imagem
+      loadUserImage(user.id);
+    } else {
+      // Sem nova imagem, apenas atualiza os dados normais
+      const formData = new FormData(event.target);
+      const userData = {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        cpf: formData.get('cpf')
+      };
+      
+      // Validar dados
+      if (!validatePersonalInfo(userData)) {
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalText;
+        return;
+      }
+      
+      // Enviar requisição para atualizar usuário
+      const updatedUser = await API.Users.update(user.id, userData);
+      
+      // Atualizar dados no localStorage
+      const currentUser = getCurrentUser();
+      const mergedUser = { ...currentUser, ...updatedUser };
+      localStorage.setItem('user', JSON.stringify(mergedUser));
+    }
     
     // Restaurar botão
     submitButton.disabled = false;
