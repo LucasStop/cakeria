@@ -49,6 +49,11 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: null,
         comment: 'Data e hora do último login do usuário',
       },
+      image: {
+        type: DataTypes.BLOB('long'),
+        allowNull: true,
+        comment: 'Imagem do usuário em formato binário (BLOB)',
+      },
     },
     {
       tableName: 'users',
