@@ -8,7 +8,6 @@ exports.findAll = async (req, res) => {
     const products = await Product.findAll({
       include: [{ model: Category, as: 'category' }],
       attributes: {
-        exclude: ['image'],
         include: [[sequelize.literal('DATEDIFF(expiry_date, CURDATE())'), 'days_to_expire']],
       },
       order: [['created_at', 'DESC']],
@@ -26,9 +25,6 @@ exports.findOne = async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id, {
       include: [{ model: Category, as: 'category' }],
-      attributes: {
-        exclude: ['image'],
-      },
     });
     if (!product) {
       return res.status(404).json({ message: 'Produto não encontrado' });
@@ -148,9 +144,6 @@ exports.findByCategory = async (req, res) => {
     const products = await Product.findAll({
       where: { category_id: req.params.categoryId },
       include: [{ model: Category, as: 'category' }],
-      attributes: {
-        exclude: ['image'],
-      },
       order: [['name', 'ASC']],
     });
     res.json(products);
@@ -168,9 +161,6 @@ exports.findBySlug = async (req, res) => {
     const product = await Product.findOne({
       where: { slug },
       include: [{ model: Category, as: 'category' }],
-      attributes: {
-        exclude: ['image'],
-      },
     });
 
     if (!product) {
