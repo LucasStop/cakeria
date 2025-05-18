@@ -18,6 +18,8 @@ window.navegarParaSobre = navegarParaSobre;
 window.navegarParaCompartilharReceitas = navegarParaCompartilharReceitas;
 window.navegarParaAdmin = navegarParaAdmin;
 window.navegarParaCadastrarProdutos = navegarParaCadastrarProdutos;
+window.navegarParaProdutos = navegarParaProdutos;
+window.navegarParaHome = navegarParaHome;
 
 document.addEventListener('DOMContentLoaded', iniciarAplicacao);
 if (verProdutosBtn) verProdutosBtn.addEventListener('click', navegarParaProdutos);
@@ -74,37 +76,37 @@ async function carregarDetalhesProduto(id) {
   }
 }
 
-// function renderizarProdutosDestaque(produtosDestaque) {
-//   if (!produtosContainer) return;
+function renderizarDetalhesProduto(produto) {
+  const mainContent = `
+    <section class="product-details">
+      <div class="product-image">
+        <img src="${
+          produto.image_id
+            ? `/imgs/${produto.image_id}`
+            : "/imgs/placeholder.png"
+        }" alt="${produto.name}">
+      </div>
+      <div class="product-details-info">
+        <h1>${produto.name}</h1>
+        <p class="product-category">Categoria: ${
+          produto.category?.name || "Não categorizado"
+        }</p>
+        <p class="product-details-price">R$ ${parseFloat(produto.price).toFixed(
+          2
+        )}</p>
+        <p class="product-details-description">${
+          produto.description || "Sem descrição disponível"
+        }</p>
+        <button class="btn btn-primary">Adicionar ao Carrinho</button>
+        <button class="btn btn-outline" onclick="navegarParaProdutos()">Voltar para Produtos</button>
+      </div>
+    </section>
+  `;
 
-//   if (produtosDestaque.length === 0) {
-//     produtosContainer.innerHTML = "<p>Nenhum produto encontrado</p>";
-//     return;
-//   }
-
-//   const html = produtosDestaque
-//     .map(
-//       (produto) => `
-//     <div class="product-card">
-//       <div class="product-img" style="background-image: url('${
-//         produto.image_id
-//           ? `/imgs/${produto.image_id}`
-//           : "/imgs/placeholder.png"
-//       }')"></div>
-//       <div class="product-info">
-//         <h3>${produto.name}</h3>
-//         <p class="product-price">R$ ${parseFloat(produto.price).toFixed(2)}</p>
-//         <button class="btn btn-primary" onclick="verDetalhesProduto(${
-//           produto.id
-//         })">Ver Detalhes</button>
-//       </div>
-//     </div>
-//   `
-//     )
-//     .join("");
-
-//   produtosContainer.innerHTML = html;
-// }
+  contentEl.innerHTML = mainContent;
+  currentPage = "produto";
+  window.history.pushState({}, "", `/produtos/${produto.id}`);
+}
 
 function renderizarCategorias(categoriasList) {
   if (!categoriasContainer) return;
@@ -131,75 +133,43 @@ function renderizarCategorias(categoriasList) {
   categoriasContainer.innerHTML = html;
 }
 
-// function renderizarDetalhesProduto(produto) {
-//   const mainContent = `
-//     <section class="product-details">
-//       <div class="product-image">
-//         <img src="${
-//           produto.image_id
-//             ? `/imgs/${produto.image_id}`
-//             : "/imgs/placeholder.png"
-//         }" alt="${produto.name}">
-//       </div>
-//       <div class="product-details-info">
-//         <h1>${produto.name}</h1>
-//         <p class="product-category">Categoria: ${
-//           produto.category?.name || "Não categorizado"
-//         }</p>
-//         <p class="product-details-price">R$ ${parseFloat(produto.price).toFixed(
-//           2
-//         )}</p>
-//         <p class="product-details-description">${
-//           produto.description || "Sem descrição disponível"
-//         }</p>
-//         <button class="btn btn-primary">Adicionar ao Carrinho</button>
-//         <button class="btn btn-outline" onclick="navegarParaProdutos()">Voltar para Produtos</button>
-//       </div>
-//     </section>
-//   `;
+function renderizarListaProdutos() {
+  const mainContent = `
+    <section class="products-list">
+      <div class="container">
+        <h1 class="section-title">Nossos Produtos</h1>
+        <div class="featured-products">
+          ${produtos
+            .map(
+              (produto) => `
+            <div class="product-card">
+              <div class="product-img" style="background-image: url('${
+                produto.image_id
+                  ? `/imgs/${produto.image_id}`
+                  : "/imgs/placeholder.png"
+              }')"></div>
+              <div class="product-info">
+                <h3>${produto.name}</h3>
+                <p class="product-price">R$ ${parseFloat(produto.price).toFixed(
+                  2
+                )}</p>
+                <button class="btn btn-primary" onclick="verDetalhesProduto(${
+                  produto.id
+                })">Ver Detalhes</button>
+              </div>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      </div>
+    </section>
+  `;
 
-//   contentEl.innerHTML = mainContent;
-//   currentPage = "produto";
-//   window.history.pushState({}, "", `/produtos/${produto.id}`);
-// }
-
-// function renderizarListaProdutos() {
-//   const mainContent = `
-//     <section class="products-list">
-//       <div class="container">
-//         <h1 class="section-title">Nossos Produtos</h1>
-//         <div class="featured-products">
-//           ${produtos
-//             .map(
-//               (produto) => `
-//             <div class="product-card">
-//               <div class="product-img" style="background-image: url('${
-//                 produto.image_id
-//                   ? `/imgs/${produto.image_id}`
-//                   : "/imgs/placeholder.png"
-//               }')"></div>
-//               <div class="product-info">
-//                 <h3>${produto.name}</h3>
-//                 <p class="product-price">R$ ${parseFloat(produto.price).toFixed(
-//                   2
-//                 )}</p>
-//                 <button class="btn btn-primary" onclick="verDetalhesProduto(${
-//                   produto.id
-//                 })">Ver Detalhes</button>
-//               </div>
-//             </div>
-//           `
-//             )
-//             .join("")}
-//         </div>
-//       </div>
-//     </section>
-//   `;
-
-//   contentEl.innerHTML = mainContent;
-//   currentPage = "produtos";
-//   window.history.pushState({}, "", "/produtos");
-// }
+  contentEl.innerHTML = mainContent;
+  currentPage = "produtos";
+  window.history.pushState({}, "", "/produtos");
+}
 
 function renderizarListaCategorias() {
   const mainContent = `
@@ -230,9 +200,21 @@ function renderizarListaCategorias() {
   window.history.pushState({}, '', '/categorias');
 }
 
+// Função para navegar para a página inicial
+function navegarParaHome() {
+  window.location.href = '/index.html';
+  currentPage = 'home';
+}
+
 function navegarParaCadastrarProdutos() {
   window.location.href = '/registerProduct.html';
   currentPage = 'registerProduct';
+}
+
+function navegarParaProdutos() {
+  renderizarListaProdutos();
+  currentPage = 'produtos';
+  window.history.pushState({}, '', '/produtos');
 }
 
 function navegarParaCategorias() {
@@ -260,6 +242,7 @@ function navegarParaCompartilharReceitas() {
 }
 
 // Garantir que a função esteja disponível globalmente
+window.navegarParaHome = navegarParaHome;
 window.navegarParaCompartilharReceitas = navegarParaCompartilharReceitas;
 
 function navegarParaAdmin() {
@@ -596,3 +579,4 @@ window.verReceitaDetalhes = async function (id) {
 
 window.carregarConteudoHTML = carregarConteudoHTML;
 window.removerEstilosEspecificos = removerEstilosEspecificos;
+window.navegarParaHome = navegarParaHome;
