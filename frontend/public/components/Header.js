@@ -72,6 +72,13 @@ class Header extends HTMLElement {
         </header>
       `;
     } else if (variant === 'admin') {
+      const isLoggedIn = localStorage.getItem('token') !== null;
+      const user = this.getCurrentUser();
+      let userImageUrl = '';
+      if (isLoggedIn && user && user.id) {
+        const token = localStorage.getItem('token');
+        userImageUrl = `${window.API.BASE_URL}/users/${user.id}/image` + (token ? `?token=${token}` : '');
+      }
       this.innerHTML = `
         <header class="header">
           <div class="container">
@@ -88,7 +95,12 @@ class Header extends HTMLElement {
                 <li><a href="/usuarios" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
               </ul>
             </nav>
-            
+            <div class="user-avatar" style="margin-left:16px;">
+              <img src="${userImageUrl}" alt="Avatar" class="user-avatar-img" style="display:${userImageUrl ? 'block' : 'none'};width:40px;height:40px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+              <div class="avatar-placeholder" style="${userImageUrl ? 'display:none;' : 'display:flex;'};width:40px;height:40px;align-items:center;justify-content:center;">
+                <span class="avatar-initial">${this.getUserInitials(user)}</span>
+              </div>
+            </div>
             <button class="menu-toggle" aria-label="Menu">
               <span class="bar"></span>
               <span class="bar"></span>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -8,11 +8,7 @@
     <!-- Favicon -->
     <link rel="icon" href="/assets/favicon.ico" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="/assets/favicon-32x32.png"
-    />
+    <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
 
     <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -64,39 +60,102 @@
           <div class="tab-content-wrapper">
             <!-- Aba de Informações Pessoais -->
             <div class="tab-content active" id="personal-info-content">
-              <form id="personal-info-form" class="profile-form">
-                <div class="form-grid">
-                  <div class="form-group">
-                    <label for="profile-name">Nome completo</label>
-                    <input type="text" id="profile-name" name="name" required>
-                    <span class="error-message" id="name-error"></span>
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="profile-email">E-mail</label>
-                    <input type="email" id="profile-email" name="email" required>
-                    <span class="error-message" id="email-error"></span>
-                  </div>
-                
-                  <div class="form-group">
-                    <label for="profile-phone">Telefone</label>
-                    <input type="tel" id="profile-phone" name="phone" placeholder="(00) 00000-0000" required>
-                    <span class="error-message" id="phone-error"></span>
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="profile-cpf">CPF</label>
-                    <input type="text" id="profile-cpf" name="cpf" placeholder="000.000.000-00" required>
-                    <span class="error-message" id="cpf-error"></span>
+              <div
+                class="profile-info-flex"
+                style="display: flex; align-items: flex-start; gap: 2.5rem"
+              >
+                <div
+                  class="profile-image-container"
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    min-width: 140px;
+                  "
+                >
+                  <label for="profile-image">
+                    <i class="fas fa-user-circle"></i> Foto do Perfil
+                  </label>
+                  <img
+                    id="profile-user-image"
+                    src=""
+                    alt="Foto do usuário"
+                    style="
+                      width: 120px;
+                      height: 120px;
+                      border-radius: 50%;
+                      object-fit: cover;
+                      border: 3px solid #f87171;
+                      background: #f3f3f3;
+                      display: block;
+                    "
+                  />
+                  <div
+                    id="profile-avatar-placeholder"
+                    class="avatar-placeholder"
+                    style="
+                      display: none;
+                      width: 120px;
+                      height: 120px;
+                      align-items: center;
+                      justify-content: center;
+                      border-radius: 50%;
+                      background: #f87171;
+                      color: #fff;
+                      font-size: 2.5rem;
+                      font-weight: 600;
+                      position: absolute;
+                    "
+                  >
+                    <span id="profile-avatar-initials"></span>
                   </div>
                 </div>
-                
-                <div class="form-actions">
-                  <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Salvar Alterações
-                  </button>
-                </div>
-              </form>
+                <form id="personal-info-form" class="profile-form" style="flex: 1">
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="profile-name">Nome completo</label>
+                      <input type="text" id="profile-name" name="name" required />
+                      <span class="error-message" id="name-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="profile-email">E-mail</label>
+                      <input type="email" id="profile-email" name="email" required />
+                      <span class="error-message" id="email-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="profile-phone">Telefone</label>
+                      <input
+                        type="tel"
+                        id="profile-phone"
+                        name="phone"
+                        placeholder="(00) 00000-0000"
+                        required
+                      />
+                      <span class="error-message" id="phone-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="profile-cpf">CPF</label>
+                      <input
+                        type="text"
+                        id="profile-cpf"
+                        name="cpf"
+                        placeholder="000.000.000-00"
+                        required
+                      />
+                      <span class="error-message" id="cpf-error"></span>
+                    </div>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                      <i class="fas fa-save"></i> Salvar Alterações
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
 
             <!-- Aba de Endereços -->
@@ -117,59 +176,107 @@
                 </div>
 
                 <!-- Formulário de adição/edição de endereço (inicialmente oculto) -->
-                <div class="address-form-container" id="address-form-container" style="display: none;">
+                <div
+                  class="address-form-container"
+                  id="address-form-container"
+                  style="display: none"
+                >
                   <form id="address-form" class="profile-form">
-                    <input type="hidden" id="address-id" name="id">
-                    
+                    <input type="hidden" id="address-id" name="id" />
+
                     <div class="address-form-row">
                       <div class="form-group cep-col">
                         <label for="address-cep">CEP</label>
-                        <input type="text" id="address-cep" name="cep" placeholder="00000-000" required>
+                        <input
+                          type="text"
+                          id="address-cep"
+                          name="cep"
+                          placeholder="00000-000"
+                          required
+                        />
                         <span class="error-message" id="cep-error"></span>
                       </div>
-                      
+
                       <div class="form-group street-col">
                         <label for="address-street">Rua</label>
-                        <input type="text" id="address-street" name="street" placeholder="Nome da rua" required>
+                        <input
+                          type="text"
+                          id="address-street"
+                          name="street"
+                          placeholder="Nome da rua"
+                          required
+                        />
                         <span class="error-message" id="street-error"></span>
                       </div>
-                      
+
                       <div class="form-group number-col">
                         <label for="address-number">Nº</label>
-                        <input type="text" id="address-number" name="number" placeholder="123" required>
+                        <input
+                          type="text"
+                          id="address-number"
+                          name="number"
+                          placeholder="123"
+                          required
+                        />
                         <span class="error-message" id="number-error"></span>
                       </div>
                     </div>
-                    
+
                     <div class="form-group">
                       <label for="address-complement">Complemento</label>
-                      <input type="text" id="address-complement" name="complement" placeholder="Apto, bloco, etc.">
+                      <input
+                        type="text"
+                        id="address-complement"
+                        name="complement"
+                        placeholder="Apto, bloco, etc."
+                      />
                       <span class="error-message" id="complement-error"></span>
                     </div>
-                    
+
                     <div class="address-form-row">
                       <div class="form-group neighborhood-col">
                         <label for="address-neighborhood">Bairro</label>
-                        <input type="text" id="address-neighborhood" name="neighborhood" placeholder="Bairro" required>
+                        <input
+                          type="text"
+                          id="address-neighborhood"
+                          name="neighborhood"
+                          placeholder="Bairro"
+                          required
+                        />
                         <span class="error-message" id="neighborhood-error"></span>
                       </div>
-                      
+
                       <div class="form-group city-col">
                         <label for="address-city">Cidade</label>
-                        <input type="text" id="address-city" name="city" placeholder="Cidade" required>
+                        <input
+                          type="text"
+                          id="address-city"
+                          name="city"
+                          placeholder="Cidade"
+                          required
+                        />
                         <span class="error-message" id="city-error"></span>
                       </div>
-                      
+
                       <div class="form-group state-col">
                         <label for="address-state">UF</label>
-                        <input type="text" id="address-state" name="state" placeholder="UF" maxlength="2" required>
+                        <input
+                          type="text"
+                          id="address-state"
+                          name="state"
+                          placeholder="UF"
+                          maxlength="2"
+                          required
+                        />
                         <span class="error-message" id="state-error"></span>
                       </div>
-                      <input type="hidden" id="address-country" name="country" value="Brasil">
+                      <input type="hidden" id="address-country" name="country" value="Brasil" />
                     </div>
-                    
+
                     <div class="form-actions">
-                      <button type="button" id="cancel-address-btn" class="btn btn-outline">Cancelar</button>
+                      <button type="button" id="cancel-address-btn" class="btn btn-outline">
+                        Cancelar
+                      </button>
                       <button type="submit" class="btn btn-primary">Salvar Endereço</button>
                     </div>
                   </form>
@@ -183,55 +290,81 @@
                 <div class="form-group password-group">
                   <label for="current-password">Senha Atual</label>
                   <div class="password-input-wrapper">
-                    <input type="password" id="current-password" name="currentPassword" required>
-                    <button type="button" class="password-toggle" aria-label="Mostrar/ocultar senha">
+                    <input type="password" id="current-password" name="currentPassword" required />
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      aria-label="Mostrar/ocultar senha"
+                    >
                       <svg class="eye-icon" viewBox="0 0 24 24">
-                        <path d="M12 4.5c-5 0-9.3 3-11 7.5 1.7 4.5 6 7.5 11 7.5s9.3-3 11-7.5c-1.7-4.5-6-7.5-11-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/>
+                        <path
+                          d="M12 4.5c-5 0-9.3 3-11 7.5 1.7 4.5 6 7.5 11 7.5s9.3-3 11-7.5c-1.7-4.5-6-7.5-11-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"
+                        />
                       </svg>
                     </button>
                   </div>
                   <span class="error-message" id="current-password-error"></span>
                 </div>
-                
+
                 <div class="form-grid">
                   <div class="form-group password-group">
                     <label for="new-password">Nova Senha</label>
                     <div class="password-input-wrapper">
-                      <input type="password" id="new-password" name="newPassword" required>
-                      <button type="button" class="password-toggle" aria-label="Mostrar/ocultar senha">
+                      <input type="password" id="new-password" name="newPassword" required />
+                      <button
+                        type="button"
+                        class="password-toggle"
+                        aria-label="Mostrar/ocultar senha"
+                      >
                         <svg class="eye-icon" viewBox="0 0 24 24">
-                          <path d="M12 4.5c-5 0-9.3 3-11 7.5 1.7 4.5 6 7.5 11 7.5s9.3-3 11-7.5c-1.7-4.5-6-7.5-11-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/>
+                          <path
+                            d="M12 4.5c-5 0-9.3 3-11 7.5 1.7 4.5 6 7.5 11 7.5s9.3-3 11-7.5c-1.7-4.5-6-7.5-11-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"
+                          />
                         </svg>
                       </button>
                     </div>
                     <span class="error-message" id="new-password-error"></span>
                   </div>
-                  
+
                   <div class="form-group password-group">
                     <label for="confirm-password">Confirmar Nova Senha</label>
                     <div class="password-input-wrapper">
-                      <input type="password" id="confirm-password" name="confirmPassword" required>
-                      <button type="button" class="password-toggle" aria-label="Mostrar/ocultar senha">
+                      <input
+                        type="password"
+                        id="confirm-password"
+                        name="confirmPassword"
+                        required
+                      />
+                      <button
+                        type="button"
+                        class="password-toggle"
+                        aria-label="Mostrar/ocultar senha"
+                      >
                         <svg class="eye-icon" viewBox="0 0 24 24">
-                          <path d="M12 4.5c-5 0-9.3 3-11 7.5 1.7 4.5 6 7.5 11 7.5s9.3-3 11-7.5c-1.7-4.5-6-7.5-11-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/>
+                          <path
+                            d="M12 4.5c-5 0-9.3 3-11 7.5 1.7 4.5 6 7.5 11 7.5s9.3-3 11-7.5c-1.7-4.5-6-7.5-11-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"
+                          />
                         </svg>
                       </button>
                     </div>
                     <span class="error-message" id="confirm-password-error"></span>
                   </div>
                 </div>
-                
+
                 <div class="form-actions">
                   <button type="submit" class="btn btn-primary">
                     <i class="fas fa-key"></i> Alterar Senha
                   </button>
                 </div>
               </form>
-              
+
               <!-- Deletar conta -->
               <div class="danger-zone">
                 <h3><i class="fas fa-exclamation-triangle"></i> Zona de Perigo</h3>
-                <p>Excluir sua conta é uma ação permanente e não pode ser desfeita. Todos os seus dados, incluindo endereços e histórico de pedidos, serão removidos.</p>
+                <p>
+                  Excluir sua conta é uma ação permanente e não pode ser desfeita. Todos os seus
+                  dados, incluindo endereços e histórico de pedidos, serão removidos.
+                </p>
                 <button id="delete-account-btn" class="btn btn-danger">
                   <i class="fas fa-user-times"></i> Excluir Minha Conta
                 </button>
@@ -279,8 +412,13 @@
     <div class="modal" id="delete-user-modal">
       <div class="modal-content">
         <h3>Excluir Conta</h3>
-        <p>Tem certeza que deseja excluir permanentemente sua conta? Esta ação não pode ser desfeita.</p>
-        <p class="warning"><i class="fas fa-exclamation-triangle"></i> Todos os seus dados, incluindo endereços e histórico de pedidos, serão removidos.</p>
+        <p>
+          Tem certeza que deseja excluir permanentemente sua conta? Esta ação não pode ser desfeita.
+        </p>
+        <p class="warning">
+          <i class="fas fa-exclamation-triangle"></i> Todos os seus dados, incluindo endereços e
+          histórico de pedidos, serão removidos.
+        </p>
         <div class="modal-actions">
           <button id="cancel-delete-user-btn" class="btn btn-outline">Cancelar</button>
           <button id="confirm-delete-user-btn" class="btn btn-danger">Excluir Minha Conta</button>
