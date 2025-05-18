@@ -1,0 +1,217 @@
+/* Estilos para botões de administração */
+.recipe-management {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-danger {
+  background-color: #fff;
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+.btn-danger:hover {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+.comment-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 5px;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.recipe-admin-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 5px;
+}
+
+.recipe-admin-actions .btn-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.recipe-admin-actions .btn-icon:hover {
+  background-color: #e0e0e0;
+}
+
+.edit-recipe {
+  color: #2196f3;
+}
+
+.delete-recipe, .delete-comment {
+  color: #e74c3c;
+}
+
+.delete-comment {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.85rem;
+  margin-left: 10px;
+}
+
+/* Estilos para botões de edição e exclusão de comentários */
+.btn-icon {
+  background: none;
+  border: none;
+  color: #777;
+  cursor: pointer;
+  padding: 5px;
+  transition: color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon:hover {
+  color: #333;
+}
+
+.btn-icon.edit-comment:hover {
+  color: #3498db;
+}
+
+.btn-icon.delete-comment:hover {
+  color: #e74c3c;
+}
+
+/* Estilos para diálogos de confirmação */
+.confirmation-dialog,
+.edit-comment-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-comment-dialog {
+  opacity: 0;
+  animation: fadeIn 0.2s forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dialog-content {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dialog-title {
+  margin-top: 0;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+.dialog-message {
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.dialog-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.dialog-btn-cancel {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.dialog-btn-cancel:hover {
+  background-color: #d0d0d0;
+}
+
+.dialog-btn-confirm {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.dialog-btn-confirm:hover {
+  background-color: #c0392b;
+}
+
+.dialog-btn-save {
+  background-color: #3498db;
+  color: white;
+}
+
+.dialog-btn-save:hover {
+  background-color: #2980b9;
+}
+
+.edit-comment-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  margin-top: 10px;
+}
+
+.edit-comment-textarea:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Estilo para comentário que está sendo editado */
+.comment.editing {
+  background-color: rgba(52, 152, 219, 0.05);
+  border-left: 3px solid #3498db;
+}
+
+/* Adicionar efeito de transição para a edição */
+.comment {
+  transition: background-color 0.3s, border-left 0.3s;
+  border-left: 3px solid transparent;
+}

@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/receitas.css" />
     <link rel="stylesheet" href="./css/home.css">
+    <link rel="stylesheet" href="./css/admin-controls.css">
     <link rel="stylesheet" href="./components/components.css">
   </head>
   <body>
@@ -116,6 +117,14 @@
               ><i class="far fa-clock"></i> <span class="time-text"></span
             ></span>
             <a href="#" class="recipe-link">Ver Receita</a>
+            <div class="recipe-admin-actions" style="display: none;">
+              <button class="btn-icon edit-recipe" title="Editar receita">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn-icon delete-recipe" title="Excluir receita">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -127,6 +136,7 @@
     <script src="./js/api.js"></script>
     <script src="./js/authGuard.js"></script>
     <script src="./js/navigation.js"></script>
+    <script src="./js/permissions.js"></script>
     <script src="./js/receitas.js"></script>
     <script src="./js/script.js"></script>
     <script src="./js/login.js"></script>

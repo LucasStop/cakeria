@@ -31,6 +31,9 @@
     <!-- CSS -->
     <link rel="stylesheet" href="/css/compartilhar-receitas.css" />
     <link rel="stylesheet" href="/css/notifications.css" />
+    <link rel="stylesheet" href="/css/loading-button.css" />
+    <link rel="stylesheet" href="/css/form-helpers.css" />
+    <link rel="stylesheet" href="/css/recipe-form-enhancements.css" />
     <link rel="stylesheet" href="./css/styles.css">
     <link rel="stylesheet" href="./css/home.css">
     <link rel="stylesheet" href="./components/components.css">
@@ -51,7 +54,7 @@
         </section>
 
         <section class="recipe-form-section">
-          <form id="recipe-form" class="recipe-form">
+          <form id="recipe-form" class="recipe-form" novalidate>
             <div class="form-group">
               <label for="recipe-title">Título da Receita</label>
               <input
@@ -179,18 +182,25 @@
             </div>
 
             <div class="form-group">
-              <label for="recipe-image">Imagem da Receita</label>
+              <label for="recipe-image">Imagem da Receita <span id="image-requirement">(Obrigatório)</span></label>
               <div class="file-input-wrapper">
                 <input
                   type="file"
                   id="recipe-image"
                   name="image"
                   accept="image/*"
-                  required
+                  data-required="true"
                 />
                 <div class="file-preview">
                   <img id="image-preview" src="#" alt="Prévia da imagem" style="display: none" />
                   <p id="file-name">Nenhum arquivo selecionado</p>
+                </div>
+              </div>
+              <p class="form-helper" id="image-helper" style="display: none;">Ao editar uma receita, você pode manter a imagem atual ou enviar uma nova.</p>
+              <div class="image-status" id="image-status" style="display: none; margin-top: 8px; padding: 8px; background-color: #f8f9fa; border-radius: 4px; font-size: 0.85rem;">
+                <p><strong>Status da imagem:</strong> <span id="image-status-text">Imagem atual será mantida</span></p>
+                <div id="edit-mode-info" style="display:none; margin-top: 4px;">
+                  <p><i class="fas fa-info-circle" style="color:#28a745;"></i> Na edição de receitas, você pode manter a imagem atual.</p>
                 </div>
               </div>
               <span class="error-message" id="image-error"></span>
@@ -209,8 +219,11 @@
 
             <div class="form-actions">
               <button type="button" id="cancel-btn" class="btn btn-outline">Cancelar</button>
-              <button type="submit" class="btn btn-primary">Compartilhar Receita</button>
+              <button type="submit" id="submit-btn" class="btn btn-primary">Compartilhar Receita</button>
             </div>
+            
+            <!-- Mensagem de erro do formulário -->
+            <div class="error-message" id="form-error"></div>
           </form>
         </section>
       </div>
@@ -225,6 +238,11 @@
     <script src="./js/navigation.js"></script>
     <script src="./js/script.js"></script>
     <script src="./js/logout.js"></script>
+    <script src="./js/permissions.js"></script>
+    <script src="./js/recipe-form-utils.js"></script>
+    <script src="./js/recipe-form-debug.js"></script>
+    <script src="./js/recipe-image-handling.js"></script>
+    <script src="./js/form-validation.js"></script>
     <script src="./components/Header.js"></script>
     <script src="./js/compartilharReceitas.js"></script>
     <script src="./js/home.js"></script>

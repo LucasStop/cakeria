@@ -25,6 +25,8 @@
   <link rel="stylesheet" href="/css/notifications.css">
   <link rel="stylesheet" href="/css/share-menu.css">
   <link rel="stylesheet" href="/css/recipe-ingredients.css">
+  <link rel="stylesheet" href="/css/comment-edit.css">
+  <link rel="stylesheet" href="/css/admin-controls.css">
   <link rel="stylesheet" href="/components/components.css" />
 </head>
 <body>  
@@ -76,7 +78,7 @@
 
   <!-- Template para comentário -->
   <template id="comment-template">
-    <div class="comment">
+    <div class="comment" data-comment-id="">
       <div class="comment-avatar">
         <div class="avatar-initials"></div>
       </div>
@@ -84,6 +86,14 @@
         <div class="comment-header">
           <h4 class="comment-author"></h4>
           <span class="comment-date"></span>
+          <div class="comment-actions" style="display: none;">
+            <button class="btn-icon edit-comment" title="Editar comentário">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn-icon delete-comment" title="Excluir comentário">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
         </div>
         <div class="comment-text"></div>
       </div>
@@ -96,6 +106,7 @@
   <script src="./js/api.js"></script>
   <script src="./js/notifications.js"></script>
   <script src="./js/navigation.js"></script>
+  <script src="./js/permissions.js"></script>
   <script src="./js/receita-detalhe.js"></script>
   <script src="./js/authGuard.js"></script>
   

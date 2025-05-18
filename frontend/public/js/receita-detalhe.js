@@ -44,6 +44,14 @@ function renderRecipeDetails(recipe) {
           <span class="recipe-date"><i class="far fa-calendar"></i> ${formatDate(recipe.createdAt)}</span>
           <span class="recipe-views"><i class="far fa-eye"></i> ${recipe.views || 0} visualizações</span>
         </div>
+        <div class="recipe-management" id="recipe-management-controls" style="display: none;">
+          <button class="btn btn-outline btn-sm edit-recipe-btn">
+            <i class="fas fa-edit"></i> Editar Receita
+          </button>
+          <button class="btn btn-outline btn-sm btn-danger delete-recipe-btn">
+            <i class="fas fa-trash"></i> Excluir Receita
+          </button>
+        </div>
       </div>
       
       <div class="recipe-content-wrapper">
@@ -141,6 +149,9 @@ function renderRecipeDetails(recipe) {
   
   // Configurar botões de ação
   setupActionButtons(recipe);
+  
+  // Configurar botões de administração
+  setupAdminButtons(recipe);
 }
 
 // Função auxiliar para formatar a dificuldade
@@ -308,6 +319,11 @@ function renderComments(comments) {
       const commentElement = template.content.cloneNode(true);
       
       // Preencher os dados do comentário
+      const commentNode = commentElement.querySelector('.comment');
+      if (commentNode) {
+        commentNode.setAttribute('data-comment-id', comment.id);
+      }
+      
       const author = commentElement.querySelector('.comment-author');
       if (author) author.textContent = comment.author?.name || 'Usuário anônimo';
       
@@ -334,10 +350,53 @@ function renderComments(comments) {
         avatar.style.backgroundColor = generateColorFromName(userName);
       }
       
-      // Remover a seção de ações (likes e replies)
+      // Configurar botões de ação para comentários
       const actionsSection = commentElement.querySelector('.comment-actions');
       if (actionsSection) {
-        actionsSection.remove();
+        // Verificar se o usuário pode excluir este comentário
+        const canDelete = canDeleteComment(comment);
+        const canEdit = canEditComment(comment);
+        
+        if (canDelete || canEdit) {
+          actionsSection.style.display = 'block';
+          
+          // Configurar botão de exclusão
+          if (canDelete) {
+            const deleteButton = actionsSection.querySelector('.delete-comment');
+            if (deleteButton) {
+              deleteButton.setAttribute('data-comment-id', comment.id);
+              deleteButton.addEventListener('click', function() {
+                showDeleteCommentConfirmation(comment);
+              });
+            }
+          } else {
+            // Esconder botão de exclusão se não tiver permissão
+            const deleteButton = actionsSection.querySelector('.delete-comment');
+            if (deleteButton) {
+              deleteButton.style.display = 'none';
+            }
+          }
+          
+      // Configurar botão de edição
+          if (canEdit) {
+            const editButton = actionsSection.querySelector('.edit-comment');
+            if (editButton) {
+              editButton.setAttribute('data-comment-id', comment.id);
+              editButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Clicou para editar comentário:', comment.id);
+                showEditCommentForm(comment);
+              });
+            }
+          } else {
+            // Esconder botão de edição se não tiver permissão
+            const editButton = actionsSection.querySelector('.edit-comment');
+            if (editButton) {
+              editButton.style.display = 'none';
+            }
+          }
+        }
       }
       
       commentsList.appendChild(commentElement);
@@ -719,6 +778,270 @@ function shareRecipe(recipe) {
     // Fallback para navegadores que não suportam a API Share
     showFallbackShareOptions(currentUrl, recipeTitle);
   }
+}
+
+// Configurar botões de administração na página de detalhes da receita
+function setupAdminButtons(recipe) {
+  const managementControls = document.getElementById('recipe-management-controls');
+  if (!managementControls) return;
+  
+  // Verificar se o usuário pode editar/excluir esta receita
+  const canEdit = canEditRecipe(recipe);
+  const canDelete = canDeleteRecipe(recipe);
+  
+  if (canEdit || canDelete) {
+    // Mostrar a seção de gerenciamento
+    managementControls.style.display = 'flex';
+    
+    // Configurar botão de edição se o usuário tiver permissão
+    if (canEdit) {
+      const editButton = managementControls.querySelector('.edit-recipe-btn');
+      if (editButton) {
+        editButton.addEventListener('click', () => {
+          window.location.href = `/compartilharReceitas.html?id=${recipe.id}`;
+        });
+      }
+    } else {
+      // Esconder botão de edição se não tiver permissão
+      const editButton = managementControls.querySelector('.edit-recipe-btn');
+      if (editButton) {
+        editButton.style.display = 'none';
+      }
+    }
+    
+    // Configurar botão de exclusão se o usuário tiver permissão
+    if (canDelete) {
+      const deleteButton = managementControls.querySelector('.delete-recipe-btn');
+      if (deleteButton) {
+        deleteButton.addEventListener('click', () => {
+          showDeleteConfirmation(recipe);
+        });
+      }
+    } else {
+      // Esconder botão de exclusão se não tiver permissão
+      const deleteButton = managementControls.querySelector('.delete-recipe-btn');
+      if (deleteButton) {
+        deleteButton.style.display = 'none';
+      }
+    }
+  }
+}
+
+// Mostrar confirmação para excluir receita
+function showDeleteConfirmation(recipe) {
+  const dialog = document.createElement('div');
+  dialog.className = 'confirmation-dialog';
+  dialog.innerHTML = `
+    <div class="dialog-content">
+      <h3 class="dialog-title">Excluir Receita</h3>
+      <p class="dialog-message">Tem certeza que deseja excluir a receita "${recipe.title}"? Esta ação não pode ser desfeita.</p>
+      <div class="dialog-buttons">
+        <button class="dialog-btn dialog-btn-cancel">Cancelar</button>
+        <button class="dialog-btn dialog-btn-confirm">Excluir</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(dialog);
+  
+  // Manipular botão de cancelar
+  const cancelButton = dialog.querySelector('.dialog-btn-cancel');
+  cancelButton.addEventListener('click', () => {
+    dialog.remove();
+  });
+  
+  // Manipular botão de confirmar
+  const confirmButton = dialog.querySelector('.dialog-btn-confirm');
+  confirmButton.addEventListener('click', async () => {
+    try {
+      // Adicionar indicador de carregamento
+      confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
+      confirmButton.disabled = true;
+      
+      // Fazer a requisição para excluir a receita
+      await fetch(`${API.BASE_URL}/recipes/${recipe.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      // Mostrar notificação de sucesso
+      showNotification('Receita excluída com sucesso!', 'success');
+      
+      // Redirecionar para a página de receitas
+      setTimeout(() => {
+        window.location.href = '/receitas.html';
+      }, 1500);
+    } catch (error) {
+      console.error('Erro ao excluir receita:', error);
+      showNotification('Erro ao excluir receita. Tente novamente.', 'error');
+      dialog.remove();
+    }
+  });
+}
+
+// Mostrar confirmação para excluir comentário
+function showDeleteCommentConfirmation(comment) {
+  const dialog = document.createElement('div');
+  dialog.className = 'confirmation-dialog';
+  dialog.innerHTML = `
+    <div class="dialog-content">
+      <h3 class="dialog-title">Excluir Comentário</h3>
+      <p class="dialog-message">Tem certeza que deseja excluir este comentário? Esta ação não pode ser desfeita.</p>
+      <div class="dialog-buttons">
+        <button class="dialog-btn dialog-btn-cancel">Cancelar</button>
+        <button class="dialog-btn dialog-btn-confirm">Excluir</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(dialog);
+  
+  // Manipular botão de cancelar
+  const cancelButton = dialog.querySelector('.dialog-btn-cancel');
+  cancelButton.addEventListener('click', () => {
+    dialog.remove();
+  });
+  
+  // Manipular botão de confirmar
+  const confirmButton = dialog.querySelector('.dialog-btn-confirm');
+  confirmButton.addEventListener('click', async () => {
+    try {
+      // Adicionar indicador de carregamento
+      confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
+      confirmButton.disabled = true;
+      
+      // Fazer a requisição para excluir o comentário
+      await fetch(`${API.BASE_URL}/comments/${comment.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      // Recarregar os comentários
+      await fetchComments(getRecipeIdFromUrl());
+      
+      // Mostrar notificação de sucesso
+      showNotification('Comentário excluído com sucesso!', 'success');
+      
+      // Remover o diálogo
+      dialog.remove();
+    } catch (error) {
+      console.error('Erro ao excluir comentário:', error);
+      showNotification('Erro ao excluir comentário. Tente novamente.', 'error');
+      dialog.remove();
+    }
+  });
+}
+
+// Mostrar formulário para editar comentário
+function showEditCommentForm(comment) {
+  console.log('Editando comentário:', comment);
+  
+  // Marcar visualmente o comentário que está sendo editado
+  const commentElement = document.querySelector(`.comment[data-comment-id="${comment.id}"]`);
+  if (commentElement) {
+    commentElement.classList.add('editing');
+  } else {
+    console.warn('Elemento do comentário não encontrado:', comment.id);
+  }
+  
+  const dialog = document.createElement('div');
+  dialog.className = 'edit-comment-dialog';
+  dialog.innerHTML = `
+    <div class="dialog-content">
+      <h3 class="dialog-title">Editar Comentário</h3>
+      <textarea class="edit-comment-textarea">${comment.content}</textarea>
+      <div class="dialog-buttons">
+        <button class="dialog-btn dialog-btn-cancel">Cancelar</button>
+        <button class="dialog-btn dialog-btn-save">Salvar</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(dialog);
+  
+  // Focar no textarea
+  const textarea = dialog.querySelector('.edit-comment-textarea');
+  textarea.focus();
+  
+  // Adicionar atalho de teclado (Ctrl+Enter para salvar)
+  textarea.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'Enter') {
+      e.preventDefault();
+      saveButton.click();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelButton.click();
+    }
+  });
+  
+  // Manipular botão de cancelar
+  const cancelButton = dialog.querySelector('.dialog-btn-cancel');
+  cancelButton.addEventListener('click', () => {
+    // Remover classe de edição do comentário
+    if (commentElement) {
+      commentElement.classList.remove('editing');
+    }
+    dialog.remove();
+  });
+  
+  // Manipular botão de salvar
+  const saveButton = dialog.querySelector('.dialog-btn-save');
+  saveButton.addEventListener('click', async () => {
+    const newContent = textarea.value.trim();
+    
+    if (!newContent) {
+      showNotification('O comentário não pode estar vazio.', 'warning');
+      return;
+    }
+    
+    try {
+      // Adicionar indicador de carregamento
+      saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+      saveButton.disabled = true;
+      
+      console.log('Enviando atualização para o comentário:', comment.id);
+      
+      // Fazer a requisição para atualizar o comentário
+      const response = await fetch(`${API.BASE_URL}/comments/${comment.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ content: newContent })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Erro ao atualizar comentário');
+      }
+      
+      console.log('Comentário atualizado com sucesso');
+      
+      // Recarregar os comentários
+      await fetchComments(getRecipeIdFromUrl());
+      
+      // Mostrar notificação de sucesso
+      showNotification('Comentário atualizado com sucesso!', 'success');
+      
+      // Remover classe de edição do comentário
+      if (commentElement) {
+        commentElement.classList.remove('editing');
+      }
+      
+      // Remover o diálogo
+      dialog.remove();
+    } catch (error) {
+      console.error('Erro ao atualizar comentário:', error);
+      showNotification('Erro ao atualizar comentário. Tente novamente.', 'error');
+      saveButton.innerHTML = 'Salvar';
+      saveButton.disabled = false;
+    }
+  });
 }
 
 // Opções alternativas de compartilhamento
