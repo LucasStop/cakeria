@@ -67,6 +67,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         defaultValue: 0,
       },
+      image: {
+        type: DataTypes.BLOB('long'),
+        allowNull: true,
+        comment: 'Imagem da receita em formato binário (BLOB)',
+      },
     },
     {
       tableName: 'recipes',
