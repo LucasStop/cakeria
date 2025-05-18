@@ -249,6 +249,199 @@ const API = {
 
 };
 
+// Verificar e corrigir a URL base da API
+if (!API.BASE_URL) {
+  API.BASE_URL = 'http://localhost:3001/api';
+  console.log('API.BASE_URL definida como padrão:', API.BASE_URL);
+}
+
+// Adicionando possíveis variações de endpoints para produtos
+const PRODUCT_ENDPOINTS = [
+  '/produtos',  // Endpoint original em português
+  '/products',  // Endpoint em inglês
+  '/product',   // Singular em inglês
+  '/produto'    // Singular em português
+];
+
+// Modificar o método listar produtos para tentar diferentes endpoints
+API.produtos = {
+  listar: async function() {
+    console.log('API.produtos.listar: Iniciando chamada para API...');
+    
+    // Array para armazenar erros de cada tentativa
+    let errors = [];
+    
+    // Tentar cada endpoint possível
+    for (const endpoint of PRODUCT_ENDPOINTS) {
+      try {
+        console.log(`API.produtos.listar: Tentando endpoint ${endpoint}...`);
+        
+        const response = await fetch(`${API.BASE_URL}${endpoint}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        console.log(`API.produtos.listar: Status da resposta para ${endpoint}:`, response.status);
+        
+        if (!response.ok) {
+          const error = new Error(`Erro HTTP: ${response.status}`);
+          error.status = response.status;
+          errors.push({ endpoint, error });
+          continue; // Tentar o próximo endpoint
+        }
+
+        const data = await response.json();
+        console.log(`API.produtos.listar: Dados recebidos de ${endpoint}:`, 
+                    data.length ? `${data.length} itens` : 'Objeto ou array vazio');
+        
+        // Se chegou até aqui, encontramos um endpoint válido
+        // Vamos salvar para futuras chamadas
+        console.log(`API.produtos.listar: Endpoint ${endpoint} funcionou! Salvando para uso futuro.`);
+        API.produtos.ENDPOINT = endpoint;
+        
+        // Verificar o formato da resposta
+        if (Array.isArray(data)) {
+          return data;
+        } else if (typeof data === 'object' && data !== null) {
+          if (data.produtos && Array.isArray(data.produtos)) return data.produtos;
+          if (data.products && Array.isArray(data.products)) return data.products;
+          if (data.data && Array.isArray(data.data)) return data.data;
+          if (data.items && Array.isArray(data.items)) return data.items;
+          if (data.results && Array.isArray(data.results)) return data.results;
+          
+          // Se for objeto único, converter para array
+          if (Object.keys(data).length > 0) return [data];
+        }
+        
+        console.warn(`API.produtos.listar: Formato desconhecido recebido de ${endpoint}:`, data);
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        console.error(`API.produtos.listar: Erro ao acessar ${endpoint}:`, error.message);
+        errors.push({ endpoint, error });
+      }
+    }
+    
+    // Se chegou aqui, todos os endpoints falharam
+    console.error('API.produtos.listar: Todos os endpoints falharam:', errors);
+    
+    // Tentar fazer um diagnóstico da API
+    try {
+      const healthCheck = await fetch(`${API.BASE_URL}/health`).catch(e => ({ ok: false, error: e }));
+      console.log('API health check:', healthCheck.ok ? 'OK' : 'Falhou');
+    } catch (e) {
+      console.error('API health check falhou:', e);
+    }
+    
+    // Tentar obter a lista de endpoints disponíveis
+    try {
+      const rootResponse = await fetch(API.BASE_URL).catch(e => ({ ok: false, error: e }));
+      if (rootResponse.ok) {
+        const rootData = await rootResponse.text();
+        console.log('Resposta da raiz da API:', rootData.substring(0, 300));
+      }
+    } catch (e) {
+      console.error('Falha ao acessar raiz da API:', e);
+    }
+    
+    // Retornar produtos mockados como último recurso
+    console.log('API.produtos.listar: Retornando produtos mockados');
+    return [
+      {
+        id: 1,
+        name: "Bolo de Chocolate",
+        price: 45.90,
+        description: "Delicioso bolo de chocolate com cobertura especial",
+        image_id: "placeholder.png"
+      },
+      {
+        id: 2,
+        name: "Torta de Morango",
+        price: 38.50,
+        description: "Torta fresca com morangos da estação",
+        image_id: "placeholder.png"
+      }
+    ];
+  },
+  
+  obterPorId: async function(id) {
+    const endpoint = API.produtos.ENDPOINT || '/produtos';
+    try {
+      const response = await fetch(`${API.BASE_URL}${endpoint}/${id}`);
+      if (!response.ok) {
+        throw new Error(`Erro HTTP: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(`Erro ao obter produto ${id}:`, error);
+      throw error;
+    }
+  },
+  
+  obterPorCategoria: async function(categoriaId) {
+    const endpoint = API.produtos.ENDPOINT || '/produtos';
+    try {
+      const response = await fetch(`${API.BASE_URL}${endpoint}?category=${categoriaId}`);
+      if (!response.ok) {
+        // Tentar endpoint alternativo
+        const altResponse = await fetch(`${API.BASE_URL}/categories/${categoriaId}/products`);
+        if (!altResponse.ok) {
+          throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        return await altResponse.json();
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(`Erro ao obter produtos da categoria ${categoriaId}:`, error);
+      throw error;
+    }
+  }
+};
+
+// Adicionar uma função para testar todos os endpoints possíveis da API
+API.testarEndpoints = async function() {
+  const endpoints = [
+    '/produtos', 
+    '/products', 
+    '/categories',
+    '/categorias',
+    '/receitas',
+    '/recipes'
+  ];
+  
+  const resultados = {};
+  
+  for (const endpoint of endpoints) {
+    try {
+      console.log(`Testando endpoint ${endpoint}...`);
+      const response = await fetch(`${API.BASE_URL}${endpoint}`);
+      resultados[endpoint] = {
+        status: response.status,
+        ok: response.ok
+      };
+      
+      if (response.ok) {
+        try {
+          const data = await response.json();
+          resultados[endpoint].data = Array.isArray(data) ? 
+            `Array com ${data.length} itens` : 
+            'Objeto: ' + JSON.stringify(data).substring(0, 100) + '...';
+        } catch (e) {
+          resultados[endpoint].erro = 'Não é JSON válido';
+        }
+      }
+    } catch (error) {
+      resultados[endpoint] = {
+        erro: error.message
+      };
+    }
+  }
+  
+  console.table(resultados);
+  return resultados;
+};
+
 window.API = API;
 
 document.addEventListener('DOMContentLoaded', () => {

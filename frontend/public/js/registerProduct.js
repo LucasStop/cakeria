@@ -1,222 +1,393 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const registerForm = document.getElementById('register-form');
-
-  if (registerForm) {
-    registerForm.addEventListener('submit', handleRegisterSubmit);
+document.addEventListener('DOMContentLoaded', function() {
+  // Verificar autenticação
+  if (!isLoggedInAsAdmin()) {
+    window.location.href = '/login.html?redirect=/registerProduct.html';
+    return;
   }
 
-  // Adiciona validação em tempo real para cada campo
-  document.getElementById('product-name').addEventListener('input', function () {
-    validateField(this, validateName, 'name-error', 'Digite o nome do produto');
-  });
-
-  document.getElementById('product-description').addEventListener('input', function () {
-    validateField(this, validateDescription, 'description-error', 'Digite a descrição do produto');
-  });
-
-  document.getElementById('product-price').addEventListener('input', function () {
-    formatPrice(this);
-    validateField(this, validatePrice, 'price-error', 'Digite um preço válido no formato R$ 10,00');
-  });
-
-  document.getElementById('product-size').addEventListener('input', function () {
-    formatWeight(this);
-    validateField(this, validateSize, 'size-error', 'Digite o peso ou tamanho do produto');
-  });
-
-  document.getElementById('product-stock').addEventListener('input', function () {
-    validateField(this, validateStock, 'stock-error', 'Digite a quantidade disponível');
-  });
-
-  document.getElementById('product-expiry').addEventListener('input', function () {
-    formatDate(this);
-    validateField(this, validateExpiry, 'expiry-error', 'Selecione uma data de validade');
-  });
-
-  document.getElementById('product-image').addEventListener('change', function () {
-    validateField(this, validateImage, 'image-error', 'Selecione uma imagem válida');
-  });
+  // Inicializar o formulário
+  initializeForm();
+  
+  // Carregar categorias para o select
+  loadCategories();
 });
 
-// Máscara para o preço
-function formatPrice(input) {
-  let value = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
-  if (value.length > 2) {
-    value = value.replace(/(\d{2})$/, ',$1'); // Adiciona vírgula antes dos dois últimos dígitos
+// Verificar se o usuário está logado e é administrador
+function isLoggedInAsAdmin() {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+    
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    return user && (user.type === 'admin' || user.isAdmin === true);
+  } catch (e) {
+    console.error('Erro ao verificar autenticação:', e);
+    return false;
   }
-  if (value.length > 6) {
-    value = value.replace(/(\d)(\d{3})(\d{2})$/, '$1.$2,$3'); // Adiciona ponto de milhar
-  }
-  if (value.length > 3) {
-    value = 'R$ ' + value; // Adiciona o prefixo "R$"
-  } else {
-    value = 'R$ ' + value; // Para valores com menos de 3 dígitos
-  }
-  input.value = value;
 }
 
-// Máscara para o peso
-function formatWeight(input) {
-  let value = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
-  if (value.length > 2) {
-    value = value.replace(/(\d{2})$/, ',$1'); // Adiciona vírgula antes dos dois últimos dígitos
-  }
-  input.value = value;
-}
-
-// Máscara para a data
-function formatDate(input) {
-  let value = input.value.replace(/\D/g, ''); // Remove qualquer caractere não numérico
-  if (value.length > 2 && value.length <= 4) {
-    value = value.replace(/(\d{2})(\d{0,2})$/, '$1/$2'); // Adiciona a barra após o mês
-  } else if (value.length > 4) {
-    value = value.replace(/(\d{2})(\d{2})(\d{0,4})$/, '$1/$2/$3'); // Adiciona a barra após o dia e o mês
-  }
-  input.value = value;
-}
-
-// Funções de validação
-function validateName(name) {
-  return name.trim().length >= 3; // O nome do produto deve ter pelo menos 3 caracteres
-}
-
-function validateDescription(description) {
-  return description.trim().length >= 3; // A descrição do produto deve ter pelo menos 3 caracteres
-}
-
-function validatePrice(price) {
-  // Verifica se o preço está no formato "R$" seguido de um número positivo
-  const pricePattern = /^R\$\s?\d+(\,\d{2})?$/; // Aceita R$ 10 ou R$ 10,00
-  return pricePattern.test(price);
-}
-
-function validateSize(size) {
-  return size.trim().length >= 3; // Peso ou tamanho deve ter pelo menos 3 caracteres
-}
-
-function validateStock(stock) {
-  return !isNaN(stock) && parseInt(stock) > 0; // O estoque deve ser um número maior que 0
-}
-
-function validateExpiry(expiry) {
-  return new Date(expiry) > new Date(); // A data de validade deve ser maior que a data atual
-}
-
-function validateImage(image) {
-  return image.length > 0; // Deve ser selecionada uma imagem
-}
-
-// Função para validar os campos
-function validateField(inputElement, validationFunction, errorElementId, errorMessage) {
-  const value = inputElement.value.trim();
-  const errorElement = document.getElementById(errorElementId);
-
-  if (value === '') {
-    errorElement.textContent = '';
-    inputElement.classList.remove('invalid-input');
+// Inicializar o formulário e seus eventos
+function initializeForm() {
+  const form = document.getElementById('product-form');
+  if (!form) {
+    console.error('Formulário de produto não encontrado!');
     return;
   }
-
-  if (!validationFunction(value)) {
-    inputElement.classList.add('invalid-input');
-    errorElement.textContent = errorMessage;
-  } else {
-    inputElement.classList.remove('invalid-input');
-    errorElement.textContent = '';
-  }
-}
-
-// Função para tratar o envio do formulário
-async function handleRegisterSubmit(e) {
-  e.preventDefault();
-
-  const nameInput = document.getElementById('product-name');
-  const descriptionInput = document.getElementById('product-description');
-  const priceInput = document.getElementById('product-price');
-  const sizeInput = document.getElementById('product-size');
-  const stockInput = document.getElementById('product-stock');
-  const expiryInput = document.getElementById('product-expiry');
+  
+  // Adicionar evento de submit
+  form.addEventListener('submit', handleProductSubmit);
+  
+  // Configurar preview da imagem
   const imageInput = document.getElementById('product-image');
-
-  // Limpa as mensagens de erro
-  clearAllErrors();
-
-  const name = nameInput.value.trim();
-  const description = descriptionInput.value.trim();
-  const price = priceInput.value;
-  const size = sizeInput.value.trim();
-  const stock = stockInput.value;
-  const expiry = expiryInput.value;
-  const image = imageInput.files[0];
-
-  let isValid = true;
-
-  if (!validateName(name)) {
-    isValid = false;
-    showError(nameInput, 'name-error', 'Digite o nome do produto');
+  const previewContainer = document.getElementById('image-preview');
+  
+  if (imageInput && previewContainer) {
+    imageInput.addEventListener('change', function() {
+      showImagePreview(this.files[0], previewContainer);
+    });
   }
-
-  if (!validateDescription(description)) {
-    isValid = false;
-    showError(descriptionInput, 'description-error', 'Digite a descrição do produto');
+  
+  // Configurar campo de tamanho personalizado
+  const sizeSelect = document.getElementById('product-size');
+  const customSizeContainer = document.getElementById('custom-size-container');
+  
+  if (sizeSelect && customSizeContainer) {
+    sizeSelect.addEventListener('change', function() {
+      if (this.value === 'custom') {
+        customSizeContainer.style.display = 'block';
+      } else {
+        customSizeContainer.style.display = 'none';
+      }
+    });
   }
-
-  if (!validatePrice(price)) {
-    isValid = false;
-    showError(priceInput, 'price-error', 'Digite um preço válido no formato R$ 10,00');
+  
+  // Configurar validação de data de validade (não pode ser no passado)
+  const expirationInput = document.getElementById('product-expiration');
+  if (expirationInput) {
+    // Definir data mínima como hoje
+    const today = new Date().toISOString().split('T')[0];
+    expirationInput.min = today;
+    
+    expirationInput.addEventListener('change', function() {
+      if (this.value && new Date(this.value) < new Date(today)) {
+        showErrorMessage('expiration-error', 'A data de validade não pode ser no passado');
+      } else {
+        document.getElementById('expiration-error').textContent = '';
+      }
+    });
   }
+  
+  console.log('Formulário de cadastro de produto inicializado');
+}
 
-  if (!validateSize(size)) {
-    isValid = false;
-    showError(sizeInput, 'size-error', 'Digite o peso ou tamanho do produto');
+// Carregar categorias para o select
+async function loadCategories() {
+  const categorySelect = document.getElementById('product-category');
+  if (!categorySelect) return;
+  
+  try {
+    // Adicionar opção de carregamento
+    categorySelect.innerHTML = '<option value="" disabled selected>Carregando categorias...</option>';
+    
+    // Tentar diferentes endpoints para categorias
+    const possibleEndpoints = [
+      '/categories',
+      '/categorias',
+      '/categoria'
+    ];
+    
+    let categories = [];
+    let succeeded = false;
+    
+    // Tentar cada endpoint até ter sucesso
+    for (const endpoint of possibleEndpoints) {
+      try {
+        console.log(`Tentando carregar categorias de ${API.BASE_URL}${endpoint}`);
+        const response = await fetch(`${API.BASE_URL}${endpoint}`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          categories = Array.isArray(data) ? data : 
+                     (data.categories || data.data || data.items || []);
+          succeeded = true;
+          console.log(`Categorias carregadas com sucesso de ${endpoint}:`, categories);
+          break;
+        }
+      } catch (endpointError) {
+        console.warn(`Falha ao carregar de ${endpoint}:`, endpointError);
+      }
+    }
+    
+    if (!succeeded) {
+      throw new Error('Não foi possível carregar as categorias de nenhum endpoint');
+    }
+    
+    // Limpar e preencher o select
+    categorySelect.innerHTML = '<option value="" disabled selected>Selecione uma categoria</option>';
+    
+    categories.forEach(category => {
+      const option = document.createElement('option');
+      option.value = category.id;
+      option.textContent = category.name;
+      categorySelect.appendChild(option);
+    });
+    
+  } catch (error) {
+    console.error('Erro ao carregar categorias:', error);
+    showErrorMessage('categoria-error', 'Erro ao carregar categorias. Por favor, recarregue a página.');
+    
+    // Adicionar botão para recarregar categorias
+    const errorDiv = document.getElementById('categoria-error');
+    if (errorDiv) {
+      errorDiv.innerHTML += ' <button class="btn btn-sm reload-btn">Recarregar</button>';
+      const reloadBtn = errorDiv.querySelector('.reload-btn');
+      if (reloadBtn) {
+        reloadBtn.addEventListener('click', loadCategories);
+      }
+    }
   }
+}
 
-  if (!validateStock(stock)) {
-    isValid = false;
-    showError(stockInput, 'stock-error', 'Digite a quantidade disponível');
-  }
-
-  if (!validateExpiry(expiry)) {
-    isValid = false;
-    showError(expiryInput, 'expiry-error', 'Selecione uma data de validade válida');
-  }
-
-  if (!image) {
-    isValid = false;
-    showError(imageInput, 'image-error', 'Selecione uma imagem válida');
-  }
-
-  if (!isValid) {
+// Mostrar preview da imagem
+function showImagePreview(file, container) {
+  if (!file || !container) return;
+  
+  // Limpar preview anterior
+  container.innerHTML = '';
+  
+  // Verificar se é um arquivo de imagem
+  if (!file.type.match('image.*')) {
+    container.innerHTML = '<p class="error">Por favor, selecione um arquivo de imagem válido.</p>';
     return;
   }
-
-  const productData = {
-    name: name,
-    description: description,
-    price: price,
-    size: size,
-    stock: stock,
-    expiry: expiry,
-    image: image,
+  
+  // Verificar tamanho (máx 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    container.innerHTML = '<p class="error">A imagem deve ter no máximo 5MB.</p>';
+    return;
+  }
+  
+  // Criar preview
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = document.createElement('img');
+    img.src = e.target.result;
+    img.alt = 'Preview';
+    img.className = 'preview-image';
+    container.appendChild(img);
   };
-
-  console.log('Dados do produto:', productData);
+  reader.readAsDataURL(file);
 }
 
-function showError(inputElement, errorElementId, errorMessage) {
-  inputElement.classList.add('invalid-input');
-  const errorElement = document.getElementById(errorElementId);
-  errorElement.textContent = errorMessage;
+// Tratar envio do formulário
+async function handleProductSubmit(e) {
+  e.preventDefault();
+  
+  // Obter elementos do formulário
+  const nameInput = document.getElementById('product-name');
+  const priceInput = document.getElementById('product-price');
+  const stockInput = document.getElementById('product-stock');
+  const expirationInput = document.getElementById('product-expiration');
+  const sizeSelect = document.getElementById('product-size');
+  const customSizeInput = document.getElementById('product-custom-size');
+  const descriptionInput = document.getElementById('product-description');
+  const categorySelect = document.getElementById('product-category');
+  const imageInput = document.getElementById('product-image');
+  const submitButton = document.querySelector('button[type="submit"]');
+  const formErrorDisplay = document.getElementById('form-error');
+  
+  // Desabilitar botão e mostrar loading
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+  }
+  
+  // Limpar mensagens de erro anteriores
+  document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+  if (formErrorDisplay) formErrorDisplay.textContent = '';
+
+  // Validar campos
+  let isValid = true;
+  
+  if (!nameInput.value.trim()) {
+    showErrorMessage('nome-error', 'Nome do produto é obrigatório');
+    isValid = false;
+  }
+  
+  if (!priceInput.value || isNaN(parseFloat(priceInput.value.replace(',', '.')))) {
+    showErrorMessage('preco-error', 'Preço inválido');
+    isValid = false;
+  }
+  
+  if (!stockInput.value || parseInt(stockInput.value) < 0) {
+    showErrorMessage('stock-error', 'Quantidade em estoque deve ser um número igual ou maior que zero');
+    isValid = false;
+  }
+  
+  if (expirationInput.value) {
+    const today = new Date().toISOString().split('T')[0];
+    if (new Date(expirationInput.value) < new Date(today)) {
+      showErrorMessage('expiration-error', 'A data de validade não pode ser no passado');
+      isValid = false;
+    }
+  }
+  
+  if (sizeSelect.value === 'custom' && !customSizeInput.value.trim()) {
+    showErrorMessage('size-error', 'Por favor, especifique o tamanho personalizado');
+    isValid = false;
+  }
+  
+  if (!categorySelect.value) {
+    showErrorMessage('categoria-error', 'Selecione uma categoria');
+    isValid = false;
+  }
+  
+  if (!isValid) {
+    // Restaurar botão
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Cadastrar Produto';
+    }
+    return;
+  }
+  
+  try {
+    console.log('Preparando dados para envio...');
+    
+    // Preparar dados do formulário
+    const formData = new FormData();
+    formData.append('name', nameInput.value.trim());
+    formData.append('price', parseFloat(priceInput.value.replace(',', '.')));
+    formData.append('stock_quantity', parseInt(stockInput.value));
+    formData.append('category_id', categorySelect.value);
+    
+    // Adicionar data de validade se fornecida
+    if (expirationInput.value) {
+      formData.append('expiration_date', expirationInput.value);
+    }
+    
+    // Adicionar tamanho
+    if (sizeSelect.value) {
+      if (sizeSelect.value === 'custom') {
+        formData.append('size', customSizeInput.value.trim());
+      } else {
+        formData.append('size', sizeSelect.value);
+      }
+    }
+    
+    if (descriptionInput && descriptionInput.value.trim()) {
+      formData.append('description', descriptionInput.value.trim());
+    }
+    
+    if (imageInput && imageInput.files.length > 0) {
+      formData.append('image', imageInput.files[0]);
+    }
+    
+    // Log dos dados sendo enviados (sem a imagem para não sobrecarregar o console)
+    console.log('Enviando dados:', {
+      name: nameInput.value,
+      price: parseFloat(priceInput.value.replace(',', '.')),
+      stock_quantity: parseInt(stockInput.value),
+      expiration_date: expirationInput.value || 'não especificada',
+      size: sizeSelect.value === 'custom' ? customSizeInput.value : sizeSelect.value,
+      category_id: categorySelect.value,
+      description: descriptionInput ? descriptionInput.value : '',
+      hasImage: imageInput && imageInput.files.length > 0
+    });
+    
+    // Buscar token
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Usuário não autenticado. Faça login novamente.');
+    }
+    
+    // Determinar o endpoint correto
+    let endpoint = `${API.BASE_URL}/produtos`;
+    
+    // Verificar se o API.js definiu um endpoint específico
+    if (API.produtos && API.produtos.ENDPOINT) {
+      endpoint = `${API.BASE_URL}${API.produtos.ENDPOINT}`;
+    }
+    
+    console.log('Enviando para endpoint:', endpoint);
+    
+    // Enviar para a API
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData
+    });
+    
+    console.log('Status da resposta:', response.status);
+    
+    if (!response.ok) {
+      // Tentar obter detalhes do erro
+      let errorDetail = '';
+      try {
+        const errorData = await response.json();
+        console.error('Detalhes do erro:', errorData);
+        errorDetail = errorData.message || errorData.error || '';
+      } catch (parseError) {}
+      
+      throw new Error(`Erro ao cadastrar produto (${response.status}): ${errorDetail}`);
+    }
+    
+    const responseData = await response.json();
+    console.log('Produto cadastrado com sucesso:', responseData);
+    
+    // Exibir mensagem de sucesso
+    if (formErrorDisplay) {
+      formErrorDisplay.textContent = 'Produto cadastrado com sucesso!';
+      formErrorDisplay.className = 'success-message';
+    }
+    
+    // Usar toast se disponível
+    if (window.Toast) {
+      window.Toast.success('Produto cadastrado com sucesso!');
+    }
+    
+    // Resetar formulário
+    e.target.reset();
+    if (document.getElementById('image-preview')) {
+      document.getElementById('image-preview').innerHTML = '';
+    }
+    
+    // Redirecionar após 2 segundos
+    setTimeout(() => {
+      window.location.href = '/produtos.html';
+    }, 2000);
+    
+  } catch (error) {
+    console.error('Erro ao cadastrar produto:', error);
+    
+    // Exibir erro
+    if (formErrorDisplay) {
+      formErrorDisplay.textContent = error.message || 'Erro ao cadastrar produto. Tente novamente.';
+      formErrorDisplay.className = 'error-message';
+    }
+    
+    // Usar toast se disponível
+    if (window.Toast) {
+      window.Toast.error(error.message || 'Erro ao cadastrar produto');
+    }
+  } finally {
+    // Restaurar botão
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Cadastrar Produto';
+    }
+  }
 }
 
-function clearAllErrors() {
-  const errorMessages = document.querySelectorAll('.error-message');
-  errorMessages.forEach(element => {
-    element.textContent = '';
-  });
-
-  const invalidInputs = document.querySelectorAll('.invalid-input');
-  invalidInputs.forEach(element => {
-    element.classList.remove('invalid-input');
-  });
+// Exibir mensagem de erro
+function showErrorMessage(elementId, message) {
+  const errorElement = document.getElementById(elementId);
+  if (errorElement) {
+    errorElement.textContent = message;
+    errorElement.className = 'error-message';
+  }
 }

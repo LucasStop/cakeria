@@ -133,42 +133,134 @@ function renderizarCategorias(categoriasList) {
   categoriasContainer.innerHTML = html;
 }
 
-function renderizarListaProdutos() {
-  const mainContent = `
-    <section class="products-list">
-      <div class="container">
-        <h1 class="section-title">Nossos Produtos</h1>
-        <div class="featured-products">
-          ${produtos
-            .map(
-              (produto) => `
-            <div class="product-card">
-              <div class="product-img" style="background-image: url('${
-                produto.image_id
-                  ? `/imgs/${produto.image_id}`
-                  : "/imgs/placeholder.png"
-              }')"></div>
-              <div class="product-info">
-                <h3>${produto.name}</h3>
-                <p class="product-price">R$ ${parseFloat(produto.price).toFixed(
-                  2
-                )}</p>
-                <button class="btn btn-primary" onclick="verDetalhesProduto(${
-                  produto.id
-                })">Ver Detalhes</button>
-              </div>
-            </div>
-          `
-            )
-            .join("")}
+async function renderizarListaProdutos() {
+  try {
+    // Mostrar indicador de carregamento enquanto os produtos são buscados
+    contentEl.innerHTML = `
+      <section class="products-list">
+        <div class="container">
+          <h1 class="section-title">Nossos Produtos</h1>
+          <div class="loading-indicator">
+            <div class="spinner"></div>
+            <p>Carregando produtos...</p>
+          </div>
         </div>
-      </div>
-    </section>
-  `;
+      </section>
+    `;
 
-  contentEl.innerHTML = mainContent;
-  currentPage = "produtos";
-  window.history.pushState({}, "", "/produtos");
+    console.log('Iniciando carregamento de produtos...');
+    
+    // Verificar se a API está inicializada corretamente
+    if (!API || !API.produtos || typeof API.produtos.listar !== 'function') {
+      console.error('API não está configurada corretamente:', API);
+      throw new Error('Configuração da API não está completa');
+    }
+
+    // Tentar fazer a requisição com tratamento detalhado de erros
+    try {
+      // Carregar produtos do banco de dados
+      console.log('Chamando API.produtos.listar()...');
+      produtos = await API.produtos.listar();
+      console.log(`Carregados ${produtos ? produtos.length : 0} produtos do banco de dados`);
+      
+      if (!produtos || !Array.isArray(produtos)) {
+        console.error('Resposta inválida da API:', produtos);
+        throw new Error('Formato inválido de resposta');
+      }
+    } catch (apiError) {
+      console.error('Erro específico da API:', apiError);
+      
+      // Tentar um fallback direto usando fetch
+      console.log('Tentando método alternativo com fetch direto...');
+      const response = await fetch(`${API.BASE_URL || 'http://localhost:3001/api'}/produtos`);
+      
+      if (!response.ok) {
+        throw new Error(`Erro HTTP: ${response.status}`);
+      }
+      
+      produtos = await response.json();
+      console.log('Produtos carregados via fetch direto:', produtos.length);
+    }
+
+    // Agora renderizar com os produtos atualizados
+    const mainContent = `
+      <section class="products-list">
+        <div class="container">
+          <h1 class="section-title">Nossos Produtos</h1>
+          ${produtos.length === 0 ? 
+            `<div class="empty-state">
+              <p>Não encontramos produtos disponíveis no momento.</p>
+              ${isAdmin() ? `<a href="/registerProduct.html" class="btn btn-primary">Cadastrar Novo Produto</a>` : ''}
+            </div>` :
+            `<div class="featured-products">
+              ${produtos.map(produto => `
+                <div class="product-card">
+                  <div class="product-img" style="background-image: url('${
+                    produto.image_id ? `/imgs/${produto.image_id}` : "/imgs/placeholder.png"
+                  }')"></div>
+                  <div class="product-info">
+                    <h3>${produto.name}</h3>
+                    <p class="product-price">R$ ${parseFloat(produto.price).toFixed(2)}</p>
+                    <button class="btn btn-primary" onclick="verDetalhesProduto(${produto.id})">Ver Detalhes</button>
+                  </div>
+                </div>`
+              ).join("")}
+            </div>`
+          }
+        </div>
+      </section>
+    `;
+
+    contentEl.innerHTML = mainContent;
+    currentPage = "produtos";
+    window.history.pushState({}, "", "/produtos");
+    
+    // Notificar sobre o número de produtos carregados
+    if (window.Toast && produtos.length > 0) {
+      window.Toast.success(`${produtos.length} produtos carregados com sucesso!`, {
+        position: 'bottom-right',
+        duration: 3000
+      });
+    } else if (window.Toast && produtos.length === 0) {
+      window.Toast.info('Não encontramos produtos disponíveis.', {
+        position: 'bottom-right',
+        duration: 3000
+      });
+    }
+  } catch (error) {
+    console.error('Erro detalhado ao carregar produtos:', error);
+    
+    contentEl.innerHTML = `
+      <section class="products-list">
+        <div class="container">
+          <h1 class="section-title">Nossos Produtos</h1>
+          <div class="error-state">
+            <i class="fas fa-exclamation-circle" style="color: #e53e3e; font-size: 2rem; margin-bottom: 1rem;"></i>
+            <p class="error">Erro ao carregar produtos: ${error.message || 'Falha na comunicação com o servidor'}.</p>
+            <p>Verifique sua conexão com a internet e tente novamente.</p>
+            <button class="btn btn-primary" onclick="renderizarListaProdutos()">Tentar Novamente</button>
+          </div>
+        </div>
+      </section>
+    `;
+    
+    if (window.Toast) {
+      window.Toast.error(`Não foi possível carregar os produtos: ${error.message || 'Erro de conexão'}`, {
+        position: 'top-center',
+        duration: 5000
+      });
+    }
+  }
+}
+
+// Função auxiliar para verificar se o usuário atual é administrador
+function isAdmin() {
+  try {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    return user && (user.type === 'admin' || user.isAdmin === true);
+  } catch (e) {
+    return false;
+  }
 }
 
 function renderizarListaCategorias() {
