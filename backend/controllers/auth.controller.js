@@ -36,9 +36,10 @@ exports.login = async (req, res) => {
     // Gera o token JWT
     const token = generateToken(user);
 
-    // Retorna os dados do usuário e o token (excluindo senha)
+    // Retorna os dados do usuário e o token (excluindo senha e a imagem)
     const userData = user.toJSON();
     delete userData.password;
+    delete userData.image;
 
     res.json({
       user: userData,
