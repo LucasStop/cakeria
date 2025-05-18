@@ -39,11 +39,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inicializar a página de receitas
   initRecipesPage();
-  
+
   // Configurar botão de compartilhar receita para verificar autenticação quando clicado
   const newRecipeBtn = document.getElementById('new-recipe-btn');
   if (newRecipeBtn) {
-    newRecipeBtn.addEventListener('click', function(e) {
+    newRecipeBtn.addEventListener('click', function (e) {
       e.preventDefault();
       // Verificar autenticação antes de redirecionar
       if (isAuthenticated()) {
@@ -52,9 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Redirecionar para login com redirecionamento para compartilharReceitas
         window.location.href = `/login.html?redirect=${encodeURIComponent('/compartilharReceitas.html')}`;
         if (window.Toast) {
-          Toast.warning('Você precisa fazer login para compartilhar receitas', { 
+          Toast.warning('Você precisa fazer login para compartilhar receitas', {
             duration: 5000,
-            position: 'top-center'
+            position: 'top-center',
           });
         }
       }
@@ -154,32 +154,32 @@ async function fetchRecipes() {
 
   try {
     let endpoint = '/recipes';
-    
+
     const queryParams = [];
-    
+
     if (categoryFilter && categoryFilter.value && categoryFilter.value !== 'todas') {
       queryParams.push(`category=${encodeURIComponent(categoryFilter.value)}`);
     }
-    
+
     if (searchInput && searchInput.value.trim()) {
       queryParams.push(`search=${encodeURIComponent(searchInput.value.trim())}`);
     }
-    
+
     if (sortSelect && sortSelect.value) {
       queryParams.push(`sort=${encodeURIComponent(sortSelect.value)}`);
     }
-    
+
     queryParams.push(`page=${currentPage}`);
-    
+
     if (queryParams.length > 0) {
       endpoint += `?${queryParams.join('&')}`;
     }
-    
+
     console.log('Endpoint da API:', endpoint);
-    
+
     const data = await API.get(endpoint);
     console.log('Dados recebidos da API:', data);
-    
+
     let recipes;
     if (data.recipes) {
       recipes = data.recipes;
@@ -189,7 +189,7 @@ async function fetchRecipes() {
     } else {
       recipes = [];
     }
-    
+
     if (Array.isArray(recipes) && recipes.length > 0) {
       displayRecipes(recipes);
     } else {
@@ -361,10 +361,8 @@ async function displayRecipes(recipes) {
         authorSpan.textContent = authorName;
       }
 
-    
       const dateSpan = card.querySelector('.date-text');
       if (dateSpan) {
-     
         console.log('Data original:', recipe.created_at || recipe.createdAt);
 
         let dateString = recipe.created_at || recipe.createdAt;
@@ -373,24 +371,18 @@ async function displayRecipes(recipes) {
         if (dateString) {
           date = new Date(dateString);
 
-        
           if (isNaN(date.getTime())) {
-         
             if (!isNaN(dateString)) {
               date = new Date(parseInt(dateString));
-            }
-           
-            else if (typeof dateString === 'string' && dateString.includes('/')) {
+            } else if (typeof dateString === 'string' && dateString.includes('/')) {
               const [day, month, year] = dateString.split('/');
               date = new Date(year, month - 1, day);
             }
           }
         } else {
-  
           date = new Date();
         }
 
-     
         try {
           if (!isNaN(date.getTime())) {
             dateSpan.textContent = date.toLocaleDateString('pt-BR');
@@ -400,13 +392,15 @@ async function displayRecipes(recipes) {
         } catch (e) {
           console.error('Erro ao formatar data:', e);
           dateSpan.textContent = 'Data desconhecida';
+        }
+      }
 
       // Visualizações
       const viewsSpan = card.querySelector('.views-count');
       if (viewsSpan) {
         const viewCount = recipe.views || 0;
         viewsSpan.textContent = viewCount;
-        
+
         // Adicionar classe para destacar receitas populares (mais de 10 visualizações)
         if (viewCount > 10) {
           const viewsIcon = card.querySelector('.recipe-views i');
@@ -440,10 +434,8 @@ async function displayRecipes(recipes) {
         if (totalTime > 0) {
           timeSpan.textContent = `${totalTime} min`;
         } else if (recipe.totalTime || recipe.total_time) {
-         
           timeSpan.textContent = `${recipe.totalTime || recipe.total_time} min`;
         } else {
-      
           timeSpan.textContent = 'Tempo não informado';
         }
       }
@@ -460,14 +452,14 @@ async function displayRecipes(recipes) {
         // Verificar se o usuário pode editar/excluir esta receita
         const canEdit = canEditRecipe(recipe);
         const canDelete = canDeleteRecipe(recipe);
-        
+
         if (canEdit || canDelete) {
           adminActions.style.display = 'flex';
-          
+
           if (canEdit) {
             const editButton = adminActions.querySelector('.edit-recipe');
             if (editButton) {
-              editButton.addEventListener('click', (e) => {
+              editButton.addEventListener('click', e => {
                 e.preventDefault();
                 e.stopPropagation();
                 window.location.href = `/compartilharReceitas.html?id=${recipe.id}`;
@@ -480,11 +472,11 @@ async function displayRecipes(recipes) {
               editButton.style.display = 'none';
             }
           }
-          
+
           if (canDelete) {
             const deleteButton = adminActions.querySelector('.delete-recipe');
             if (deleteButton) {
-              deleteButton.addEventListener('click', (e) => {
+              deleteButton.addEventListener('click', e => {
                 e.preventDefault();
                 e.stopPropagation();
                 showDeleteConfirmation(recipe);
@@ -503,9 +495,9 @@ async function displayRecipes(recipes) {
       recipesGrid.appendChild(card);
     }
   }
-
-  console.log(`${recipes.length} receitas exibidas com sucesso`);
 }
+
+console.log(`${recipes.length} receitas exibidas com sucesso`);
 
 // Mostrar confirmação para excluir receita na página de listagem
 function showDeleteConfirmation(recipe) {
@@ -521,15 +513,15 @@ function showDeleteConfirmation(recipe) {
       </div>
     </div>
   `;
-  
+
   document.body.appendChild(dialog);
-  
+
   // Manipular botão de cancelar
   const cancelButton = dialog.querySelector('.dialog-btn-cancel');
   cancelButton.addEventListener('click', () => {
     dialog.remove();
   });
-  
+
   // Manipular botão de confirmar
   const confirmButton = dialog.querySelector('.dialog-btn-confirm');
   confirmButton.addEventListener('click', async () => {
@@ -537,18 +529,18 @@ function showDeleteConfirmation(recipe) {
       // Adicionar indicador de carregamento
       confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
       confirmButton.disabled = true;
-      
+
       // Fazer a requisição para excluir a receita
       await fetch(`${API.BASE_URL}/recipes/${recipe.id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       });
-      
+
       // Mostrar notificação de sucesso
       showNotification('Receita excluída com sucesso!', 'success');
-      
+
       // Recarregar a lista de receitas
       setTimeout(() => {
         fetchRecipes();
@@ -572,9 +564,9 @@ function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
-    
+
     document.body.appendChild(notification);
-    
+
     // Remover após 5 segundos
     setTimeout(() => {
       notification.classList.add('fade-out');
@@ -590,4 +582,4 @@ window.fetchRecipes = fetchRecipes;
 window.verReceitaDetalhes = function (id) {
   console.log(`Ver detalhes da receita ${id}`);
   window.location.href = `/receita.html?id=${id}`;
-}}
+};
