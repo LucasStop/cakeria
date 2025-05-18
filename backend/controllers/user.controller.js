@@ -312,3 +312,18 @@ exports.delete = async (req, res) => {
     res.status(500).json({ message: 'Erro ao remover usuário', error: error.message });
   }
 };
+
+exports.getUserImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findByPk(id, { attributes: ['image'] });
+    if (!user || !user.image) {
+      return res.status(404).send('Imagem não encontrada');
+    }
+    // Por padrão, vamos retornar como PNG. Se quiser detectar o tipo, pode usar um pacote como file-type.
+    res.set('Content-Type', 'image/png');
+    res.send(user.image);
+  } catch (error) {
+    res.status(500).send('Erro ao buscar imagem do usuário');
+  }
+};
