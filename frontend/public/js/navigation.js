@@ -10,6 +10,13 @@ const Navigation = {
     this.currentPage = 'registerProduct';
   },
 
+  navegarParaProdutos: function () {
+    window.removerEstilosEspecificos && window.removerEstilosEspecificos();
+    window.renderizarListaProdutos();
+    this.currentPage = 'produtos';
+    window.history.pushState({}, '', '/produtos');
+  },
+
   navegarParaCategorias: function () {
     window.removerEstilosEspecificos && window.removerEstilosEspecificos();
     window.renderizarListaCategorias();
@@ -38,8 +45,18 @@ const Navigation = {
     this.currentPage = 'compartilharReceitas';
   },
 
+  navegarParaHome: function () {
+    window.location.href = '/index.html';
+    this.currentPage = 'home';
+  },
+
   handleNavigation: function () {
     const path = window.location.pathname;
+
+    // Não fazer nada se estiver na página inicial
+    if (path === '/' || path === '/index.html') {
+      return; // Retornamos aqui para evitar qualquer redirecionamento
+    }
 
     if (path.startsWith('/produtos/') && path.length > 10) {
       const produtoId = path.split('/').pop();
@@ -65,8 +82,6 @@ const Navigation = {
       this.navegarParaRegistro();
     } else if (path === '/admin') {
       this.navegarParaAdmin();
-    } else {
-      window.renderizarListaProdutos();
     }
   },
 };
@@ -78,6 +93,11 @@ window.navegarParaCompartilharReceitas = function () {
 window.navegarParaCadastrarProdutos = function () {
   Navigation.navegarParaCadastrarProdutos();
 };
+
+window.navegarParaProdutos = function () {
+  Navigation.navegarParaProdutos();
+};
+
 window.navegarParaCategorias = function () {
   Navigation.navegarParaCategorias();
 };
@@ -93,4 +113,8 @@ window.navegarParaRegistro = function () {
 };
 window.navegarParaAdmin = function () {
   Navigation.navegarParaAdmin();
+};
+
+window.navegarParaHome = function () {
+  Navigation.navegarParaHome();
 };

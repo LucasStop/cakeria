@@ -19,7 +19,7 @@ class Header extends HTMLElement {
             <nav class="nav-bar">
               <ul class="nav-links">                <li><a href="/index.html" class="nav-link" data-route="home"><i class="fa-solid fa-home"></i> Home</a></li>
                 <li><a href="/receitas.html" class="nav-link" data-route="receitas"><i class="fa-solid fa-utensils"></i> Receitas</a></li>
-                <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
+                <li><a href="/produtos" class="nav-link" id="nav-produtos" data-route="produtos"><i class="fa-solid fa-box"></i> Produtos</a></li>
                 <li><a href="/sobre.html" class="nav-link" id="nav-sobre" data-route="sobre"><i class="fa-solid fa-info-circle"></i> Sobre</a></li>
                 ${isLoggedIn && this.isAdmin(user) ? `<li><a href="/admin.html" class="nav-link" id="nav-admin" data-route="admin"><i class="fa-solid fa-user-shield"></i> Admin</a></li>` : ''}
               </ul>
@@ -93,7 +93,7 @@ class Header extends HTMLElement {
             <nav class="nav-bar">
               <ul class="nav-links">
                 <li><a href="/admin.html" class="nav-link" data-route="admin"><i class="fa-solid fa-home"></i> Dashboard</a></li>
-                <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
+                <li><a href="/produtos" class="nav-link" id="nav-produtos" data-route="produtos"><i class="fa-solid fa-box"></i> Produtos</a></li>
                 <li><a href="/registerProduct.html" class="nav-link" data-route="registerProduct"><i class="fa-solid fa-cake-candles"></i> Produtos</a></li>
                 <li><a href="/pedidos/gerenciar.html" class="nav-link" id="nav-pedidos" data-route="pedidos"><i class="fa-solid fa-shopping-cart"></i> Pedidos</a></li>
                 <li><a href="/usuarios" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
@@ -242,10 +242,10 @@ class Header extends HTMLElement {
   navigateToRoute(route) {
     switch (route) {
       case 'home':
-        window.location.href = '/index.html';
+        window.navegarParaHome();
         break;
-      case 'categorias':
-        window.navegarParaCategorias();
+      case 'produtos':
+        window.navegarParaProdutos();
         break;
       case 'sobre':
         window.navegarParaSobre();
