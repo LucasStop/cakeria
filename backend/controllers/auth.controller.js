@@ -57,7 +57,6 @@ async function updateLastLogin(userId) {
     const user = await User.findByPk(userId);
     if (user) {
       await user.update({ last_login: new Date() });
-      console.log('Último login atualizado com sucesso!');
     }
   } catch (error) {
     console.error('Erro ao atualizar último login:', error);
