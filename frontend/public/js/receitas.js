@@ -385,7 +385,20 @@ async function displayRecipes(recipes) {
 
       // Visualizações
       const viewsSpan = card.querySelector('.views-count');
-      if (viewsSpan) viewsSpan.textContent = recipe.views || 0;
+      if (viewsSpan) {
+        const viewCount = recipe.views || 0;
+        viewsSpan.textContent = viewCount;
+        
+        // Adicionar classe para destacar receitas populares (mais de 10 visualizações)
+        if (viewCount > 10) {
+          const viewsIcon = card.querySelector('.recipe-views i');
+          if (viewsIcon) {
+            viewsIcon.classList.remove('far');
+            viewsIcon.classList.add('fas');
+            viewsIcon.style.color = '#e55757'; // Destacar ícone com cor
+          }
+        }
+      }
 
       // Descrição
       const excerpt = card.querySelector('.recipe-excerpt');
@@ -423,11 +436,135 @@ async function displayRecipes(recipes) {
         recipeLink.href = `/receita.html?id=${recipe.id}`;
       }
 
+      // Botões de administração
+      const adminActions = card.querySelector('.recipe-admin-actions');
+      if (adminActions) {
+        // Verificar se o usuário pode editar/excluir esta receita
+        const canEdit = canEditRecipe(recipe);
+        const canDelete = canDeleteRecipe(recipe);
+        
+        if (canEdit || canDelete) {
+          adminActions.style.display = 'flex';
+          
+          if (canEdit) {
+            const editButton = adminActions.querySelector('.edit-recipe');
+            if (editButton) {
+              editButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = `/compartilharReceitas.html?id=${recipe.id}`;
+              });
+            }
+          } else {
+            // Esconder botão de edição se não tiver permissão
+            const editButton = adminActions.querySelector('.edit-recipe');
+            if (editButton) {
+              editButton.style.display = 'none';
+            }
+          }
+          
+          if (canDelete) {
+            const deleteButton = adminActions.querySelector('.delete-recipe');
+            if (deleteButton) {
+              deleteButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                showDeleteConfirmation(recipe);
+              });
+            }
+          } else {
+            // Esconder botão de exclusão se não tiver permissão
+            const deleteButton = adminActions.querySelector('.delete-recipe');
+            if (deleteButton) {
+              deleteButton.style.display = 'none';
+            }
+          }
+        }
+      }
+
       recipesGrid.appendChild(card);
     }
   }
 
   console.log(`${recipes.length} receitas exibidas com sucesso`);
+}
+
+// Mostrar confirmação para excluir receita na página de listagem
+function showDeleteConfirmation(recipe) {
+  const dialog = document.createElement('div');
+  dialog.className = 'confirmation-dialog';
+  dialog.innerHTML = `
+    <div class="dialog-content">
+      <h3 class="dialog-title">Excluir Receita</h3>
+      <p class="dialog-message">Tem certeza que deseja excluir a receita "${recipe.title}"? Esta ação não pode ser desfeita.</p>
+      <div class="dialog-buttons">
+        <button class="dialog-btn dialog-btn-cancel">Cancelar</button>
+        <button class="dialog-btn dialog-btn-confirm">Excluir</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(dialog);
+  
+  // Manipular botão de cancelar
+  const cancelButton = dialog.querySelector('.dialog-btn-cancel');
+  cancelButton.addEventListener('click', () => {
+    dialog.remove();
+  });
+  
+  // Manipular botão de confirmar
+  const confirmButton = dialog.querySelector('.dialog-btn-confirm');
+  confirmButton.addEventListener('click', async () => {
+    try {
+      // Adicionar indicador de carregamento
+      confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
+      confirmButton.disabled = true;
+      
+      // Fazer a requisição para excluir a receita
+      await fetch(`${API.BASE_URL}/recipes/${recipe.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      // Mostrar notificação de sucesso
+      showNotification('Receita excluída com sucesso!', 'success');
+      
+      // Recarregar a lista de receitas
+      setTimeout(() => {
+        fetchRecipes();
+        dialog.remove();
+      }, 1000);
+    } catch (error) {
+      console.error('Erro ao excluir receita:', error);
+      showNotification('Erro ao excluir receita. Tente novamente.', 'error');
+      dialog.remove();
+    }
+  });
+}
+
+// Função para exibir notificações
+function showNotification(message, type = 'info') {
+  // Verificar se temos o objeto de notificações global
+  if (window.Notifications) {
+    window.Notifications[type](message);
+  } else {
+    // Fallback: criar uma notificação simples
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Remover após 5 segundos
+    setTimeout(() => {
+      notification.classList.add('fade-out');
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 5000);
+  }
 }
 
 // Exportar funções para uso global
