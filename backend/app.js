@@ -17,7 +17,8 @@ const userRoutes = require('./routes/user.routes');
 const addressRoutes = require('./routes/address.routes');
 const orderRoutes = require('./routes/order.routes');
 const authRoutes = require('./routes/auth.routes');
-const recipeRoutes = require('./routes/recipe.routes'); // Adicionando importação das rotas de receitas
+const recipeRoutes = require('./routes/recipe.routes'); 
+const commentRoutes = require('./routes/comment_recipe.routes'); 
 
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
@@ -25,7 +26,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/addresses', addressRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/recipes', recipeRoutes); // Registrando as rotas de receitas
+app.use('/api/recipes', recipeRoutes);
+app.use('/api/comments', commentRoutes); 
 
 app.get('/', (req, res) => {
   res.send(`
