@@ -79,3 +79,44 @@
     padding: 2rem;
     font-size: 1.1rem;
 }
+
+/* Estado vazio */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin: 2rem 0;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+/* Estado de erro */
+.error-state {
+    text-align: center;
+    padding: 3rem;
+    background-color: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 8px;
+    margin: 2rem 0;
+}
+
+.error-state .error {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.error-state p {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+/* Botão de tentar novamente */
+.error-state .btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+}
