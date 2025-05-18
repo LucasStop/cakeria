@@ -14,6 +14,11 @@ function getCurrentUser() {
   return userJson ? JSON.parse(userJson) : null;
 }
 
+// Verifica se o usuário está autenticado
+function isAuthenticated() {
+  return !!getCurrentUser();
+}
+
 // Atualiza a exibição do usuário no cabeçalho
 function updateUserDisplay(user) {
   const userNameEl = document.getElementById('user-name');
@@ -22,20 +27,39 @@ function updateUserDisplay(user) {
   }
 }
 
+// Página de receitas não precisa ser protegida totalmente, apenas verificar autenticação para ações específicas
 document.addEventListener('DOMContentLoaded', () => {
-  // Proteger a página - verificar se o usuário está autenticado
-  protectPage();
-
-  // Obtém o usuário atual
+  // Obtém o usuário atual se estiver autenticado
   const user = getCurrentUser();
 
-  // Atualizar exibição do usuário se necessário
-  if (typeof updateUserDisplay === 'function') {
+  // Atualizar exibição do usuário se estiver autenticado
+  if (user && typeof updateUserDisplay === 'function') {
     updateUserDisplay(user);
   }
 
   // Inicializar a página de receitas
   initRecipesPage();
+  
+  // Configurar botão de compartilhar receita para verificar autenticação quando clicado
+  const newRecipeBtn = document.getElementById('new-recipe-btn');
+  if (newRecipeBtn) {
+    newRecipeBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      // Verificar autenticação antes de redirecionar
+      if (isAuthenticated()) {
+        window.location.href = '/compartilharReceitas.html';
+      } else {
+        // Redirecionar para login com redirecionamento para compartilharReceitas
+        window.location.href = `/login.html?redirect=${encodeURIComponent('/compartilharReceitas.html')}`;
+        if (window.Toast) {
+          Toast.warning('Você precisa fazer login para compartilhar receitas', { 
+            duration: 5000,
+            position: 'top-center'
+          });
+        }
+      }
+    });
+  }
 });
 
 // Variáveis e seletores
@@ -313,16 +337,13 @@ async function displayRecipes(recipes) {
           // Se tiver apenas o ID do usuário, buscar o nome na API
           const userId = recipe.userId || recipe.user_id;
 
-          // Verificar primeiro no cache
           if (userCache[userId]) {
             authorName = userCache[userId].name;
           } else {
-            // Buscar o usuário da API
             try {
               const user = await getUserById(userId);
               if (user && user.name) {
                 authorName = user.name;
-                // Salvar no cache para futuras referências
                 userCache[userId] = user;
               } else {
                 authorName = `Usuário #${userId}`;
@@ -340,37 +361,36 @@ async function displayRecipes(recipes) {
         authorSpan.textContent = authorName;
       }
 
-      // Data de criação - Melhorada a lógica para lidar com diferentes formatos
+    
       const dateSpan = card.querySelector('.date-text');
       if (dateSpan) {
-        // Log para debugging do formato da data
+     
         console.log('Data original:', recipe.created_at || recipe.createdAt);
 
-        // Tentar vários formatos possíveis
         let dateString = recipe.created_at || recipe.createdAt;
         let date;
 
         if (dateString) {
           date = new Date(dateString);
 
-          // Se a conversão falhou, tente outro formato
+        
           if (isNaN(date.getTime())) {
-            // Verificar se é um timestamp numérico
+         
             if (!isNaN(dateString)) {
               date = new Date(parseInt(dateString));
             }
-            // Verificar formato DD/MM/YYYY
+           
             else if (typeof dateString === 'string' && dateString.includes('/')) {
               const [day, month, year] = dateString.split('/');
               date = new Date(year, month - 1, day);
             }
           }
         } else {
-          // Se não há data na receita, use a data atual como fallback
+  
           date = new Date();
         }
 
-        // Formatar a data para exibição
+     
         try {
           if (!isNaN(date.getTime())) {
             dateSpan.textContent = date.toLocaleDateString('pt-BR');
@@ -380,8 +400,6 @@ async function displayRecipes(recipes) {
         } catch (e) {
           console.error('Erro ao formatar data:', e);
           dateSpan.textContent = 'Data desconhecida';
-        }
-      }
 
       // Visualizações
       const viewsSpan = card.querySelector('.views-count');
@@ -422,10 +440,10 @@ async function displayRecipes(recipes) {
         if (totalTime > 0) {
           timeSpan.textContent = `${totalTime} min`;
         } else if (recipe.totalTime || recipe.total_time) {
-          // Tentar outra possibilidade
+         
           timeSpan.textContent = `${recipe.totalTime || recipe.total_time} min`;
         } else {
-          // Fallback sem tempo
+      
           timeSpan.textContent = 'Tempo não informado';
         }
       }
@@ -572,4 +590,4 @@ window.fetchRecipes = fetchRecipes;
 window.verReceitaDetalhes = function (id) {
   console.log(`Ver detalhes da receita ${id}`);
   window.location.href = `/receita.html?id=${id}`;
-};
+}}

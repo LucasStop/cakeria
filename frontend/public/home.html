@@ -444,6 +444,7 @@
     <footer-component></footer-component>
 
     <!-- Scripts -->
+    <script src="./js/utils/toast.js"></script>
     <script src="./js/api.js"></script>
     <script src="./components/Header.js"></script>
     <script src="./js/login.js"></script>
@@ -451,5 +452,65 @@
     <script src="./js/navigation.js"></script>
     <script src="./js/logout.js"></script>
     <script src="./js/home.js"></script>
+      <!-- Script para adicionar toast -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        try {
+          const justLoggedIn = sessionStorage.getItem('justLoggedIn');
+          
+          if (justLoggedIn === 'true') {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.name && window.Toast) {
+              Toast.success(`Bem-vindo(a), ${user.name}!`, {
+                position: 'top-center',
+                duration: 4000
+              });
+            }
+            sessionStorage.removeItem('justLoggedIn');
+          }
+          
+          const lastLogin = localStorage.getItem('lastLoginDate');
+          const today = new Date().toDateString();
+          
+          if (lastLogin !== today && window.Toast) {
+            localStorage.setItem('lastLoginDate', today);
+            
+            setTimeout(() => {
+              Toast.info('Confira nossas novidades!', {
+                title: 'Sugestão do dia',
+                duration: 5000,
+                position: 'bottom-right'
+              });
+            }, 2000);
+          }
+          
+          const tabButtons = document.querySelectorAll('.tab-btn');
+          if (tabButtons.length > 0) {
+            tabButtons.forEach(btn => {
+              btn.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+                if (window.Toast && tabName) {
+                  const messages = {
+                    'publicadas': 'Visualizando suas receitas publicadas',
+                    'favoritas': 'Suas receitas favoritas',
+                    'rascunhos': 'Seus rascunhos de receitas',
+                    'feitas': 'Receitas que você já fez'
+                  };
+                  
+                  if (messages[tabName]) {
+                    Toast.info(messages[tabName], {
+                      duration: 2000,
+                      position: 'bottom-right'
+                    });
+                  }
+                }
+              });
+            });
+          }
+        } catch (error) {
+          console.error('Erro ao processar informações do usuário:', error);
+        }
+      });
+    </script>
   </body>
 </html>

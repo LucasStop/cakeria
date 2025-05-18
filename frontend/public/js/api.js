@@ -1,13 +1,25 @@
 // API Helper for interacting with the backend
 
 const API = {
-  BASE_URL: 'http://localhost:3001/api',
-
-  // Método genérico para requisições
-  async request(endpoint, options = {}) {
+  BASE_URL: 'http://localhost:3001/api',  async request(endpoint, options = {}) {
     try {
-      // Adiciona o token de autenticação se disponível
       const token = localStorage.getItem('token');
+      if (token && this.isTokenExpired() && endpoint !== '/auth/login' && endpoint !== '/auth/refresh') {
+        console.log('Token expirado, redirecionando para login...');
+        this.clearSession();
+
+        if (window.Toast) {
+          Toast.error('Sua sessão expirou. Por favor, faça login novamente.', {
+            position: 'top-center',
+            duration: 5000
+          });
+        } else {
+          alert('Sua sessão expirou. Por favor, faça login novamente.');
+        }
+
+        window.location.href = '/login.html?expired=true';
+        throw new Error('Sessão expirada. Por favor, faça login novamente.');
+      }
       if (token) {
         options.headers = {
           ...options.headers,
@@ -15,7 +27,6 @@ const API = {
         };
       }
 
-      // Adiciona o Content-Type se estiver enviando JSON
       if (options.body && !(options.body instanceof FormData)) {
         options.headers = {
           ...options.headers,
@@ -25,27 +36,147 @@ const API = {
       }
 
       const response = await fetch(`${this.BASE_URL}${endpoint}`, options);
-      
-      // Se for 204 (No Content), retorna true
+
       if (response.status === 204) {
         return true;
       }
-      
-      // Se for uma resposta de erro
-      if (!response.ok) {
+
+      if (response.status === 401) {
         const errorData = await response.json();
+        if (errorData.message.includes('expirado') || errorData.message.includes('inválido')) {
+          this.clearSession();
+          window.location.href = '/login.html';
+        }
         throw new Error(errorData.message || `Erro ${response.status}`);
       }
 
-      // Retorna os dados
+      if (!response.ok) {
+        const errorData = await response.json();
+
+        if (window.Toast) {
+          Toast.error(errorData.message || `Erro ${response.status}`, {
+            duration: 5000,
+            position: 'bottom-right'
+          });
+        }
+
+        throw new Error(errorData.message || `Erro ${response.status}`);
+      }
+
       return await response.json();
     } catch (error) {
       console.error('API Error:', error);
       throw error;
     }
   },
+  isTokenExpired() {
+    const token = localStorage.getItem('token');
+    // Se não há token, considerar que não está "expirado" para não exibir mensagem de expiração
+    // Isso é diferente de estar autenticado, pois isAuthenticated() ainda retornará false
+    if (!token) return false;
 
-  // Métodos para Users
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const currentTime = Math.floor(Date.now() / 1000);
+      const isExpired = payload.exp < currentTime;
+
+      if (isExpired) {
+        console.log('Token expirado:', {
+          expiração: new Date(payload.exp * 1000).toLocaleString(),
+          agora: new Date().toLocaleString()
+        });
+      }
+
+      return isExpired;
+    } catch (error) {
+      console.error('Erro ao verificar token:', error);
+      return false; // Em caso de erro, não considerar expirado
+    }
+  },
+  clearSession() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    sessionStorage.removeItem('justLoggedIn');
+    console.log('Sessão limpa');
+  },
+
+  async refreshToken() {
+    try {
+      console.log('Tentando renovar o token...');
+      const response = await this.request('/auth/refresh', {
+        method: 'POST',
+      });
+
+      if (response && response.token) {
+        localStorage.setItem('token', response.token);
+        console.log('Token renovado com sucesso!');
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Erro ao renovar token:', error);
+      return false;
+    }
+  },
+
+    startExpirationChecker() {
+    
+    if (this.expirationCheckerId) {
+      clearInterval(this.expirationCheckerId);
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.log('Sem token, verificador de expiração não será iniciado.');
+      return;
+    }
+
+    this.expirationCheckerId = setInterval(() => {
+      const publicPages = ['/login.html', '/registro.html', '/index.html', '/'];
+      const currentPath = window.location.pathname;
+      
+      const isPublicPage = publicPages.some(page => 
+        currentPath === page || currentPath.endsWith(page)
+      );
+      
+      if (isPublicPage) {
+        return;
+      }
+
+      const currentToken = localStorage.getItem('token');
+      if (!currentToken) {
+        this.stopExpirationChecker();
+        return;
+      }
+
+      if (this.isTokenExpired()) {
+        this.stopExpirationChecker();
+        
+        if (window.Toast) {
+          Toast.error('Sua sessão expirou. Por favor, faça login novamente.', {
+            position: 'top-center',
+            duration: 6000
+          });
+        } else {
+          alert('Sua sessão expirou. Por favor, faça login novamente.');
+        }
+        
+        this.clearSession();
+        window.location.href = '/login.html?expired=true';
+      }
+    }, 30000); 
+
+    console.log('Verificador de expiração de token iniciado.');
+  },
+
+  stopExpirationChecker() {
+    if (this.expirationCheckerId) {
+      clearInterval(this.expirationCheckerId);
+      this.expirationCheckerId = null;
+      console.log('Verificador de expiração de token parado.');
+    }
+  },
+
   Users: {
     get(userId) {
       return API.request(`/users/${userId}`);
@@ -69,7 +200,6 @@ const API = {
     }
   },
 
-  // Métodos para Addresses
   Addresses: {
     getByUser(userId) {
       return API.request(`/addresses/user/${userId}`);
@@ -92,13 +222,11 @@ const API = {
       });
     }
   },
-  
-  // Método genérico para GET
+
   get(endpoint) {
     return this.request(endpoint);
   },
 
-  // Método genérico para POST
   post(endpoint, data) {
     return this.request(endpoint, {
       method: 'POST',
@@ -106,7 +234,6 @@ const API = {
     });
   },
 
-  // Método genérico para PUT
   put(endpoint, data) {
     return this.request(endpoint, {
       method: 'PUT',
@@ -114,13 +241,34 @@ const API = {
     });
   },
 
-  // Método genérico para DELETE
   delete(endpoint) {
     return this.request(endpoint, {
       method: 'DELETE'
     });
-  }
+  },
+
 };
 
-// Exportar para uso em outros arquivos
 window.API = API;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('logout')) {
+    console.log('Usuário acabou de fazer logout, não verificando expiração');
+    return;
+  }
+  
+  // Obter token atual
+  const token = localStorage.getItem('token');
+  
+  const publicPages = ['/login.html', '/registro.html', '/index.html', '/'];
+  const currentPath = window.location.pathname;
+  
+  const isPublicPage = publicPages.some(page => 
+    currentPath === page || currentPath.endsWith(page)
+  );
+  
+  if (!isPublicPage && token) {
+    API.startExpirationChecker();
+  }
+});

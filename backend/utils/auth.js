@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
-// Configurações do token JWT
 const JWT_SECRET = process.env.JWT_SECRET || 'cakeria-super-secret-key';
+
 const JWT_EXPIRATION = process.env.JWT_EXPIRATION || '2h';
 
 exports.generateToken = user => {
