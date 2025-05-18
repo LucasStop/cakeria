@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   addInputEvents();
   initPasswordToggles();
+  setupAvatarUpload();
 });
 
 function initPasswordToggles() {
@@ -271,13 +272,23 @@ function handleSubmit(e) {
   if (!isValid) return;
 
   const form = e.target;
-  const userData = {
-    name: form.elements.name.value,
-    email: form.elements.email.value,
-    phone: form.elements.phone.value,
-    cpf: form.elements.cpf.value,
-    password,
-    address: {
+  const fileInput = document.getElementById('register-avatar');
+  const hasAvatar = fileInput && fileInput.files && fileInput.files.length > 0;
+
+  // Se temos um avatar, usamos FormData para enviar
+  if (hasAvatar) {
+    const formData = new FormData();
+    
+    // Adicionar todos os campos ao FormData
+    formData.append('name', form.elements.name.value);
+    formData.append('email', form.elements.email.value);
+    formData.append('phone', form.elements.phone.value);
+    formData.append('cpf', form.elements.cpf.value);
+    formData.append('password', password);
+    formData.append('image', fileInput.files[0]);
+    
+    // Dados de endereço
+    const addressData = {
       cep: form.elements.cep.value,
       street: form.elements.street.value,
       number: form.elements.number.value,
@@ -285,16 +296,15 @@ function handleSubmit(e) {
       neighborhood: form.elements.neighborhood.value,
       city: form.elements.city.value,
       state: form.elements.state.value,
-    },
-  };
-
-  fetch(`http://localhost:3001/api/users`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(userData),
-  })
+    };
+    
+    formData.append('address', JSON.stringify(addressData));
+    
+    // Enviar dados com a imagem
+    fetch(`http://localhost:3001/api/users`, {
+      method: 'POST',
+      body: formData
+    })
     .then(async response => {
       if (response.ok) {
         const responseData = await response.json();
@@ -311,6 +321,104 @@ function handleSubmit(e) {
     .catch(error => {
       console.error('Erro na requisição:', error);
     });
+  } else {
+    // Sem avatar, usamos o método original com JSON
+    const userData = {
+      name: form.elements.name.value,
+      email: form.elements.email.value,
+      phone: form.elements.phone.value,
+      cpf: form.elements.cpf.value,
+      password,
+      address: {
+        cep: form.elements.cep.value,
+        street: form.elements.street.value,
+        number: form.elements.number.value,
+        complement: form.elements.complement.value,
+        neighborhood: form.elements.neighborhood.value,
+        city: form.elements.city.value,
+        state: form.elements.state.value,
+      },
+    };
+
+    fetch(`http://localhost:3001/api/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    })
+    .then(async response => {
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log('Usuário registrado com sucesso:', responseData);
+
+        setTimeout(() => {
+          window.location.href = '/login.html';
+        }, 2000);
+      } else {
+        const errorData = await response.json();
+        console.error('Erro ao registrar usuário:', errorData);
+      }
+    })
+    .catch(error => {
+      console.error('Erro na requisição:', error);
+    });
+  }
 
   form.reset();
+}
+
+function setupAvatarUpload() {
+  const fileInput = document.getElementById('register-avatar');
+  const selectButton = document.getElementById('select-avatar-btn');
+  const previewDiv = document.getElementById('avatar-preview');
+  
+  if (!fileInput || !selectButton || !previewDiv) return;
+  
+  // Ao clicar no botão, aciona o input de arquivo
+  selectButton.addEventListener('click', () => {
+    fileInput.click();
+  });
+  
+  // Quando um arquivo é selecionado
+  fileInput.addEventListener('change', function() {
+    const file = this.files[0];
+    
+    // Verificações básicas
+    if (!file) return;
+    
+    // Verificar tipo do arquivo
+    if (!file.type.startsWith('image/')) {
+      showError('avatar-error', this, 'Por favor, selecione um arquivo de imagem válido.');
+      this.value = '';
+      return;
+    }
+    
+    // Verificar tamanho do arquivo (5MB máximo)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      showError('avatar-error', this, 'A imagem é muito grande. O tamanho máximo é 5MB.');
+      this.value = '';
+      return;
+    }
+    
+    // Limpar qualquer erro
+    clearError('avatar-error', this);
+    
+    // Exibir a prévia da imagem
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      // Remover o ícone padrão
+      while (previewDiv.firstChild) {
+        previewDiv.removeChild(previewDiv.firstChild);
+      }
+      
+      // Criar e adicionar a prévia da imagem
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      previewDiv.appendChild(img);
+    };
+    
+    reader.readAsDataURL(file);
+  });
 }

@@ -1,183 +1,299 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cakeria | Cadastro</title>
-  
-  <!-- Favicon -->
-  <link rel="icon" href="/assets/favicon.ico">
-  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-  <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png">
-  
-  <!-- Google Fonts - Poppins -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- CSS -->
-  <link rel="stylesheet" href="./css/styles.css">
-  <link rel="stylesheet" href="./css/registro.css">
-  
-</head>
-<body>
-  <div class="split-layout">
-    <!-- Seção do logo -->
-    <div class="logo-section">
-      <div class="content">
-        <a href="/">
-          <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="login-logo">
-        </a>
-        <p>Bem-vindo à Cakeria, seu destino para os mais deliciosos doces artesanais e bolos personalizados!</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cakeria | Cadastro</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/favicon.ico" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
+
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/registro.css" />
+  </head>
+  <body>
+    <div class="split-layout">
+      <!-- Seção do logo -->
+      <div class="logo-section">
+        <div class="content">
+          <a href="/">
+            <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="login-logo" />
+          </a>
+          <p>
+            Bem-vindo à Cakeria, seu destino para os mais deliciosos doces artesanais e bolos
+            personalizados!
+          </p>
+        </div>
       </div>
-    </div>
-    
-    <!-- Seção do formulário -->
-    <div class="form-section">
-      <div class="login-container">
-        <div id="register-card" class="login-card">
-          <div class="login-header">
-            <h2>Criar nova conta</h2>
-            <p>Preencha os campos abaixo para fazer parte da Cakeria</p>
-          </div>
-          <form id="register-form" class="login-form">
-            <!-- Primeira linha: Nome e Email -->
-            <div class="form-row">
-              <div class="form-col">
-                <div class="form-group">
-                  <label for="register-name">Nome completo</label>
-                  <input type="text" id="register-name" name="name" placeholder="Seu nome completo" required>
-                  <span id="name-error" class="error-message"></span>
-                </div>
-              </div>
-              <div class="form-col">
-                <div class="form-group">
-                  <label for="register-email">E-mail</label>
-                  <input type="email" id="register-email" name="email" placeholder="Seu e-mail" required>
-                  <span id="email-error" class="error-message"></span>
-                </div>
-              </div>
+
+      <!-- Seção do formulário -->
+      <div class="form-section">
+        <div class="login-container">
+          <div id="register-card" class="login-card">
+            <div class="login-header">
+              <h2>Criar nova conta</h2>
+              <p>Preencha os campos abaixo para fazer parte da Cakeria</p>
             </div>
-            
-            <!-- Segunda linha: Telefone e CPF -->
-            <div class="form-row">
-              <div class="form-col">
-                <div class="form-group">
-                  <label for="register-phone">Telefone</label>
-                  <input type="tel" id="register-phone" name="phone" placeholder="(00) 00000-0000" required>
-                  <span id="phone-error" class="error-message"></span>
+            <form id="register-form" class="login-form">
+              <!-- Primeira linha: Nome e Email -->
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="register-name">Nome completo</label>
+                    <input
+                      type="text"
+                      id="register-name"
+                      name="name"
+                      placeholder="Seu nome completo"
+                      required
+                    />
+                    <span id="name-error" class="error-message"></span>
+                  </div>
+                </div>
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="register-email">E-mail</label>
+                    <input
+                      type="email"
+                      id="register-email"
+                      name="email"
+                      placeholder="Seu e-mail"
+                      required
+                    />
+                    <span id="email-error" class="error-message"></span>
+                  </div>
                 </div>
               </div>
-              <div class="form-col">
-                <div class="form-group">
-                  <label for="register-cpf">CPF</label>
-                  <input type="text" id="register-cpf" name="cpf" placeholder="000.000.000-00" required>
-                  <span id="cpf-error" class="error-message"></span>
+              <!-- Segunda linha: Telefone e CPF -->
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="register-phone">Telefone</label>
+                    <input
+                      type="tel"
+                      id="register-phone"
+                      name="phone"
+                      placeholder="(00) 00000-0000"
+                      required
+                    />
+                    <span id="phone-error" class="error-message"></span>
+                  </div>
+                </div>
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="register-cpf">CPF</label>
+                    <input
+                      type="text"
+                      id="register-cpf"
+                      name="cpf"
+                      placeholder="000.000.000-00"
+                      required
+                    />
+                    <span id="cpf-error" class="error-message"></span>
+                  </div>
                 </div>
               </div>
+
+              <!-- Avatar do usuário -->
+              <div class="form-row">
+                <div class="form-col full-width">
+                  <div class="form-group">
+                    <label for="register-avatar">Foto de Perfil (opcional)</label>
+                    <div class="avatar-upload-container">
+                      <div class="avatar-preview">
+                        <div id="avatar-preview">
+                          <i class="default-avatar-icon"></i>
+                        </div>
+                      </div>
+                      <div class="avatar-input">
+                        <input type="file" id="register-avatar" name="avatar" accept="image/*" />
+                        <button type="button" id="select-avatar-btn" class="btn btn-outline">
+                          Selecionar Imagem
+                        </button>
+                        <span class="avatar-help-text"
+                          >Tamanho máximo: 5MB. Formatos: JPG, PNG</span
+                        >
+                        <span id="avatar-error" class="error-message"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Endereço em uma única linha: CEP, Rua e Número -->
+              <div class="form-row address-row">
+                <div class="form-col cep-col">
+                  <div class="form-group">
+                    <label for="register-cep">CEP</label>
+                    <input
+                      type="text"
+                      id="register-cep"
+                      name="cep"
+                      placeholder="00000-000"
+                      required
+                    />
+                    <span id="cep-error" class="error-message"></span>
+                  </div>
+                </div>
+                <div class="form-col street-col">
+                  <div class="form-group">
+                    <label for="register-street">Rua</label>
+                    <input
+                      type="text"
+                      id="register-street"
+                      name="street"
+                      placeholder="Nome da rua"
+                      required
+                    />
+                    <span id="street-error" class="error-message"></span>
+                  </div>
+                </div>
+                <div class="form-col number-col">
+                  <div class="form-group">
+                    <label for="register-number">Nº</label>
+                    <input
+                      type="text"
+                      id="register-number"
+                      name="number"
+                      placeholder="123"
+                      required
+                    />
+                    <span id="number-error" class="error-message"></span>
+                  </div>
+                </div>
+                <div class="form-col complement-col">
+                  <div class="form-group">
+                    <label for="register-complement">Complemento</label>
+                    <input
+                      type="text"
+                      id="register-complement"
+                      name="complement"
+                      placeholder="Apto, bloco, etc."
+                    />
+                    <span id="complement-error" class="error-message"></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Adicionando campos de bairro, cidade e estado -->
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="register-neighborhood">Bairro</label>
+                    <input
+                      type="text"
+                      id="register-neighborhood"
+                      name="neighborhood"
+                      placeholder="Bairro"
+                      required
+                    />
+                    <span id="neighborhood-error" class="error-message"></span>
+                  </div>
+                </div>
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="register-city">Cidade</label>
+                    <input
+                      type="text"
+                      id="register-city"
+                      name="city"
+                      placeholder="Cidade"
+                      required
+                    />
+                    <span id="city-error" class="error-message"></span>
+                  </div>
+                </div>
+                <div class="form-col" style="flex: 0.5">
+                  <div class="form-group">
+                    <label for="register-state">UF</label>
+                    <input type="text" id="register-state" name="state" placeholder="UF" required />
+                    <span id="state-error" class="error-message"></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Terceira linha: Senha e Confirmar Senha -->
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="register-password">Senha</label>
+                    <input
+                      type="password"
+                      id="register-password"
+                      name="password"
+                      placeholder="Sua senha"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      aria-label="Mostrar/ocultar senha"
+                    >
+                      <svg class="eye-icon" viewBox="0 0 24 24">
+                        <path
+                          d="M12 4.5c-5 0-9.3 3-11 7.5 1.7 4.5 6 7.5 11 7.5s9.3-3 11-7.5c-1.7-4.5-6-7.5-11-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"
+                        />
+                      </svg>
+                    </button>
+                    <span id="password-error" class="error-message"></span>
+                  </div>
+                </div>
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="register-confirm-password">Confirmar Senha</label>
+                    <input
+                      type="password"
+                      id="register-confirm-password"
+                      name="confirm-password"
+                      placeholder="Confirme sua senha"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      aria-label="Mostrar/ocultar senha"
+                    >
+                      <svg class="eye-icon" viewBox="0 0 24 24">
+                        <path
+                          d="M12 4.5c-5 0-9.3 3-11 7.5 1.7 4.5 6 7.5 11 7.5s9.3-3 11-7.5c-1.7-4.5-6-7.5-11-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"
+                        />
+                      </svg>
+                    </button>
+                    <span id="confirm-password-error" class="error-message"></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Botão de cadastro -->
+              <div class="form-row">
+                <div class="form-col full-width">
+                  <button type="submit" class="btn btn-primary btn-login">Cadastrar</button>
+                </div>
+              </div>
+            </form>
+            <div class="login-footer">
+              <p>
+                Já possui uma conta? <a href="/login.html" id="login-link">Fazer login</a> |
+                <a href="/">Página inicial</a>
+              </p>
             </div>
-            
-            <!-- Endereço em uma única linha: CEP, Rua e Número -->
-            <div class="form-row address-row">
-              <div class="form-col cep-col">
-                <div class="form-group">
-                  <label for="register-cep">CEP</label>
-                  <input type="text" id="register-cep" name="cep" placeholder="00000-000" required>
-                  <span id="cep-error" class="error-message"></span>
-                </div>
-              </div>
-              <div class="form-col street-col">
-                <div class="form-group">
-                  <label for="register-street">Rua</label>
-                  <input type="text" id="register-street" name="street" placeholder="Nome da rua" required>
-                  <span id="street-error" class="error-message"></span>
-                </div>
-              </div>
-              <div class="form-col number-col">
-                <div class="form-group">
-                  <label for="register-number">Nº</label>
-                  <input type="text" id="register-number" name="number" placeholder="123" required>
-                  <span id="number-error" class="error-message"></span>
-                </div>
-              </div>
-              <div class="form-col complement-col">
-                <div class="form-group">
-                  <label for="register-complement">Complemento</label>
-                  <input type="text" id="register-complement" name="complement" placeholder="Apto, bloco, etc.">
-                  <span id="complement-error" class="error-message"></span>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Adicionando campos de bairro, cidade e estado -->
-            <div class="form-row">
-              <div class="form-col">
-                <div class="form-group">
-                  <label for="register-neighborhood">Bairro</label>
-                  <input type="text" id="register-neighborhood" name="neighborhood" placeholder="Bairro" required>
-                  <span id="neighborhood-error" class="error-message"></span>
-                </div>
-              </div>
-              <div class="form-col">
-                <div class="form-group">
-                  <label for="register-city">Cidade</label>
-                  <input type="text" id="register-city" name="city" placeholder="Cidade" required>
-                  <span id="city-error" class="error-message"></span>
-                </div>
-              </div>
-              <div class="form-col" style="flex: 0.5;">
-                <div class="form-group">
-                  <label for="register-state">UF</label>
-                  <input type="text" id="register-state" name="state" placeholder="UF" required>
-                  <span id="state-error" class="error-message"></span>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Terceira linha: Senha e Confirmar Senha -->
-            <div class="form-row">
-              <div class="form-col">
-                <div class="form-group">
-                  <label for="register-password">Senha</label>
-                  <input type="password" id="register-password" name="password" placeholder="Sua senha" required>
-                  <button type="button" class="password-toggle" aria-label="Mostrar/ocultar senha">
-                    <svg class="eye-icon" viewBox="0 0 24 24">
-                      <path d="M12 4.5c-5 0-9.3 3-11 7.5 1.7 4.5 6 7.5 11 7.5s9.3-3 11-7.5c-1.7-4.5-6-7.5-11-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/>
-                    </svg>
-                  </button>
-                  <span id="password-error" class="error-message"></span>
-                </div>
-              </div>
-              <div class="form-col">
-                <div class="form-group">
-                  <label for="register-confirm-password">Confirmar Senha</label>
-                  <input type="password" id="register-confirm-password" name="confirm-password" placeholder="Confirme sua senha" required>
-                  <button type="button" class="password-toggle" aria-label="Mostrar/ocultar senha">
-                    <svg class="eye-icon" viewBox="0 0 24 24">
-                      <path d="M12 4.5c-5 0-9.3 3-11 7.5 1.7 4.5 6 7.5 11 7.5s9.3-3 11-7.5c-1.7-4.5-6-7.5-11-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/>
-                    </svg>
-                  </button>
-                  <span id="confirm-password-error" class="error-message"></span>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Botão de cadastro -->
-            <div class="form-row">
-              <div class="form-col full-width">
-                <button type="submit" class="btn btn-primary btn-login">Cadastrar</button>
-              </div>
-            </div>
-          </form>
-          <div class="login-footer">
-            <p>Já possui uma conta? <a href="/login.html" id="login-link">Fazer login</a> | <a href="/">Página inicial</a></p>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script src="./js/api.js"></script>
-  <script src="./js/registro.js"></script>
-</body>
+    <script src="./js/api.js"></script>
+    <script src="./js/registro.js"></script>
+  </body>
 </html>
