@@ -21,7 +21,7 @@ exports.findOne = async (req, res) => {
   const { id } = req.params;
   try {
     const user = await User.findByPk(id, {
-      attributes: { exclude: ['password'] },
+      attributes: { exclude: ['password', 'image'] },
       include: [{ model: Address, as: 'addresses' }],
     });
 
@@ -37,16 +37,7 @@ exports.findOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      cpf,
-      password,
-      type,
-      phone,
-      address = {},
-      addresses = []
-    } = req.body;
+    const { name, email, cpf, password, type, phone, address = {}, addresses = [] } = req.body;
 
     // Validação básica
     if (!password || typeof password !== 'string') {
@@ -88,27 +79,6 @@ exports.create = async (req, res) => {
           }
         }
       }
-      // Mantém a compatibilidade com o formato antigo (single address)
-      else if (
-        address &&
-        (address.postal_code || address.cep) &&
-        (address.street || address.number)
-      ) {
-        await Address.create(
-          {
-            user_id: user.id,
-            street: address.street || '',
-            number: address.number || '',
-            neighborhood: address.neighborhood || '',
-            complement: address.complement || '',
-            city: address.city || '',
-            state: address.state || address.uf || '',
-            postal_code: address.postal_code || address.cep,
-            country: address.country || 'Brasil',
-          },
-          { transaction: t }
-        );
-      }
 
       return user;
     });
@@ -133,13 +103,7 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
   const { id } = req.params;
   try {
-    const {
-      address = {},
-      addresses = [],
-      currentPassword,
-      password,
-      ...userData
-    } = req.body;
+    const { address = {}, addresses = [], currentPassword, password, ...userData } = req.body;
 
     let image = null;
     if (req.file) {
