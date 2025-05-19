@@ -18,19 +18,16 @@ exports.isAdmin = async (req, res, next) => {
   }
 };
 
-// Middleware para verificar se o usuário é o dono do recurso ou um administrador
 exports.isOwnerOrAdmin = async (req, res, next) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: 'Usuário não autenticado' });
     }
 
-    // Se for admin, permite acesso
     if (req.user.type === 'admin') {
       return next();
     }
 
-    // Para receitas, verifica se o usuário é o autor
     if (req.resourceType === 'recipe') {
       const { Recipe } = require('../models');
       const recipe = await Recipe.findByPk(req.params.id);
@@ -44,7 +41,6 @@ exports.isOwnerOrAdmin = async (req, res, next) => {
       }
     }
     
-    // Para comentários, verifica se o usuário é o autor
     if (req.resourceType === 'comment') {
       const { Comment } = require('../models');
       const comment = await Comment.findByPk(req.params.id);

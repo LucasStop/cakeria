@@ -1,6 +1,6 @@
 const { verifyToken } = require('../utils/auth');
 
-exports.authenticate = (req, res, next) => {
+exports.authenticate = exports.authMiddleware = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
