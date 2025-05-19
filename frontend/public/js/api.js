@@ -257,8 +257,8 @@ if (!API.BASE_URL) {
 
 // Adicionando possíveis variações de endpoints para produtos
 const PRODUCT_ENDPOINTS = [
+  '/products',  // Endpoint em inglês (prioritário)
   '/produtos',  // Endpoint original em português
-  '/products',  // Endpoint em inglês
   '/product',   // Singular em inglês
   '/produto'    // Singular em português
 ];
