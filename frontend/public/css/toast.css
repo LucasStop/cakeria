@@ -188,6 +188,52 @@
   animation: pulse 0.5s ease;
 }
 
+.toast-confirm-message {
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.toast-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.toast-actions button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.toast-actions .cancel-delete {
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  color: #495057;
+}
+
+.toast-actions .cancel-delete:hover {
+  background-color: #e9ecef;
+}
+
+.toast-actions .confirm-delete {
+  background-color: #dc3545;
+  border: 1px solid #dc3545;
+  color: white;
+}
+
+.toast-actions .confirm-delete:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.custom-toast.warning.confirmation {
+  background-color: #fff8e1;
+}
+
 @media (max-width: 480px) {
   .toast-container {
     max-width: calc(100% - 30px);
