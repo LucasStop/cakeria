@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   checkAdminAccess();
   loadProducts();
-  loadCategories(); // Adicionar chamada para carregar categorias
+  loadCategories(); 
   setupEventListeners();
 });
 
@@ -14,7 +14,6 @@ const itemsPerPage = 10;
 let totalProducts = 0;
 let productsData = [];
 
-// Função para carregar categorias
 function loadCategories() {
   API.get('/category')
     .then(categories => {
@@ -32,12 +31,11 @@ function loadCategories() {
     });
 }
 
-// Função para popular o select de filtro de categoria
 function populateCategoryFilter(categories) {
   const filterSelect = document.getElementById('filterCategory');
-  filterSelect.innerHTML = '<option value="">Todas as categorias</option>'; // Manter a opção padrão
+  filterSelect.innerHTML = '<option value="">Todas as categorias</option>'; 
   categories.forEach(category => {
-    if (category.is_active) { // Adicionar apenas categorias ativas
+    if (category.is_active) { 
       const option = document.createElement('option');
       option.value = category.id;
       option.textContent = category.name;
@@ -46,12 +44,11 @@ function populateCategoryFilter(categories) {
   });
 }
 
-// Função para popular o select de categoria no modal de edição
 function populateCategoryModalSelect(categories) {
   const modalSelect = document.getElementById('editProductCategory');
-  modalSelect.innerHTML = '<option value="">Selecione uma categoria</option>'; // Manter a opção padrão
+  modalSelect.innerHTML = '<option value="">Selecione uma categoria</option>';
   categories.forEach(category => {
-    if (category.is_active) { // Adicionar apenas categorias ativas
+    if (category.is_active) { 
       const option = document.createElement('option');
       option.value = category.id;
       option.textContent = category.name;
@@ -135,11 +132,11 @@ function renderProductsTable() {
       <td>R$ ${parseFloat(product.price).toFixed(2).replace('.', ',')}</td>
       <td>${product.stock}</td>
       <td>${formatDate(product.expiry_date)}</td>
-      <td><span class="status-badge ${product.is_active ? 'active' : 'inactive'}">${product.is_active ? 'Ativo' : 'Inativo'}</span></td>
-      <td>
+      <td><span class="status-badge ${product.is_active ? 'active' : 'inactive'}">${product.is_active ? 'Ativo' : 'Inativo'}</span></td>      <td>
         <div class="table-actions">
-          <button class="action-btn edit-btn" onclick="openEditModal(${product.id})" title="Editar">
-            <i class="fas fa-edit"></i>
+          
+          <button class="action-btn edit-btn" onclick="openEditInline(${product.id})" title="Edição rápida">
+           <i class="fas fa-edit"></i>
           </button>
           <button class="action-btn delete-btn" onclick="openDeleteModal(${product.id}, '${product.name}')" title="Excluir">
             <i class="fas fa-trash"></i>
@@ -174,21 +171,20 @@ window.openEditModal = function (productId) {
   if (product.size === 'custom') {
     document.getElementById('editCustomSizeContainer').style.display = 'block';
     document.getElementById('editProductCustomSize').value = product.custom_size || '';
-  } else { // Adicionado para ocultar o campo de tamanho personalizado se não for custom
+  } else { 
     document.getElementById('editCustomSizeContainer').style.display = 'none';
     document.getElementById('editProductCustomSize').value = '';
   }
 
   const previewImgContainer = document.getElementById('editImagePreview');
-  previewImgContainer.innerHTML = ''; // Limpa o preview anterior
+  previewImgContainer.innerHTML = ''; 
   if (product.image) {
     const img = document.createElement('img');
     img.src = `http://localhost:3001/api/product/image/${product.id}`;
     img.alt = product.name;
-    img.className = 'uploaded-image-preview'; // Classe para a imagem de preview
+    img.className = 'uploaded-image-preview'; 
     previewImgContainer.appendChild(img);
   } else {
-    // Adiciona o ícone padrão se não houver imagem
     previewImgContainer.innerHTML = '<span class="default-image-icon"><i class="fas fa-image"></i></span>';
   }
 
@@ -197,11 +193,68 @@ window.openEditModal = function (productId) {
 };
 
 window.openDeleteModal = function (productId, productName) {
-  document.getElementById('deleteProductId').value = productId;
-  document.getElementById('deleteProductName').textContent = productName;
+  console.log('openDeleteModal chamada com ID:', productId, 'Nome:', productName);
+  
+  const productRow = document.querySelector(`#productsTable tr[data-id="${productId}"]`);
+  if (productRow) {
+    productRow.classList.add('highlight-delete', 'pulse-delete');
+  }
+  
+  if (window.Toast) {
+    const confirmToast = window.Toast.create(
+      `<div class="toast-confirm-message">
+        Tem certeza que deseja excluir o produto <strong>${productName}</strong>?<br>
+        Esta ação não pode ser desfeita.
+       </div>
+       <div class="toast-actions">
+         <button class="cancel-delete">Cancelar</button>
+         <button class="confirm-delete">Sim, excluir</button>
+       </div>`,
+      {
+        type: 'warning',
+        title: 'Confirmar exclusão',
+        duration: 10000, 
+        position: 'bottom-right', 
+        closeButton: true,
+        pauseOnHover: true,
+        zIndex: 99999
+      }
+    );
+      if (confirmToast) {
+      const toastElement = confirmToast.toastElement || confirmToast;
+      
+      const cancelBtn = toastElement.querySelector('.cancel-delete');
+      const confirmBtn = toastElement.querySelector('.confirm-delete');
+      
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+          if (productRow) {
+            productRow.classList.remove('highlight-delete', 'pulse-delete');
+          }
+          window.Toast.remove(confirmToast);
+        });
+      }
+      
+      if (confirmBtn) {
+        confirmBtn.addEventListener('click', function() {
+          window.Toast.remove(confirmToast);
+          deleteProduct(productId);
+        });
+      }
+      
+      confirmToast.onClose = function() {
+        if (productRow) {
+          productRow.classList.remove('highlight-delete', 'pulse-delete');
+        }
+      };
+    }
+  } else {
+    document.getElementById('deleteProductId').value = productId;
+    document.getElementById('deleteProductName').textContent = productName;
 
-  const modal = document.getElementById('deleteConfirmModal');
-  modal.classList.add('show');
+    const modal = document.getElementById('deleteConfirmModal');
+    modal.classList.add('show');
+  }
 };
 
 function checkAdminAccess() {
@@ -307,11 +360,11 @@ function setupEventListeners() {
       const reader = new FileReader();
       reader.onload = function (e) {
         const imagePreview = document.getElementById('editImagePreview');
-        imagePreview.innerHTML = ''; // Limpa o conteúdo anterior (ícone ou imagem antiga)
+        imagePreview.innerHTML = ''; 
         const img = document.createElement('img');
         img.src = e.target.result;
         img.alt = 'Imagem do produto';
-        img.className = 'uploaded-image-preview'; // Classe para a imagem de preview
+        img.className = 'uploaded-image-preview'; 
         imagePreview.appendChild(img);
       };
       reader.readAsDataURL(file);
@@ -445,33 +498,58 @@ window.deleteProduct = function (productId) {
   const actionsCell = row.querySelector('td:last-child');
   actionsCell.innerHTML =
     '<div class="spinner"><i class="fas fa-spinner fa-spin"></i> Excluindo...</div>';
-
-  API.delete(`/product/${productId}`)
-    .then(() => {
-      console.log('Produto excluído com sucesso');
-
-      row.style.opacity = '0';
-      setTimeout(() => {
-        loadProducts();
-
-        if (window.Toast) {
-          window.Toast.success('Produto excluído com sucesso!');
-        }
-
-        document.getElementById('deleteConfirmModal').classList.remove('show');
-      }, 500);
-    })
-    .catch(error => {
-      console.error('Erro na exclusão:', error);
-
-      row.style.opacity = '1';
-
-      renderProductsTable();
-
+    
+  // Função para lidar com sucesso na exclusão
+  function handleDeleteSuccess() {
+    console.log('Produto excluído com sucesso');
+    
+    row.style.opacity = '0';
+    setTimeout(() => {
+      loadProducts();
+      
       if (window.Toast) {
-        window.Toast.error('Erro ao excluir produto: ' + (error.message || 'Tente novamente'));
+        window.Toast.success('Produto excluído com sucesso!');
       }
-    });
+      
+      document.getElementById('deleteConfirmModal').classList.remove('show');
+    }, 500);
+  }
+  
+  // Função para lidar com erro na exclusão
+  function handleDeleteError(error) {
+    console.error('Erro na exclusão:', error);
+    
+    row.style.opacity = '1';
+    renderProductsTable();
+    
+    if (window.Toast) {
+      window.Toast.error('Erro ao excluir produto: ' + (error.message || 'Tente novamente'));
+    }
+  }
+
+  // Executar a requisição de exclusão
+  const token = localStorage.getItem('token');
+  
+  fetch(`http://localhost:3001/api/product/${productId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+  .then(response => {
+    if (!response.ok) {
+      return response.json().then(data => {
+        throw new Error(data.message || 'Erro ao excluir produto');
+      });
+    }
+    return response.json();
+  })
+  .then(() => {
+    handleDeleteSuccess();
+  })  .catch(error => {
+    handleDeleteError(error);
+  });
 };
 
 function showLoadingState(isLoading) {
@@ -514,7 +592,6 @@ function hideLoading() {
   }
 }
 
-// Funções utilitárias para formatação de data
 function formatDate(dateString) {
   if (!dateString) return 'N/A'; // Adicionado retorno para data inválida
   const date = new Date(dateString);
@@ -522,7 +599,265 @@ function formatDate(dateString) {
 }
 
 function formatDateForInput(dateString) {
-  if (!dateString) return ''; // Adicionado retorno para data inválida
+  if (!dateString) return ''; 
   const date = new Date(dateString);
   return date.toISOString().split('T')[0];
 }
+
+window.openEditInline = function(productId) {
+  console.log('openEditInline chamada com ID:', productId);
+  const product = productsData.find(p => p.id == productId);
+  if (!product) {
+    console.error('Produto não encontrado:', productId);
+    return;
+  }
+  
+  const row = document.querySelector(`#productsTable tr[data-id="${productId}"]`);
+  if (!row) {
+    console.error('Linha da tabela não encontrada para o produto:', productId);
+    return;
+  }
+  
+  if (row.classList.contains('editing')) {
+    console.log('Esta linha já está em edição');
+    return;
+  }
+  
+  row.classList.add('editing');
+  
+  const cells = row.querySelectorAll('td:not(:first-child):not(:nth-child(2)):not(:last-child)');
+  
+  cells[0].innerHTML = `<input type="text" class="edit-input" value="${product.name}" data-field="name" required>`;
+  
+  const categorySelectHtml = `
+    <select class="edit-input" data-field="category_id">
+      ${document.getElementById('editProductCategory').innerHTML}
+    </select>
+  `;
+  cells[1].innerHTML = categorySelectHtml;
+  
+  cells[2].innerHTML = `<input type="text" class="edit-input price-mask" value="${parseFloat(product.price).toFixed(2).replace('.', ',')}" data-field="price" required>`;
+  
+  cells[3].innerHTML = `<input type="number" class="edit-input" value="${product.stock}" data-field="stock" min="0" required>`;
+  
+  cells[4].innerHTML = `<input type="date" class="edit-input" value="${formatDateForInput(product.expiry_date)}" data-field="expiry_date">`;
+  
+  cells[5].innerHTML = `
+    <select class="edit-input" data-field="is_active">
+      <option value="true" ${product.is_active ? 'selected' : ''}>Ativo</option>
+      <option value="false" ${!product.is_active ? 'selected' : ''}>Inativo</option>
+    </select>
+  `;
+    const actionsCell = row.querySelector('td:last-child');
+  actionsCell.innerHTML = `
+    <div class="table-actions" style="display: flex; gap: 5px;">
+      <button class="action-btn save-btn" data-id="${product.id}" title="Salvar" onclick="saveProductChanges(${product.id})">
+        <i class="fas fa-save"></i>
+      </button>
+      <button class="action-btn cancel-btn" data-id="${product.id}" title="Cancelar" onclick="cancelProductEdit(${product.id})">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  `;
+  
+  const categorySelect = row.querySelector('select[data-field="category_id"]');
+  if (categorySelect) {
+    categorySelect.value = product.category_id;
+  }
+  
+  const priceInput = row.querySelector('.price-mask');
+  if (priceInput) {
+    priceInput.addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value === '') {
+        e.target.value = '';
+        return;
+      }
+      value = (parseInt(value) / 100).toFixed(2).replace('.', ',');
+      e.target.value = value;
+    });
+  }
+}
+
+window.saveProductChanges = function(productId) {
+  console.log('Salvando alterações para o produto:', productId);
+  const row = document.querySelector(`#productsTable tr[data-id="${productId}"]`);
+  if (!row) {
+    console.error('Linha da tabela não encontrada para o produto:', productId);
+    return;
+  }
+  
+  const nameInput = row.querySelector('input[data-field="name"]');
+  const priceInput = row.querySelector('input[data-field="price"]');
+  
+  if (nameInput && !nameInput.value.trim()) {
+    if (window.Toast) {
+      window.Toast.error('O nome do produto não pode ficar em branco.', {
+        position: 'bottom-right',
+      });
+    }
+    nameInput.focus();
+    return;
+  }
+  
+  if (priceInput && !priceInput.value.trim()) {
+    if (window.Toast) {
+      window.Toast.error('O preço do produto não pode ficar em branco.', {
+        position: 'bottom-right',
+      });
+    }
+    priceInput.focus();
+    return;
+  }
+  
+  const formData = new FormData();
+  const inputs = row.querySelectorAll('.edit-input');
+  
+  inputs.forEach(input => {
+    const field = input.getAttribute('data-field');
+    let value = input.value.trim();
+    
+    // Converter preço de vírgula para ponto
+    if (field === 'price') {
+      value = value.replace(',', '.');
+    }
+    
+    formData.append(field, value);
+  });
+  
+  // Desabilitar os inputs durante o salvamento
+  const allInputs = row.querySelectorAll('.edit-input');
+  allInputs.forEach(input => {
+    input.disabled = true;
+    input.classList.add('saving');
+  });
+  
+  // Adicionar classe de carregamento e mostrar spinner  row.classList.add('loading');
+  const actionsCell = row.querySelector('td:last-child');
+  const originalActionsHtml = actionsCell.innerHTML;
+  actionsCell.innerHTML = '<div class="table-actions"><div class="spinner"><i class="fas fa-spinner fa-spin"></i> Salvando...</div></div>';
+  
+  // Mostrar toast de carregamento
+  let loadingToast;
+  if (window.Toast) {
+    loadingToast = window.Toast.info('Salvando alterações...', {
+      position: 'bottom-right',
+      duration: 0 
+    });
+  }
+  
+  // Enviar requisição para a API
+  API.put(`/product/${productId}`, formData)
+    .then(data => {
+      console.log('Produto atualizado com sucesso:', data);
+      
+      // Remover toast de carregamento
+      if (loadingToast && window.Toast) {
+        window.Toast.remove(loadingToast);
+      }
+      
+      // Atualizar os dados do produto na memória
+      const productIndex = productsData.findIndex(p => p.id == productId);
+      if (productIndex !== -1) {
+        inputs.forEach(input => {
+          const field = input.getAttribute('data-field');
+          let value = input.value;
+          
+          // Converter valores conforme necessário
+          if (field === 'price') {
+            value = parseFloat(value.replace(',', '.'));
+          } else if (field === 'stock') {
+            value = parseInt(value);
+          } else if (field === 'is_active') {
+            value = value === 'true';
+          }
+          
+          productsData[productIndex][field] = value;
+        });
+      }
+      
+      // Remover classes de edição e carregamento
+      row.classList.remove('editing', 'loading');
+      
+      // Renderizar a tabela novamente
+      renderProductsTable();
+      
+      // Destacar a linha atualizada com sucesso
+      setTimeout(() => {
+        const updatedRow = document.querySelector(`#productsTable tr[data-id="${productId}"]`);
+        if (updatedRow) {
+          updatedRow.classList.add('success-highlight');
+          setTimeout(() => {
+            updatedRow.classList.remove('success-highlight');
+          }, 2000);
+        }
+      }, 50);
+      
+      // Mostrar toast de sucesso
+      if (window.Toast) {
+        window.Toast.success(`Produto atualizado com sucesso!`, {
+          position: 'bottom-right',
+          closeButton: true,
+          pauseOnHover: true,
+          title: null,
+          zIndex: 99999,
+        });
+      }
+    })
+    .catch(error => {
+      console.error('Erro na atualização:', error);
+      
+      // Remover toast de carregamento
+      if (loadingToast && window.Toast) {
+        window.Toast.remove(loadingToast);
+      }
+      
+      // Restaurar o estado da linha
+      row.classList.remove('loading');
+      actionsCell.innerHTML = originalActionsHtml;
+      
+      // Reativar os inputs
+      allInputs.forEach(input => {
+        input.disabled = false;
+        input.classList.remove('saving');
+      });
+      
+      // Destacar a linha com erro
+      row.classList.add('error-highlight');
+      setTimeout(() => {
+        row.classList.remove('error-highlight');
+      }, 2000);
+      
+      // Mostrar toast de erro
+      if (window.Toast) {
+        window.Toast.error('Erro ao atualizar produto: ' + (error.message || 'Tente novamente'), {
+          position: 'bottom-right',
+          closeButton: true,
+          pauseOnHover: true,
+          title: 'Falha na atualização',
+          zIndex: 99999,
+        });
+      }
+    });
+};
+
+window.cancelProductEdit = function(productId) {
+  console.log('Cancelando edição para o produto:', productId);
+  const row = document.querySelector(`#productsTable tr[data-id="${productId}"]`);
+  if (!row) {
+    console.error('Linha da tabela não encontrada para o produto:', productId);
+    return;
+  }
+  
+  // Remover a classe de edição e adicionar a classe de cancelamento temporariamente
+  row.classList.remove('editing');
+  row.classList.add('edit-cancelled');
+  
+  // Remover a classe de cancelamento após a animação
+  setTimeout(() => {
+    row.classList.remove('edit-cancelled');
+  }, 500);
+  
+  // Renderizar a tabela novamente para restaurar o estado original
+  renderProductsTable();
+};
