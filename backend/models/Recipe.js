@@ -48,14 +48,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: 'Users',
+          model: 'user',
           key: 'id',
         },
       },
       categoryId: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'Categories',
+          model: 'category',
           key: 'id',
         },
       },
@@ -74,7 +74,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'recipes',
+      tableName: 'recipe',
       timestamps: true,
       underscored: true,
     }
@@ -93,7 +93,7 @@ module.exports = (sequelize, DataTypes) => {
 
     Recipe.hasMany(models.Comment, {
       foreignKey: 'recipe_id',
-      as: 'comments_recipes',
+      as: 'comment_recipe',
     });
   };
 

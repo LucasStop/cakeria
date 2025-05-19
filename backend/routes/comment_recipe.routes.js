@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const commentController = require('../controllers/comments_recipes.controller');
+const commentController = require('../controllers/comment_recipe.controller');
 const { authenticate } = require('../middlewares/auth.middleware');
 
 // Rota para obter comentários de uma receita (pública)

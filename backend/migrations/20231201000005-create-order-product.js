@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('order_products', {
+    await queryInterface.createTable('order_product', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -14,7 +14,7 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
         references: {
-          model: 'orders',
+          model: 'order',
           key: 'id',
         },
         onUpdate: 'CASCADE',
@@ -25,7 +25,7 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
         references: {
-          model: 'products',
+          model: 'product',
           key: 'id',
         },
         onUpdate: 'CASCADE',
@@ -50,20 +50,20 @@ module.exports = {
       },
     });
 
-    await queryInterface.addIndex('orders', ['user_id'], {
+    await queryInterface.addIndex('order', ['user_id'], {
       name: 'idx_order_user',
     });
-    await queryInterface.addIndex('order_products', ['product_id'], {
-      name: 'idx_order_products_product',
+    await queryInterface.addIndex('order_product', ['product_id'], {
+      name: 'idx_order_product_product',
     });
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
 
     try {
-      await queryInterface.removeIndex('order_products', 'idx_order_products_product');
-      await queryInterface.removeIndex('orders', 'idx_order_user');
-      await queryInterface.dropTable('order_products');
+      await queryInterface.removeIndex('order_product', 'idx_order_product_product');
+      await queryInterface.removeIndex('order', 'idx_order_user');
+      await queryInterface.dropTable('order_product');
     } finally {
       await queryInterface.sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
     }

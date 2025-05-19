@@ -2,40 +2,35 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('users', {
+    await queryInterface.createTable('order', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      name: {
-        type: Sequelize.STRING(100),
+      user_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
+        references: {
+          model: 'user',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT',
       },
-      email: {
-        type: Sequelize.STRING(150),
-        allowNull: false,
-        unique: true,
-      },
-      password: {
-        type: Sequelize.STRING(256),
-        allowNull: false,
-      },
-      type: {
-        type: Sequelize.ENUM('client', 'admin'),
-        allowNull: false,
-        defaultValue: 'client',
-      },
-      phone: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
-      },
-      last_login: {
+      order_date: {
         type: Sequelize.DATE,
-        allowNull: true,
-        defaultValue: null,
-        comment: 'Data e hora do último login do usuário',
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+      },
+      status: {
+        type: Sequelize.ENUM('pending', 'paid', 'complete', 'cancelled'),
+        allowNull: false,
+      },
+      total: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -53,6 +48,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('users');
+    await queryInterface.dropTable('order');
   },
 };

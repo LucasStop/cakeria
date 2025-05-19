@@ -101,7 +101,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'products',
+      tableName: 'product',
       timestamps: true,
       paranoid: true,
       underscored: true,
@@ -118,7 +118,7 @@ module.exports = (sequelize, DataTypes) => {
       through: models.order_product,
       foreignKey: 'product_id',
       otherKey: 'order_id',
-      as: 'orders',
+      as: 'order',
     });
   };
   Product.beforeSave(async (product, options) => {

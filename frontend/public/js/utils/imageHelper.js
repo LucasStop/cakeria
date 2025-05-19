@@ -12,7 +12,7 @@ const ImageHelper = {
     if (!productId) return '/assets/default-product.png'; // Imagem padrão se não houver ID
     
     // Usar a rota específica para buscar imagens do backend
-    return `${API.BASE_URL || 'http://localhost:3001/api'}/products/image/${productId}`;
+    return `${API.BASE_URL || 'http://localhost:3001/api'}/product/image/${productId}`;
   },
   
   /**

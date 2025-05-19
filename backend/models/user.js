@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'users',
+      tableName: 'user',
       timestamps: true,
       paranoid: true,
       underscored: true,
@@ -66,12 +66,12 @@ module.exports = (sequelize, DataTypes) => {
   User.associate = function (models) {
     User.hasMany(models.Address, {
       foreignKey: 'user_id',
-      as: 'addresses',
+      as: 'address',
     });
 
     User.hasMany(models.Order, {
       foreignKey: 'user_id',
-      as: 'orders',
+      as: 'order',
     });
   };
 

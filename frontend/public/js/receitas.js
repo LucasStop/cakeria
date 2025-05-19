@@ -153,7 +153,7 @@ async function fetchRecipes() {
   showLoading();
 
   try {
-    let endpoint = '/recipes';
+    let endpoint = '/recipe';
 
     const queryParams = [];
 
@@ -531,7 +531,7 @@ function showDeleteConfirmation(recipe) {
       confirmButton.disabled = true;
 
       // Fazer a requisição para excluir a receita
-      await fetch(`${API.BASE_URL}/recipes/${recipe.id}`, {
+      await fetch(`${API.BASE_URL}/recipe/${recipe.id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,

@@ -9,7 +9,7 @@ let filtroAtual = {
   categoria: '',
   precoMin: '',
   precoMax: '',
-  validade: ''
+  validade: '',
 };
 
 const contentEl = document.getElementById('content');
@@ -86,9 +86,9 @@ async function carregarDetalhesProduto(id) {
 }
 
 function renderizarDetalhesProduto(produto) {
-  const imageUrl = window.ImageHelper ? 
-    window.ImageHelper.getProductImageUrl(produto.id) : 
-    `${API.BASE_URL}/products/image/${produto.id}`;
+  const imageUrl = window.ImageHelper
+    ? window.ImageHelper.getProductImageUrl(produto.id)
+    : `${API.BASE_URL}/product/image/${produto.id}`;
 
   contentEl.innerHTML = `
     <div class="produto-detalhes">
@@ -112,8 +112,8 @@ function renderizarDetalhesProduto(produto) {
     </div>
   `;
 
-  currentPage = "produto";
-  window.history.pushState({}, "", `/produtos/${produto.id}`);
+  currentPage = 'produto';
+  window.history.pushState({}, '', `/produtos/${produto.id}`);
 }
 
 function renderizarCategorias(categoriasList) {
@@ -144,71 +144,71 @@ function renderizarCategorias(categoriasList) {
 // Inicializar filtros
 function initializeFilters() {
   console.log('Inicializando sistema de filtros...');
-  
+
   // Verificar se estamos na página certa e se os elementos existem
   const filterSection = document.querySelector('.filter-section');
   if (!filterSection) {
     console.warn('Seção de filtros não encontrada - pulando inicialização');
     return;
   }
-  
+
   // Carregar categorias no filtro
   setTimeout(() => {
     carregarCategoriasFiltro();
   }, 500); // Pequeno atraso para garantir que a API esteja pronta
-  
+
   // Configurar event listeners para os filtros
   const nameFilter = document.getElementById('filter-name');
   if (nameFilter) {
-    nameFilter.addEventListener('input', function() {
+    nameFilter.addEventListener('input', function () {
       filtroAtual.nome = this.value.trim();
     });
-    
-    nameFilter.addEventListener('keypress', function(e) {
+
+    nameFilter.addEventListener('keypress', function (e) {
       if (e.key === 'Enter') {
         aplicarFiltros();
       }
     });
   }
-  
+
   const categoryFilter = document.getElementById('filter-category');
   if (categoryFilter) {
-    categoryFilter.addEventListener('change', function() {
+    categoryFilter.addEventListener('change', function () {
       filtroAtual.categoria = this.value;
     });
   }
-  
+
   const minPriceFilter = document.getElementById('filter-min-price');
   if (minPriceFilter) {
-    minPriceFilter.addEventListener('input', function() {
+    minPriceFilter.addEventListener('input', function () {
       filtroAtual.precoMin = this.value ? parseFloat(this.value) : '';
     });
   }
-  
+
   const maxPriceFilter = document.getElementById('filter-max-price');
   if (maxPriceFilter) {
-    maxPriceFilter.addEventListener('input', function() {
+    maxPriceFilter.addEventListener('input', function () {
       filtroAtual.precoMax = this.value ? parseFloat(this.value) : '';
     });
   }
-  
+
   const expiryFilter = document.getElementById('filter-expiry');
   if (expiryFilter) {
-    expiryFilter.addEventListener('change', function() {
+    expiryFilter.addEventListener('change', function () {
       filtroAtual.validade = this.value;
     });
   }
-  
+
   const applyButton = document.getElementById('apply-filters');
   if (applyButton) {
     applyButton.addEventListener('click', aplicarFiltros);
   }
-  
+
   const clearButton = document.getElementById('clear-filters');
   if (clearButton) {
     clearButton.addEventListener('click', limparFiltros);
   }
-  
+
   const searchButton = document.getElementById('search-btn');
   if (searchButton) {
     searchButton.addEventListener('click', aplicarFiltros);
@@ -217,75 +217,65 @@ function initializeFilters() {
 
 // Carregar categorias para o filtro - versão aprimorada
 async function carregarCategoriasFiltro() {
-  console.log("Iniciando carregamento de categorias para o filtro...");
+  console.log('Iniciando carregamento de categorias para o filtro...');
   const selectCategoria = document.getElementById('filter-category');
   if (!selectCategoria) {
     console.warn('Elemento select de categorias não encontrado');
     return;
   }
-  
+
   // Limpar opções existentes, mantendo apenas a primeira (Todas as categorias)
   while (selectCategoria.options.length > 1) {
     selectCategoria.remove(1);
   }
-  
+
   try {
     let categoriasList = [];
-    
+
     // Abordagem 1: Usar categorias já carregadas na variável global
     if (window.categorias && Array.isArray(window.categorias) && window.categorias.length > 0) {
-      console.log("Usando categorias da variável global:", window.categorias.length);
+      console.log('Usando categorias da variável global:', window.categorias.length);
       categoriasList = window.categorias;
-    } 
+    }
     // Abordagem 2: Carregar via API.categorias.listar
-    else if (window.API && window.API.categorias && typeof window.API.categorias.listar === 'function') {
-      console.log("Tentando carregar categorias via API.categorias.listar()");
+    else if (
+      window.API &&
+      window.API.categorias &&
+      typeof window.API.categorias.listar === 'function'
+    ) {
+      console.log('Tentando carregar categorias via API.categorias.listar()');
       try {
         categoriasList = await window.API.categorias.listar();
-        console.log("Categorias carregadas via API:", categoriasList.length);
+        console.log('Categorias carregadas via API:', categoriasList.length);
       } catch (apiError) {
-        console.error("Erro ao carregar via API.categorias.listar():", apiError);
+        console.error('Erro ao carregar via API.categorias.listar():', apiError);
         throw apiError; // Passar para o próximo método
       }
-    } 
+    }
     // Abordagem 3: Carregar via fetch direto
     else {
-      console.log("Tentando fetch direto para categorias");
-      const baseUrl = window.API?.BASE_URL || API_URL || 'http://localhost:3001/api';
-      
-      // Tentar diferentes endpoints
-      const possibleEndpoints = [
-        '/categories',
-        '/categorias',
-        '/categoria'
-      ];
-      
-      let success = false;
-      
-      for (const endpoint of possibleEndpoints) {
-        if (success) break;
-        
-        try {
-          const url = `${baseUrl}${endpoint}`;
-          console.log(`Tentando carregar de: ${url}`);
-          
-          const response = await fetch(url);
-          
-          if (response.ok) {
-            const data = await response.json();
-            categoriasList = Array.isArray(data) ? data : 
-                            (data.categorias || data.categories || data.data || data.items || []);
-            
-            console.log(`Categorias carregadas via fetch de ${endpoint}:`, categoriasList.length);
-            success = true;
-          }
-        } catch (endpointError) {
-          console.warn(`Falha ao carregar de ${endpoint}:`, endpointError);
+      console.log('Tentando fetch direto para categorias');
+
+      try {
+        console.log(`Tentando carregar de: ${url}`);
+
+        const response = await fetch('http://localhost:3001/api/category');
+
+        if (response.ok) {
+          const data = await response.json();
+          categoriasList = Array.isArray(data)
+            ? data
+            : data.categorias || data.categories || data.data || data.items || [];
+
+          console.log(`Categorias carregadas via fetch de ${endpoint}:`, categoriasList.length);
+          success = true;
         }
+      } catch (endpointError) {
+        console.warn(`Falha ao carregar de ${endpoint}:`, endpointError);
       }
-      
+
       if (!success) {
-        throw new Error("Não foi possível carregar categorias de nenhum endpoint");
+        throw new Error('Não foi possível carregar categorias de nenhum endpoint');
       }
     }
 
@@ -300,24 +290,25 @@ async function carregarCategoriasFiltro() {
           selectCategoria.appendChild(option);
         }
       });
-      
+
       console.log(`${categoriasList.length} categorias adicionadas ao filtro`);
-      
+
       // Restaurar o valor selecionado se existir
       if (filtroAtual.categoria) {
         selectCategoria.value = filtroAtual.categoria;
       }
-      
+
       return true;
     } else {
-      console.warn("Nenhuma categoria encontrada para preencher o filtro");
-      selectCategoria.innerHTML += '<option value="" disabled>Nenhuma categoria disponível</option>';
+      console.warn('Nenhuma categoria encontrada para preencher o filtro');
+      selectCategoria.innerHTML +=
+        '<option value="" disabled>Nenhuma categoria disponível</option>';
       return false;
     }
   } catch (error) {
     console.error('Erro ao carregar categorias para filtro:', error);
     selectCategoria.innerHTML += '<option value="" disabled>Erro ao carregar categorias</option>';
-    
+
     // Adicionar botão para tentar novamente
     const filterItem = selectCategoria.closest('.filter-item');
     if (filterItem && !filterItem.querySelector('.retry-button')) {
@@ -325,7 +316,7 @@ async function carregarCategoriasFiltro() {
       retryButton.textContent = 'Tentar novamente';
       retryButton.className = 'btn btn-sm retry-button';
       retryButton.style.marginTop = '8px';
-      retryButton.addEventListener('click', function() {
+      retryButton.addEventListener('click', function () {
         this.disabled = true;
         this.textContent = 'Carregando...';
         carregarCategoriasFiltro().finally(() => {
@@ -335,7 +326,7 @@ async function carregarCategoriasFiltro() {
       });
       filterItem.appendChild(retryButton);
     }
-    
+
     return false;
   }
 }
@@ -343,18 +334,18 @@ async function carregarCategoriasFiltro() {
 // Aplicar filtros
 function aplicarFiltros() {
   console.log('Aplicando filtros:', filtroAtual);
-  
+
   // Atualizar UI mostrando filtros ativos
   atualizarFiltrosAtivos();
-  
+
   // Recarregar produtos com filtros
   renderizarListaProdutos(filtroAtual);
-  
+
   // Notificação de filtros aplicados
   if (window.Toast) {
     window.Toast.info('Filtros aplicados com sucesso', {
       position: 'bottom-right',
-      duration: 3000
+      duration: 3000,
     });
   }
 }
@@ -363,40 +354,40 @@ function aplicarFiltros() {
 function limparFiltros() {
   const nameFilter = document.getElementById('filter-name');
   if (nameFilter) nameFilter.value = '';
-  
+
   const categoryFilter = document.getElementById('filter-category');
   if (categoryFilter) categoryFilter.value = '';
-  
+
   const minPriceFilter = document.getElementById('filter-min-price');
   if (minPriceFilter) minPriceFilter.value = '';
-  
+
   const maxPriceFilter = document.getElementById('filter-max-price');
   if (maxPriceFilter) maxPriceFilter.value = '';
-  
+
   const expiryFilter = document.getElementById('filter-expiry');
   if (expiryFilter) expiryFilter.value = '';
-  
+
   // Resetar objeto de filtro
   filtroAtual = {
     nome: '',
     categoria: '',
     precoMin: '',
     precoMax: '',
-    validade: ''
+    validade: '',
   };
-  
+
   // Limpar UI de filtros ativos
   const activeFilters = document.getElementById('active-filters');
   if (activeFilters) activeFilters.innerHTML = '';
-  
+
   // Recarregar produtos sem filtros
   renderizarListaProdutos();
-  
+
   // Notificação de filtros limpos
   if (window.Toast) {
     window.Toast.info('Filtros removidos', {
       position: 'bottom-right',
-      duration: 2000
+      duration: 2000,
     });
   }
 }
@@ -405,10 +396,10 @@ function limparFiltros() {
 function atualizarFiltrosAtivos() {
   const filtrosContainer = document.getElementById('active-filters');
   if (!filtrosContainer) return;
-  
+
   filtrosContainer.innerHTML = '';
   let temFiltroAtivo = false;
-  
+
   // Verificar e mostrar cada filtro ativo
   if (filtroAtual.nome) {
     criarMarcadorFiltro(filtrosContainer, 'Nome', filtroAtual.nome, () => {
@@ -418,11 +409,11 @@ function atualizarFiltrosAtivos() {
     });
     temFiltroAtivo = true;
   }
-  
+
   if (filtroAtual.categoria) {
     const selectCategoria = document.getElementById('filter-category');
     const categoriaTexto = selectCategoria.options[selectCategoria.selectedIndex].text;
-    
+
     criarMarcadorFiltro(filtrosContainer, 'Categoria', categoriaTexto, () => {
       document.getElementById('filter-category').value = '';
       filtroAtual.categoria = '';
@@ -430,7 +421,7 @@ function atualizarFiltrosAtivos() {
     });
     temFiltroAtivo = true;
   }
-  
+
   if (filtroAtual.precoMin || filtroAtual.precoMax) {
     let textoPreco = '';
     if (filtroAtual.precoMin && filtroAtual.precoMax) {
@@ -440,7 +431,7 @@ function atualizarFiltrosAtivos() {
     } else {
       textoPreco = `Até R$ ${filtroAtual.precoMax}`;
     }
-    
+
     criarMarcadorFiltro(filtrosContainer, 'Preço', textoPreco, () => {
       document.getElementById('filter-min-price').value = '';
       document.getElementById('filter-max-price').value = '';
@@ -450,10 +441,10 @@ function atualizarFiltrosAtivos() {
     });
     temFiltroAtivo = true;
   }
-  
+
   if (filtroAtual.validade) {
     let textoValidade = '';
-    switch(filtroAtual.validade) {
+    switch (filtroAtual.validade) {
       case 'valid':
         textoValidade = 'Produtos válidos';
         break;
@@ -464,7 +455,7 @@ function atualizarFiltrosAtivos() {
         textoValidade = 'Produtos vencidos';
         break;
     }
-    
+
     criarMarcadorFiltro(filtrosContainer, 'Validade', textoValidade, () => {
       document.getElementById('filter-expiry').value = '';
       filtroAtual.validade = '';
@@ -472,7 +463,7 @@ function atualizarFiltrosAtivos() {
     });
     temFiltroAtivo = true;
   }
-  
+
   // Se tem algum filtro, adicionar opção para limpar todos
   if (temFiltroAtivo) {
     const limparTodos = document.createElement('button');
@@ -488,27 +479,35 @@ function atualizarFiltrosAtivos() {
 function criarMarcadorFiltro(container, tipo, valor, onRemove) {
   const filtroEl = document.createElement('div');
   filtroEl.className = 'active-filter';
-  
+
   // Selecionar ícone apropriado baseado no tipo de filtro
   let iconClass = 'fa-tag';
-  switch(tipo.toLowerCase()) {
-    case 'nome': iconClass = 'fa-font'; break;
-    case 'categoria': iconClass = 'fa-list'; break; 
-    case 'preço': iconClass = 'fa-dollar-sign'; break;
-    case 'validade': iconClass = 'fa-calendar'; break;
+  switch (tipo.toLowerCase()) {
+    case 'nome':
+      iconClass = 'fa-font';
+      break;
+    case 'categoria':
+      iconClass = 'fa-list';
+      break;
+    case 'preço':
+      iconClass = 'fa-dollar-sign';
+      break;
+    case 'validade':
+      iconClass = 'fa-calendar';
+      break;
   }
-  
+
   filtroEl.innerHTML = `
     <i class="fas ${iconClass}"></i>
     <span><strong>${tipo}:</strong> ${valor}</span>
     <button type="button" title="Remover filtro"><i class="fas fa-times"></i></button>
   `;
-  
+
   // Adicionar evento para remover o filtro
   filtroEl.querySelector('button').addEventListener('click', onRemove);
-  
+
   container.appendChild(filtroEl);
-  
+
   // Efeito de entrada
   setTimeout(() => {
     filtroEl.style.transform = 'scale(1.05)';
@@ -534,7 +533,7 @@ async function renderizarListaProdutos(filtros = null) {
     `;
 
     console.log('Iniciando carregamento de produtos...');
-    
+
     if (!API || !API.produtos || typeof API.produtos.listar !== 'function') {
       console.error('API não está configurada corretamente:', API);
       throw new Error('Configuração da API não está completa');
@@ -544,21 +543,21 @@ async function renderizarListaProdutos(filtros = null) {
       console.log('Chamando API.produtos.listar()...');
       produtos = await API.produtos.listar();
       console.log(`Carregados ${produtos ? produtos.length : 0} produtos do banco de dados`);
-      
+
       if (!produtos || !Array.isArray(produtos)) {
         console.error('Resposta inválida da API:', produtos);
         throw new Error('Formato inválido de resposta');
       }
     } catch (apiError) {
       console.error('Erro específico da API:', apiError);
-      
+
       console.log('Tentando método alternativo com fetch direto...');
       const response = await fetch(`${API.BASE_URL || 'http://localhost:3001/api'}/produtos`);
-      
+
       if (!response.ok) {
         throw new Error(`Erro HTTP: ${response.status}`);
       }
-      
+
       produtos = await response.json();
       console.log('Produtos carregados via fetch direto:', produtos.length);
     }
@@ -626,18 +625,20 @@ async function renderizarListaProdutos(filtros = null) {
           <!-- Área para filtros ativos -->
           <div id="active-filters" class="active-filters-container"></div>
 
-          ${produtos.length === 0 ? 
-            `<div class="empty-state">
+          ${
+            produtos.length === 0
+              ? `<div class="empty-state">
               <p>Nenhum produto encontrado${filtros ? ' com os filtros selecionados' : ''}.</p>
               ${filtros ? '<button class="btn btn-outline" onclick="limparFiltros()">Limpar filtros</button>' : ''}
               ${isAdmin() ? `<a href="/registerProduct.html" class="btn btn-primary">Cadastrar Novo Produto</a>` : ''}
-            </div>` :
-            `<div class="featured-products">
-              ${produtos.map(produto => {
-                const imageUrl = window.ImageHelper ? 
-                  window.ImageHelper.getProductImageUrl(produto.id) : 
-                  `${API.BASE_URL}/products/image/${produto.id}`;
-                return `
+            </div>`
+              : `<div class="featured-products">
+              ${produtos
+                .map(produto => {
+                  const imageUrl = window.ImageHelper
+                    ? window.ImageHelper.getProductImageUrl(produto.id)
+                    : `${API.BASE_URL}/product/image/${produto.id}`;
+                  return `
                   <div class="product-card">
                     <div class="product-img" style="background-image: url('${imageUrl}')"></div>
                     <div class="product-info">
@@ -648,7 +649,8 @@ async function renderizarListaProdutos(filtros = null) {
                       </button>
                     </div>
                   </div>`;
-              }).join("")}
+                })
+                .join('')}
             </div>`
           }
         </div>
@@ -656,31 +658,31 @@ async function renderizarListaProdutos(filtros = null) {
     `;
 
     contentEl.innerHTML = mainContent;
-    
+
     // Inicializar os filtros com um atraso maior para garantir que tudo esteja renderizado
     setTimeout(() => {
       initializeFilters();
-      
+
       // Recriar os filtros ativos após renderizar
       if (filtros) {
         atualizarFiltrosAtivos();
       }
     }, 300);
-    
+
     if (window.Toast && produtos.length > 0) {
       window.Toast.success(`${produtos.length} produtos carregados com sucesso!`, {
         position: 'bottom-right',
-        duration: 3000
+        duration: 3000,
       });
     } else if (window.Toast && produtos.length === 0) {
       window.Toast.info('Não encontramos produtos disponíveis.', {
         position: 'bottom-right',
-        duration: 3000
+        duration: 3000,
       });
     }
   } catch (error) {
     console.error('Erro detalhado ao carregar produtos:', error);
-    
+
     contentEl.innerHTML = `
       <section class="products-list">
         <div class="container">
@@ -694,12 +696,15 @@ async function renderizarListaProdutos(filtros = null) {
         </div>
       </section>
     `;
-    
+
     if (window.Toast) {
-      window.Toast.error(`Não foi possível carregar os produtos: ${error.message || 'Erro de conexão'}`, {
-        position: 'top-center',
-        duration: 5000
-      });
+      window.Toast.error(
+        `Não foi possível carregar os produtos: ${error.message || 'Erro de conexão'}`,
+        {
+          position: 'top-center',
+          duration: 5000,
+        }
+      );
     }
   }
 }
@@ -708,46 +713,49 @@ async function renderizarListaProdutos(filtros = null) {
 function filtrarProdutos(produtos, filtros) {
   return produtos.filter(produto => {
     // Filtrar por nome
-    if (filtros.nome && 
-        !produto.name.toLowerCase().includes(filtros.nome.toLowerCase()) && 
-        (!produto.description || !produto.description.toLowerCase().includes(filtros.nome.toLowerCase()))) {
+    if (
+      filtros.nome &&
+      !produto.name.toLowerCase().includes(filtros.nome.toLowerCase()) &&
+      (!produto.description ||
+        !produto.description.toLowerCase().includes(filtros.nome.toLowerCase()))
+    ) {
       return false;
     }
-    
+
     // Filtrar por categoria
     if (filtros.categoria && produto.category_id != filtros.categoria) {
       return false;
     }
-    
+
     // Filtrar por preço mínimo
     if (filtros.precoMin && parseFloat(produto.price) < filtros.precoMin) {
       return false;
     }
-    
+
     // Filtrar por preço máximo
     if (filtros.precoMax && parseFloat(produto.price) > filtros.precoMax) {
       return false;
     }
-    
+
     // Filtrar por validade
     if (filtros.validade) {
       const hoje = new Date();
       const dataValidade = new Date(produto.expiry_date);
       const diasParaVencer = Math.floor((dataValidade - hoje) / (1000 * 60 * 60 * 24));
-      
-      switch(filtros.validade) {
-        case 'valid': 
+
+      switch (filtros.validade) {
+        case 'valid':
           if (dataValidade < hoje) return false;
           break;
-        case 'soon': 
+        case 'soon':
           if (diasParaVencer < 0 || diasParaVencer > 30) return false;
           break;
-        case 'expired': 
+        case 'expired':
           if (dataValidade > hoje) return false;
           break;
       }
     }
-    
+
     return true;
   });
 }
@@ -978,13 +986,13 @@ window.carregarDetalhesProduto = carregarDetalhesProduto;
 window.renderizarListaProdutos = renderizarListaProdutos;
 window.renderizarListaCategorias = renderizarListaCategorias;
 
-window.verDetalhesProduto = async function(id) {
+window.verDetalhesProduto = async function (id) {
   try {
     // Garantir que o CSS necessário esteja carregado
     if (window.ResourceLoader) {
       window.ResourceLoader.loadProductCSS();
     }
-    
+
     // Se o módulo de detalhes do produto estiver disponível, usar ele
     if (window.ProductDetails) {
       // Abrir o modal com loading
@@ -993,23 +1001,23 @@ window.verDetalhesProduto = async function(id) {
       } else if (window.ProductDetails.openModal) {
         window.ProductDetails.openModal();
       }
-      
+
       // Buscar os detalhes do produto
       const produto = await window.API.produtos.obterPorId(id);
-      
+
       // Renderizar os detalhes do produto
       if (typeof window.renderProductDetails === 'function') {
         window.renderProductDetails(produto);
       }
-      
+
       return;
     }
-    
+
     // Implementação original (fallback)
     await carregarDetalhesProduto(id);
   } catch (error) {
     console.error('Erro ao carregar detalhes do produto:', error);
-    
+
     if (contentEl) {
       contentEl.innerHTML = `
         <div class="container">
@@ -1018,7 +1026,7 @@ window.verDetalhesProduto = async function(id) {
         </div>
       `;
     }
-    
+
     // Tentar mostrar uma notificação
     if (window.Toast) {
       window.Toast.error('Não foi possível carregar os detalhes do produto');

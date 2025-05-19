@@ -9,7 +9,7 @@ function renderCart() {
     // Usar o helper para obter a URL da imagem do produto
     const imageUrl = window.ImageHelper ? 
       window.ImageHelper.getProductImageUrl(item.id) : 
-      `${API.BASE_URL}/products/image/${item.id}`;
+      `${API.BASE_URL}/product/image/${item.id}`;
       
     const cartItem = document.createElement('div');
     cartItem.className = 'cart-item';
