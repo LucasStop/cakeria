@@ -10,6 +10,7 @@
   gap: 10px;
   max-width: 350px;
   box-sizing: border-box;
+  pointer-events: none;
 }
 
 .toast-container.top-right { top: 20px; right: 20px; }
@@ -19,59 +20,59 @@
 .toast-container.top-center { top: 20px; left: 50%; transform: translateX(-50%); }
 .toast-container.bottom-center { bottom: 20px; left: 50%; transform: translateX(-50%); }
 
-.toast {
+.custom-toast {
   background-color: #ffffff;
   color: #333333;
   padding: 15px;
-  border-radius: 4px;
+  border-radius: 8px;
   min-width: 250px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: flex-start;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   opacity: 0;
-  transform: translateY(-20px);
+  transform: translateY(-15px);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  pointer-events: auto;
 }
 
-.toast.visible {
+.custom-toast.show {
   opacity: 1;
   transform: translateY(0);
 }
 
-.toast.success { border-left: 4px solid #4CAF50; }
-.toast.error { border-left: 4px solid #F44336; }
-.toast.warning { border-left: 4px solid #FFC107; }
-.toast.info { border-left: 4px solid #2196F3; }
-
-.toast-icon {
-  margin-right: 12px;
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.custom-toast.hide {
+  opacity: 0;
+  transform: translateY(-15px);
 }
 
-.toast.success .toast-icon { color: #4CAF50; }
-.toast.error .toast-icon { color: #F44336; }
-.toast.warning .toast-icon { color: #FFC107; }
-.toast.info .toast-icon { color: #2196F3; }
+.custom-toast::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: #2196F3;
+}
 
-.toast-content {
-  flex-grow: 1;
+.custom-toast.success::before { background-color: #4CAF50; }
+.custom-toast.error::before { background-color: #F44336; }
+.custom-toast.warning::before { background-color: #FFC107; }
+.custom-toast.info::before { background-color: #2196F3; }
+
+.toast-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .toast-title {
   font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.toast-message {
-  margin: 0;
-  font-size: 14px;
+  color: #333;
+  font-size: 0.95rem;
 }
 
 .toast-close {
@@ -79,26 +80,86 @@
   border: none;
   color: #999;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
   padding: 0;
   margin-left: 10px;
-  flex-shrink: 0;
+  line-height: 1;
 }
 
 .toast-close:hover {
   color: #333;
 }
 
+.toast-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  line-height: 1.4;
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  font-size: 1.2rem;
+  margin-top: 2px;
+}
+
+.custom-toast.success .toast-icon { color: #4CAF50; }
+.custom-toast.error .toast-icon { color: #F44336; }
+.custom-toast.warning .toast-icon { color: #FFC107; }
+.custom-toast.info .toast-icon { color: #2196F3; }
+
+.toast-content {
+  flex: 1;
+  font-size: 0.95rem;
+}
+
+/* Barra de progresso animada na parte inferior */
 .toast-progress {
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 4px;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.3);
   width: 100%;
-  opacity: 0.7;
 }
 
-.toast.success .toast-progress { background-color: #4CAF50; }
-.toast.error .toast-progress { background-color: #F44336; }
-.toast.warning .toast-progress { background-color: #FFC107; }
-.toast.info .toast-progress { background-color: #2196F3; }
+.toast-progress::before {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  animation: progress var(--duration, 5s) linear forwards;
+}
+
+@keyframes progress {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+/* Animações adicionais */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+.custom-toast.pulse {
+  animation: pulse 0.5s ease;
+}
+
+@media (max-width: 480px) {
+  .toast-container {
+    max-width: calc(100% - 30px);
+    width: calc(100% - 30px);
+  }
+
+  .toast-container.top-center,
+  .toast-container.bottom-center {
+    left: 15px;
+    transform: none;
+    right: 15px;
+    max-width: none;
+    width: auto;
+  }
+}

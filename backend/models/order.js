@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'orders',
+      tableName: 'order',
       timestamps: true,
       paranoid: true,
       underscored: true,
@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       through: models.order_product,
       foreignKey: 'order_id',
       otherKey: 'product_id',
-      as: 'products',
+      as: 'product',
     });
   };
 

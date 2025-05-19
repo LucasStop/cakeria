@@ -8,10 +8,10 @@ const userAttributes = {
 
 exports.findAll = async (req, res) => {
   try {
-    const users = await User.findAll({
+    const user = await User.findAll({
       attributes: { exclude: ['password'] },
     });
-    res.json(users);
+    res.json(user);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar usuários', error: error.message });
   }
@@ -22,7 +22,7 @@ exports.findOne = async (req, res) => {
   try {
     const user = await User.findByPk(id, {
       attributes: { exclude: ['password'] },
-      include: [{ model: Address, as: 'addresses' }],
+      include: [{ model: Address, as: 'address' }],
     });
 
     if (!user) {
@@ -37,7 +37,7 @@ exports.findOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const { name, email, cpf, password, type, phone, address = {}, addresses = [] } = req.body;
+    const { name, email, cpf, password, type, phone, address = {} } = req.body;
 
     if (!password || typeof password !== 'string') {
       return res.status(400).json({ message: 'Senha é obrigatória e deve ser uma string' });
@@ -56,8 +56,8 @@ exports.create = async (req, res) => {
 
       const user = await User.create(userData, { transaction: t });
 
-      if (Array.isArray(addresses) && addresses.length > 0) {
-        for (const addr of addresses) {
+      if (Array.isArray(address) && address.length > 0) {
+        for (const addr of address) {
           if ((addr.postal_code || addr.cep) && (addr.street || addr.number)) {
             await Address.create(
               {
@@ -80,12 +80,12 @@ exports.create = async (req, res) => {
       return user;
     });
 
-    const userWithAddresses = await User.findByPk(result.id, {
+    const userWithAddress = await User.findByPk(result.id, {
       ...userAttributes,
-      include: [{ model: Address, as: 'addresses' }],
+      include: [{ model: Address, as: 'address' }],
     });
 
-    res.status(201).json(userWithAddresses);
+    res.status(201).json(userWithAddress);
   } catch (error) {
     res.status(400).json({
       message: 'Erro ao criar usuário',
@@ -99,7 +99,7 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
   const { id } = req.params;
   try {
-    const { address = {}, addresses = [], currentPassword, password, ...userData } = req.body;
+    const { address = {}, currentPassword, password, ...userData } = req.body;
 
     let image = null;
     if (req.file) {
@@ -133,46 +133,46 @@ exports.update = async (req, res) => {
 
       await User.update(userData, { where: { id }, transaction: t });
 
-      if (Array.isArray(addresses) && addresses.length > 0) {
-        for (const addr of addresses) {
-          if ((addr.postal_code || addr.cep) && (addr.street || addr.number)) {
-            if (addr.id) {
-              const addressExists = await Address.findOne({
-                where: { id: addr.id, user_id: id },
-                transaction: t,
-              });
+      if (address) {
+        if ((address.postal_code || address.cep) && (address.street || address.number)) {
+          // Se o endereço tem um ID, atualiza o endereço existente
+          if (address.id) {
+            const addressExists = await Address.findOne({
+              where: { id: address.id, user_id: id },
+              transaction: t,
+            });
 
-              if (addressExists) {
-                await Address.update(
-                  {
-                    street: addr.street || addressExists.street,
-                    number: addr.number || addressExists.number,
-                    neighborhood: addr.neighborhood || addressExists.neighborhood,
-                    complement: addr.complement || addressExists.complement,
-                    city: addr.city || addressExists.city,
-                    state: addr.state || addr.uf || addressExists.state,
-                    postal_code: addr.postal_code || addr.cep || addressExists.postal_code,
-                    country: addr.country || addressExists.country || 'Brasil',
-                  },
-                  { where: { id: addr.id }, transaction: t }
-                );
-              }
-            } else {
-              await Address.create(
+            if (addressExists) {
+              // Atualiza o endereço existente
+              await Address.update(
                 {
-                  user_id: id,
-                  street: addr.street || '',
-                  number: addr.number || '',
-                  neighborhood: addr.neighborhood || '',
-                  complement: addr.complement || '',
-                  city: addr.city || '',
-                  state: addr.state || addr.uf || '',
-                  postal_code: addr.postal_code || addr.cep,
-                  country: addr.country || 'Brasil',
+                  street: address.street || addressExists.street,
+                  number: address.number || addressExists.number,
+                  neighborhood: address.neighborhood || addressExists.neighborhood,
+                  complement: address.complement || addressExists.complement,
+                  city: address.city || addressExists.city,
+                  state: address.state || address.uf || addressExists.state,
+                  postal_code: address.postal_code || address.cep || addressExists.postal_code,
+                  country: address.country || addressExists.country || 'Brasil',
                 },
-                { transaction: t }
+                { where: { id: address.id }, transaction: t }
               );
             }
+          } else {
+            await Address.create(
+              {
+                user_id: id,
+                street: address.street || '',
+                number: address.number || '',
+                neighborhood: address.neighborhood || '',
+                complement: address.complement || '',
+                city: address.city || '',
+                state: address.state || address.uf || '',
+                postal_code: address.postal_code || address.cep,
+                country: address.country || 'Brasil',
+              },
+              { transaction: t }
+            );
           }
         }
       }
@@ -180,7 +180,7 @@ exports.update = async (req, res) => {
 
     const updatedUser = await User.findByPk(id, {
       ...userAttributes,
-      include: [{ model: Address, as: 'addresses' }],
+      include: [{ model: Address, as: 'address' }],
     });
 
     res.json(updatedUser);

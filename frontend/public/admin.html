@@ -1,15 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
-    <meta charset="UTF-8"     <script src="./components/Header.js"></script>
-    <script src="./components/Footer.js"></script>
-    <script src="./js/api.js"></script>
-    <script src="./js/headerController.js"></script>
-    <script src="./js/navigation.js"></script>
-    <script src="./js/script.js"></script>
-    <script src="./js/logout.js"></script>
-    <script src="./js/admin.js"></script> <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cakeria | Confeitaria Artesanal</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cakeria | Painel Administrativo</title>
 
     <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -37,7 +31,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     />
+    
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <!-- CSS -->
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/index.css" />
@@ -76,13 +73,16 @@
       </div>
     </main>
 
-    <footer-component></footer-component>    <!-- Carregar componentes primeiro -->
+    <footer-component></footer-component>
+    
+    <!-- Scripts (carregados apenas uma vez) -->
     <script src="./components/Header.js"></script>
     <script src="./components/Footer.js"></script>
     <script src="./js/api.js"></script>
     <script src="./js/headerController.js"></script>
     <script src="./js/navigation.js"></script>
     <script src="./js/script.js"></script>
+    <script src="./js/logout.js"></script>
     <script src="./js/admin.js"></script>
   </body>
 </html>

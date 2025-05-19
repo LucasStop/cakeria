@@ -1,29 +1,29 @@
-'use strict';
-
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Criando diretório para upload se não existir
+// Garantir que o diretório de uploads existe
 const uploadDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Configuração do armazenamento
+// Configurar armazenamento para uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    // Criar um nome de arquivo único usando timestamp e nome original
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     const ext = path.extname(file.originalname);
-    cb(null, file.fieldname + '-' + uniqueSuffix + ext);
-  }
+    cb(null, `${uniqueSuffix}${ext}`);
+  },
 });
 
-// Filtro de arquivo para aceitar apenas imagens
+// Filtro para aceitar apenas imagens
 const fileFilter = (req, file, cb) => {
+  // Aceitar apenas imagens
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
@@ -31,34 +31,66 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Exporta o middleware configurado
+// Criar middleware do multer com tratamento de erro
 const upload = multer({
   storage: storage,
-  fileFilter: fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024 // limite de 5MB
-  }
+    fileSize: 5 * 1024 * 1024, // Limite de 5MB
+  },
+  fileFilter: fileFilter,
 });
 
-// Adicionar propriedade location para simular o comportamento do S3
-upload.single = function(fieldName) {
-  const middleware = multer({
-    storage: storage,
-    fileFilter: fileFilter,
-    limits: {
-      fileSize: 5 * 1024 * 1024
-    }
-  }).single(fieldName);
-  
-  return function(req, res, next) {
-    middleware(req, res, function(err) {
-      if (req.file) {
-        // Adicionar URL de acesso à imagem
-        req.file.location = `/uploads/${req.file.filename}`;
+// Envolver o middleware do multer em um wrapper que captura erros
+const safeUpload = {
+  single: function (fieldName) {
+    return function (req, res, next) {
+      // Usar o middleware do multer em um try-catch
+      try {
+        const middleware = upload.single(fieldName);
+
+        middleware(req, res, function (err) {
+          if (err) {
+            console.error('Erro no upload:', err);
+            return res.status(400).json({
+              error: 'Erro no upload de arquivo',
+              details: err.message,
+            });
+          }
+          next();
+        });
+      } catch (error) {
+        console.error('Erro crítico no processamento de upload:', error);
+        return res.status(500).json({
+          error: 'Erro interno no processamento de arquivos',
+          details: error.message,
+        });
       }
-      next(err);
-    });
-  };
+    };
+  },
+  array: function (fieldName, maxCount) {
+    return function (req, res, next) {
+      try {
+        const middleware = upload.array(fieldName, maxCount);
+
+        middleware(req, res, function (err) {
+          if (err) {
+            console.error('Erro no upload múltiplo:', err);
+            return res.status(400).json({
+              error: 'Erro no upload de arquivos',
+              details: err.message,
+            });
+          }
+          next();
+        });
+      } catch (error) {
+        console.error('Erro crítico no processamento de upload múltiplo:', error);
+        return res.status(500).json({
+          error: 'Erro interno no processamento de arquivos',
+          details: error.message,
+        });
+      }
+    };
+  },
 };
 
-module.exports = upload;
+module.exports = safeUpload;

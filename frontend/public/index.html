@@ -337,34 +337,84 @@
     <footer-component></footer-component>
 
     <script src="./js/utils/toast.js"></script>
-    <script src="./components/Header.js"></script>    <script src="./components/Footer.js"></script>    <script src="./js/api.js"></script>
+    <script src="./components/Header.js"></script>
+    <script src="./components/Footer.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/utils/imageHelper.js"></script>
     <script src="./js/headerController.js"></script>
     <script src="./js/navigation.js"></script>
+    <script src="./js/productModalInit.js"></script>
     <script src="./js/script.js"></script>
-    <script src="/js/login.js"></script>
     <script src="./js/logout.js"></script>
+    <script src="./js/resourceLoader.js"></script>
     
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         
+        // Verificar se o Toast existe e está funcionando
+        if (typeof window.Toast === 'undefined') {
+          console.error('ERRO CRÍTICO: Sistema Toast não está disponível!');
+          
+          // Tentar carregar novamente o script de toast
+          const toastScript = document.createElement('script');
+          toastScript.src = './js/utils/toast.js';
+          toastScript.onload = function() {
+            console.log('Toast recarregado com sucesso');
+            
+            // Executar o teste do Toast após recarga
+            setTimeout(() => {
+              if (window.Toast) {
+                window.Toast.info('Sistema de notificações carregado!', {
+                  position: 'top-center',
+                  duration: 3000
+                });
+              }
+            }, 500);
+          };
+          document.body.appendChild(toastScript);
+        } else {
+          console.log('Sistema Toast está disponível normalmente');
+        }
+        
         if (urlParams.has('welcome') && window.Toast) {
-          Toast.info('Seja bem-vindo à Cakeria! Navegue por nossas delícias!', {
+          window.Toast.info('Seja bem-vindo à Cakeria! Navegue por nossas delícias!', {
             position: 'top-center',
             duration: 5000
           });
         }
         
-      
+        // Teste direto do sistema de Toast - será mostrado em todas as visitas à página
         setTimeout(() => {
           if (window.Toast) {
-            Toast.info('Para acessar a tela de receitas faça login ou cadastre-se <i class="fas fa-star" style="color:#ffb400;margin-right:8px;"></i>', {
+            // Melhorando a mensagem de "Pedido Especial" com estilo mais rico
+            const pedidoMessage = `
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-star" style="color: #ffb400; font-size: 1.2em;"></i>
+                <span>Para acessar a tela de receitas faça login ou cadastre-se</span>
+              </div>
+            `;
+            
+            window.Toast.info(pedidoMessage, {
               position: 'bottom-right',
               duration: 5000,
               title: 'Pedido Especial'
             });
+          } else {
+            // Fallback para alert se Toast não estiver disponível
+            console.error("Sistema Toast não disponível para mensagem de Pedido Especial");
+            
+            // Criar um alert simples que não bloqueie a UI
+            const alertDiv = document.createElement('div');
+            alertDiv.style = 'position:fixed; bottom:20px; right:20px; background:#fff; border-left:4px solid #2196F3; padding:15px; box-shadow:0 4px 8px rgba(0,0,0,0.1); z-index:9999;';
+            alertDiv.innerHTML = 'Para acessar a tela de receitas faça login ou cadastre-se';
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+              document.body.removeChild(alertDiv);
+            }, 5000);
           }
-        }, 3000);
+        }, 1000);
         
         const monteBoloButtons = document.querySelectorAll('a[href="#cake-builder"], a.btn-primary:contains("Monte seu Bolo")');
         
@@ -379,6 +429,9 @@
           });
         });
       });
+      
+      // Adicionar teste de Toast ao console para depuração
+      console.log('Para testar o sistema Toast, digite: testToast() no console');
     </script>
   </body>
 </html>
