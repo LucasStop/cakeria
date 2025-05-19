@@ -1,20 +1,71 @@
-const { Recipe, User } = require('../models'); // Corrigido para acessar o modelo Recipe do objeto exportado por models
+const { Recipe, User, sequelize } = require('../models'); // Adicionar sequelize para ter acesso a todos os modelos
 
 // Renomear funções para ficarem consistentes com as rotas
 exports.getAll = async (req, res) => {
   try {
-    const recipe = await Recipe.findAll({
-      include: [
-        {
-          model: User,
-          as: 'author',
-          attributes: ['id', 'name', 'email'],
-        },
-      ],
+    // Opções de filtro a partir dos query params
+    const { category, author, status, difficulty } = req.query;
+    
+    // Construir condições de filtro
+    const whereConditions = {};
+    
+    // Filtrar por status se fornecido
+    if (status) {
+      whereConditions.status = status;
+    } else {
+      // Por padrão, trazer apenas receitas publicadas
+      whereConditions.status = 'publicado';
+    }
+    
+    // Filtrar por dificuldade se fornecida
+    if (difficulty) {
+      whereConditions.difficulty = difficulty;
+    }
+    
+    // Condições para joins
+    const includeConditions = [
+      {
+        model: User,
+        as: 'author',
+        attributes: ['id', 'name', 'email'],
+      },
+      {
+        model: sequelize.models.Category,
+        as: 'category',
+        attributes: ['id', 'name', 'slug'],
+      }
+    ];
+    
+    // Filtrar por categoria se fornecida
+    if (category) {
+      includeConditions[1].where = { 
+        [sequelize.Op.or]: [
+          { id: isNaN(category) ? null : category },
+          { slug: category }
+        ]
+      };
+    }
+    
+    // Filtrar por autor se fornecido
+    if (author) {
+      includeConditions[0].where = {
+        id: author
+      };
+    }
+
+    const recipes = await Recipe.findAll({
+      where: whereConditions,
+      include: includeConditions,
+      order: [['createdAt', 'DESC']]
     });
-    res.status(200).json(recipe);
+    
+    res.status(200).json(recipes);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Erro ao buscar receitas:', error);
+    res.status(500).json({ 
+      message: 'Erro ao buscar receitas',
+      error: error.message
+    });
   }
 };
 
@@ -27,6 +78,11 @@ exports.getById = async (req, res) => {
           as: 'author',
           attributes: ['id', 'name', 'email'],
         },
+        {
+          model: sequelize.models.Category,
+          as: 'category',
+          attributes: ['id', 'name', 'slug'],
+        }
       ],
     });
     if (!recipe) {
@@ -47,26 +103,97 @@ exports.getById = async (req, res) => {
 
     res.status(200).json(recipe);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Erro ao buscar receita:', error);
+    res.status(500).json({ 
+      message: 'Erro ao buscar receita',
+      error: error.message
+    });
   }
 };
 
 exports.create = async (req, res) => {
   try {
-    // Garante que o userId seja o do usuário autenticado
+    // Garante que o usuário esteja autenticado
     if (!req.user) {
       return res.status(401).json({ message: 'Usuário não autenticado' });
+    }    const { 
+      title, 
+      description, 
+      ingredients, 
+      instructions, 
+      prepTime, 
+      cookTime, 
+      servings, 
+      difficulty, 
+      category_id, 
+      status 
+    } = req.body;
+
+    // Validar campos obrigatórios
+    if (!title || !description || !ingredients || !instructions) {
+      return res.status(400).json({ 
+        message: 'Campos obrigatórios ausentes',
+        requiredFields: ['title', 'description', 'ingredients', 'instructions'] 
+      });
     }
 
+    // Verificar se a categoria existe, caso tenha sido informada
+    if (category_id) {
+      const category = await sequelize.models.Category.findByPk(category_id);
+      if (!category) {
+        return res.status(400).json({ 
+          message: 'Categoria não encontrada',
+          error: `A categoria com ID ${category_id} não existe`
+        });
+      }
+    }
+
+    // Verificar e processar a imagem se for fornecida
+    let image = null;
+    if (req.file && req.file.buffer) {
+      image = req.file.buffer;
+    }    // Criar o objeto com os dados da receita
     const recipeData = {
-      ...req.body,
-      userId: req.user.id, // Garante que a receita seja associada ao usuário autenticado
+      title,
+      description,
+      ingredients,
+      instructions,
+      prepTime: prepTime || null,
+      cookTime: cookTime || null,
+      servings: servings || null,
+      difficulty: difficulty || 'Médio',
+      user_id: req.user.id,
+      category_id: category_id || null,
+      status: status || 'publicado',
+      image
     };
 
+    // Criar a receita no banco de dados
     const recipe = await Recipe.create(recipeData);
-    res.status(201).json(recipe);
+      // Buscar a receita com os dados do autor para retornar
+    const recipeWithAuthor = await Recipe.findByPk(recipe.id, {
+      include: [
+        {
+          model: User,
+          as: 'author',
+          attributes: ['id', 'name', 'email'],
+        },
+        {
+          model: sequelize.models.Category,
+          as: 'category',
+          attributes: ['id', 'name', 'slug'],
+        }
+      ],
+    });
+
+    res.status(201).json(recipeWithAuthor);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Erro ao criar receita:', error);
+    res.status(400).json({ 
+      message: 'Erro ao criar receita',
+      error: error.message,
+      details: error.errors?.map(e => e.message) || []
+    });
   }
 };
 
@@ -78,61 +205,196 @@ exports.update = async (req, res) => {
     const recipe = await Recipe.findByPk(recipeId);
     if (!recipe) {
       return res.status(404).json({ message: 'Receita não encontrada' });
-    }
-
-    // Verificar permissões
-    if (
-      req.user.type !== 'admin' &&
-      recipe.userId !== req.user.id &&
-      recipe.user_id !== req.user.id
-    ) {
+    }    // Verificar permissões (usuário admin ou o autor da receita)
+    const isOwner = recipe.user_id === req.user.id;
+    
+    if (req.user.type !== 'admin' && !isOwner) {
       return res.status(403).json({ message: 'Você não tem permissão para editar esta receita' });
     }
 
-    // Não permitir mudar o userId da receita
-    const updateData = { ...req.body };
-    delete updateData.userId;
+    // Extrair campos específicos para atualização
+    const { 
+      title, 
+      description, 
+      ingredients, 
+      instructions, 
+      prepTime, 
+      cookTime, 
+      servings, 
+      difficulty, 
+      category_id, 
+      status 
+    } = req.body;
+
+    // Criar objeto para atualização
+    const updateData = {};
+
+    // Adicionar apenas os campos fornecidos    if (title !== undefined) updateData.title = title;
+    if (description !== undefined) updateData.description = description;
+    if (ingredients !== undefined) updateData.ingredients = ingredients;
+    if (instructions !== undefined) updateData.instructions = instructions;
+    if (prepTime !== undefined) updateData.prepTime = prepTime;
+    if (cookTime !== undefined) updateData.cookTime = cookTime;
+    if (servings !== undefined) updateData.servings = servings;
+    if (difficulty !== undefined) updateData.difficulty = difficulty;
+    if (category_id !== undefined) {
+      // Verificar se a categoria existe, caso tenha sido informada
+      if (category_id) {
+        const category = await sequelize.models.Category.findByPk(category_id);
+        if (!category) {
+          return res.status(400).json({ 
+            message: 'Categoria não encontrada',
+            error: `A categoria com ID ${category_id} não existe`
+          });
+        }
+      }
+      updateData.category_id = category_id;
+    }
+    if (status !== undefined) updateData.status = status;
+
+    // Verificar e processar a imagem se for fornecida
+    if (req.file && req.file.buffer) {
+      updateData.image = req.file.buffer;
+    }    // Não permitir mudar o userId da receita
     delete updateData.user_id;
 
-    const [updated] = await Recipe.update(updateData, {
-      where: { id: recipeId },
+    // Realizar a atualização
+    await recipe.update(updateData);    // Buscar a receita atualizada com dados do autor e categoria
+    const updatedRecipe = await Recipe.findByPk(recipeId, {
+      include: [
+        {
+          model: User,
+          as: 'author',
+          attributes: ['id', 'name', 'email'],
+        },
+        {
+          model: sequelize.models.Category,
+          as: 'category',
+          attributes: ['id', 'name', 'slug'],
+        }
+      ],
     });
 
-    const updatedRecipe = await Recipe.findByPk(recipeId);
     res.status(200).json(updatedRecipe);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Erro ao atualizar receita:', error);
+    res.status(400).json({ 
+      message: 'Erro ao atualizar receita',
+      error: error.message,
+      details: error.errors?.map(e => e.message) || []
+    });
   }
 };
 
 exports.delete = async (req, res) => {
   try {
-    const recipeId = req.params.id;
+    const recipeId = req.params.id;    // Verificar se a receita existe
+    const recipe = await Recipe.findByPk(recipeId, {
+      include: [
+        {
+          model: User,
+          as: 'author',
+          attributes: ['id', 'name', 'email'],
+        },
+        {
+          model: sequelize.models.Category,
+          as: 'category',
+          attributes: ['id', 'name', 'slug'],
+        }
+      ],
+    });
 
+    if (!recipe) {
+      return res.status(404).json({ message: 'Receita não encontrada' });
+    }    // Verificar permissões (usuário admin ou o autor da receita)
+    const isOwner = recipe.user_id === req.user.id;
+    
+    if (req.user.type !== 'admin' && !isOwner) {
+      return res.status(403).json({ message: 'Você não tem permissão para excluir esta receita' });
+    }
+
+    // Verificar se há comentários associados
+    const commentCount = await recipe.countComment_recipe();
+    
+    // Excluir os comentários primeiro, se existirem
+    if (commentCount > 0) {
+      console.log(`Excluindo ${commentCount} comentários associados à receita ${recipeId}`);
+    }
+
+    // Excluir a receita (vai excluir em cascata os comentários devido à configuração no modelo)
+    await recipe.destroy();
+    
+    res.status(200).json({ 
+      message: 'Receita deletada com sucesso',
+      recipeTitle: recipe.title,
+      commentsRemoved: commentCount
+    });
+  } catch (error) {
+    console.error('Erro ao excluir receita:', error);
+    res.status(500).json({ 
+      message: 'Erro ao excluir receita',
+      error: error.message
+    });
+  }
+};
+
+// Obter a imagem de uma receita
+exports.getImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const recipe = await Recipe.findByPk(id, { attributes: ['id', 'title', 'image'] });
+    
+    if (!recipe || !recipe.image) {
+      return res.status(404).json({ message: 'Imagem da receita não encontrada' });
+    }
+    
+    // Definir o tipo de conteúdo como imagem
+    res.set('Content-Type', 'image/jpeg');
+    res.send(recipe.image);
+  } catch (error) {
+    console.error('Erro ao buscar imagem da receita:', error);
+    res.status(500).json({ 
+      message: 'Erro ao buscar imagem da receita',
+      error: error.message
+    });
+  }
+};
+
+// Adicionar imagem a uma receita existente
+exports.addImage = async (req, res) => {
+  try {
+    const recipeId = req.params.id;
+    
     // Verificar se a receita existe
     const recipe = await Recipe.findByPk(recipeId);
     if (!recipe) {
       return res.status(404).json({ message: 'Receita não encontrada' });
+    }    // Verificar permissões (usuário admin ou o autor da receita)
+    const isOwner = recipe.user_id === req.user.id;
+    
+    if (req.user.type !== 'admin' && !isOwner) {
+      return res.status(403).json({ message: 'Você não tem permissão para modificar esta receita' });
     }
 
-    // Verificar permissões
-    if (
-      req.user.type !== 'admin' &&
-      recipe.userId !== req.user.id &&
-      recipe.user_id !== req.user.id
-    ) {
-      return res.status(403).json({ message: 'Você não tem permissão para excluir esta receita' });
+    // Verificar se a imagem foi enviada
+    if (!req.file || !req.file.buffer) {
+      return res.status(400).json({ message: 'Nenhuma imagem fornecida' });
     }
 
-    await recipe.destroy();
-    res.status(200).json({ message: 'Receita deletada com sucesso' });
+    // Atualizar a imagem da receita
+    recipe.image = req.file.buffer;
+    await recipe.save();
+
+    res.status(200).json({ 
+      message: 'Imagem adicionada com sucesso à receita',
+      recipeId: recipe.id,
+      recipeTitle: recipe.title
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Erro ao adicionar imagem à receita:', error);
+    res.status(500).json({ 
+      message: 'Erro ao adicionar imagem à receita',
+      error: error.message
+    });
   }
-};
-
-// Adicionar método para buscar detalhes do usuário
-exports.addImage = async (req, res) => {
-  // Implementação para adicionar imagens (será implementada mais tarde)
-  res.status(501).json({ message: 'Funcionalidade ainda não implementada' });
 };
