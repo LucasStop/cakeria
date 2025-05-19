@@ -1,8 +1,3 @@
-/**
- * Inicialização global do modal de produto - Versão robusta
- * Este script garante que o modal de detalhes funcione em todas as páginas,
- * incluindo a página inicial (index.html)
- */
 
 const ProductModal = {
   isInitialized: false,

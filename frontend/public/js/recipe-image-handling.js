@@ -1,7 +1,4 @@
-/**
- * Este arquivo contém melhorias para o formulário de receitas,
- * especialmente para lidar com edição de imagens
- */
+
 
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('recipe-form');
