@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -8,11 +8,7 @@
     <!-- Favicon -->
     <link rel="icon" href="/assets/favicon.ico" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="/assets/favicon-32x32.png"
-    />
+    <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
 
     <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,22 +25,19 @@
     />
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/css/compartilhar-receitas.css" />
+    <link rel="stylesheet" href="/css/compartilhar-receita.css" />
     <link rel="stylesheet" href="/css/notifications.css" />
     <link rel="stylesheet" href="/css/loading-button.css" />
     <link rel="stylesheet" href="/css/form-helpers.css" />
     <link rel="stylesheet" href="/css/recipe-form-enhancements.css" />
-    <link rel="stylesheet" href="./css/styles.css">
-    <link rel="stylesheet" href="./css/home.css">
-    <link rel="stylesheet" href="./components/components.css">
-
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/home.css" />
+    <link rel="stylesheet" href="./components/components.css" />
   </head>
   <body>
     <header-component></header-component>
 
-
     <main class="share-recipe-container">
-      
       <div class="container">
         <section class="page-header">
           <h1 class="page-title">Compartilhar Receita</h1>
@@ -182,7 +175,9 @@
             </div>
 
             <div class="form-group">
-              <label for="recipe-image">Imagem da Receita <span id="image-requirement">(Obrigatório)</span></label>
+              <label for="recipe-image"
+                >Imagem da Receita <span id="image-requirement">(Obrigatório)</span></label
+              >
               <div class="file-input-wrapper">
                 <input
                   type="file"
@@ -196,11 +191,30 @@
                   <p id="file-name">Nenhum arquivo selecionado</p>
                 </div>
               </div>
-              <p class="form-helper" id="image-helper" style="display: none;">Ao editar uma receita, você pode manter a imagem atual ou enviar uma nova.</p>
-              <div class="image-status" id="image-status" style="display: none; margin-top: 8px; padding: 8px; background-color: #f8f9fa; border-radius: 4px; font-size: 0.85rem;">
-                <p><strong>Status da imagem:</strong> <span id="image-status-text">Imagem atual será mantida</span></p>
-                <div id="edit-mode-info" style="display:none; margin-top: 4px;">
-                  <p><i class="fas fa-info-circle" style="color:#28a745;"></i> Na edição de receitas, você pode manter a imagem atual.</p>
+              <p class="form-helper" id="image-helper" style="display: none">
+                Ao editar uma receita, você pode manter a imagem atual ou enviar uma nova.
+              </p>
+              <div
+                class="image-status"
+                id="image-status"
+                style="
+                  display: none;
+                  margin-top: 8px;
+                  padding: 8px;
+                  background-color: #f8f9fa;
+                  border-radius: 4px;
+                  font-size: 0.85rem;
+                "
+              >
+                <p>
+                  <strong>Status da imagem:</strong>
+                  <span id="image-status-text">Imagem atual será mantida</span>
+                </p>
+                <div id="edit-mode-info" style="display: none; margin-top: 4px">
+                  <p>
+                    <i class="fas fa-info-circle" style="color: #28a745"></i> Na edição de receitas,
+                    você pode manter a imagem atual.
+                  </p>
                 </div>
               </div>
               <span class="error-message" id="image-error"></span>
@@ -219,9 +233,11 @@
 
             <div class="form-actions">
               <button type="button" id="cancel-btn" class="btn btn-outline">Cancelar</button>
-              <button type="submit" id="submit-btn" class="btn btn-primary">Compartilhar Receita</button>
+              <button type="submit" id="submit-btn" class="btn btn-primary">
+                Compartilhar Receita
+              </button>
             </div>
-            
+
             <!-- Mensagem de erro do formulário -->
             <div class="error-message" id="form-error"></div>
           </form>
@@ -234,21 +250,22 @@
     <!-- Carregar componentes primeiro -->
     <script src="./js/utils/toast.js"></script>
     <script src="./components/Footer.js"></script>
-    <script src="./js/notifications.js"></script>
+    <script src="./js/notificacao.js"></script>
     <script src="./js/api.js"></script>
-    <script src="./js/navigation.js"></script>
+    <script src="./js/navegacao.js"></script>
     <script src="./js/script.js"></script>
     <script src="./js/logout.js"></script>
-    <script src="./js/permissions.js"></script>
+    <script src="./js/permissoes.js"></script>
     <script src="./js/recipe-form-utils.js"></script>
     <script src="./js/recipe-form-debug.js"></script>
-    <script src="./js/recipe-image-handling.js"></script>    <script src="./js/form-validation.js"></script>
+    <script src="./js/recipe-image-handling.js"></script>
+    <script src="./js/validacao_formulario.js"></script>
     <script src="./components/Header.js"></script>
-    <script src="./js/headerController.js"></script>
-    <script src="./js/compartilharReceitas.js"></script>
+    <script src="./js/header-controller.js"></script>
+    <script src="./js/compartilhar-receita.js"></script>
     <script src="./js/home.js"></script>
-    <script src="./js/authGuard.js"></script>
-    
+    <script src="./js/auth-guard.js"></script>
+
     <!-- Script para adicionar toast à página -->
     <script>
       // Verificação de autenticação imediata para esta página
@@ -262,9 +279,9 @@
 
         // Se chegou aqui, o usuário está autenticado
         if (window.Toast) {
-          Toast.info('Compartilhe sua receita com a comunidade!', { 
-            position: 'top-center', 
-            duration: 4000 
+          Toast.info('Compartilhe sua receita com a comunidade!', {
+            position: 'top-center',
+            duration: 4000,
           });
         }
 
@@ -272,65 +289,65 @@
         if (window.Toast) {
           Toast.info('Compartilhe sua receita com a comunidade!', {
             position: 'top-center',
-            duration: 4000
+            duration: 4000,
           });
         }
-        
+
         // Melhorar feedback de erros com toast
         const showErrorOriginal = window.showError;
-        
+
         // Se existir uma função showError no escopo global, vamos melhorá-la
         if (typeof showError === 'function') {
-          window.showError = function(elementId, message) {
+          window.showError = function (elementId, message) {
             // Manter o comportamento original
             if (typeof showErrorOriginal === 'function') {
               showErrorOriginal(elementId, message);
             }
-            
+
             // Adicionar toast para erros críticos
             if (elementId === 'form-error' && window.Toast) {
               Toast.error(message, {
                 title: 'Erro no formulário',
                 position: 'bottom-right',
-                duration: 5000
+                duration: 5000,
               });
             }
           };
         }
-        
+
         // Adicionar toast ao formulário
         const form = document.getElementById('recipe-form');
         if (form) {
           // Preservar submit original
           const originalSubmit = form.onsubmit;
-          
-          form.addEventListener('submit', function(e) {
+
+          form.addEventListener('submit', function (e) {
             // Não vamos prevenir o comportamento padrão para manter a lógica original
-            
+
             // Adicionar toast de envio
             if (window.Toast) {
               Toast.info('Enviando receita...', {
                 position: 'top-center',
-                duration: 3000
+                duration: 3000,
               });
             }
           });
-          
+
           // Adicionar confirmação ao botão Cancelar
           const cancelBtn = document.getElementById('cancel-btn');
           if (cancelBtn) {
             const originalClick = cancelBtn.onclick;
-            
-            cancelBtn.addEventListener('click', function(e) {
+
+            cancelBtn.addEventListener('click', function (e) {
               e.preventDefault(); // Prevenir comportamento padrão
-              
+
               if (window.Toast) {
                 Toast.warning('Deseja realmente cancelar? Os dados não serão salvos.', {
                   position: 'top-center',
                   duration: 5000,
-                  closeButton: true
+                  closeButton: true,
                 });
-                
+
                 // Após 2 segundos para dar tempo de ler, executa o comportamento original
                 setTimeout(() => {
                   if (typeof originalClick === 'function') {

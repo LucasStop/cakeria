@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     '/pedidos/novo.html',
     '/perfil.html',
     '/favoritos.html',
-    '/compartilharReceitas.html',
+    '/compartilhar-receita.html',
     '/receita.html',
     '/receitas.html'
   ];
@@ -97,7 +97,7 @@ function initAuthGuard() {
     '/favoritos.html', 
     '/footer.html',
     '/receita.html',
-    '/compartilharReceitas.html',
+    '/compartilhar-receita.html',
     '/perfil.html'
   ];
   

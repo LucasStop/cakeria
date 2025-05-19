@@ -100,7 +100,7 @@ class Header extends HTMLElement {
               <ul class="nav-links">
                 <li><a href="/admin.html" class="nav-link" data-route="admin"><i class="fa-solid fa-home"></i> Dashboard</a></li>
                 <li><a href="/produtos" class="nav-link" id="nav-produtos" data-route="produtos"><i class="fa-solid fa-box"></i> Produtos</a></li>
-                <li><a href="/registerProduct.html" class="nav-link" data-route="registerProduct"><i class="fa-solid fa-cake-candles"></i> Cadastrar produto</a></li>
+                <li><a href="/registro-produto.html" class="nav-link" data-route="registro-produto"><i class="fa-solid fa-cake-candles"></i> Cadastrar produto</a></li>
                 <li><a href="/pedidos/gerenciar.html" class="nav-link" id="nav-pedidos" data-route="pedidos"><i class="fa-solid fa-shopping-cart"></i> Pedidos</a></li>
                 <li><a href="/usuarios" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
                 <li><a href="/index.html" class="nav-link" data-route="site"><i class="fa-solid fa-globe"></i> Ver Site</a></li>
@@ -274,7 +274,7 @@ class Header extends HTMLElement {
       case 'admin':
         window.navegarParaAdmin();
         break;
-      case 'registerProduct':
+      case 'registro-produto':
         window.navegarParaCadastrarProdutos();
         break;
       case 'dashboard':
@@ -394,10 +394,10 @@ class Header extends HTMLElement {
         (path.includes('/produtos') && route === 'produtos') ||
         (path.includes('/categorias') && route === 'categorias') ||
         (path.includes('/sobre') && route === 'sobre') ||
-        (path.includes('/admin-users') && route === 'usuarios') ||
-        (path.includes('/registerProduct') && route === 'registerProduct') ||
-        (path.includes('/dashboard') && route === 'dashboard')
-     
+        (path.includes('/admin') && route === 'admin') ||
+        (path.includes('/registro-produto') && route === 'registro-produto') ||
+        (path.includes('/dashboard') && route === 'dashboard') ||
+        (path.includes('/usuarios') && route === 'usuarios')
       ) {
         link.classList.add('active');
       }
@@ -409,6 +409,6 @@ customElements.define('header-component', Header);
 
 if (typeof window !== 'undefined') {
   const scriptElement = document.createElement('script');
-  scriptElement.src = '/js/headerController.js';
+  scriptElement.src = '/js/header-controller.js';
   document.head.appendChild(scriptElement);
 }
