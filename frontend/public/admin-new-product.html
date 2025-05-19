@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adicionar Novo Produto | Cakeria</title>
+    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/admin-controls.css" />
+    <!-- Mantido admin-users.css por enquanto, pode ter estilos globais úteis. Avaliar depois. -->
+    <link rel="stylesheet" href="css/admin-users.css" />
+    <link rel="stylesheet" href="css/registro.css" />
+    <!-- Renomear admin-new-user.css para admin-new-product.css se for específico, ou usar um CSS de formulário genérico -->
+    <link rel="stylesheet" href="css/admin-new-product.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
+    <link rel="manifest" href="assets/site.webmanifest" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/index.css" />
+    <link rel="stylesheet" href="./components/components.css" />
+    <link rel="stylesheet" href="./components/dashboards/css/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+  </head>
+  <body>
+    <header-component variant="admin"></header-component>
+    <main class="container">
+      <div class="title-container">
+        <h1 class="page-title">Adicionar Novo Produto</h1>
+        <a href="admin-produtos.html" class="btn btn-primary"
+          ><i class="fas fa-arrow-left"></i> Voltar à Lista de Produtos</a
+        >
+      </div>
+
+      <div class="admin-dashboard">
+        <div class="admin-card full-width">
+          <form id="productForm" class="admin-form" novalidate>
+            <!-- Seção de Upload de Imagem -->
+            <div class="form-row">
+              <div class="form-col full-width">
+                <div class="form-group">
+                  <label for="productImage">Imagem do Produto</label>
+                  <div class="avatar-upload-container">
+                    <div class="avatar-preview" id="imagePreviewContainer">
+                      <img
+                        id="imagePreview"
+                        src="#"
+                        alt="Preview da Imagem"
+                        style="display: none"
+                      />
+                      <span id="imagePlaceholder" class="default-avatar-icon"
+                        ><i class="fas fa-image"></i
+                      ></span>
+                    </div>
+                    <div class="avatar-input">
+                      <input type="file" id="productImage" name="productImage" accept="image/*" />
+                      <label for="productImage" class="btn btn-secondary btn-select-avatar"
+                        >Selecionar Imagem</label
+                      >
+                      <span class="avatar-help-text">JPG, PNG ou GIF. Tamanho máximo de 2MB.</span>
+                    </div>
+                  </div>
+                  <span id="productImage-error" class="error-message"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="productName">Nome do Produto*</label>
+                  <input type="text" id="productName" name="productName" required />
+                  <span id="productName-error" class="error-message"></span>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="productCategory">Categoria*</label>
+                  <select id="productCategory" name="productCategory" required>
+                    <option value="">Selecione uma categoria</option>
+                    <!-- Categorias serão populadas via JS -->
+                  </select>
+                  <span id="productCategory-error" class="error-message"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col full-width">
+                <div class="form-group">
+                  <label for="productDescription">Descrição</label>
+                  <textarea id="productDescription" name="productDescription" rows="3"></textarea>
+                  <span id="productDescription-error" class="error-message"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="productPrice">Preço (R$)*</label>
+                  <input
+                    type="number"
+                    id="productPrice"
+                    name="productPrice"
+                    step="0.01"
+                    min="0"
+                    required
+                  />
+                  <span id="productPrice-error" class="error-message"></span>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="productStock">Estoque*</label>
+                  <input type="number" id="productStock" name="productStock" min="0" required />
+                  <span id="productStock-error" class="error-message"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="productSize">Tamanho</label>
+                  <select id="productSize" name="productSize">
+                    <option value="">N/A</option>
+                    <option value="Pequeno">Pequeno</option>
+                    <option value="Médio">Médio</option>
+                    <option value="Grande">Grande</option>
+                    <option value="Unico">Único</option>
+                    <option value="custom">Outro (especificar)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-col" id="customSizeContainer" style="display: none">
+                <div class="form-group">
+                  <label for="productCustomSize">Tamanho Personalizado</label>
+                  <input type="text" id="productCustomSize" name="productCustomSize" />
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="productExpiryDate">Data de Validade</label>
+                  <input type="date" id="productExpiryDate" name="productExpiryDate" />
+                  <span id="productExpiryDate-error" class="error-message"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="productStatus">Status*</label>
+                  <select id="productStatus" name="productStatus" required>
+                    <option value="active">Ativo</option>
+                    <option value="inactive">Inativo</option>
+                  </select>
+                  <span id="productStatus-error" class="error-message"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col full-width">
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Salvar Produto
+                  </button>
+                  <button type="reset" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Limpar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <div id="footer-container"></div>
+    <script src="components/Header.js"></script>
+    <script src="components/Footer.js"></script>
+    <script src="js/api.js"></script>
+    <!-- Certifique-se que api.js está incluído -->
+    <script src="js/toast.js"></script>
+    <!-- Certifique-se que toast.js está incluído -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="js/admin-new-product.js"></script>
+  </body>
+</html>
