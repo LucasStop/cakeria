@@ -978,8 +978,34 @@ window.carregarDetalhesProduto = carregarDetalhesProduto;
 window.renderizarListaProdutos = renderizarListaProdutos;
 window.renderizarListaCategorias = renderizarListaCategorias;
 
-window.verDetalhesProduto = async function (id) {
-  await carregarDetalhesProduto(id);
+window.verDetalhesProduto = async function(id) {
+  try {
+    // Se o módulo de detalhes do produto estiver disponível, usar ele (implementação do modal)
+    if (window.ProductDetails) {
+      // Abrir o modal com loading
+      window.verDetalhesProduto(id);
+      return;
+    }
+    
+    // Implementação original (fallback)
+    await carregarDetalhesProduto(id);
+  } catch (error) {
+    console.error('Erro ao carregar detalhes do produto:', error);
+    
+    if (contentEl) {
+      contentEl.innerHTML = `
+        <div class="container">
+          <p class="error">Erro ao carregar detalhes do produto. Tente novamente mais tarde.</p>
+          <button class="btn btn-primary" onclick="window.history.back()">Voltar</button>
+        </div>
+      `;
+    }
+    
+    // Tentar mostrar uma notificação
+    if (window.Toast) {
+      window.Toast.error('Não foi possível carregar os detalhes do produto');
+    }
+  }
 };
 
 window.verProdutosPorCategoria = async function (categoriaId) {
