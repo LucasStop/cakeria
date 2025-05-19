@@ -85,17 +85,9 @@ class Header extends HTMLElement {
       this.innerHTML = `
         <header class="header admin-header">
           <div class="container">
-        <div class="logo-container">
-          <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo">
-        </div>
-        
-        <nav class="nav-bar">
-          <ul class="nav-links">                
-            <li><a href="/admin.html" class="nav-link" data-route="admin"><i class="fa-solid fa-home"></i> Dashboard</a></li>
-            <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
-            <li><a href="/registerProduct.html" class="nav-link" data-route="registerProduct"><i class="fa-solid fa-cake-candles"></i> Produtos</a></li>
-            <li><a href="/pedidos/gerenciar.html" class="nav-link" id="nav-pedidos" data-route="pedidos"><i class="fa-solid fa-shopping-cart"></i> Pedidos</a></li>
-            <li><a href="/admin-users.html" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
+            <div class="logo-container">
+              <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo">
+            </div>
             
             <nav class="nav-bar">
               <ul class="nav-links">
@@ -131,27 +123,11 @@ class Header extends HTMLElement {
                 </button>
               </div>
             </div>
-            <span class="username">${user?.name || user?.email || 'Administrador'}</span>
-            <i class="fa-solid fa-chevron-down"></i>
-          </div>
-          <div class="dropdown-menu">
-            <a href="/perfil.html" class="dropdown-item nav-link" data-route="perfil">
-          <i class="fa-solid fa-user"></i> Meu Perfil
-            </a>
-            <a href="/index.html" class="dropdown-item">
-          <i class="fa-solid fa-home"></i> Voltar ao Site
-            </a>
-            <div class="dropdown-divider"></div>
-            <button class="dropdown-item logout-btn">
-          <i class="fa-solid fa-sign-out-alt"></i> Sair
+            </div>            <button class="menu-toggle" aria-label="Menu">
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
             </button>
-          </div>
-        </div>
-        </div>            <button class="menu-toggle" aria-label="Menu">
-          <span class="bar"></span>
-          <span class="bar"></span>
-          <span class="bar"></span>
-        </button>
           </div>
           <div class="overlay"></div>
         </header>
@@ -382,6 +358,7 @@ class Header extends HTMLElement {
 
     window.location.href = '/index.html?logout=true';
   }
+
   highlightCurrentPage() {
     const path = window.location.pathname;
     const links = this.querySelectorAll('.nav-link');
