@@ -1,114 +1,122 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cakeria | Login</title>
-  
-  <!-- Favicon -->
-  <link rel="icon" href="/assets/favicon.ico">
-  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-  <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png">
-  
-  <!-- Google Fonts - Poppins -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- CSS -->
-  <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/css/login.css">
-</head>
-<body>
-  <div class="split-layout">
-    <!-- Seção do logo -->
-    <div class="logo-section">
-      <div class="content">
-        <a href="/">
-          <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="login-logo">
-        </a>
-        <p>Bem-vindo à Cakeria, seu destino para os mais deliciosos doces artesanais e bolos personalizados!</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cakeria | Login</title>
+
+    <link rel="icon" href="/assets/favicon.ico" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/login.css" />
+  </head>
+  <body>
+    <div class="split-layout">
+      <div class="logo-section">
+        <div class="content">
+          <a href="/">
+            <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="login-logo" />
+          </a>
+          <p>
+            Bem-vindo à Cakeria, seu destino para os mais deliciosos doces artesanais e bolos
+            personalizados!
+          </p>
+        </div>
       </div>
-    </div>
-    
-    <!-- Seção do formulário -->
-    <div class="form-section">
-      <div class="login-container">
-        <div id="login-card" class="login-card">
-          <div class="login-header">
-            <h2>Acesse sua conta</h2>
-            <p>Preencha os campos abaixo para acessar sua conta</p>
-          </div>
-          <form id="login-form" class="login-form">
-            <div class="form-group">
-              <label for="email">E-mail</label>
-              <input type="email" id="email" name="email" placeholder="Seu e-mail" required>
-              <span id="email-error" class="error-message"></span>
+
+      <div class="form-section">
+        <div class="login-container">
+          <div id="login-card" class="login-card">
+            <div class="login-header">
+              <h2>Acesse sua conta</h2>
+              <p>Preencha os campos abaixo para acessar sua conta</p>
             </div>
-            <div class="form-group">
-              <label for="password">Senha</label>
-              <input type="password" id="password" name="password" placeholder="Sua senha" required>
-              <button type="button" class="password-toggle" aria-label="Mostrar/ocultar senha">
-                <svg class="eye-icon" viewBox="0 0 24 24">
-                  <path d="M12 4.5c-5 0-9.3 3-11 7.5 1.7 4.5 6 7.5 11 7.5s9.3-3 11-7.5c-1.7-4.5-6-7.5-11-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/>
-                </svg>
-              </button>
-              <span id="password-error" class="error-message"></span>
+            <form id="login-form" class="login-form">
+              <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" placeholder="Seu e-mail" required />
+                <span id="email-error" class="error-message"></span>
+              </div>
+              <div class="form-group">
+                <label for="password">Senha</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Sua senha"
+                  required
+                />
+                <button type="button" class="password-toggle" aria-label="Mostrar/ocultar senha">
+                  <svg class="eye-icon" viewBox="0 0 24 24">
+                    <path
+                      d="M12 4.5c-5 0-9.3 3-11 7.5 1.7 4.5 6 7.5 11 7.5s9.3-3 11-7.5c-1.7-4.5-6-7.5-11-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"
+                    />
+                  </svg>
+                </button>
+                <span id="password-error" class="error-message"></span>
+              </div>
+              <button type="submit" class="btn btn-primary btn-login">Entrar</button>
+            </form>
+            <div class="login-footer">
+              <p>
+                Não possui uma conta? <a href="/registro.html" id="register-link">Cadastre-se</a>
+              </p>
+              <p class="back-to-home"><a href="/">Voltar para a página inicial</a></p>
             </div>
-            <button type="submit" class="btn btn-primary btn-login">Entrar</button>
-          </form>
-          <div class="login-footer">
-            <p>Não possui uma conta? <a href="/registro.html" id="register-link">Cadastre-se</a></p>
-            <p class="back-to-home"><a href="/">Voltar para a página inicial</a></p>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script src="/js/utils/toast.js"></script>
-  
-  <script src="./js/api.js"></script>
-  <script src="./js/login.js"></script>
-  <script src="./js/auth-guard.js"></script>
-  
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      
-      if (urlParams.has('expired') || urlParams.get('reason') === 'session_expired') {
-        if (window.Toast) {
-          Toast.warning('Sua sessão expirou. Por favor, faça login novamente.', {
-            position: 'top-center',
-            duration: 5000
-          });
-        }
-      } 
-      else if (urlParams.has('logout')) {
-        if (window.Toast) {
-          Toast.info('Você saiu do sistema com sucesso!', {
-            position: 'top-center',
-            duration: 3000
-          });
-        }
-      }
-      
-      const loginForm = document.getElementById('login-form');
-      if (loginForm) {
-        const originalSubmit = loginForm.onsubmit;
-        
-        loginForm.addEventListener('submit', function(e) {
-          
+    <script src="/js/utils/toast.js"></script>
+
+    <script src="./js/api.js"></script>
+    <script src="./js/login.js"></script>
+    <script src="./js/auth-guard.js"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (urlParams.has('expired') || urlParams.get('reason') === 'session_expired') {
           if (window.Toast) {
-            Toast.info('Realizando login...', {
+            Toast.warning('Sua sessão expirou. Por favor, faça login novamente.', {
               position: 'top-center',
-              duration: 3000
+              duration: 5000,
             });
           }
-          
-        });
-      }
-    });
-  </script>
-</body>
+        } else if (urlParams.has('logout')) {
+          if (window.Toast) {
+            Toast.info('Você saiu do sistema com sucesso!', {
+              position: 'top-center',
+              duration: 3000,
+            });
+          }
+        }
+
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) {
+          const originalSubmit = loginForm.onsubmit;
+
+          loginForm.addEventListener('submit', function (e) {
+            if (window.Toast) {
+              Toast.info('Realizando login...', {
+                position: 'top-center',
+                duration: 3000,
+              });
+            }
+          });
+        }
+      });
+    </script>
+  </body>
 </html>

@@ -1,4 +1,3 @@
-/* Hero Section */
 .hero {
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
@@ -45,7 +44,6 @@
   font-weight: 600;
 }
 
-/* Section Headers */
 .section-header {
   text-align: center;
   margin-bottom: 50px;
@@ -66,7 +64,6 @@
   margin: 0 auto;
 }
 
-/* Featured Products Section */
 .featured {
   padding: 6rem 0;
 }
@@ -88,7 +85,6 @@
   font-size: 1.1rem;
 }
 
-/* Categories Section */
 .categories {
   padding: 6rem 0;
   background-color: var(--light-color);
@@ -133,7 +129,6 @@
   font-size: 1.4rem;
 }
 
-/* Why Choose Us Section */
 .why-choose {
   padding: 6rem 0;
   background-color: var(--white-color);
@@ -182,7 +177,6 @@
   line-height: 1.6;
 }
 
-/* Testimonials Section */
 .testimonials {
   padding: 6rem 0;
   background-color: var(--light-color);
@@ -246,7 +240,6 @@
   font-size: 0.9rem;
 }
 
-/* Brand Intro Section */
 .brand-intro {
   padding: 7rem 0;
   background-color: var(--light-color);
@@ -442,7 +435,6 @@
   right: 15%;
 }
 
-/* Instagram Gallery */
 .instagram {
   padding: 6rem 0;
 }
@@ -495,7 +487,6 @@
   transform: scale(1.1);
 }
 
-/* Call to Action Section */
 .cta {
   padding: 6rem 0;
   background-image:
@@ -530,7 +521,6 @@
   font-weight: 600;
 }
 
-/* Cake Builder Section */
 .cake-builder {
   padding: 6rem 0;
   background-color: var(--white-color);
@@ -620,7 +610,6 @@
   font-weight: 600;
 }
 
-/* Ready Cakes Section */
 .ready-cakes {
   padding: 6rem 0;
   background-color: var(--light-color);
@@ -685,7 +674,6 @@
   margin-bottom: 15px;
 }
 
-/* Split Layout for Cake Builder Header */
 .split-layout {
   display: flex;
   justify-content: space-between;
@@ -716,7 +704,6 @@
   line-height: 1.6;
 }
 
-/* Responsive styles */
 @media (max-width: 992px) {
   .hero h1 {
     font-size: 2.8rem;

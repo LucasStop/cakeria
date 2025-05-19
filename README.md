@@ -240,7 +240,8 @@ Exemplo de scripts no `backend/package.json`:
 - **`start`**: Inicia em produção (`node app.js`).
 - **`dev`**: Inicia em desenvolvimento, usando `nodemon`.
 - **`migrate`**: Executa as migrações (`sequelize db:migrate`).
-- **`seed`**: Popula o banco com seeds (`sequelize db:seed:all`).
+- **`seed`**: Popula o banco com seeds (`sequelize db:seed:all`). Utilize este comando para popular o banco com dados de exemplo de usuários, categorias, produtos, endereços, receitas, comentários, pedidos e itens de pedidos.
+- **`seed:run`**: Executa os seeders na ordem correta usando o script personalizado em `scripts/run-seeders.js`.
 - **`db:reset`**: Desfaz todas as migrações e as reaplica.
 - **`db:clear-data`**: Executa um script que limpa todos os dados das tabelas, sem removê-las.
 - **`db:drop-tables`**: Executa um script que remove as tabelas do banco.

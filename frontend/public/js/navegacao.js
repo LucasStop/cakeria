@@ -11,19 +11,17 @@ const Navigation = {
   },
 
   navegarParaProdutos: function () {
-    // Verificar se estamos em páginas que precisam de redirecionamento
     const currentPath = window.location.pathname;
-    const needsRedirect = currentPath.includes('home.html') || 
-                          currentPath.includes('admin.html') || 
-                          currentPath.includes('perfil.html');
-    
+    const needsRedirect =
+      currentPath.includes('home.html') ||
+      currentPath.includes('admin.html') ||
+      currentPath.includes('perfil.html');
+
     if (needsRedirect) {
-      // Se estiver em uma dessas páginas, redirecionar para a página específica de produtos
       window.location.href = '/produtos.html';
       return;
     }
-    
-    // Caso contrário, continuar com o comportamento atual
+
     window.removerEstilosEspecificos && window.removerEstilosEspecificos();
     window.renderizarListaProdutos();
     this.currentPage = 'produtos';
@@ -66,9 +64,8 @@ const Navigation = {
   handleNavigation: function () {
     const path = window.location.pathname;
 
-    // Não fazer nada se estiver na página inicial
     if (path === '/' || path === '/index.html') {
-      return; // Retornamos aqui para evitar qualquer redirecionamento
+      return;
     }
 
     if (path.startsWith('/produtos/') && path.length > 10) {

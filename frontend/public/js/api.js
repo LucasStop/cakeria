@@ -1,5 +1,3 @@
-// API Helper for interacting with the backend
-
 const API = {
   BASE_URL: 'http://localhost:3001/api',
   async request(endpoint, options = {}) {
@@ -81,8 +79,6 @@ const API = {
   },
   isTokenExpired() {
     const token = localStorage.getItem('token');
-    // Se não há token, considerar que não está "expirado" para não exibir mensagem de expiração
-    // Isso é diferente de estar autenticado, pois isAuthenticated() ainda retornará false
     if (!token) return false;
 
     try {
@@ -100,7 +96,7 @@ const API = {
       return isExpired;
     } catch (error) {
       console.error('Erro ao verificar token:', error);
-      return false; // Em caso de erro, não considerar expirado
+      return false;
     }
   },
   clearSession() {
@@ -213,7 +209,7 @@ const API = {
     },
   },
 
-  address: {
+  Address: {
     getByUser(userId) {
       return API.request(`/address/user/${userId}`);
     },
@@ -261,29 +257,19 @@ const API = {
   },
 };
 
-// Verificar e corrigir a URL base da API
 if (!API.BASE_URL) {
   API.BASE_URL = 'http://localhost:3001/api';
   console.log('API.BASE_URL definida como padrão:', API.BASE_URL);
 }
 
-// Adicionando possíveis variações de endpoints para produtos
-const PRODUCT_ENDPOINTS = [
-  '/products', // Endpoint em inglês (prioritário)
-  '/produtos', // Endpoint original em português
-  '/product', // Singular em inglês
-  '/produto', // Singular em português
-];
+const PRODUCT_ENDPOINTS = ['/products', '/produtos', '/product', '/produto'];
 
-// Modificar o método listar produtos para tentar diferentes endpoints
 API.produtos = {
   listar: async function () {
     console.log('API.produtos.listar: Iniciando chamada para API...');
 
-    // Array para armazenar erros de cada tentativa
     let errors = [];
 
-    // Tentar cada endpoint possível
     for (const endpoint of PRODUCT_ENDPOINTS) {
       try {
         console.log(`API.produtos.listar: Tentando endpoint ${endpoint}...`);
@@ -301,7 +287,7 @@ API.produtos = {
           const error = new Error(`Erro HTTP: ${response.status}`);
           error.status = response.status;
           errors.push({ endpoint, error });
-          continue; // Tentar o próximo endpoint
+          continue;
         }
 
         const data = await response.json();
@@ -310,14 +296,11 @@ API.produtos = {
           data.length ? `${data.length} itens` : 'Objeto ou array vazio'
         );
 
-        // Se chegou até aqui, encontramos um endpoint válido
-        // Vamos salvar para futuras chamadas
         console.log(
           `API.produtos.listar: Endpoint ${endpoint} funcionou! Salvando para uso futuro.`
         );
         API.produtos.ENDPOINT = endpoint;
 
-        // Verificar o formato da resposta
         if (Array.isArray(data)) {
           return data;
         } else if (typeof data === 'object' && data !== null) {
@@ -327,7 +310,6 @@ API.produtos = {
           if (data.items && Array.isArray(data.items)) return data.items;
           if (data.results && Array.isArray(data.results)) return data.results;
 
-          // Se for objeto único, converter para array
           if (Object.keys(data).length > 0) return [data];
         }
 
@@ -339,10 +321,8 @@ API.produtos = {
       }
     }
 
-    // Se chegou aqui, todos os endpoints falharam
     console.error('API.produtos.listar: Todos os endpoints falharam:', errors);
 
-    // Tentar fazer um diagnóstico da API
     try {
       const healthCheck = await fetch(`${API.BASE_URL}/health`).catch(e => ({
         ok: false,
@@ -353,7 +333,6 @@ API.produtos = {
       console.error('API health check falhou:', e);
     }
 
-    // Tentar obter a lista de endpoints disponíveis
     try {
       const rootResponse = await fetch(API.BASE_URL).catch(e => ({ ok: false, error: e }));
       if (rootResponse.ok) {
@@ -364,7 +343,6 @@ API.produtos = {
       console.error('Falha ao acessar raiz da API:', e);
     }
 
-    // Retornar produtos mockados como último recurso
     console.log('API.produtos.listar: Retornando produtos mockados');
     return [
       {
@@ -403,7 +381,6 @@ API.produtos = {
     try {
       const response = await fetch(`${API.BASE_URL}${endpoint}?category=${categoriaId}`);
       if (!response.ok) {
-        // Tentar endpoint alternativo
         const altResponse = await fetch(`${API.BASE_URL}/category/${categoriaId}/product`);
         if (!altResponse.ok) {
           throw new Error(`Erro HTTP: ${response.status}`);
@@ -418,7 +395,6 @@ API.produtos = {
   },
 };
 
-// Adicionar uma função para testar todos os endpoints possíveis da API
 API.testarEndpoints = async function () {
   const endpoints = [
     '/produtos',
@@ -471,7 +447,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // Obter token atual
   const token = localStorage.getItem('token');
 
   const publicPages = ['/login.html', '/registro.html', '/index.html', '/'];

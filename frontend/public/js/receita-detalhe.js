@@ -29,10 +29,8 @@ function renderRecipeDetails(recipe) {
   const recipeDetail = document.getElementById('recipe-detail');
   if (!recipeDetail) return;
 
-  // Atualizar o breadcrumb com o título da receita
   document.getElementById('recipe-breadcrumb-title').textContent = recipe.title;
 
-  // Atualizar o título da página
   document.title = `Cakeria | ${recipe.title}`;
 
   recipeDetail.innerHTML = `
@@ -87,14 +85,12 @@ function renderRecipeDetails(recipe) {
           <div class="recipe-section">
             <h2><i class="fas fa-utensils"></i> Ingredientes</h2>
             <ul class="recipe-ingredients">
-              <!-- Ingredientes serão inseridos aqui via JavaScript -->
             </ul>
           </div>
           
           <div class="recipe-section">
             <h2><i class="fas fa-list-ol"></i> Modo de Preparo</h2>
             <ol class="recipe-instructions">
-              <!-- Instruções serão inseridos aqui via JavaScript -->
             </ol>
           </div>
           
@@ -103,41 +99,34 @@ function renderRecipeDetails(recipe) {
     </div>
   `;
 
-  // Processar ingredientes com melhor formatação
   const ingredientsList = document.querySelector('.recipe-ingredients');
   if (ingredientsList) {
     ingredientsList.innerHTML = '';
 
-    // Processar ingredientes de maneira mais robusta
     const formattedIngredients = formatArrayOrString(recipe.ingredients);
 
     formattedIngredients.forEach(ingredient => {
       const li = document.createElement('li');
       const ingredientText = ingredient.trim();
-      
-      // Criar o ícone de verificação
+
       const icon = document.createElement('i');
       icon.className = 'fas fa-check';
-      
-      // Criar o texto do ingrediente
+
       const textSpan = document.createElement('span');
       textSpan.className = 'ingredient-text';
       textSpan.textContent = ingredientText;
-      
-      // Adicionar elementos ao li
+
       li.appendChild(icon);
       li.appendChild(textSpan);
-      
+
       ingredientsList.appendChild(li);
     });
   }
 
-  // Processar instruções com melhor formatação
   const instructionsList = document.querySelector('.recipe-instructions');
   if (instructionsList) {
     instructionsList.innerHTML = '';
 
-    // Processar instruções de maneira mais robusta
     const formattedInstructions = formatArrayOrString(recipe.instructions);
 
     formattedInstructions.forEach((step, index) => {
@@ -146,19 +135,16 @@ function renderRecipeDetails(recipe) {
       instructionsList.appendChild(li);
     });
   }
-  
-  // Configurar botões de ação
+
   setupActionButtons(recipe);
-  
-  // Configurar botões de administração
+
   setupAdminButtons(recipe);
 }
 
-// Função auxiliar para formatar a dificuldade
 function formatDifficulty(difficulty) {
   if (!difficulty) return 'Médio';
-  
-  switch(difficulty.toLowerCase()) {
+
+  switch (difficulty.toLowerCase()) {
     case 'facil':
     case 'fácil':
     case 'easy':
@@ -172,18 +158,16 @@ function formatDifficulty(difficulty) {
   }
 }
 
-// Função auxiliar para calcular e formatar o tempo total
 function formatTotalTime(prepTime, cookTime) {
-  // Converter para números e garantir que são valores válidos
   const prep = parseInt(prepTime) || 0;
   const cook = parseInt(cookTime) || 0;
-  
+
   const total = prep + cook;
-  
+
   if (total >= 60) {
     const hours = Math.floor(total / 60);
     const minutes = total % 60;
-    
+
     if (minutes === 0) {
       return `${hours}h`;
     } else {
@@ -194,50 +178,40 @@ function formatTotalTime(prepTime, cookTime) {
   }
 }
 
-// Função para configurar a funcionalidade de comentários
 function setupCommentFunctionality(recipeId) {
   const commentForm = document.getElementById('comment-form-wrapper');
   const loginMessage = document.getElementById('comment-login-message');
   const commentsList = document.getElementById('comments-list');
-  
-  // Verificar se o usuário está logado
+
   const isLoggedIn = localStorage.getItem('token') !== null;
-  
+
   if (isLoggedIn) {
-    // Mostrar formulário de comentário
     if (commentForm) commentForm.style.display = 'block';
     if (loginMessage) loginMessage.style.display = 'none';
-    
-    // Configurar botão de envio de comentário
+
     const submitButton = document.getElementById('submit-comment');
     const commentTextarea = document.getElementById('comment-text');
-    
+
     if (submitButton && commentTextarea) {
       submitButton.addEventListener('click', async () => {
         const commentText = commentTextarea.value.trim();
-        
+
         if (commentText) {
           try {
-            // Desabilitar o botão enquanto envia
             submitButton.disabled = true;
             submitButton.textContent = 'Enviando...';
-            
-            // Enviar o comentário para a API
+
             await postComment(recipeId, commentText);
-            
-            // Limpar o campo de texto
+
             commentTextarea.value = '';
-            
-            // Recarregar os comentários
+
             await fetchComments(recipeId);
-            
-            // Notificar o usuário
+
             showNotification('Comentário publicado com sucesso!', 'success');
           } catch (error) {
             console.error('Erro ao publicar comentário:', error);
             showNotification('Erro ao publicar seu comentário. Tente novamente.', 'error');
           } finally {
-            // Reativar o botão
             submitButton.disabled = false;
             submitButton.textContent = 'Enviar Comentário';
           }
@@ -245,40 +219,34 @@ function setupCommentFunctionality(recipeId) {
       });
     }
   } else {
-    // Mostrar mensagem de login
     if (commentForm) commentForm.style.display = 'none';
     if (loginMessage) loginMessage.style.display = 'block';
   }
-  
-  // Carregar comentários existentes
+
   fetchComments(recipeId);
 }
 
-// Função para buscar comentários
 async function fetchComments(recipeId) {
   const commentsList = document.getElementById('comments-list');
-  
+
   if (!commentsList) return;
-  
-  // Mostrar indicador de carregamento
+
   commentsList.innerHTML = `
     <div class="loading-indicator">
       <div class="spinner"></div>
       <p>Carregando comentários...</p>
     </div>
   `;
-  
+
   try {
-    // Buscar comentários da API usando a nova rota
-    const response = await fetch(`${API.BASE_URL}/comments/recipe/${recipeId}`);
-    
+    const response = await fetch(`${API.BASE_URL}/comment/recipe/${recipeId}`);
+
     if (!response.ok) {
       throw new Error(`Erro ao buscar comentários: ${response.status}`);
     }
-    
+
     const comments = await response.json();
-    
-    // Renderizar comentários
+
     renderComments(comments);
   } catch (error) {
     console.error('Erro ao buscar comentários:', error);
@@ -291,12 +259,11 @@ async function fetchComments(recipeId) {
   }
 }
 
-// Função para renderizar comentários
 function renderComments(comments) {
   const commentsList = document.getElementById('comments-list');
-  
+
   if (!commentsList) return;
-  
+
   if (!comments || comments.length === 0) {
     commentsList.innerHTML = `
       <div class="no-comments-message">
@@ -306,83 +273,73 @@ function renderComments(comments) {
     `;
     return;
   }
-  
-  // Limpar a lista de comentários
+
   commentsList.innerHTML = '';
-  
-  // Template para comentários
+
   const template = document.getElementById('comment-template');
-  
-  // Adicionar cada comentário
+
   comments.forEach(comment => {
     if (template) {
       const commentElement = template.content.cloneNode(true);
-      
-      // Preencher os dados do comentário
+
       const commentNode = commentElement.querySelector('.comment');
       if (commentNode) {
         commentNode.setAttribute('data-comment-id', comment.id);
       }
-      
+
       const author = commentElement.querySelector('.comment-author');
       if (author) author.textContent = comment.author?.name || 'Usuário anônimo';
-      
+
       const date = commentElement.querySelector('.comment-date');
       if (date) date.textContent = formatDate(comment.createdAt);
-      
+
       const text = commentElement.querySelector('.comment-text');
       if (text) text.textContent = comment.content;
-      
+
       const initials = commentElement.querySelector('.avatar-initials');
       if (initials) {
         const userName = comment.author?.name || 'Usuário anônimo';
         initials.textContent = getUserInitials(userName);
-        
-        // Aplicar cor personalizada baseada no nome
+
         const bgColor = generateColorFromName(userName);
         initials.style.backgroundColor = bgColor;
         initials.style.color = '#FFFFFF';
       }
-      
+
       const avatar = commentElement.querySelector('.avatar');
       if (avatar) {
         const userName = comment.author?.name || 'Usuário anônimo';
         avatar.style.backgroundColor = generateColorFromName(userName);
       }
-      
-      // Configurar botões de ação para comentários
+
       const actionsSection = commentElement.querySelector('.comment-actions');
       if (actionsSection) {
-        // Verificar se o usuário pode excluir este comentário
         const canDelete = canDeleteComment(comment);
         const canEdit = canEditComment(comment);
-        
+
         if (canDelete || canEdit) {
           actionsSection.style.display = 'block';
-          
-          // Configurar botão de exclusão
+
           if (canDelete) {
             const deleteButton = actionsSection.querySelector('.delete-comment');
             if (deleteButton) {
               deleteButton.setAttribute('data-comment-id', comment.id);
-              deleteButton.addEventListener('click', function() {
+              deleteButton.addEventListener('click', function () {
                 showDeleteCommentConfirmation(comment);
               });
             }
           } else {
-            // Esconder botão de exclusão se não tiver permissão
             const deleteButton = actionsSection.querySelector('.delete-comment');
             if (deleteButton) {
               deleteButton.style.display = 'none';
             }
           }
-          
-      // Configurar botão de edição
+
           if (canEdit) {
             const editButton = actionsSection.querySelector('.edit-comment');
             if (editButton) {
               editButton.setAttribute('data-comment-id', comment.id);
-              editButton.addEventListener('click', function(e) {
+              editButton.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 console.log('Clicou para editar comentário:', comment.id);
@@ -390,7 +347,6 @@ function renderComments(comments) {
               });
             }
           } else {
-            // Esconder botão de edição se não tiver permissão
             const editButton = actionsSection.querySelector('.edit-comment');
             if (editButton) {
               editButton.style.display = 'none';
@@ -398,10 +354,9 @@ function renderComments(comments) {
           }
         }
       }
-      
+
       commentsList.appendChild(commentElement);
     } else {
-      // Fallback se o template não estiver disponível
       const commentElement = document.createElement('div');
       commentElement.className = 'comment';
       commentElement.innerHTML = `
@@ -418,81 +373,157 @@ function renderComments(comments) {
   });
 }
 
-// Função para enviar um novo comentário
 async function postComment(recipeId, content) {
   const token = localStorage.getItem('token');
-  
+
   if (!token) {
     throw new Error('Você precisa estar logado para comentar');
   }
-  
-  const response = await fetch(`${API.BASE_URL}/comments/${recipeId}`, {
+
+  const response = await fetch(`${API.BASE_URL}/comment/${recipeId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ content })
+    body: JSON.stringify({ content }),
   });
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `Erro ao enviar comentário: ${response.status}`);
   }
-  
+
   return await response.json();
 }
 
-// Função para obter as iniciais do nome do usuário
+async function deleteCommentOnServer(commentId) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    showNotification('Sessão expirada. Por favor, faça login novamente.', 'error');
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API.BASE_URL}/comment/${commentId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Erro ao deletar comentário: ${response.status}`);
+    }
+    showNotification('Comentário excluído com sucesso!', 'success');
+    const commentElement = document.querySelector(`.comment[data-comment-id="${commentId}"]`);
+    if (commentElement) {
+      commentElement.remove();
+    } else {
+      const recipeId = getRecipeIdFromUrl();
+      if (recipeId) fetchComments(recipeId);
+    }
+  } catch (error) {
+    console.error('Erro ao excluir comentário:', error);
+    showNotification(error.message || 'Não foi possível excluir o comentário.', 'error');
+  }
+}
+
+// Função para atualizar comentário (adapte o nome se já existir uma)
+async function updateCommentOnServer(commentId, newContent) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    showNotification('Sessão expirada. Por favor, faça login novamente.', 'error');
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API.BASE_URL}/comment/${commentId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ content: newContent }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Erro ao atualizar comentário: ${response.status}`);
+    }
+    showNotification('Comentário atualizado com sucesso!', 'success');
+    const recipeId = getRecipeIdFromUrl();
+    if (recipeId) fetchComments(recipeId); // Recarrega para simplicidade
+  } catch (error) {
+    console.error('Erro ao atualizar comentário:', error);
+    showNotification(error.message || 'Não foi possível atualizar o comentário.', 'error');
+  }
+}
+
 function getUserInitials(name) {
   if (!name) return '?';
-  
+
   const parts = name.split(' ').filter(p => p.trim().length > 0);
   if (parts.length === 0) return '?';
   if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
-  
+
   return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 }
 
-// Função para gerar uma cor consistente baseada no nome de usuário
 function generateColorFromName(name) {
   if (!name) return '#777777';
-  
-  // Lista de cores agradáveis para os avatares
+
   const colors = [
-    '#FF5252', '#FF4081', '#E040FB', '#7C4DFF', '#536DFE', 
-    '#448AFF', '#40C4FF', '#18FFFF', '#64FFDA', '#69F0AE', 
-    '#B2FF59', '#EEFF41', '#FFFF00', '#FFD740', '#FFAB40',
-    '#5E35B1', '#3949AB', '#1E88E5', '#039BE5', '#00ACC1', 
-    '#00897B', '#43A047', '#7CB342', '#C0CA33', '#FDD835', 
-    '#FFB300', '#FB8C00', '#F4511E', '#6D4C41', '#757575'
+    '#FF5252',
+    '#FF4081',
+    '#E040FB',
+    '#7C4DFF',
+    '#536DFE',
+    '#448AFF',
+    '#40C4FF',
+    '#18FFFF',
+    '#64FFDA',
+    '#69F0AE',
+    '#B2FF59',
+    '#EEFF41',
+    '#FFFF00',
+    '#FFD740',
+    '#FFAB40',
+    '#5E35B1',
+    '#3949AB',
+    '#1E88E5',
+    '#039BE5',
+    '#00ACC1',
+    '#00897B',
+    '#43A047',
+    '#7CB342',
+    '#C0CA33',
+    '#FDD835',
+    '#FFB300',
+    '#FB8C00',
+    '#F4511E',
+    '#6D4C41',
+    '#757575',
   ];
-  
-  // Gerar um número baseado no nome
+
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
-  
-  // Usar esse número para selecionar uma cor
+
   const index = Math.abs(hash) % colors.length;
   return colors[index];
 }
 
-// Função para exibir notificações
 function showNotification(message, type = 'info') {
-  // Verificar se temos o objeto de notificações global
   if (window.Notifications) {
     window.Notifications[type](message);
   } else {
-    // Fallback: criar uma notificação simples
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
-    
+
     document.body.appendChild(notification);
-    
-    // Remover após 5 segundos
+
     setTimeout(() => {
       notification.classList.add('fade-out');
       setTimeout(() => {
@@ -557,59 +588,54 @@ function showError() {
   }
 }
 
-// Função para configurar os botões de ação
 function setupActionButtons(recipe) {
-  // Botão de favoritar
-  const favoriteButton = document.querySelector('.recipe-actions .btn-icon[title="Salvar receita"]');
+  const favoriteButton = document.querySelector(
+    '.recipe-actions .btn-icon[title="Salvar receita"]'
+  );
   if (favoriteButton) {
-    // Verificar se a receita já está nos favoritos
     const favorites = getFavoriteRecipes();
     const isAlreadyFavorite = favorites.some(fav => fav.id === recipe.id);
-    
-    // Atualizar o ícone se já for favorito
+
     if (isAlreadyFavorite) {
       const icon = favoriteButton.querySelector('i');
       icon.classList.remove('far');
       icon.classList.add('fas');
-      icon.style.color = '#e55757'; // Cor de favorito
+      icon.style.color = '#e55757';
     }
-    
-    favoriteButton.addEventListener('click', function() {
+
+    favoriteButton.addEventListener('click', function () {
       toggleFavoriteRecipe(recipe, this);
     });
   }
-  
-  // Botão de imprimir
+
   const printButton = document.querySelector('.recipe-actions .btn-icon[title="Imprimir receita"]');
   if (printButton) {
-    printButton.addEventListener('click', function() {
+    printButton.addEventListener('click', function () {
       printRecipe(recipe);
     });
   }
-  
-  // Botão de compartilhar
-  const shareButton = document.querySelector('.recipe-actions .btn-icon[title="Compartilhar receita"]');
+
+  const shareButton = document.querySelector(
+    '.recipe-actions .btn-icon[title="Compartilhar receita"]'
+  );
   if (shareButton) {
-    shareButton.addEventListener('click', function() {
+    shareButton.addEventListener('click', function () {
       shareRecipe(recipe);
     });
   }
 }
 
-// Função para obter receitas favoritas do localStorage
 function getFavoriteRecipes() {
   const favorites = localStorage.getItem('favoriteRecipes');
   return favorites ? JSON.parse(favorites) : [];
 }
 
-// Função para alternar o status de favorito de uma receita
 function toggleFavoriteRecipe(recipe, button) {
   const favorites = getFavoriteRecipes();
   const index = favorites.findIndex(fav => fav.id === recipe.id);
   const icon = button.querySelector('i');
-  
+
   if (index === -1) {
-    // Adicionar aos favoritos
     const favoriteRecipe = {
       id: recipe.id,
       title: recipe.title,
@@ -617,47 +643,40 @@ function toggleFavoriteRecipe(recipe, button) {
       difficulty: recipe.difficulty,
       prepTime: recipe.prepTime,
       cookTime: recipe.cookTime,
-      dateAdded: new Date().toISOString()
+      dateAdded: new Date().toISOString(),
     };
-    
+
     favorites.push(favoriteRecipe);
-    
-    // Atualizar visual
+
     icon.classList.remove('far');
     icon.classList.add('fas');
-    icon.style.color = '#e55757'; // Cor de favorito
-    
+    icon.style.color = '#e55757';
+
     showNotification('Receita adicionada aos favoritos!', 'success');
   } else {
-    // Remover dos favoritos
     favorites.splice(index, 1);
-    
-    // Atualizar visual
+
     icon.classList.remove('fas');
     icon.classList.add('far');
-    icon.style.color = '#444444'; // Cor normal
-    
+    icon.style.color = '#444444';
+
     showNotification('Receita removida dos favoritos!', 'info');
   }
-  
-  // Salvar no localStorage
+
   localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
 }
 
-// Função para imprimir a receita
 function printRecipe(recipe) {
-  // Criar um novo documento para impressão com layout mais limpo
   const printWindow = window.open('', '_blank');
-  
-  // Gerar o HTML para impressão
+
   const formattedIngredients = formatArrayOrString(recipe.ingredients)
     .map(ingredient => `<li>${ingredient.trim()}</li>`)
     .join('');
-    
+
   const formattedInstructions = formatArrayOrString(recipe.instructions)
     .map((step, index) => `<li><strong>${index + 1}.</strong> ${step.trim()}</li>`)
     .join('');
-  
+
   const printContent = `
     <!DOCTYPE html>
     <html lang="pt-BR">
@@ -751,49 +770,43 @@ function printRecipe(recipe) {
     </body>
     </html>
   `;
-  
+
   printWindow.document.open();
   printWindow.document.write(printContent);
   printWindow.document.close();
 }
 
-// Função para compartilhar a receita
 function shareRecipe(recipe) {
   const currentUrl = window.location.href;
   const recipeTitle = recipe.title;
-  
-  // Verificar se a API de compartilhamento está disponível
+
   if (navigator.share) {
-    navigator.share({
-      title: `Cakeria | ${recipeTitle}`,
-      text: `Confira essa receita incrível de ${recipeTitle} que encontrei na Cakeria!`,
-      url: currentUrl
-    })
-    .then(() => showNotification('Receita compartilhada com sucesso!', 'success'))
-    .catch(error => {
-      console.error('Erro ao compartilhar:', error);
-      showFallbackShareOptions(currentUrl, recipeTitle);
-    });
+    navigator
+      .share({
+        title: `Cakeria | ${recipeTitle}`,
+        text: `Confira essa receita incrível de ${recipeTitle} que encontrei na Cakeria!`,
+        url: currentUrl,
+      })
+      .then(() => showNotification('Receita compartilhada com sucesso!', 'success'))
+      .catch(error => {
+        console.error('Erro ao compartilhar:', error);
+        showFallbackShareOptions(currentUrl, recipeTitle);
+      });
   } else {
-    // Fallback para navegadores que não suportam a API Share
     showFallbackShareOptions(currentUrl, recipeTitle);
   }
 }
 
-// Configurar botões de administração na página de detalhes da receita
 function setupAdminButtons(recipe) {
   const managementControls = document.getElementById('recipe-management-controls');
   if (!managementControls) return;
-  
-  // Verificar se o usuário pode editar/excluir esta receita
+
   const canEdit = canEditRecipe(recipe);
   const canDelete = canDeleteRecipe(recipe);
-  
+
   if (canEdit || canDelete) {
-    // Mostrar a seção de gerenciamento
     managementControls.style.display = 'flex';
-    
-    // Configurar botão de edição se o usuário tiver permissão
+
     if (canEdit) {
       const editButton = managementControls.querySelector('.edit-recipe-btn');
       if (editButton) {
@@ -802,14 +815,12 @@ function setupAdminButtons(recipe) {
         });
       }
     } else {
-      // Esconder botão de edição se não tiver permissão
       const editButton = managementControls.querySelector('.edit-recipe-btn');
       if (editButton) {
         editButton.style.display = 'none';
       }
     }
-    
-    // Configurar botão de exclusão se o usuário tiver permissão
+
     if (canDelete) {
       const deleteButton = managementControls.querySelector('.delete-recipe-btn');
       if (deleteButton) {
@@ -818,7 +829,6 @@ function setupAdminButtons(recipe) {
         });
       }
     } else {
-      // Esconder botão de exclusão se não tiver permissão
       const deleteButton = managementControls.querySelector('.delete-recipe-btn');
       if (deleteButton) {
         deleteButton.style.display = 'none';
@@ -827,7 +837,6 @@ function setupAdminButtons(recipe) {
   }
 }
 
-// Mostrar confirmação para excluir receita
 function showDeleteConfirmation(recipe) {
   const dialog = document.createElement('div');
   dialog.className = 'confirmation-dialog';
@@ -841,35 +850,29 @@ function showDeleteConfirmation(recipe) {
       </div>
     </div>
   `;
-  
+
   document.body.appendChild(dialog);
-  
-  // Manipular botão de cancelar
+
   const cancelButton = dialog.querySelector('.dialog-btn-cancel');
   cancelButton.addEventListener('click', () => {
     dialog.remove();
   });
-  
-  // Manipular botão de confirmar
+
   const confirmButton = dialog.querySelector('.dialog-btn-confirm');
   confirmButton.addEventListener('click', async () => {
     try {
-      // Adicionar indicador de carregamento
       confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
       confirmButton.disabled = true;
-      
-      // Fazer a requisição para excluir a receita
+
       await fetch(`${API.BASE_URL}/recipe/${recipe.id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       });
-      
-      // Mostrar notificação de sucesso
+
       showNotification('Receita excluída com sucesso!', 'success');
-      
-      // Redirecionar para a página de receitas
+
       setTimeout(() => {
         window.location.href = '/receitas.html';
       }, 1500);
@@ -881,7 +884,6 @@ function showDeleteConfirmation(recipe) {
   });
 }
 
-// Mostrar confirmação para excluir comentário
 function showDeleteCommentConfirmation(comment) {
   const dialog = document.createElement('div');
   dialog.className = 'confirmation-dialog';
@@ -895,38 +897,31 @@ function showDeleteCommentConfirmation(comment) {
       </div>
     </div>
   `;
-  
+
   document.body.appendChild(dialog);
-  
-  // Manipular botão de cancelar
+
   const cancelButton = dialog.querySelector('.dialog-btn-cancel');
   cancelButton.addEventListener('click', () => {
     dialog.remove();
   });
-  
-  // Manipular botão de confirmar
+
   const confirmButton = dialog.querySelector('.dialog-btn-confirm');
   confirmButton.addEventListener('click', async () => {
     try {
-      // Adicionar indicador de carregamento
       confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
       confirmButton.disabled = true;
-      
-      // Fazer a requisição para excluir o comentário
-      await fetch(`${API.BASE_URL}/comments/${comment.id}`, {
+
+      await fetch(`${API.BASE_URL}/comment/${comment.id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       });
-      
-      // Recarregar os comentários
+
       await fetchComments(getRecipeIdFromUrl());
-      
-      // Mostrar notificação de sucesso
+
       showNotification('Comentário excluído com sucesso!', 'success');
-      
-      // Remover o diálogo
+
       dialog.remove();
     } catch (error) {
       console.error('Erro ao excluir comentário:', error);
@@ -936,18 +931,16 @@ function showDeleteCommentConfirmation(comment) {
   });
 }
 
-// Mostrar formulário para editar comentário
 function showEditCommentForm(comment) {
   console.log('Editando comentário:', comment);
-  
-  // Marcar visualmente o comentário que está sendo editado
+
   const commentElement = document.querySelector(`.comment[data-comment-id="${comment.id}"]`);
   if (commentElement) {
     commentElement.classList.add('editing');
   } else {
     console.warn('Elemento do comentário não encontrado:', comment.id);
   }
-  
+
   const dialog = document.createElement('div');
   dialog.className = 'edit-comment-dialog';
   dialog.innerHTML = `
@@ -960,15 +953,13 @@ function showEditCommentForm(comment) {
       </div>
     </div>
   `;
-  
+
   document.body.appendChild(dialog);
-  
-  // Focar no textarea
+
   const textarea = dialog.querySelector('.edit-comment-textarea');
   textarea.focus();
-  
-  // Adicionar atalho de teclado (Ctrl+Enter para salvar)
-  textarea.addEventListener('keydown', (e) => {
+
+  textarea.addEventListener('keydown', e => {
     if (e.ctrlKey && e.key === 'Enter') {
       e.preventDefault();
       saveButton.click();
@@ -977,63 +968,54 @@ function showEditCommentForm(comment) {
       cancelButton.click();
     }
   });
-  
-  // Manipular botão de cancelar
+
   const cancelButton = dialog.querySelector('.dialog-btn-cancel');
   cancelButton.addEventListener('click', () => {
-    // Remover classe de edição do comentário
     if (commentElement) {
       commentElement.classList.remove('editing');
     }
     dialog.remove();
   });
-  
-  // Manipular botão de salvar
+
   const saveButton = dialog.querySelector('.dialog-btn-save');
   saveButton.addEventListener('click', async () => {
     const newContent = textarea.value.trim();
-    
+
     if (!newContent) {
       showNotification('O comentário não pode estar vazio.', 'warning');
       return;
     }
-    
+
     try {
-      // Adicionar indicador de carregamento
       saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
       saveButton.disabled = true;
-      
+
       console.log('Enviando atualização para o comentário:', comment.id);
-      
-      // Fazer a requisição para atualizar o comentário
-      const response = await fetch(`${API.BASE_URL}/comments/${comment.id}`, {
+
+      const response = await fetch(`${API.BASE_URL}/comment/${comment.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-        body: JSON.stringify({ content: newContent })
+        body: JSON.stringify({ content: newContent }),
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Erro ao atualizar comentário');
       }
-      
+
       console.log('Comentário atualizado com sucesso');
-      
-      // Recarregar os comentários
+
       await fetchComments(getRecipeIdFromUrl());
-      
-      // Mostrar notificação de sucesso
+
       showNotification('Comentário atualizado com sucesso!', 'success');
-      
-      // Remover classe de edição do comentário
+
       if (commentElement) {
         commentElement.classList.remove('editing');
       }
-      
-      // Remover o diálogo
+
       dialog.remove();
     } catch (error) {
       console.error('Erro ao atualizar comentário:', error);
@@ -1044,9 +1026,7 @@ function showEditCommentForm(comment) {
   });
 }
 
-// Opções alternativas de compartilhamento
 function showFallbackShareOptions(url, title) {
-  // Criar menu de compartilhamento
   const shareMenu = document.createElement('div');
   shareMenu.className = 'share-menu';
   shareMenu.innerHTML = `
@@ -1072,8 +1052,7 @@ function showFallbackShareOptions(url, title) {
       <button class="close-share-menu">Fechar</button>
     </div>
   `;
-  
-  // Estilos CSS inline
+
   const style = document.createElement('style');
   style.textContent = `
     .share-menu {
@@ -1157,27 +1136,25 @@ function showFallbackShareOptions(url, title) {
       to { opacity: 1; }
     }
   `;
-  
+
   document.head.appendChild(style);
   document.body.appendChild(shareMenu);
-  
-  // Manipular o clique no botão de fechar
+
   const closeButton = shareMenu.querySelector('.close-share-menu');
-  closeButton.addEventListener('click', function() {
+  closeButton.addEventListener('click', function () {
     shareMenu.remove();
   });
-  
-  // Manipular o clique fora do menu
-  shareMenu.addEventListener('click', function(e) {
+
+  shareMenu.addEventListener('click', function (e) {
     if (e.target === shareMenu) {
       shareMenu.remove();
     }
   });
-  
-  // Funcionalidade para copiar o link
+
   const copyLinkButton = shareMenu.querySelector('#copy-link-btn');
-  copyLinkButton.addEventListener('click', function() {
-    navigator.clipboard.writeText(url)
+  copyLinkButton.addEventListener('click', function () {
+    navigator.clipboard
+      .writeText(url)
       .then(() => {
         copyLinkButton.textContent = 'Link Copiado!';
         setTimeout(() => {
@@ -1186,14 +1163,13 @@ function showFallbackShareOptions(url, title) {
       })
       .catch(err => {
         console.error('Erro ao copiar o link:', err);
-        // Fallback para navegadores que não suportam clipboard API
         const tempInput = document.createElement('input');
         tempInput.value = url;
         document.body.appendChild(tempInput);
         tempInput.select();
         document.execCommand('copy');
         document.body.removeChild(tempInput);
-        
+
         copyLinkButton.textContent = 'Link Copiado!';
         setTimeout(() => {
           copyLinkButton.innerHTML = '<i class="fas fa-link"></i> Copiar Link';
