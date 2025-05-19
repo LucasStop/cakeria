@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cakeria | Carrinho de Compras</title>
+
+    <link rel="icon" href="/assets/favicon.ico" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./components/components.css" />
+    <link rel="stylesheet" href="./css/carrinho.css" />
+  </head>
+  <body>
+    <header-component></header-component>
+
+    <main class="container">
+      <section class="cart-section">
+        <h1 class="section-title">Carrinho de Compras</h1>
+
+        <div id="cart-empty" class="cart-empty" style="display: none;">
+          <i class="fas fa-shopping-cart"></i>
+          <p>Seu carrinho está vazio</p>
+          <a href="./produtos.html" class="btn btn-primary">Ver Produtos</a>
+        </div>
+
+        <div id="cart-content" class="cart-content">
+          <div class="cart-items" id="cart-items">
+            <!-- Os itens do carrinho serão inseridos aqui dinamicamente -->
+          </div>
+
+          <div class="cart-summary">
+            <h2>Resumo do Pedido</h2>
+            <div class="summary-item">
+              <span>Subtotal</span>
+              <span id="cart-subtotal">R$ 0,00</span>
+            </div>
+            <div class="summary-item">
+              <span>Frete</span>
+              <span id="cart-shipping">R$ 0,00</span>
+            </div>
+            <div class="summary-item total">
+              <span>Total</span>
+              <span id="cart-total">R$ 0,00</span>
+            </div>
+            <button id="btn-checkout" class="btn btn-primary btn-block">
+              Finalizar Compra
+            </button>
+            <button id="btn-continue-shopping" class="btn btn-outline btn-block">
+              Continuar Comprando
+            </button>
+            <button id="btn-clear-cart" class="btn btn-danger btn-block">
+              Limpar Carrinho
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer-component></footer-component>
+
+    <!-- Modal de confirmação para limpar carrinho -->
+    <div id="clear-cart-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Limpar Carrinho</h2>
+          <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+          <p>Tem certeza que deseja remover todos os itens do carrinho?</p>
+        </div>
+        <div class="modal-footer">
+          <button id="confirm-clear-cart" class="btn btn-danger">Sim, limpar carrinho</button>
+          <button id="cancel-clear-cart" class="btn btn-outline">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./js/utils/toast.js"></script>
+    <script src="./components/Header.js"></script>
+    <script src="./components/Footer.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/header-controller.js"></script>
+    <script src="./js/navegacao.js"></script>
+    <script src="./js/logout.js"></script>
+    <script src="./js/carrinho.js"></script>
+  </body>
+</html>

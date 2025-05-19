@@ -479,7 +479,7 @@ function updateCartCounter() {
       document.querySelector('.cart-count'),
       document.querySelector('.cart-counter'),
       document.querySelector('.cart-badge'),
-      document.querySelector('[data-cart-count]'),
+      document.querySelector('[data-cart_count]'),
     ];
 
     for (const counter of possibleCounters) {
