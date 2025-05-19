@@ -980,10 +980,28 @@ window.renderizarListaCategorias = renderizarListaCategorias;
 
 window.verDetalhesProduto = async function(id) {
   try {
-    // Se o módulo de detalhes do produto estiver disponível, usar ele (implementação do modal)
+    // Garantir que o CSS necessário esteja carregado
+    if (window.ResourceLoader) {
+      window.ResourceLoader.loadProductCSS();
+    }
+    
+    // Se o módulo de detalhes do produto estiver disponível, usar ele
     if (window.ProductDetails) {
       // Abrir o modal com loading
-      window.verDetalhesProduto(id);
+      if (typeof window.openProductModal === 'function') {
+        window.openProductModal();
+      } else if (window.ProductDetails.openModal) {
+        window.ProductDetails.openModal();
+      }
+      
+      // Buscar os detalhes do produto
+      const produto = await window.API.produtos.obterPorId(id);
+      
+      // Renderizar os detalhes do produto
+      if (typeof window.renderProductDetails === 'function') {
+        window.renderProductDetails(produto);
+      }
+      
       return;
     }
     
