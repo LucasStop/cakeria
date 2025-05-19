@@ -40,7 +40,14 @@ function canDeleteRecipe(recipe) {
 
 function canDeleteComment(comment) {
   const adminCheck = isAdmin();
-  console.log('canDeleteComment check. isAdmin:', adminCheck, 'Comment User ID:', comment.user_id, 'Current User:', getCurrentUser()); // Log para verificar a permissão
+  console.log(
+    'canDeleteComment check. isAdmin:',
+    adminCheck,
+    'Comment User ID:',
+    comment.user_id,
+    'Current User:',
+    getCurrentUser()
+  ); // Log para verificar a permissão
   if (adminCheck) return true;
 
   const user = getCurrentUser();

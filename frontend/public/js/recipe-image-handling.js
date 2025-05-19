@@ -1,5 +1,3 @@
-
-
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('recipe-form');
   const isEditMode = form && form.dataset.recipeId;
