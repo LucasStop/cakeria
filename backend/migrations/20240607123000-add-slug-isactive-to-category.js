@@ -2,14 +2,14 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('categories', 'slug', {
+    await queryInterface.addColumn('category', 'slug', {
       type: Sequelize.STRING(120),
       allowNull: false,
       unique: true,
       defaultValue: '',
       after: 'name',
     });
-    await queryInterface.addColumn('categories', 'is_active', {
+    await queryInterface.addColumn('category', 'is_active', {
       type: Sequelize.BOOLEAN,
       allowNull: false,
       defaultValue: true,
@@ -17,7 +17,7 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn('categories', 'slug');
-    await queryInterface.removeColumn('categories', 'is_active');
+    await queryInterface.removeColumn('category', 'slug');
+    await queryInterface.removeColumn('category', 'is_active');
   },
 };

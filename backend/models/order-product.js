@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
         references: {
-          model: 'orders',
+          model: 'order',
           key: 'id',
         },
       },
@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
         references: {
-          model: 'products',
+          model: 'product',
           key: 'id',
         },
       },
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'order_products',
+      tableName: 'order_product',
       timestamps: true,
       paranoid: true,
       underscored: true,

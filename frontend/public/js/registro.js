@@ -301,7 +301,7 @@ function handleSubmit(e) {
     formData.append('address', JSON.stringify(addressData));
     
     // Enviar dados com a imagem
-    fetch(`http://localhost:3001/api/users`, {
+    fetch(`http://localhost:3001/api/user`, {
       method: 'POST',
       body: formData
     })
@@ -340,7 +340,7 @@ function handleSubmit(e) {
       },
     };
 
-    fetch(`http://localhost:3001/api/users`, {
+    fetch(`http://localhost:3001/api/user`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

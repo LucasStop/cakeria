@@ -2,7 +2,7 @@ const { Address, User } = require('../models');
 
 exports.findAll = async (req, res) => {
   try {
-    const addresses = await Address.findAll({
+    const address = await Address.findAll({
       include: [
         {
           model: User,
@@ -11,7 +11,7 @@ exports.findAll = async (req, res) => {
         },
       ],
     });
-    res.json(addresses);
+    res.json(address);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar endereços', error: error.message });
   }
@@ -59,7 +59,7 @@ exports.findByUser = async (req, res) => {
     //   return res.status(403).json({ message: 'Acesso não autorizado aos endereços deste usuário' });
     // }
 
-    const addresses = await Address.findAll({
+    const address = await Address.findAll({
       where: { user_id: userId },
       include: [
         {
@@ -69,7 +69,7 @@ exports.findByUser = async (req, res) => {
         },
       ],
     });
-    res.json(addresses);
+    res.json(address);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar endereços do usuário', error: error.message });
   }

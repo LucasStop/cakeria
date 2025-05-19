@@ -5,14 +5,14 @@ const fs = require('fs'); // Importando fs para leitura de arquivos
 
 exports.findAll = async (req, res) => {
   try {
-    const products = await Product.findAll({
+    const product = await Product.findAll({
       include: [{ model: Category, as: 'category' }],
       attributes: {
         include: [[sequelize.literal('DATEDIFF(expiry_date, CURDATE())'), 'days_to_expire']],
       },
       order: [['created_at', 'DESC']],
     });
-    res.json(products);
+    res.json(product);
   } catch (error) {
     res.status(500).json({
       message: 'Erro ao buscar produtos',
@@ -42,18 +42,28 @@ exports.create = async (req, res) => {
   try {
     // O middleware de upload já deve ter processado a imagem
     // e adicionado o arquivo ao req.file, se houver
-    
+
     console.log('Recebendo requisição para criar produto:', {
       body: req.body,
-      file: req.file ? 'Arquivo recebido' : 'Sem arquivo'
+      file: req.file ? 'Arquivo recebido' : 'Sem arquivo',
     });
 
-    const { name, description, price, size, stock, stock_quantity, expiration_date, category_id, is_active } = req.body;
-    
+    const {
+      name,
+      description,
+      price,
+      size,
+      stock,
+      stock_quantity,
+      expiration_date,
+      category_id,
+      is_active,
+    } = req.body;
+
     if (!name || !description || !category_id) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         error: 'Dados insuficientes',
-        details: 'Nome, descrição e categoria são obrigatórios'
+        details: 'Nome, descrição e categoria são obrigatórios',
       });
     }
 
@@ -65,7 +75,7 @@ exports.create = async (req, res) => {
         .replace(/\s+/g, '-') // Substitui espaços por hífens
         .replace(/--+/g, '-') // Remove hífens duplicados
         .trim();
-      
+
       // Preparar dados do produto com validação segura
       const productData = {
         category_id: parseInt(category_id) || null,
@@ -74,7 +84,7 @@ exports.create = async (req, res) => {
         description: description.trim(),
         is_active: is_active === 'false' ? false : true,
       };
-      
+
       // Adicionar preço com validação segura
       if (price) {
         try {
@@ -84,12 +94,12 @@ exports.create = async (req, res) => {
           productData.price = 0;
         }
       }
-      
+
       // Adicionar tamanho
       if (size) {
         productData.size = size.trim();
       }
-      
+
       // Adicionar estoque com validação segura
       const stockValue = stock_quantity || stock;
       if (stockValue !== undefined && stockValue !== null) {
@@ -102,7 +112,7 @@ exports.create = async (req, res) => {
       } else {
         productData.stock = 0;
       }
-      
+
       // Processar data de validade (obrigatória no modelo)
       try {
         // Usar expiration_date do formulário ou criar uma data padrão (1 ano no futuro)
@@ -121,7 +131,7 @@ exports.create = async (req, res) => {
         defaultDate.setFullYear(defaultDate.getFullYear() + 1);
         productData.expiry_date = defaultDate;
       }
-      
+
       // Processar imagem com tratamento de erro
       if (req.file) {
         try {
@@ -133,16 +143,16 @@ exports.create = async (req, res) => {
           // Continuar sem imagem
         }
       }
-      
+
       console.log('Dados do produto validados:', {
         ...productData,
         expiry_date: productData.expiry_date ? 'Data definida' : 'Sem data',
-        image: productData.image ? 'Imagem incluída' : 'Sem imagem'
+        image: productData.image ? 'Imagem incluída' : 'Sem imagem',
       });
 
       const product = await Product.create(productData);
       console.log('Produto criado com sucesso:', product.id);
-      
+
       res.status(201).json(product);
     } catch (dbError) {
       console.error('Erro ao criar produto no banco de dados:', dbError);
@@ -152,7 +162,7 @@ exports.create = async (req, res) => {
     console.error('Erro ao criar produto:', error);
     res.status(400).json({
       message: 'Erro ao criar produto',
-      details: error.message || 'Erro desconhecido no servidor'
+      details: error.message || 'Erro desconhecido no servidor',
     });
   }
 };
@@ -171,16 +181,35 @@ exports.update = async (req, res) => {
         return res.status(404).json({ message: 'Produto não encontrado' });
       }
 
-      const updateData = {
-        ...req.body,
-        price: req.body.price ? formatPriceForDatabase(req.body.price) : undefined,
-        expiry_date: req.body.expiry_date ? formatDateForDatabase(req.body.expiry_date) : undefined,
-        stock: req.body.stock ? parseInt(req.body.stock) : undefined,
-      };
+      // Create update data with only the fields that are present
+      const updateData = {};
 
+      // Process only provided fields
+      if (req.body.name) updateData.name = req.body.name;
+      if (req.body.description) updateData.description = req.body.description;
+      if (req.body.category_id) updateData.category_id = req.body.category_id;
+      if (req.body.price !== undefined) updateData.price = formatPriceForDatabase(req.body.price);
+      if (req.body.size) updateData.size = req.body.size;
+      if (req.body.stock !== undefined) updateData.stock = parseInt(req.body.stock);
+      if (req.body.expiry_date)
+        updateData.expiry_date = formatDateForDatabase(req.body.expiry_date);
+      if (req.body.is_active !== undefined)
+        updateData.is_active = req.body.is_active === 'false' ? false : Boolean(req.body.is_active);
+
+      // Update slug if name is provided
+      if (req.body.name) {
+        updateData.slug = req.body.name
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/--+/g, '-')
+          .trim();
+      }
+
+      // Process image if provided
       if (req.file) {
         updateData.image = fs.readFileSync(req.file.path);
-        // Excluir o arquivo depois de lê-lo
+        // Delete the file after reading it
         fs.unlinkSync(req.file.path);
       }
 
@@ -215,12 +244,12 @@ exports.delete = async (req, res) => {
 };
 exports.findByCategory = async (req, res) => {
   try {
-    const products = await Product.findAll({
+    const product = await Product.findAll({
       where: { category_id: req.params.categoryId },
       include: [{ model: Category, as: 'category' }],
       order: [['name', 'ASC']],
     });
-    res.json(products);
+    res.json(product);
   } catch (error) {
     res.status(500).json({
       message: 'Erro ao buscar produtos por categoria',
@@ -274,19 +303,20 @@ exports.getImage = async (req, res) => {
 
 function formatPriceForDatabase(price) {
   if (!price) return 0;
-  
+
   try {
     // Remover símbolos e substituir vírgula por ponto
-    const cleanedPrice = price.toString()
+    const cleanedPrice = price
+      .toString()
       .replace(/[^\d.,]/g, '') // Remove tudo exceto dígitos, pontos e vírgulas
       .replace(',', '.'); // Substitui vírgula por ponto
-    
+
     // Converter para número e garantir duas casas decimais
     const numericPrice = parseFloat(cleanedPrice);
-    
+
     // Verificar se é um número válido
     if (isNaN(numericPrice)) return 0;
-    
+
     return parseFloat(numericPrice.toFixed(2));
   } catch (error) {
     console.error('Erro ao formatar preço:', error);
@@ -296,14 +326,14 @@ function formatPriceForDatabase(price) {
 
 function formatDateForDatabase(date) {
   if (!date) return new Date();
-  
+
   try {
     // Verificar se já é um objeto Date
     if (date instanceof Date) return date;
-    
+
     // Verificar formatos possíveis: DD/MM/YYYY, YYYY-MM-DD, etc.
     let parsedDate;
-    
+
     if (date.includes('/')) {
       // Formato DD/MM/YYYY
       const [day, month, year] = date.split('/');
@@ -315,12 +345,12 @@ function formatDateForDatabase(date) {
       // Outras tentativas
       parsedDate = new Date(date);
     }
-    
+
     // Verificar se a data resultante é válida
     if (isNaN(parsedDate.getTime())) {
       throw new Error('Data inválida');
     }
-    
+
     return parsedDate;
   } catch (error) {
     console.error('Erro ao formatar data:', error);

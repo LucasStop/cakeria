@@ -13,7 +13,7 @@ function getRecipeIdFromUrl() {
 
 async function fetchRecipeDetails(id) {
   try {
-    const response = await fetch(`${API.BASE_URL}/recipes/${id}`);
+    const response = await fetch(`${API.BASE_URL}/recipe/${id}`);
     if (!response.ok) {
       throw new Error(`Erro na requisição: ${response.status}`);
     }
@@ -859,7 +859,7 @@ function showDeleteConfirmation(recipe) {
       confirmButton.disabled = true;
       
       // Fazer a requisição para excluir a receita
-      await fetch(`${API.BASE_URL}/recipes/${recipe.id}`, {
+      await fetch(`${API.BASE_URL}/recipe/${recipe.id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`

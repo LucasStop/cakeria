@@ -319,7 +319,7 @@ const ProductModal = {
     // Renderização básica caso o script productDetails.js não esteja disponível
     const imageUrl = window.ImageHelper ? 
       window.ImageHelper.getProductImageUrl(produto.id) : 
-      `${window.API?.BASE_URL || 'http://localhost:3001/api'}/products/image/${produto.id}`;
+      `${window.API?.BASE_URL || 'http://localhost:3001/api'}/product/image/${produto.id}`;
     
     // Formatar o preço
     const formattedPrice = this.formatCurrency(produto.price);

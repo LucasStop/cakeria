@@ -71,7 +71,7 @@ async function loadUserData() {
     showLoadingState('personal-info-content');
     
     // Carregar dados atualizados do usuário
-    const userData = await API.Users.get(user.id);
+    const userData = await API.User.get(user.id);
     
     // Preencher formulário de informações pessoais
     fillPersonalInfoForm(userData);
@@ -96,7 +96,7 @@ async function loadUserImage(userId) {
   if (!userImage || !userId) return;
   const token = localStorage.getItem('token');
   try {
-    const response = await fetch(`${window.API.BASE_URL}/users/${userId}/image`, {
+    const response = await fetch(`${window.API.BASE_URL}/user/${userId}/image`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     if (response.ok) {
@@ -259,7 +259,7 @@ async function handlePersonalInfoSubmit(event) {
       
       // Fazer upload usando fetch diretamente, pois a API helper pode não suportar FormData corretamente
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API.BASE_URL}/users/${user.id}`, {
+      const response = await fetch(`${API.BASE_URL}/user/${user.id}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -314,7 +314,7 @@ async function handlePersonalInfoSubmit(event) {
       }
       
       // Enviar requisição para atualizar usuário
-      const updatedUser = await API.Users.update(user.id, userData);
+      const updatedUser = await API.User.update(user.id, userData);
       
       // Atualizar dados no localStorage
       const currentUser = getCurrentUser();
@@ -411,7 +411,7 @@ async function handleSecurityFormSubmit(event) {
     submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Alterando...';
     
     // Enviar requisição para alterar senha
-    await API.Users.update(user.id, {
+    await API.User.update(user.id, {
       currentPassword: passwordData.currentPassword,
       password: passwordData.newPassword
     });
@@ -645,10 +645,10 @@ async function handleAddressFormSubmit(event) {
     // Verificar se é edição ou criação
     if (addressId) {
       // Editar endereço existente
-      result = await API.Addresses.update(addressId, addressData);
+      result = await API.Address.update(addressId, addressData);
     } else {
       // Criar novo endereço
-      result = await API.Addresses.create(addressData);
+      result = await API.Address.create(addressData);
     }
     
     // Restaurar botão
@@ -781,8 +781,8 @@ async function handleDeleteAddress() {
     confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
     
     // Enviar requisição para excluir endereço
-    await API.Addresses.delete(addressId);
-    
+    await API.Address.delete(addressId);
+
     // Restaurar botão
     confirmBtn.disabled = false;
     confirmBtn.innerHTML = originalText;
@@ -860,7 +860,7 @@ async function handleDeleteUser() {
     confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
     
     // Enviar requisição para excluir usuário
-    await API.Users.delete(user.id);
+    await API.User.delete(user.id);
     
     // Fechar modal
     hideModal(modal);
