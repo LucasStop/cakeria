@@ -2,7 +2,6 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    // Primeiro, vamos obter os IDs dos usuários e categorias que criamos
     const users = await queryInterface.sequelize.query('SELECT id, email FROM user;');
 
     const categories = await queryInterface.sequelize.query('SELECT id, name FROM category;');
@@ -10,7 +9,6 @@ module.exports = {
     const userRows = users[0];
     const categoryRows = categories[0];
 
-    // Criar mapas de emails/nomes para IDs
     const userMap = {};
     userRows.forEach(user => {
       userMap[user.email] = user.id;

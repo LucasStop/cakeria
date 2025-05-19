@@ -4,15 +4,12 @@ const productController = require('../controllers/product.controller');
 const { authenticate } = require('../middlewares/auth.middleware');
 const upload = require('../utils/upload');
 
-// Rotas públicas
 router.get('/', productController.findAll);
 router.get('/image/:id', productController.getImage);
 router.get('/slug/:slug', productController.findBySlug);
 router.get('/category/:categoryId', productController.findByCategory);
 router.get('/:id', productController.findOne);
 
-// Rotas protegidas que requerem autenticação
-// Primeiro aplicamos o middleware de autenticação, depois o de upload e finalmente o controller
 router.post('/', authenticate, upload.single('image'), productController.create);
 router.put('/:id', authenticate, upload.single('image'), productController.update);
 router.delete('/:id', authenticate, productController.delete);

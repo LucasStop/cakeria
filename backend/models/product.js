@@ -9,9 +9,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       image: {
-        type: DataTypes.BLOB('medium'), // MEDIUMBLOB - até 16MB
+        type: DataTypes.BLOB('medium'), 
         allowNull: true,
-        // Removemos a validação isUrl já que agora é um binário
       },
       name: {
         type: DataTypes.STRING(100),
@@ -132,13 +131,12 @@ module.exports = (sequelize, DataTypes) => {
       product.expiry_date = new Date(product.expiry_date);
     }
 
-    // Gerar slug a partir do nome do produto se o nome foi alterado ou se o produto é novo
     if (product.changed('name') || product.isNewRecord) {
       product.slug = product.name
         .toLowerCase()
-        .replace(/[^\w\s-]/g, '') // Remove caracteres especiais
-        .replace(/\s+/g, '-') // Substitui espaços por hífens
-        .replace(/--+/g, '-') // Remove hífens duplicados
+        .replace(/[^\w\s-]/g, '') 
+        .replace(/\s+/g, '-')  
+        .replace(/--+/g, '-') 
         .trim();
     }
   });

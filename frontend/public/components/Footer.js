@@ -30,7 +30,7 @@ class Footer extends HTMLElement {
         const href = link.getAttribute('href');
 
         if (href === '/') {
-          return; // Permite navegação normal para home
+          return; 
         }
 
         e.preventDefault();
@@ -51,7 +51,6 @@ class Footer extends HTMLElement {
   }
 }
 
-// Garantimos que o componente é definido apenas uma vez
 if (!customElements.get('footer-component')) {
   customElements.define('footer-component', Footer);
   console.log('Footer component registrado');

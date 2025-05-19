@@ -1,13 +1,11 @@
 const { User } = require('../models');
 
-// Middleware para verificar se um usuário é administrador
 exports.isAdmin = async (req, res, next) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: 'Usuário não autenticado' });
     }
 
-    // Verificar se o usuário é um administrador
     if (req.user.type === 'admin') {
       return next();
     }

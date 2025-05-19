@@ -2,20 +2,17 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    // Primeiro, vamos obter os IDs das categorias que criamos
     const categories = await queryInterface.sequelize.query('SELECT id, name FROM category;');
 
     const categoryRows = categories[0];
 
-    // Criar um mapa de nomes para IDs
     const categoryMap = {};
     categoryRows.forEach(category => {
       categoryMap[category.name] = category.id;
     });
 
-    // Definir data de validade futura para todos os produtos
     const futureDate = new Date();
-    futureDate.setMonth(futureDate.getMonth() + 1); // Adiciona 1 mês à data atual
+    futureDate.setMonth(futureDate.getMonth() + 1); 
 
     return queryInterface.bulkInsert(
       'product',

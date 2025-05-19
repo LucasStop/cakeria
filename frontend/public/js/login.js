@@ -4,7 +4,7 @@
  */
 function isAuthenticated() {
   const token = localStorage.getItem('token');
-  return !!token; // Converte para booleano
+  return !!token; 
 }
 
 /**

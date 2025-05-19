@@ -1,23 +1,18 @@
-// Sistema de notificações toast
 
 const Notifications = {
   containerEl: null,
 
-  // Inicializar o container de notificações
   init() {
     if (this.containerEl) return;
 
-    // Criar container de notificações se não existir
     this.containerEl = document.createElement('div');
     this.containerEl.className = 'toast-container';
     document.body.appendChild(this.containerEl);
   },
 
-  // Exibir uma notificação toast
   show(options) {
     this.init();
 
-    // Opções padrão
     const defaultOptions = {
       type: 'info',
       title: '',
@@ -28,17 +23,14 @@ const Notifications = {
 
     const config = { ...defaultOptions, ...options };
 
-    // Criar elemento de toast
     const toast = document.createElement('div');
     toast.className = `toast toast-${config.type}`;
 
-    // Ícone baseado no tipo
     let iconClass = 'fa-info-circle';
     if (config.type === 'success') iconClass = 'fa-check-circle';
     if (config.type === 'error') iconClass = 'fa-exclamation-circle';
     if (config.type === 'warning') iconClass = 'fa-exclamation-triangle';
 
-    // Construir HTML interno
     toast.innerHTML = `
       <div class="toast-icon">
         <i class="fas ${iconClass}"></i>
@@ -50,16 +42,13 @@ const Notifications = {
       ${config.closable ? '<button class="toast-close"><i class="fas fa-times"></i></button>' : ''}
     `;
 
-    // Adicionar ao container
     this.containerEl.appendChild(toast);
 
-    // Configurar botão fechar
     if (config.closable) {
       const closeBtn = toast.querySelector('.toast-close');
       closeBtn.addEventListener('click', () => this.close(toast));
     }
 
-    // Auto-fechar após duração especificada
     if (config.duration > 0) {
       setTimeout(() => this.close(toast), config.duration);
     }
@@ -67,13 +56,11 @@ const Notifications = {
     return toast;
   },
 
-  // Fechamento animado do toast
   close(toast) {
     if (!toast) return;
 
     toast.classList.add('slide-out');
 
-    // Remover após animação
     toast.addEventListener('animationend', () => {
       if (toast.parentNode) {
         toast.parentNode.removeChild(toast);
@@ -81,7 +68,6 @@ const Notifications = {
     });
   },
 
-  // Métodos de conveniência para diferentes tipos
   success(message, title = 'Sucesso', options = {}) {
     return this.show({ type: 'success', title, message, ...options });
   },
@@ -99,9 +85,7 @@ const Notifications = {
   },
 };
 
-// Adicionar método de confirmação
 Notifications.confirm = function (message, onConfirm, onCancel, options = {}) {
-  // Configurações padrão
   const config = {
     title: 'Confirmação',
     confirmText: 'Confirmar',
@@ -109,7 +93,6 @@ Notifications.confirm = function (message, onConfirm, onCancel, options = {}) {
     ...options,
   };
 
-  // Criar overlay para o modal
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   overlay.style.position = 'fixed';
@@ -124,7 +107,6 @@ Notifications.confirm = function (message, onConfirm, onCancel, options = {}) {
   overlay.style.alignItems = 'center';
   overlay.style.animation = 'fade-in 0.2s ease-out forwards';
 
-  // Criar modal
   const modal = document.createElement('div');
   modal.className = 'confirmation-modal';
   modal.style.backgroundColor = 'white';
@@ -136,7 +118,6 @@ Notifications.confirm = function (message, onConfirm, onCancel, options = {}) {
   modal.style.textAlign = 'center';
   modal.style.animation = 'scale-in 0.2s ease-out forwards';
 
-  // Conteúdo do modal
   modal.innerHTML = `
     <h3 style="margin-top:0; color:#333; font-size:1.2rem;">${config.title}</h3>
     <p style="color:#666; margin-bottom:20px;">${message}</p>
@@ -146,13 +127,10 @@ Notifications.confirm = function (message, onConfirm, onCancel, options = {}) {
     </div>
   `;
 
-  // Adicionar modal ao overlay
   overlay.appendChild(modal);
 
-  // Adicionar overlay ao corpo do documento
   document.body.appendChild(overlay);
 
-  // Configurar botões do modal
   document.getElementById('modal-cancel').addEventListener('click', function () {
     document.body.removeChild(overlay);
     if (typeof onCancel === 'function') onCancel();
@@ -164,5 +142,4 @@ Notifications.confirm = function (message, onConfirm, onCancel, options = {}) {
   });
 };
 
-// Certificar que está disponível globalmente
 window.Notifications = Notifications;
