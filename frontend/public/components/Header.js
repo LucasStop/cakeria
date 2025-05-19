@@ -26,8 +26,9 @@ class Header extends HTMLElement {
             </nav>
             
             <div class="auth-buttons">
-              ${isLoggedIn
-          ? `<div class="user-menu">
+              ${
+                isLoggedIn
+                  ? `<div class="user-menu">
                     <div class="user-profile" id="user-profile-toggle">
                       <div class="user-avatar">
                         <div class="avatar-placeholder">
@@ -43,23 +44,24 @@ class Header extends HTMLElement {
                       </a>                      <a href="/pedidos/meus-pedidos.html" class="dropdown-item">
                         <i class="fa-solid fa-shopping-bag"></i> Meus Pedidos
                       </a>
-                      ${this.isAdmin(user)
-            ? `
+                      ${
+                        this.isAdmin(user)
+                          ? `
                       <a href="/admin.html" class="dropdown-item">
                         <i class="fa-solid fa-user-shield"></i> Área Admin
                       </a>`
-            : ''
-          }
+                          : ''
+                      }
                       <div class="dropdown-divider"></div>
                       <button class="dropdown-item logout-btn">
                         <i class="fa-solid fa-sign-out-alt"></i> Sair
                       </button>
                     </div>
                   </div>`
-          : `<button class="login-btn" data-route="login">
+                  : `<button class="login-btn" data-route="login">
                     <i class="fa-solid fa-user"></i> Login
                   </button>`
-        }
+              }
             </div>
             
             <button class="menu-toggle" aria-label="Menu">

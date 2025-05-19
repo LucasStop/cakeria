@@ -3,13 +3,13 @@
  */
 
 // Inicialização do sistema de modal quando o DOM estiver carregado
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // Verificar se a estrutura do modal já existe
   if (!document.getElementById('product-modal-overlay')) {
     // Criar e adicionar o modal ao body
     createModalStructure();
   }
-  
+
   // Inicializar carrinho se não existir
   if (!localStorage.getItem('cart')) {
     localStorage.setItem('cart', JSON.stringify([]));
@@ -34,26 +34,26 @@ function createModalStructure() {
       </div>
     </div>
   `;
-  
+
   document.body.insertAdjacentHTML('beforeend', modalHTML);
-  
+
   // Adicionar evento para fechar o modal
   const modalOverlay = document.getElementById('product-modal-overlay');
   const closeBtn = modalOverlay.querySelector('.product-modal-close');
-  
-  closeBtn.addEventListener('click', function() {
+
+  closeBtn.addEventListener('click', function () {
     closeProductModal();
   });
-  
+
   // Fechar modal ao clicar fora dele
-  modalOverlay.addEventListener('click', function(event) {
+  modalOverlay.addEventListener('click', function (event) {
     if (event.target === modalOverlay) {
       closeProductModal();
     }
   });
-  
+
   // Fechar modal com a tecla ESC
-  document.addEventListener('keydown', function(event) {
+  document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape' && modalOverlay.classList.contains('active')) {
       closeProductModal();
     }
@@ -61,20 +61,21 @@ function createModalStructure() {
 }
 
 // Função global para visualizar detalhes do produto
-window.verDetalhesProduto = async function(productId) {
+window.verDetalhesProduto = async function (productId) {
   try {
     // Abrir o modal com loading
     openProductModal();
-    
+
     // Buscar os detalhes do produto
     const produto = await loadProductDetails(productId);
-    
+
     // Renderizar os detalhes do produto no modal
     renderProductDetails(produto);
-    
   } catch (error) {
     console.error('Erro ao carregar detalhes do produto:', error);
-    showErrorInModal('Não foi possível carregar os detalhes do produto. Tente novamente mais tarde.');
+    showErrorInModal(
+      'Não foi possível carregar os detalhes do produto. Tente novamente mais tarde.'
+    );
   }
 };
 
@@ -83,7 +84,7 @@ function openProductModal() {
   const modalOverlay = document.getElementById('product-modal-overlay');
   modalOverlay.classList.add('active');
   document.body.style.overflow = 'hidden'; // Impedir scroll do body
-  
+
   // Resetar conteúdo para loading
   const modalContent = document.getElementById('product-modal-content');
   modalContent.innerHTML = `
@@ -110,15 +111,15 @@ async function loadProductDetails(productId) {
     } else {
       // Fallback para fetch direto
       const baseUrl = window.API?.BASE_URL || 'http://localhost:3001/api';
-      
+
       // Tentar diferentes possíveis endpoints
       const possibleEndpoints = [
         `/products/${productId}`,
         `/produtos/${productId}`,
         `/product/${productId}`,
-        `/produto/${productId}`
+        `/produto/${productId}`,
       ];
-      
+
       for (const endpoint of possibleEndpoints) {
         try {
           const response = await fetch(`${baseUrl}${endpoint}`);
@@ -129,7 +130,7 @@ async function loadProductDetails(productId) {
           console.warn(`Falha ao buscar em ${endpoint}:`, endpointError);
         }
       }
-      
+
       throw new Error('Não foi possível carregar os detalhes do produto');
     }
   } catch (error) {
@@ -141,24 +142,24 @@ async function loadProductDetails(productId) {
 // Renderizar os detalhes do produto no modal
 function renderProductDetails(produto) {
   const modalContent = document.getElementById('product-modal-content');
-  
+
   // Obter a URL da imagem do produto
-  const imageUrl = window.ImageHelper ? 
-    window.ImageHelper.getProductImageUrl(produto.id) : 
-    `${window.API?.BASE_URL || 'http://localhost:3001/api'}/product/image/${produto.id}`;
-  
+  const imageUrl = window.ImageHelper
+    ? window.ImageHelper.getProductImageUrl(produto.id)
+    : `${window.API?.BASE_URL || 'http://localhost:3001/api'}/product/image/${produto.id}`;
+
   // Formatar o preço
   const formattedPrice = formatCurrency(produto.price);
-  
+
   // Determinar o status do estoque
   const stockStatus = getStockStatus(produto.stock);
-  
+
   // Obter o nome da categoria (com fallbacks para diferentes estruturas de dados)
   const categoryName = getCategoryName(produto);
-  
+
   // Formatar data de validade se existir (com verificação de diferentes campos)
   const expiryDate = getFormattedExpiryDate(produto);
-  
+
   // Construir o HTML dos detalhes do produto
   const productDetailsHTML = `
     <div class="product-modal-image">
@@ -206,19 +207,19 @@ function renderProductDetails(produto) {
       </div>
     </div>
   `;
-  
+
   // Adicionar o HTML ao modal
   modalContent.innerHTML = productDetailsHTML;
-  
+
   // Adicionar footer com informação de estoque
   const modalElement = document.querySelector('.product-modal');
-  
+
   // Remover footer existente se houver
   const existingFooter = modalElement.querySelector('.product-modal-footer');
   if (existingFooter) {
     existingFooter.remove();
   }
-  
+
   // Adicionar novo footer
   const footerHTML = `
     <div class="product-modal-footer">
@@ -226,10 +227,10 @@ function renderProductDetails(produto) {
     </div>
   `;
   modalElement.insertAdjacentHTML('beforeend', footerHTML);
-  
+
   // Configurar eventos dos botões de quantidade
   setupQuantityButtons(produto.stock || 10);
-  
+
   // Configurar evento do botão de adicionar ao carrinho
   setupAddToCartButton(produto);
 }
@@ -240,31 +241,39 @@ function getCategoryName(produto) {
   if (typeof produto.category_name === 'string' && produto.category_name) {
     return produto.category_name;
   }
-  
+
   if (typeof produto.categoryName === 'string' && produto.categoryName) {
     return produto.categoryName;
   }
-  
+
   if (produto.category) {
     if (typeof produto.category === 'string') {
       return produto.category;
     }
-    
+
     if (typeof produto.category === 'object' && produto.category !== null) {
-      return produto.category.name || produto.category.nome || `ID: ${produto.category.id || produto.category}`;
+      return (
+        produto.category.name ||
+        produto.category.nome ||
+        `ID: ${produto.category.id || produto.category}`
+      );
     }
   }
-  
+
   if (produto.categoria) {
     if (typeof produto.categoria === 'string') {
       return produto.categoria;
     }
-    
+
     if (typeof produto.categoria === 'object' && produto.categoria !== null) {
-      return produto.categoria.name || produto.categoria.nome || `ID: ${produto.categoria.id || produto.categoria}`;
+      return (
+        produto.categoria.name ||
+        produto.categoria.nome ||
+        `ID: ${produto.categoria.id || produto.categoria}`
+      );
     }
   }
-  
+
   // Se chegou aqui, não foi possível determinar o nome da categoria
   return 'Não categorizado';
 }
@@ -281,9 +290,9 @@ function getFormattedExpiryDate(produto) {
     'validity',
     'validUntil',
     'date_expiry',
-    'expiry'
+    'expiry',
   ];
-  
+
   // Procurar o primeiro campo que existe e tem valor
   let expiryValue = null;
   for (const field of possibleFields) {
@@ -292,48 +301,47 @@ function getFormattedExpiryDate(produto) {
       break;
     }
   }
-  
+
   // Se não encontrou nenhum valor, retornar "Não especificada"
   if (!expiryValue) return 'Não especificada';
-  
+
   // Converter para Date
   try {
     const expiryDate = new Date(expiryValue);
-    
+
     // Verificar se é uma data válida
     if (isNaN(expiryDate.getTime())) {
       return 'Data inválida';
     }
-    
+
     // Verificar se já venceu
     const today = new Date();
     if (expiryDate < today) {
       const diffTime = Math.abs(today - expiryDate);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
+
       if (diffDays <= 1) {
         return '<span class="expired-text">Vencido hoje</span>';
       }
       return `<span class="expired-text">Vencido há ${diffDays} dias</span>`;
     }
-    
+
     // Se vai vencer em breve (próximos 7 dias)
     const nextWeek = new Date();
     nextWeek.setDate(today.getDate() + 7);
-    
+
     if (expiryDate <= nextWeek) {
       const diffTime = Math.abs(expiryDate - today);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
+
       if (diffDays <= 1) {
         return '<span class="expiring-soon">Vence hoje!</span>';
       }
       return `<span class="expiring-soon">Vence em ${diffDays} dias</span>`;
     }
-    
+
     // Caso contrário, mostrar a data formatada
     return expiryDate.toLocaleDateString('pt-BR');
-    
   } catch (error) {
     console.error('Erro ao processar data de validade:', error);
     return 'Data inválida';
@@ -345,30 +353,30 @@ function setupQuantityButtons(maxStock) {
   const minusBtn = document.querySelector('.quantity-btn.minus');
   const plusBtn = document.querySelector('.quantity-btn.plus');
   const quantityInput = document.getElementById('product-quantity');
-  
-  minusBtn.addEventListener('click', function() {
+
+  minusBtn.addEventListener('click', function () {
     const currentValue = parseInt(quantityInput.value);
     if (currentValue > 1) {
       quantityInput.value = currentValue - 1;
     }
   });
-  
-  plusBtn.addEventListener('click', function() {
+
+  plusBtn.addEventListener('click', function () {
     const currentValue = parseInt(quantityInput.value);
     if (currentValue < maxStock) {
       quantityInput.value = currentValue + 1;
     }
   });
-  
-  quantityInput.addEventListener('change', function() {
+
+  quantityInput.addEventListener('change', function () {
     let value = parseInt(this.value);
-    
+
     if (isNaN(value) || value < 1) {
       value = 1;
     } else if (value > maxStock) {
       value = maxStock;
     }
-    
+
     this.value = value;
   });
 }
@@ -376,16 +384,16 @@ function setupQuantityButtons(maxStock) {
 // Configurar o botão de adicionar ao carrinho
 function setupAddToCartButton(produto) {
   const addToCartBtn = document.querySelector('.add-to-cart-btn');
-  
-  addToCartBtn.addEventListener('click', function() {
+
+  addToCartBtn.addEventListener('click', function () {
     const quantity = parseInt(document.getElementById('product-quantity').value);
-    
+
     // Adicionar ao carrinho
     addToCart(produto, quantity);
-    
+
     // Fechar o modal
     closeProductModal();
-    
+
     // Mostrar confirmação
     showCartConfirmation(produto, quantity);
   });
@@ -396,10 +404,10 @@ function addToCart(produto, quantity) {
   try {
     // Obter carrinho atual
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    
+
     // Verificar se o produto já está no carrinho
     const existingProductIndex = cart.findIndex(item => item.id === produto.id);
-    
+
     if (existingProductIndex !== -1) {
       // Se já existe, atualizar a quantidade
       cart[existingProductIndex].quantity += quantity;
@@ -410,26 +418,26 @@ function addToCart(produto, quantity) {
         name: produto.name,
         price: produto.price,
         quantity: quantity,
-        image_id: produto.image_id || null
+        image_id: produto.image_id || null,
       });
     }
-    
+
     // Salvar carrinho atualizado
     localStorage.setItem('cart', JSON.stringify(cart));
-    
+
     // Notificar atualização de carrinho (se houver event listeners)
-    const event = new CustomEvent('cartUpdated', { 
-      detail: { 
-        action: 'add', 
-        product: produto, 
-        quantity: quantity 
-      } 
+    const event = new CustomEvent('cartUpdated', {
+      detail: {
+        action: 'add',
+        product: produto,
+        quantity: quantity,
+      },
     });
     document.dispatchEvent(event);
-    
+
     // Atualizar o contador do carrinho na interface (se existir)
     updateCartCounter();
-    
+
     return true;
   } catch (error) {
     console.error('Erro ao adicionar produto ao carrinho:', error);
@@ -444,7 +452,7 @@ function showCartConfirmation(produto, quantity) {
   if (existingToast) {
     existingToast.remove();
   }
-  
+
   // Criar novo toast
   const toastHTML = `
     <div class="cart-toast">
@@ -455,16 +463,16 @@ function showCartConfirmation(produto, quantity) {
       <button class="cart-toast-close">&times;</button>
     </div>
   `;
-  
+
   document.body.insertAdjacentHTML('beforeend', toastHTML);
-  
+
   const toast = document.querySelector('.cart-toast');
-  
+
   // Mostrar toast com pequeno delay para animação
   setTimeout(() => {
     toast.classList.add('active');
   }, 10);
-  
+
   // Adicionar evento para fechar o toast
   const closeBtn = toast.querySelector('.cart-toast-close');
   closeBtn.addEventListener('click', () => {
@@ -473,7 +481,7 @@ function showCartConfirmation(produto, quantity) {
       toast.remove();
     }, 300);
   });
-  
+
   // Fechar automaticamente após 5 segundos
   setTimeout(() => {
     if (toast) {
@@ -485,12 +493,12 @@ function showCartConfirmation(produto, quantity) {
       }, 300);
     }
   }, 5000);
-  
+
   // Usar Toast.js se estiver disponível
   if (window.Toast) {
     window.Toast.success(`${produto.name} adicionado ao carrinho!`, {
       position: 'bottom-right',
-      duration: 3000
+      duration: 3000,
     });
   }
 }
@@ -498,7 +506,7 @@ function showCartConfirmation(produto, quantity) {
 // Mostrar erro no modal
 function showErrorInModal(errorMessage) {
   const modalContent = document.getElementById('product-modal-content');
-  
+
   modalContent.innerHTML = `
     <div class="product-modal-error">
       <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #e53e3e; margin-bottom: 20px;"></i>
@@ -518,17 +526,17 @@ function getStockStatus(stock) {
   if (!stock || stock <= 0) {
     return {
       text: 'Fora de estoque',
-      class: 'out-of-stock'
+      class: 'out-of-stock',
     };
   } else if (stock <= 5) {
     return {
       text: `Estoque baixo: ${stock} ${stock === 1 ? 'unidade' : 'unidades'}`,
-      class: 'low-stock'
+      class: 'low-stock',
     };
   } else {
     return {
       text: `${stock} ${stock === 1 ? 'unidade' : 'unidades'} em estoque`,
-      class: 'in-stock'
+      class: 'in-stock',
     };
   }
 }
@@ -538,15 +546,15 @@ function updateCartCounter() {
   try {
     const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
     const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
-    
+
     // Procurar por elementos que possam representar um contador de carrinho
     const possibleCounters = [
       document.querySelector('.cart-count'),
       document.querySelector('.cart-counter'),
       document.querySelector('.cart-badge'),
-      document.querySelector('[data-cart-count]')
+      document.querySelector('[data-cart-count]'),
     ];
-    
+
     // Atualizar o primeiro contador válido encontrado
     for (const counter of possibleCounters) {
       if (counter) {
@@ -569,15 +577,17 @@ window.ProductDetails = {
   openModal: openProductModal,
   closeModal: closeProductModal,
   addToCart: addToCart,
-  getCart: function() {
+  getCart: function () {
     return JSON.parse(localStorage.getItem('cart') || '[]');
   },
-  clearCart: function() {
+  clearCart: function () {
     localStorage.setItem('cart', JSON.stringify([]));
     updateCartCounter();
-    
-    document.dispatchEvent(new CustomEvent('cartUpdated', { 
-      detail: { action: 'clear' } 
-    }));
-  }
+
+    document.dispatchEvent(
+      new CustomEvent('cartUpdated', {
+        detail: { action: 'clear' },
+      })
+    );
+  },
 };

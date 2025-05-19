@@ -1,7 +1,6 @@
-
 document.addEventListener('DOMContentLoaded', () => {
   const currentPath = window.location.pathname;
-  
+
   const protectedPages = [
     '/home.html',
     '/pedidos/novo.html',
@@ -9,43 +8,40 @@ document.addEventListener('DOMContentLoaded', () => {
     '/favoritos.html',
     '/compartilhar-receita.html',
     '/receita.html',
-    '/receitas.html'
+    '/receitas.html',
   ];
-  
-  const requiresAuth = protectedPages.some(page => 
-    currentPath.endsWith(page) || currentPath === page
+
+  const requiresAuth = protectedPages.some(
+    page => currentPath.endsWith(page) || currentPath === page
   );
-  
 
   if (requiresAuth && !isAuthenticated()) {
-   
     window.location.href = `/login.html?redirect=${encodeURIComponent(currentPath)}`;
   }
 });
 
 function isAuthenticated() {
   const token = localStorage.getItem('token');
-  
+
   if (!token) {
     return false;
   }
-  
+
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has('logout')) {
     return false;
   }
-  
+
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
     const currentTime = Math.floor(Date.now() / 1000);
-    
+
     return payload.exp > currentTime;
   } catch (error) {
     console.error('Erro ao verificar token:', error);
     return false;
   }
 }
-
 
 function getCurrentUser() {
   try {
@@ -56,7 +52,6 @@ function getCurrentUser() {
     return null;
   }
 }
-
 
 function handleLogout() {
   localStorage.removeItem('token');
@@ -81,27 +76,27 @@ function protectPage() {
  */
 function initAuthGuard() {
   const isLoginPage = window.location.pathname.includes('login.html');
-  const isIndexPage = window.location.pathname === '/' || 
-                    window.location.pathname === '/index.html' || 
-                    window.location.pathname === '';
-  
+  const isIndexPage =
+    window.location.pathname === '/' ||
+    window.location.pathname === '/index.html' ||
+    window.location.pathname === '';
+
   if ((isIndexPage || isLoginPage) && isAuthenticated()) {
     window.location.href = '/home.html';
     return;
   }
-  
+
   const protectedPages = [
-    '/home.html', 
-    '/pedidos.html', 
-    '/perfil.html', 
-    '/favoritos.html', 
+    '/home.html',
+    '/pedidos.html',
+    '/perfil.html',
+    '/favoritos.html',
     '/footer.html',
     '/receita.html',
     '/compartilhar-receita.html',
-    '/perfil.html'
+    '/perfil.html',
   ];
-  
-  
+
   if (protectedPages.some(page => window.location.pathname.includes(page)) && !isAuthenticated()) {
     window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
     return;

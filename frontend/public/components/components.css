@@ -6,7 +6,7 @@
 
 body {
   font-family: var(--font-family);
-  margin-top: var(--header-height); 
+  margin-top: var(--header-height);
   padding: 0;
   min-height: 100vh;
 }
@@ -661,8 +661,6 @@ canvas {
   font-size: 0.9rem;
   opacity: 0.8;
 }
-
-
 
 /* Estilos responsivos */
 @media (max-width: 768px) {

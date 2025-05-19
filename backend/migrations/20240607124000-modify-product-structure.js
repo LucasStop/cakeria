@@ -9,7 +9,7 @@ module.exports = {
     await queryInterface.changeColumn('product', 'image', {
       type: Sequelize.BLOB('medium'), // MEDIUMBLOB - até 16MB
       allowNull: true,
-      comment: 'Imagem do produto em formato binário'
+      comment: 'Imagem do produto em formato binário',
     });
 
     // 3. Movemos a coluna para depois de category_id
@@ -27,7 +27,7 @@ module.exports = {
       defaultValue: '',
       after: 'name',
     });
-    
+
     // 5. Adicionamos o campo is_active
     await queryInterface.addColumn('product', 'is_active', {
       type: Sequelize.BOOLEAN,
@@ -35,27 +35,26 @@ module.exports = {
       defaultValue: true,
       after: 'created_at',
     });
-    
+
     // 6. Geramos slugs para os produtos existentes
-    const products = await queryInterface.sequelize.query(
-      'SELECT id, name FROM product',
-      { type: queryInterface.sequelize.QueryTypes.SELECT }
-    );
-    
+    const products = await queryInterface.sequelize.query('SELECT id, name FROM product', {
+      type: queryInterface.sequelize.QueryTypes.SELECT,
+    });
+
     for (const product of products) {
       const slug = product.name
         .toLowerCase()
         .replace(/[^\w\s-]/g, '') // Remove caracteres especiais
-        .replace(/\s+/g, '-')     // Substitui espaços por hífens
-        .replace(/--+/g, '-')     // Remove hífens duplicados
+        .replace(/\s+/g, '-') // Substitui espaços por hífens
+        .replace(/--+/g, '-') // Remove hífens duplicados
         .trim();
-      
+
       await queryInterface.sequelize.query(
         `UPDATE product SET slug = '${slug}' WHERE id = ${product.id}`
       );
     }
   },
-  
+
   down: async (queryInterface, Sequelize) => {
     // 1. Removemos o campo is_active
     await queryInterface.removeColumn('product', 'is_active');
@@ -69,15 +68,15 @@ module.exports = {
       MODIFY COLUMN image MEDIUMBLOB 
       AFTER expiry_date
     `);
-    
+
     // 4. Revertemos o tipo para string
     await queryInterface.changeColumn('product', 'image', {
       type: Sequelize.STRING(255),
       allowNull: true,
-      comment: 'URL da imagem do produto'
+      comment: 'URL da imagem do produto',
     });
-    
+
     // 5. Renomeamos de volta para o nome original
     await queryInterface.renameColumn('product', 'image', 'image_url');
-  }
+  },
 };

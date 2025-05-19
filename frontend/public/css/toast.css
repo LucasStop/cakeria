@@ -13,12 +13,32 @@
   pointer-events: none;
 }
 
-.toast-container.top-right { top: 20px; right: 20px; }
-.toast-container.top-left { top: 20px; left: 20px; }
-.toast-container.bottom-right { bottom: 20px; right: 20px; }
-.toast-container.bottom-left { bottom: 20px; left: 20px; }
-.toast-container.top-center { top: 20px; left: 50%; transform: translateX(-50%); }
-.toast-container.bottom-center { bottom: 20px; left: 50%; transform: translateX(-50%); }
+.toast-container.top-right {
+  top: 20px;
+  right: 20px;
+}
+.toast-container.top-left {
+  top: 20px;
+  left: 20px;
+}
+.toast-container.bottom-right {
+  bottom: 20px;
+  right: 20px;
+}
+.toast-container.bottom-left {
+  bottom: 20px;
+  left: 20px;
+}
+.toast-container.top-center {
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.toast-container.bottom-center {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
 
 .custom-toast {
   background-color: #ffffff;
@@ -52,13 +72,21 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
-.custom-toast.success::before { background-color: #4CAF50; }
-.custom-toast.error::before { background-color: #F44336; }
-.custom-toast.warning::before { background-color: #FFC107; }
-.custom-toast.info::before { background-color: #2196F3; }
+.custom-toast.success::before {
+  background-color: #4caf50;
+}
+.custom-toast.error::before {
+  background-color: #f44336;
+}
+.custom-toast.warning::before {
+  background-color: #ffc107;
+}
+.custom-toast.info::before {
+  background-color: #2196f3;
+}
 
 .toast-header {
   display: flex;
@@ -103,10 +131,18 @@
   margin-top: 2px;
 }
 
-.custom-toast.success .toast-icon { color: #4CAF50; }
-.custom-toast.error .toast-icon { color: #F44336; }
-.custom-toast.warning .toast-icon { color: #FFC107; }
-.custom-toast.info .toast-icon { color: #2196F3; }
+.custom-toast.success .toast-icon {
+  color: #4caf50;
+}
+.custom-toast.error .toast-icon {
+  color: #f44336;
+}
+.custom-toast.warning .toast-icon {
+  color: #ffc107;
+}
+.custom-toast.info .toast-icon {
+  color: #2196f3;
+}
 
 .toast-content {
   flex: 1;
@@ -133,15 +169,25 @@
 }
 
 @keyframes progress {
-  from { width: 100%; }
-  to { width: 0%; }
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
 }
 
 /* Animações adicionais */
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .custom-toast.pulse {

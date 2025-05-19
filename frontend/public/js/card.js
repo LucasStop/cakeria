@@ -7,10 +7,10 @@ function renderCart() {
 
   items.forEach(item => {
     // Usar o helper para obter a URL da imagem do produto
-    const imageUrl = window.ImageHelper ? 
-      window.ImageHelper.getProductImageUrl(item.id) : 
-      `${API.BASE_URL}/product/image/${item.id}`;
-      
+    const imageUrl = window.ImageHelper
+      ? window.ImageHelper.getProductImageUrl(item.id)
+      : `${API.BASE_URL}/product/image/${item.id}`;
+
     const cartItem = document.createElement('div');
     cartItem.className = 'cart-item';
     cartItem.innerHTML = `
