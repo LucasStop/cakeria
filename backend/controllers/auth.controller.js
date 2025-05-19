@@ -1,6 +1,7 @@
 const { User } = require('../models');
 const bcrypt = require('bcryptjs');
 const { generateToken, verifyToken } = require('../utils/auth');
+const { authMiddleware } = require('../middlewares/auth.middleware');
 
 exports.login = async (req, res) => {
   try {
@@ -103,3 +104,33 @@ async function updateLastLogin(userId) {
     console.error('Erro ao atualizar último login:', error);
   }
 }
+
+// Verificar token e retornar dados do usuário
+exports.verify = async (req, res) => {
+  try {
+    // A verificação do token já foi feita pelo middleware de autenticação
+    // O req.user foi adicionado pelo middleware e contém os dados do usuário logado
+    const userId = req.user.id;
+
+    // Buscar os dados atualizados do usuário
+    const user = await User.findByPk(userId, {
+      attributes: { exclude: ['password', 'image'] },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'Usuário não encontrado',
+      });
+    }
+
+    res.json({
+      user: user,
+      verified: true,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Erro ao verificar token',
+      error: error.message,
+    });
+  }
+};

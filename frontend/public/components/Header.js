@@ -26,9 +26,8 @@ class Header extends HTMLElement {
             </nav>
             
             <div class="auth-buttons">
-              ${
-                isLoggedIn
-                  ? `<div class="user-menu">
+              ${isLoggedIn
+          ? `<div class="user-menu">
                     <div class="user-profile" id="user-profile-toggle">
                       <div class="user-avatar">
                         <div class="avatar-placeholder">
@@ -44,24 +43,23 @@ class Header extends HTMLElement {
                       </a>                      <a href="/pedidos/meus-pedidos.html" class="dropdown-item">
                         <i class="fa-solid fa-shopping-bag"></i> Meus Pedidos
                       </a>
-                      ${
-                        this.isAdmin(user)
-                          ? `
+                      ${this.isAdmin(user)
+            ? `
                       <a href="/admin.html" class="dropdown-item">
                         <i class="fa-solid fa-user-shield"></i> Área Admin
                       </a>`
-                          : ''
-                      }
+            : ''
+          }
                       <div class="dropdown-divider"></div>
                       <button class="dropdown-item logout-btn">
                         <i class="fa-solid fa-sign-out-alt"></i> Sair
                       </button>
                     </div>
                   </div>`
-                  : `<button class="login-btn" data-route="login">
+          : `<button class="login-btn" data-route="login">
                     <i class="fa-solid fa-user"></i> Login
                   </button>`
-              }
+        }
             </div>
             
             <button class="menu-toggle" aria-label="Menu">
@@ -86,49 +84,50 @@ class Header extends HTMLElement {
       this.innerHTML = `
         <header class="header admin-header">
           <div class="container">
-            <div class="logo-container">
-              <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo">
-            </div>
+        <div class="logo-container">
+          <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo">
+        </div>
+        
+        <nav class="nav-bar">
+          <ul class="nav-links">                
+            <li><a href="/admin.html" class="nav-link" data-route="admin"><i class="fa-solid fa-home"></i> Dashboard</a></li>
+            <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
+            <li><a href="/registerProduct.html" class="nav-link" data-route="registerProduct"><i class="fa-solid fa-cake-candles"></i> Produtos</a></li>
+            <li><a href="/pedidos/gerenciar.html" class="nav-link" id="nav-pedidos" data-route="pedidos"><i class="fa-solid fa-shopping-cart"></i> Pedidos</a></li>
+            <li><a href="/admin-users.html" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
             
-            <nav class="nav-bar">
-              <ul class="nav-links">
-                <li><a href="/admin.html" class="nav-link" data-route="admin"><i class="fa-solid fa-home"></i> Dashboard</a></li>
-                <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
-                <li><a href="/registerProduct.html" class="nav-link" data-route="registerProduct"><i class="fa-solid fa-cake-candles"></i> Produtos</a></li>
-                <li><a href="/pedidos/gerenciar.html" class="nav-link" id="nav-pedidos" data-route="pedidos"><i class="fa-solid fa-shopping-cart"></i> Pedidos</a></li>
-                <li><a href="/usuarios" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
-                <li><a href="/index.html" class="nav-link" data-route="site"><i class="fa-solid fa-globe"></i> Ver Site</a></li>
-              </ul>
-            </nav>
-            <div class="user-menu">
-              <div class="user-profile" id="user-profile-toggle">
-                <div class="user-avatar">
-                  <img src="${userImageUrl}" alt="Avatar" class="user-avatar-img" style="display:${userImageUrl ? 'block' : 'none'};width:40px;height:40px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                  <div class="avatar-placeholder" style="${userImageUrl ? 'display:none;' : 'display:flex;'};width:40px;height:40px;align-items:center;justify-content:center;">
-                    <span class="avatar-initial">${this.getUserInitials(user)}</span>
-                  </div>
-                </div>
-                <span class="username">${user?.name || user?.email || 'Administrador'}</span>
-                <i class="fa-solid fa-chevron-down"></i>
-              </div>
-              <div class="dropdown-menu">
-                <a href="/perfil.html" class="dropdown-item">
-                  <i class="fa-solid fa-user"></i> Meu Perfil
-                </a>
-                <a href="/index.html" class="dropdown-item">
-                  <i class="fa-solid fa-home"></i> Voltar ao Site
-                </a>
-                <div class="dropdown-divider"></div>
-                <button class="dropdown-item logout-btn">
-                  <i class="fa-solid fa-sign-out-alt"></i> Sair
-                </button>
-              </div>
+            <li><a href="/index.html" class="nav-link" data-route="site"><i class="fa-solid fa-globe"></i> Ver Site</a></li>
+          </ul>
+        </nav>
+        <div class="user-menu">
+          <div class="user-profile" id="user-profile-toggle">
+            <div class="user-avatar">
+          <img src="${userImageUrl}" alt="Avatar" class="user-avatar-img" style="display:${userImageUrl ? 'block' : 'none'};width:40px;height:40px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="avatar-placeholder" style="${userImageUrl ? 'display:none;' : 'display:flex;'};width:40px;height:40px;align-items:center;justify-content:center;">
+            <span class="avatar-initial">${this.getUserInitials(user)}</span>
+          </div>
             </div>
-            </div>            <button class="menu-toggle" aria-label="Menu">
-              <span class="bar"></span>
-              <span class="bar"></span>
-              <span class="bar"></span>
+            <span class="username">${user?.name || user?.email || 'Administrador'}</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="dropdown-menu">
+            <a href="/perfil.html" class="dropdown-item nav-link" data-route="perfil">
+          <i class="fa-solid fa-user"></i> Meu Perfil
+            </a>
+            <a href="/index.html" class="dropdown-item">
+          <i class="fa-solid fa-home"></i> Voltar ao Site
+            </a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item logout-btn">
+          <i class="fa-solid fa-sign-out-alt"></i> Sair
             </button>
+          </div>
+        </div>
+        </div>            <button class="menu-toggle" aria-label="Menu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
           </div>
           <div class="overlay"></div>
         </header>
@@ -138,7 +137,6 @@ class Header extends HTMLElement {
     this.setupEventListeners();
     this.highlightCurrentPage();
 
-    // Adicionar a folha de estilo para o header de admin
     if (this.getAttribute('variant') === 'admin') {
       const linkElement = document.createElement('link');
       linkElement.rel = 'stylesheet';
@@ -354,15 +352,12 @@ class Header extends HTMLElement {
     document.body.style.overflow = '';
   }
   handleLogout() {
-    // Remover dados de autenticação
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     sessionStorage.removeItem('justLoggedIn');
 
-    // Redirecionar para a página inicial
     window.location.href = '/index.html?logout=true';
   }
-
   highlightCurrentPage() {
     const path = window.location.pathname;
     const links = this.querySelectorAll('.nav-link');
@@ -376,10 +371,10 @@ class Header extends HTMLElement {
         (path.includes('/produtos') && route === 'produtos') ||
         (path.includes('/categorias') && route === 'categorias') ||
         (path.includes('/sobre') && route === 'sobre') ||
-        (path.includes('/admin') && route === 'admin') ||
+        (path.includes('/admin-users') && route === 'usuarios') ||
         (path.includes('/registerProduct') && route === 'registerProduct') ||
-        (path.includes('/dashboard') && route === 'dashboard') ||
-        (path.includes('/usuarios') && route === 'usuarios')
+        (path.includes('/dashboard') && route === 'dashboard')
+     
       ) {
         link.classList.add('active');
       }
@@ -389,7 +384,6 @@ class Header extends HTMLElement {
 
 customElements.define('header-component', Header);
 
-// Carregar o script de controle do header
 if (typeof window !== 'undefined') {
   const scriptElement = document.createElement('script');
   scriptElement.src = '/js/headerController.js';

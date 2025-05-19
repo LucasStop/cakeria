@@ -39,7 +39,6 @@ exports.create = async (req, res) => {
   try {
     const { name, email, cpf, password, type, phone, address = {}, addresses = [] } = req.body;
 
-    // Validação básica
     if (!password || typeof password !== 'string') {
       return res.status(400).json({ message: 'Senha é obrigatória e deve ser uma string' });
     }
@@ -49,7 +48,6 @@ exports.create = async (req, res) => {
       image = req.file.buffer;
     }
 
-    // Utiliza transação para garantir consistência
     const result = await sequelize.transaction(async t => {
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -58,7 +56,6 @@ exports.create = async (req, res) => {
 
       const user = await User.create(userData, { transaction: t });
 
-      // Processa múltiplos endereços se fornecidos
       if (Array.isArray(addresses) && addresses.length > 0) {
         for (const addr of addresses) {
           if ((addr.postal_code || addr.cep) && (addr.street || addr.number)) {
@@ -109,7 +106,6 @@ exports.update = async (req, res) => {
       image = req.file.buffer;
     }
 
-    // Utiliza transação para garantir consistência
     await sequelize.transaction(async t => {
       const user = await User.findByPk(id);
       if (!user) {
@@ -131,18 +127,15 @@ exports.update = async (req, res) => {
         userData.password = await bcrypt.hash(password, 10);
       }
 
-      // Adiciona/atualiza a imagem se enviada
       if (image) {
         userData.image = image;
       }
 
-      // Atualiza os dados do usuário
       await User.update(userData, { where: { id }, transaction: t });
 
       if (Array.isArray(addresses) && addresses.length > 0) {
         for (const addr of addresses) {
           if ((addr.postal_code || addr.cep) && (addr.street || addr.number)) {
-            // Se o endereço tem um ID, atualiza o endereço existente
             if (addr.id) {
               const addressExists = await Address.findOne({
                 where: { id: addr.id, user_id: id },
@@ -150,7 +143,6 @@ exports.update = async (req, res) => {
               });
 
               if (addressExists) {
-                // Atualiza o endereço existente
                 await Address.update(
                   {
                     street: addr.street || addressExists.street,
@@ -166,7 +158,6 @@ exports.update = async (req, res) => {
                 );
               }
             } else {
-              // Cria um novo endereço se não tiver ID
               await Address.create(
                 {
                   user_id: id,
@@ -225,7 +216,6 @@ exports.getUserImage = async (req, res) => {
     if (!user || !user.image) {
       return res.status(404).send('Imagem não encontrada');
     }
-    // Por padrão, vamos retornar como PNG. Se quiser detectar o tipo, pode usar um pacote como file-type.
     res.set('Content-Type', 'image/png');
     res.send(user.image);
   } catch (error) {
