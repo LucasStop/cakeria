@@ -150,10 +150,7 @@ async function fetchRecipes() {
       endpoint += `?${queryParams.join('&')}`;
     }
 
-    console.log('Endpoint da API:', endpoint);
-
     const data = await API.get(endpoint);
-    console.log('Dados recebidos da API:', data);
 
     let recipes;
     if (data.recipes) {
@@ -240,11 +237,7 @@ async function displayRecipes(recipes) {
   if (!recipesGrid) return;
   recipesGrid.innerHTML = '';
 
-  console.log('Começando a exibir receitas. Total:', recipes.length);
-
   for (const recipe of recipes) {
-    console.log('Processando receita:', recipe);
-
     if (!recipeTemplate) {
       const card = document.createElement('div');
       card.className = 'recipe-card';
@@ -252,7 +245,7 @@ async function displayRecipes(recipes) {
       const title = recipe.title || 'Sem título';
       const description = recipe.description || 'Sem descrição';
       const author = recipe.author?.name || 'Autor desconhecido';
-      const image = recipe.image_url || '/assets/placeholder.jpg';
+      const image = recipe.image || '/assets/placeholder.jpg';
 
       card.innerHTML = `
         <div class="recipe-image">
