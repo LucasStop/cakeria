@@ -27,7 +27,7 @@ module.exports = {
         {
           content:
             'Esse Red Velvet ficou perfeito! A cobertura de cream cheese complementa muito bem o sabor do bolo.',
-          user_id: userMap['dev@cakeria'],
+          user_id: userMap['dev@cakeria.com.br'],
           recipe_id: recipeMap['Bolo Red Velvet'],
           created_at: new Date(),
           updated_at: new Date(),
@@ -35,7 +35,7 @@ module.exports = {
         {
           content:
             'Adorei essa receita! O pão de queijo ficou crocante por fora e macio por dentro.',
-          user_id: userMap['lucas@gmail.com'],
+          user_id: userMap['lucas@gmail.com.br'],
           recipe_id: recipeMap['Pão de Queijo Mineiro'],
           created_at: new Date(),
           updated_at: new Date(),
@@ -43,7 +43,7 @@ module.exports = {
         {
           content:
             'Fiz o pudim para o domingo em família e todos pediram a receita. Sucesso total!',
-          user_id: userMap['renan@gmail.com'],
+          user_id: userMap['renan@gmail.com.br'],
           recipe_id: recipeMap['Pudim de Leite Condensado'],
           created_at: new Date(),
           updated_at: new Date(),
@@ -51,7 +51,7 @@ module.exports = {
         {
           content:
             'O brigadeirão ficou incrível! Tentei adicionar um pouco de café na mistura e deu um toque especial.',
-          user_id: userMap['eduardo@gmail.com'],
+          user_id: userMap['eduardo@gmail.com.br'],
           recipe_id: recipeMap['Brigadeirão'],
           created_at: new Date(),
           updated_at: new Date(),
@@ -59,7 +59,7 @@ module.exports = {
         {
           content:
             'Experimentei fazer com morangos frescos e ficou ainda melhor! Recomendo a todos.',
-          user_id: userMap['joao@gmail.com'],
+          user_id: userMap['joao@gmail.com.br'],
           recipe_id: recipeMap['Cheesecake de Frutas Vermelhas'],
           created_at: new Date(),
           updated_at: new Date(),
@@ -67,14 +67,14 @@ module.exports = {
         {
           content:
             'Perfeito para o café da tarde! Fiz pequenas modificações na receita e adorei o resultado.',
-          user_id: userMap['lucas@gmail.com'],
+          user_id: userMap['lucas@gmail.com.br'],
           recipe_id: recipeMap['Cheesecake de Frutas Vermelhas'],
           created_at: new Date(),
           updated_at: new Date(),
         },
         {
           content: 'Essa receita salvou meu fim de semana! Muito fácil de fazer e deliciosa.',
-          user_id: userMap['joao@gmail.com'],
+          user_id: userMap['joao@gmail.com.br'],
           recipe_id: recipeMap['Pudim de Leite Condensado'],
           created_at: new Date(),
           updated_at: new Date(),
