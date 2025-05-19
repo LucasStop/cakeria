@@ -2,7 +2,10 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>Cakeria - Minha Área | Dashboard</title>
 
     <link rel="icon" href="/assets/favicon.ico" />
@@ -18,7 +21,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/home.css" />
     <link rel="stylesheet" href="/components/components.css" />
@@ -37,78 +39,10 @@
           </div>
 
           <div class="receitas-grid">
-            <div class="receita-card">
-              <div class="receita-img">
-                <img src="/assets/receitas/bolo-chocolate.jpg" alt="Bolo de Chocolate" />
-                <span class="receita-badge">Popular</span>
-              </div>
-              <div class="receita-content">
-                <h3>Bolo de Chocolate Trufado</h3>
-                <div class="receita-meta">
-                  <span><i class="fas fa-clock"></i> 60 min</span>
-                  <span><i class="fas fa-signal"></i> Médio</span>
-                </div>
-                <p>
-                  Um delicioso bolo de chocolate com recheio cremoso de trufa e cobertura ganache.
-                </p>
-                <div class="receita-actions">
-                  <a href="/receita.html?id=1" class="btn btn-primary">Ver Receita</a>
-                  <button class="btn-icon" title="Adicionar aos favoritos">
-                    <i class="icon-heart"></i>
-                  </button>
-                  <button class="btn-icon" title="Compartilhar">
-                    <i class="fas fa-share-alt"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div class="receita-card">
-              <div class="receita-img">
-                <img src="/assets/receitas/cupcake-morango.jpg" alt="Cupcake de Morango" />
-              </div>
-              <div class="receita-content">
-                <h3>Cupcake de Morango</h3>
-                <div class="receita-meta">
-                  <span><i class="fas fa-clock"></i> 40 min</span>
-                  <span><i class="fas fa-signal"></i> Fácil</span>
-                </div>
-                <p>
-                  Cupcakes macios com cobertura de creme de morango fresco e decoração delicada.
-                </p>
-                <div class="receita-actions">
-                  <a href="/receita.html?id=2" class="btn btn-primary">Ver Receita</a>
-                  <button class="btn-icon" title="Adicionar aos favoritos">
-                    <i class="icon-heart"></i>
-                  </button>
-                  <button class="btn-icon" title="Compartilhar">
-                    <i class="fas fa-share-alt"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div class="receita-card">
-              <div class="receita-img">
-                <img src="/assets/receitas/torta-limao.jpg" alt="Torta de Limão" />
-              </div>
-              <div class="receita-content">
-                <h3>Torta de Limão</h3>
-                <div class="receita-meta">
-                  <span><i class="fas fa-clock"></i> 50 min</span>
-                  <span><i class="fas fa-signal"></i> Médio</span>
-                </div>
-                <p>Torta de limão com base crocante e cobertura de merengue italiano perfeito.</p>
-                <div class="receita-actions">
-                  <a href="/receita.html?id=3" class="btn btn-primary">Ver Receita</a>
-                  <button class="btn-icon" title="Adicionar aos favoritos">
-                    <i class="icon-heart"></i>
-                  </button>
-                  <button class="btn-icon" title="Compartilhar">
-                    <i class="fas fa-share-alt"></i>
-                  </button>
-                </div>
-              </div>
+            <!-- Os cards de receitas serão carregados dinamicamente pelo JavaScript -->
+            <div class="loading-indicator">
+              <div class="spinner"></div>
+              <p>Carregando receitas...</p>
             </div>
           </div>
         </div>
@@ -120,7 +54,6 @@
             <h2>Meus Pedidos</h2>
             <a href="/pedidos.html" class="view-all">Ver Todos</a>
           </div>
-
           <div class="pedidos-status">
             <div class="status-card">
               <div class="status-icon pending">
@@ -128,7 +61,7 @@
               </div>
               <div class="status-info">
                 <h3>Pendentes</h3>
-                <p class="status-count">2</p>
+                <p class="status-count">0</p>
               </div>
             </div>
 
@@ -138,7 +71,7 @@
               </div>
               <div class="status-info">
                 <h3>Em Preparo</h3>
-                <p class="status-count">1</p>
+                <p class="status-count">0</p>
               </div>
             </div>
 
@@ -148,7 +81,7 @@
               </div>
               <div class="status-info">
                 <h3>Entregues</h3>
-                <p class="status-count">8</p>
+                <p class="status-count">0</p>
               </div>
             </div>
 
@@ -158,68 +91,18 @@
               </div>
               <div class="status-info">
                 <h3>Novo Pedido</h3>
-                <a href="/pedidos/novo.html" class="btn btn-sm btn-primary">Fazer Pedido</a>
+                <a href="/produtos.html" class="btn btn-sm btn-primary">Fazer Pedido</a>
               </div>
             </div>
           </div>
 
           <div class="recent-orders">
             <h3>Pedidos Recentes</h3>
-
             <div class="order-list">
-              <div class="order-item">
-                <div class="order-img">
-                  <img src="/assets/pedidos/bolo-aniversario.jpg" alt="Bolo de Aniversário" />
-                </div>
-                <div class="order-details">
-                  <h4>Bolo de Aniversário</h4>
-                  <p class="order-date">Pedido em: 15/04/2023</p>
-                  <p class="order-id">Pedido #12345</p>
-                </div>
-                <div class="order-status">
-                  <span class="status-badge processing">Em Preparo</span>
-                  <p class="delivery-date">Entrega: 20/04/2023</p>
-                </div>
-                <div class="order-actions">
-                  <a href="/pedidos/12345" class="btn btn-sm btn-outline">Detalhes</a>
-                </div>
-              </div>
-
-              <div class="order-item">
-                <div class="order-img">
-                  <img src="/assets/pedidos/cupcakes-festa.jpg" alt="Cupcakes para Festa" />
-                </div>
-                <div class="order-details">
-                  <h4>Cupcakes para Festa</h4>
-                  <p class="order-date">Pedido em: 10/04/2023</p>
-                  <p class="order-id">Pedido #12344</p>
-                </div>
-                <div class="order-status">
-                  <span class="status-badge pending">Pendente</span>
-                  <p class="delivery-date">Entrega: 18/04/2023</p>
-                </div>
-                <div class="order-actions">
-                  <a href="/pedidos/12344" class="btn btn-sm btn-outline">Detalhes</a>
-                </div>
-              </div>
-
-              <div class="order-item">
-                <div class="order-img">
-                  <img src="/assets/pedidos/torta-morango.jpg" alt="Torta de Morango" />
-                </div>
-                <div class="order-details">
-                  <h4>Torta de Morango</h4>
-                  <p class="order-date">Pedido em: 05/04/2023</p>
-                  <p class="order-id">Pedido #12343</p>
-                </div>
-                <div class="order-status">
-                  <span class="status-badge delivered">Entregue</span>
-                  <p class="delivery-date">Entregue em: 08/04/2023</p>
-                </div>
-                <div class="order-actions">
-                  <a href="/pedidos/12343" class="btn btn-sm btn-outline">Detalhes</a>
-                  <button class="btn btn-sm btn-primary">Pedir Novamente</button>
-                </div>
+              <!-- Os pedidos serão carregados dinamicamente pelo JavaScript -->
+              <div class="loading-indicator">
+                <div class="spinner"></div>
+                <p>Carregando pedidos...</p>
               </div>
             </div>
           </div>
@@ -266,129 +149,29 @@
             <button class="tab-btn" data-tab="rascunhos">Rascunhos</button>
             <button class="tab-btn" data-tab="feitas">Receitas que Fiz</button>
           </div>
-
           <div id="publicadas" class="tab-content active">
             <div class="receitas-grid">
-              <div class="receita-card">
-                <div class="receita-img">
-                  <img src="/assets/minhas-receitas/bolo-cenoura.jpg" alt="Bolo de Cenoura" />
-                </div>
-                <div class="receita-content">
-                  <h3>Bolo de Cenoura com Cobertura de Chocolate</h3>
-                  <div class="receita-meta">
-                    <span><i class="fas fa-clock"></i> 45 min</span>
-                    <span><i class="fas fa-eye"></i> 128 visualizações</span>
-                  </div>
-                  <p>Meu bolo de cenoura super fofinho com cobertura de chocolate meio amargo.</p>
-                  <div class="receita-actions">
-                    <a href="/minhas-receitas/1" class="btn btn-primary">Ver Receita</a>
-                    <button class="btn-icon" title="Editar">
-                      <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn-icon" title="Excluir">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="receita-card">
-                <div class="receita-img">
-                  <img src="/assets/minhas-receitas/cookies.jpg" alt="Cookies" />
-                </div>
-                <div class="receita-content">
-                  <h3>Cookies com Gotas de Chocolate</h3>
-                  <div class="receita-meta">
-                    <span><i class="fas fa-clock"></i> 30 min</span>
-                    <span><i class="fas fa-eye"></i> 95 visualizações</span>
-                  </div>
-                  <p>Cookies crocantes por fora e macios por dentro com gotas de chocolate.</p>
-                  <div class="receita-actions">
-                    <a href="/minhas-receitas/2" class="btn btn-primary">Ver Receita</a>
-                    <button class="btn-icon" title="Editar">
-                      <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn-icon" title="Excluir">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </div>
-                </div>
+              <!-- As receitas publicadas serão carregadas dinamicamente pelo JavaScript -->
+              <div class="loading-indicator">
+                <div class="spinner"></div>
+                <p>Carregando receitas...</p>
               </div>
             </div>
           </div>
 
           <div id="favoritas" class="tab-content">
-            <div class="receitas-grid">
-              <div class="receita-card">
-                <div class="receita-img">
-                  <img src="/assets/receitas/bolo-chocolate.jpg" alt="Bolo de Chocolate" />
-                </div>
-                <div class="receita-content">
-                  <h3>Bolo de Chocolate Trufado</h3>
-                  <div class="receita-meta">
-                    <span><i class="fas fa-user"></i> Por Ana Oliveira</span>
-                    <span><i class="fas fa-heart"></i> Favoritado em 10/04/2023</span>
-                  </div>
-                  <p>
-                    Um delicioso bolo de chocolate com recheio cremoso de trufa e cobertura ganache.
-                  </p>
-                  <div class="receita-actions">
-                    <a href="/receita.html?id=1" class="btn btn-primary">Ver Receita</a>
-                    <button class="btn-icon active" title="Remover dos favoritos">
-                      <i class="icon-heart-filled"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="receita-card">
-                <div class="receita-img">
-                  <img src="/assets/receitas/torta-limao.jpg" alt="Torta de Limão" />
-                </div>
-                <div class="receita-content">
-                  <h3>Torta de Limão</h3>
-                  <div class="receita-meta">
-                    <span><i class="fas fa-user"></i> Por Carlos Mendes</span>
-                    <span><i class="fas fa-heart"></i> Favoritado em 08/04/2023</span>
-                  </div>
-                  <p>Torta de limão com base crocante e cobertura de merengue italiano perfeito.</p>
-                  <div class="receita-actions">
-                    <a href="/receita.html?id=3" class="btn btn-primary">Ver Receita</a>
-                    <button class="btn-icon active" title="Remover dos favoritos">
-                      <i class="icon-heart-filled"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
+            <!-- As receitas favoritas serão carregadas dinamicamente pelo JavaScript -->
+            <div class="loading-indicator">
+              <div class="spinner"></div>
+              <p>Carregando favoritos...</p>
             </div>
           </div>
 
           <div id="rascunhos" class="tab-content">
-            <div class="receitas-grid">
-              <div class="receita-card">
-                <div class="receita-img">
-                  <img src="/assets/minhas-receitas/cheesecake.jpg" alt="Cheesecake" />
-                  <span class="receita-badge draft">Rascunho</span>
-                </div>
-                <div class="receita-content">
-                  <h3>Cheesecake de Frutas Vermelhas</h3>
-                  <div class="receita-meta">
-                    <span><i class="fas fa-clock"></i> Última edição: 12/04/2023</span>
-                  </div>
-                  <p>Cheesecake cremoso com cobertura de frutas vermelhas frescas.</p>
-                  <div class="receita-actions">
-                    <a href="/minhas-receitas/editar/3" class="btn btn-primary"
-                      >Continuar Editando</a
-                    >
-                    <button class="btn-icon" title="Publicar">
-                      <i class="fas fa-paper-plane"></i>
-                    </button>
-                    <button class="btn-icon" title="Excluir">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
+            <!-- Os rascunhos serão carregados dinamicamente pelo JavaScript -->
+            <div class="loading-indicator">
+              <div class="spinner"></div>
+              <p>Carregando rascunhos...</p>
             </div>
           </div>
 
@@ -422,7 +205,6 @@
     </main>
 
     <footer-component></footer-component>
-
     <script src="./js/utils/toast.js"></script>
     <script src="./js/api.js"></script>
     <script src="./components/Header.js"></script>
@@ -440,8 +222,8 @@
           if (justLoggedIn === 'true') {
             const user = JSON.parse(localStorage.getItem('user'));
             if (user && user.name && window.Toast) {
-              Toast.success(`Bem-vindo(a), ${user.name}!`, {
-                position: 'top-center',
+              window.Toast.success(`Bem-vindo(a), ${user.name}!`, {
+                position: 'bottom-right',
                 duration: 4000,
               });
             }

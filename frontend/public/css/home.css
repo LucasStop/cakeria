@@ -1,3 +1,5 @@
+/* CSS COMBINADO: home.css + home-extras.css */
+
 :root {
   --primary: #ff6b6b;
   --primary-dark: #ff5252;
@@ -102,6 +104,20 @@ ul {
 .btn-sm {
   padding: 0.5rem 1rem;
   font-size: 0.85rem;
+}
+
+/* Estilo para botões de favorito */
+.btn-favorite {
+  color: var(--gray);
+  transition: color 0.3s ease;
+}
+
+.btn-favorite.active {
+  color: var(--primary);
+}
+
+.btn-favorite:hover {
+  color: var(--primary);
 }
 
 .section-header {
@@ -468,6 +484,15 @@ ul {
   font-weight: 500;
 }
 
+/* Badges específicos */
+.receita-badge.favorite {
+  background-color: var(--primary);
+}
+
+.receita-badge.made {
+  background-color: var(--success);
+}
+
 .receita-badge.draft {
   background-color: var(--warning);
 }
@@ -485,6 +510,7 @@ ul {
 
 .receita-meta {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1rem;
   font-size: 0.9rem;
@@ -506,6 +532,7 @@ ul {
 
 .receita-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
 }
@@ -534,6 +561,28 @@ ul {
   color: var(--primary);
 }
 
+/* Animações para feedback visual */
+@keyframes heart-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.btn-icon:active i {
+  animation: heart-pulse 0.5s ease;
+}
+
+/* Botão compartilhar */
+.btn-icon[title='Compartilhar']:hover {
+  color: var(--info);
+}
+
 .section-pedidos {
   background-color: var(--white);
   padding: 2rem;
@@ -544,7 +593,7 @@ ul {
 
 .pedidos-status {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   margin-bottom: 2rem;
 }
@@ -766,33 +815,59 @@ ul {
   margin-bottom: 2rem;
 }
 
+/* Melhorias para tabs */
 .receitas-tabs {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 2rem;
   overflow-x: auto;
   padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) transparent;
+}
+
+.receitas-tabs::-webkit-scrollbar {
+  height: 4px;
+}
+
+.receitas-tabs::-webkit-scrollbar-thumb {
+  background-color: var(--primary);
+  border-radius: 4px;
+}
+
+.receitas-tabs::-webkit-scrollbar-track {
+  background-color: transparent;
 }
 
 .tab-btn {
-  padding: 0.75rem 1.25rem;
-  background-color: transparent;
+  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 30px;
+  background-color: transparent;
   font-weight: 500;
-  color: var(--gray-dark);
   cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
+  transition: all 0.3s ease;
+  position: relative;
+  margin-right: 1rem;
 }
 
 .tab-btn:hover {
-  background-color: var(--gray-light);
-  color: var(--dark);
+  color: var(--primary);
 }
 
 .tab-btn.active {
-  color: white;
+  color: var(--primary);
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--primary);
+  border-radius: 3px;
 }
 
 .tab-content {
@@ -803,29 +878,61 @@ ul {
   display: block;
 }
 
-.empty-state {
-  text-align: center;
-  padding: 3rem 1rem;
+/* Indicador de carregamento */
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+  width: 100%;
 }
 
-.empty-icon {
-  width: 120px;
-  height: 120px;
-  margin-bottom: 1.5rem;
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid var(--primary);
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Estado vazio */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.empty-state .empty-icon {
+  font-size: 3rem;
+  color: var(--gray);
+  margin-bottom: 1rem;
 }
 
 .empty-state h3 {
-  margin-top: 0;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   color: var(--dark);
 }
 
 .empty-state p {
   margin-bottom: 1.5rem;
-  color: var(--gray-dark);
+  color: var(--gray);
   max-width: 400px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .section-newsletter {
@@ -871,6 +978,19 @@ ul {
   display: flex;
   gap: 1rem;
   justify-content: center;
+}
+
+.social-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--gray-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dark);
+  text-decoration: none;
+  transition: all 0.2s ease;
 }
 
 .header-logo {
@@ -935,28 +1055,95 @@ ul {
   .user-avatar {
     margin-right: 0;
   }
-}
 
-.social-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: var(--gray-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--dark);
-  text-decoration: none;
-  transition: all 0.2s ease;
+  .pedidos-status {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .section-receitas,
+  .section-pedidos,
+  .section-compartilhar,
+  .section-minhas-receitas {
+    padding: 1.5rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .welcome-text h1 {
+    font-size: 1.6rem;
+  }
+
+  .receitas-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .receita-card {
+    max-width: 100%;
+  }
+
+  .receitas-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .receitas-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .order-item {
+    padding: 0.75rem;
+  }
+
+  .compartilhar-info h2 {
+    font-size: 1.5rem;
+  }
+
+  .compartilhar-info p {
+    font-size: 1rem;
+  }
+
+  .newsletter-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .newsletter-form {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .newsletter-form input,
+  .newsletter-form button {
+    width: 100%;
+  }
 }
 
 @media (min-width: 576px) {
   .quick-actions {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .pedidos-status {
-    grid-template-columns: repeat(4, 1fr);
+  .receitas-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -990,21 +1177,35 @@ ul {
   .newsletter-form {
     flex-direction: row;
   }
-}
 
-.header-logo {
-  height: 40px;
-}
+  .receitas-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-.user-nav {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  .section-header {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .order-item {
+    flex-wrap: nowrap;
+  }
 }
 
 @media (min-width: 992px) {
-  .order-item {
-    flex-wrap: nowrap;
-    align-items: center;
+  .quick-actions {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .receitas-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .welcome-section {
+    padding: 3rem 0;
+  }
+
+  .compartilhar-info h2 {
+    font-size: 2rem;
   }
 }

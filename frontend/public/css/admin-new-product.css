@@ -1,0 +1,103 @@
+.admin-dashboard .admin-card.full-width {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
+
+.form-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.form-col {
+  flex: 1;
+  min-width: 200px;
+}
+
+.form-col.full-width {
+  flex: 1 1 100%;
+}
+
+.address-row {
+  flex-wrap: wrap;
+}
+
+.cep-col {
+  flex: 0 0 150px;
+}
+
+.street-col {
+  flex: 1;
+}
+
+.number-col {
+  flex: 0 0 100px;
+}
+
+.complement-col {
+  flex: 0 0 200px;
+}
+
+.avatar-upload-container {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.avatar-preview {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-input {
+  flex: 1;
+}
+
+.avatar-input input[type='file'] {
+  display: none;
+}
+
+.avatar-help-text {
+  display: block;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.default-avatar-icon {
+  font-size: 3rem;
+  color: #ccc;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.error-message {
+  color: #e53935;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.invalid-input {
+  border-color: #e53935 !important;
+}
