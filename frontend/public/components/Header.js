@@ -2,15 +2,34 @@ class Header extends HTMLElement {
   constructor() {
     super();
   }
+  async connectedCallback() {
+    const isLoggedIn = localStorage.getItem('token') !== null;
+    const user = this.getCurrentUser();
+    const variant = this.getAttribute('variant') || (this.isAdmin(user) ? 'admin' : 'client');
 
-  connectedCallback() {
-    const variant = this.getAttribute('variant') || 'user';
-
-    if (variant === 'user') {
-      // Verificar se o usuário está logado
+    if (variant === 'client') {
       const isLoggedIn = localStorage.getItem('token') !== null;
       const user = this.getCurrentUser();
-      
+      let userImageUrl = '';
+
+      if (isLoggedIn && user && user.id) {
+        try {
+          const token = localStorage.getItem('token');
+          const response = await fetch(
+            `${window.API?.BASE_URL || 'http://localhost:3001/api'}/user/${user.id}/image`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          if (response.ok) {
+            const blob = await response.blob();
+            userImageUrl = URL.createObjectURL(blob);
+          }
+        } catch (error) {
+          console.error('Error fetching user image:', error);
+          userImageUrl = '';
+        }
+      }
       this.innerHTML = `
         <header class="header">
           <div class="container">
@@ -19,24 +38,29 @@ class Header extends HTMLElement {
             </div>
             
             <nav class="nav-bar">
-              <ul class="nav-links">
-                <li><a href="/index.html" class="nav-link" data-route="home"><i class="fa-solid fa-home"></i> Home</a></li>
+              <ul class="nav-links">                <li><a href="/index.html" class="nav-link" data-route="home"><i class="fa-solid fa-home"></i> Home</a></li>
                 <li><a href="/receitas.html" class="nav-link" data-route="receitas"><i class="fa-solid fa-utensils"></i> Receitas</a></li>
-                <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
+                <li><a href="/produtos" class="nav-link" id="nav-produtos" data-route="produtos"><i class="fa-solid fa-box"></i> Produtos</a></li>
                 <li><a href="/sobre.html" class="nav-link" id="nav-sobre" data-route="sobre"><i class="fa-solid fa-info-circle"></i> Sobre</a></li>
-                ${isLoggedIn && user?.isAdmin ? `<li><a href="/admin.html" class="nav-link" id="nav-admin" data-route="admin"><i class="fa-solid fa-user-shield"></i> Admin</a></li>` : ''}
+                ${isLoggedIn && this.isAdmin(user) ? `<li><a href="/admin.html" class="nav-link" id="nav-admin" data-route="admin"><i class="fa-solid fa-user-shield"></i> Admin</a></li>` : ''}
               </ul>
             </nav>
             
             <div class="auth-buttons">
-              ${isLoggedIn 
-                ? `<div class="user-menu">
+              ${
+                isLoggedIn
+                  ? `<div class="user-menu">
+                  <a href="/carrinho.html" class="cart-icon-wrapper" title="Carrinho de Compras">
+                   <i class="fa-solid fa-shopping-cart"></i>
+                   <span class="cart-count">0</span>
+                 </a>
                     <div class="user-profile" id="user-profile-toggle">
                       <div class="user-avatar">
-                        <div class="avatar-placeholder">
-                          <span class="avatar-initial">${this.getUserInitials(user)}</span>
-                        </div>
-                      </div>
+                  <img src="${userImageUrl}" alt="Avatar" class="user-avatar-img" >
+                  <div class="avatar-placeholder" style="${userImageUrl ? 'display:none;' : 'display:flex;'};width:40px;height:40px;align-items:center;justify-content:center;">
+                    <span class="avatar-initial">${this.getUserInitials(user)}</span>
+                  </div>
+                </div>
                       <span class="username">${user?.name || user?.email || 'Usuário'}</span>
                       <i class="fa-solid fa-chevron-down"></i>
                     </div>
@@ -44,19 +68,28 @@ class Header extends HTMLElement {
                       <a href="/perfil.html" class="dropdown-item">
                         <i class="fa-solid fa-user"></i> Meu Perfil
                       </a>
+
+                      <a href="/carrinho.html" class="dropdown-item">
+                        <i class="fa-solid fa-shopping-cart"></i> Meu Carrinho
+                      </a>
                       <a href="/pedidos/meus-pedidos.html" class="dropdown-item">
                         <i class="fa-solid fa-shopping-bag"></i> Meus Pedidos
                       </a>
-                      <a href="/favoritos.html" class="dropdown-item">
-                        <i class="fa-solid fa-heart"></i> Favoritos
-                      </a>
+                      ${
+                        this.isAdmin(user)
+                          ? `
+                      <a href="/admin.html" class="dropdown-item">
+                        <i class="fa-solid fa-user-shield"></i> Área Admin
+                      </a>`
+                          : ''
+                      }
                       <div class="dropdown-divider"></div>
                       <button class="dropdown-item logout-btn">
                         <i class="fa-solid fa-sign-out-alt"></i> Sair
                       </button>
                     </div>
                   </div>`
-                : `<button class="login-btn" data-route="login">
+                  : `<button class="login-btn" data-route="login">
                     <i class="fa-solid fa-user"></i> Login
                   </button>`
               }
@@ -72,8 +105,30 @@ class Header extends HTMLElement {
         </header>
       `;
     } else if (variant === 'admin') {
+      const isLoggedIn = localStorage.getItem('token') !== null;
+      const user = this.getCurrentUser();
+      let userImageUrl = '';
+
+      if (isLoggedIn && user && user.id) {
+        try {
+          const token = localStorage.getItem('token');
+          const response = await fetch(
+            `${window.API?.BASE_URL || 'http://localhost:3001/api'}/user/${user.id}/image`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          if (response.ok) {
+            const blob = await response.blob();
+            userImageUrl = URL.createObjectURL(blob);
+          }
+        } catch (error) {
+          console.error('Error fetching user image:', error);
+          userImageUrl = '';
+        }
+      }
       this.innerHTML = `
-        <header class="header">
+        <header class="header admin-header">
           <div class="container">
             <div class="logo-container">
               <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo">
@@ -81,12 +136,37 @@ class Header extends HTMLElement {
             
             <nav class="nav-bar">
               <ul class="nav-links">
-                <li><a href="/admin" class="nav-link" data-route="admin"><i class="fa-solid fa-home"></i> Home</a></li>
-                <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
-                <li><a href="/registerProduct" class="nav-link" data-route="registerProduct"><i class="fa-solid fa-cake-candles"></i> Produtos</a></li>
-                <li><a href="/dashboard" class="nav-link" id="nav-dashboard" data-route="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="/admin.html" class="nav-link" data-route="admin"><i class="fa-solid fa-home"></i> Dashboard</a></li>
+                <li><a href="/produtos" class="nav-link" id="nav-produtos" data-route="produtos"><i class="fa-solid fa-box"></i> Produtos</a></li>
+                <li><a href="/registro-produto.html" class="nav-link" data-route="registro-produto"><i class="fa-solid fa-cake-candles"></i> Cadastrar produto</a></li>
+                <li><a href="/pedidos/gerenciar.html" class="nav-link" id="nav-pedidos" data-route="pedidos"><i class="fa-solid fa-shopping-cart"></i> Pedidos</a></li>
                 <li><a href="/usuarios" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
+                <li><a href="/index.html" class="nav-link" data-route="site"><i class="fa-solid fa-globe"></i> Ver Site</a></li>
               </ul>
+              <div class="user-menu">
+              <div class="user-profile" id="user-profile-toggle">
+                <div class="user-avatar">
+                  <img src="${userImageUrl}" alt="Avatar" class="user-avatar-img" >
+                  <div class="avatar-placeholder" style="${userImageUrl ? 'display:none;' : 'display:flex;'};width:40px;height:40px;align-items:center;justify-content:center;">
+                    <span class="avatar-initial">${this.getUserInitials(user)}</span>
+                  </div>
+                </div>
+                <span class="username">${user?.name || user?.email || 'Administrador'}</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="dropdown-menu">
+                <a href="/perfil.html" class="dropdown-item">
+                  <i class="fa-solid fa-user"></i> Meu Perfil
+                </a>
+                <a href="/index.html" class="dropdown-item">
+                  <i class="fa-solid fa-home"></i> Voltar ao Site
+                </a>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item logout-btn">
+                  <i class="fa-solid fa-sign-out-alt"></i> Sair
+                </button>
+              </div>
+            </div>
             </nav>
             
             <button class="menu-toggle" aria-label="Menu">
@@ -102,8 +182,13 @@ class Header extends HTMLElement {
 
     this.setupEventListeners();
     this.highlightCurrentPage();
-  }
 
+    if (this.getAttribute('variant') === 'admin') {
+      const linkElement = document.createElement('link');
+      linkElement.rel = 'stylesheet';
+      document.head.appendChild(linkElement);
+    }
+  }
   getCurrentUser() {
     try {
       const userStr = localStorage.getItem('user');
@@ -114,22 +199,26 @@ class Header extends HTMLElement {
     }
   }
 
+  isAdmin(user) {
+    return user && (user.type === 'admin' || user.isAdmin === true);
+  }
+
   getUserInitials(user) {
     if (!user) return '?';
-    
+
     if (user.name) {
       const nameParts = user.name.split(' ');
       let initials = nameParts[0][0];
-      
+
       if (nameParts.length > 1) {
         initials += nameParts[nameParts.length - 1][0];
       }
-      
+
       return initials.toUpperCase();
     } else if (user.email) {
       return user.email[0].toUpperCase();
     }
-    
+
     return '?';
   }
 
@@ -137,23 +226,23 @@ class Header extends HTMLElement {
     const userProfileToggle = this.querySelector('#user-profile-toggle');
     if (userProfileToggle) {
       const dropdownMenu = this.querySelector('.dropdown-menu');
-      
-      userProfileToggle.addEventListener('click', (e) => {
+
+      userProfileToggle.addEventListener('click', e => {
         e.stopPropagation();
         dropdownMenu.classList.toggle('show');
       });
-      
+
       document.addEventListener('click', () => {
         if (dropdownMenu.classList.contains('show')) {
           dropdownMenu.classList.remove('show');
         }
       });
-      
-      dropdownMenu.addEventListener('click', (e) => {
+
+      dropdownMenu.addEventListener('click', e => {
         e.stopPropagation();
       });
     }
-    
+
     const links = this.querySelectorAll('.nav-link');
     links.forEach(link => {
       link.addEventListener('click', e => {
@@ -161,7 +250,7 @@ class Header extends HTMLElement {
         if (href && href.includes('.html')) {
           return;
         }
-        
+
         e.preventDefault();
         const route = link.getAttribute('data-route');
 
@@ -197,10 +286,10 @@ class Header extends HTMLElement {
   navigateToRoute(route) {
     switch (route) {
       case 'home':
-        window.location.href = '/index.html';
+        window.navegarParaHome();
         break;
-      case 'categorias':
-        window.navegarParaCategorias();
+      case 'produtos':
+        window.navegarParaProdutos();
         break;
       case 'sobre':
         window.navegarParaSobre();
@@ -208,7 +297,7 @@ class Header extends HTMLElement {
       case 'admin':
         window.navegarParaAdmin();
         break;
-      case 'registerProduct':
+      case 'registro-produto':
         window.navegarParaCadastrarProdutos();
         break;
       case 'dashboard':
@@ -258,11 +347,12 @@ class Header extends HTMLElement {
     navBar.classList.toggle('active');
     menuToggle.classList.toggle('active');
     overlay.classList.toggle('active');
+    document.body.classList.toggle('page-content-obscured'); // Add this line
 
     if (navBar.classList.contains('active')) {
       const isLoggedIn = localStorage.getItem('token') !== null;
       const loginButtonExists = navBar.querySelector('.mobile-login-btn');
-      
+
       if (!isLoggedIn && !loginButtonExists) {
         const navLinks = navBar.querySelector('.nav-links');
         const loginButton = document.createElement('li');
@@ -273,7 +363,7 @@ class Header extends HTMLElement {
           </a>
         `;
         navLinks.appendChild(loginButton);
-        
+
         const loginBtn = loginButton.querySelector('.mobile-login-btn');
         loginBtn.addEventListener('click', () => {
           this.closeMenu();
@@ -300,13 +390,21 @@ class Header extends HTMLElement {
     navBar.classList.remove('active');
     menuToggle.classList.remove('active');
     overlay.classList.remove('active');
-    
+    document.body.classList.remove('page-content-obscured'); // Add this line
+
     const mobileLoginItem = navBar.querySelector('.mobile-login-item');
     if (mobileLoginItem) {
       mobileLoginItem.remove();
     }
-    
+
     document.body.style.overflow = '';
+  }
+  handleLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    sessionStorage.removeItem('justLoggedIn');
+
+    window.location.href = '/index.html?logout=true';
   }
 
   highlightCurrentPage() {
@@ -323,7 +421,7 @@ class Header extends HTMLElement {
         (path.includes('/categorias') && route === 'categorias') ||
         (path.includes('/sobre') && route === 'sobre') ||
         (path.includes('/admin') && route === 'admin') ||
-        (path.includes('/registerProduct') && route === 'registerProduct') ||
+        (path.includes('/registro-produto') && route === 'registro-produto') ||
         (path.includes('/dashboard') && route === 'dashboard') ||
         (path.includes('/usuarios') && route === 'usuarios')
       ) {
@@ -334,3 +432,43 @@ class Header extends HTMLElement {
 }
 
 customElements.define('header-component', Header);
+
+if (typeof window !== 'undefined') {
+  const scriptElement = document.createElement('script');
+  scriptElement.src = '/js/header-controller.js';
+  document.head.appendChild(scriptElement);
+}
+
+async function loadUserImage(userId) {
+  const userImage = document.getElementById('profile-user-image');
+  const avatarPlaceholder = document.getElementById('profile-avatar-placeholder');
+  const avatarInitials = document.getElementById('profile-avatar-initials');
+  if (!userImage || !userId) return;
+  const token = localStorage.getItem('token');
+  try {
+    const response = await fetch(`${window.API.BASE_URL}/user/${userId}/image`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (response.ok) {
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      userImage.src = imageUrl;
+      userImage.style.display = 'block';
+      if (avatarPlaceholder) avatarPlaceholder.style.display = 'none';
+    } else {
+      if (avatarPlaceholder && avatarInitials) {
+        const user = getCurrentUser();
+        avatarInitials.textContent = getUserInitials(user);
+        avatarPlaceholder.style.display = 'flex';
+      }
+      userImage.style.display = 'none';
+    }
+  } catch (e) {
+    if (avatarPlaceholder && avatarInitials) {
+      const user = getCurrentUser();
+      avatarInitials.textContent = getUserInitials(user);
+      avatarPlaceholder.style.display = 'flex';
+    }
+    userImage.style.display = 'none';
+  }
+}

@@ -2,7 +2,7 @@ const { Address, User } = require('../models');
 
 exports.findAll = async (req, res) => {
   try {
-    const addresses = await Address.findAll({
+    const address = await Address.findAll({
       include: [
         {
           model: User,
@@ -11,7 +11,7 @@ exports.findAll = async (req, res) => {
         },
       ],
     });
-    res.json(addresses);
+    res.json(address);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar endereços', error: error.message });
   }
@@ -33,12 +33,6 @@ exports.findOne = async (req, res) => {
       return res.status(404).json({ message: 'Endereço não encontrado' });
     }
 
-    // Verificar se o usuário atual é o dono do endereço (comentado porque depende da implementação de autenticação)
-    // const userId = req.user.id; // Supondo que a informação do usuário está disponível via middleware de autenticação
-    // if (address.user_id !== userId && req.user.type !== 'admin') {
-    //   return res.status(403).json({ message: 'Acesso não autorizado a este endereço' });
-    // }
-
     res.json(address);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar endereço', error: error.message });
@@ -48,18 +42,12 @@ exports.findOne = async (req, res) => {
 exports.findByUser = async (req, res) => {
   const { userId } = req.params;
   try {
-    // Primeiro verificar se o usuário existe
     const user = await User.findByPk(userId);
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
 
-    // Verificar autorização (comentado porque depende da implementação de autenticação)
-    // if (req.user.id !== parseInt(userId) && req.user.type !== 'admin') {
-    //   return res.status(403).json({ message: 'Acesso não autorizado aos endereços deste usuário' });
-    // }
-
-    const addresses = await Address.findAll({
+    const address = await Address.findAll({
       where: { user_id: userId },
       include: [
         {
@@ -69,7 +57,7 @@ exports.findByUser = async (req, res) => {
         },
       ],
     });
-    res.json(addresses);
+    res.json(address);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar endereços do usuário', error: error.message });
   }
@@ -80,16 +68,10 @@ exports.create = async (req, res) => {
     const { user_id, street, number, neighborhood, complement, city, state, postal_code, country } =
       req.body;
 
-    // Verificar se o usuário existe
     const user = await User.findByPk(user_id);
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
-
-    // Verificar autorização (comentado porque depende da implementação de autenticação)
-    // if (req.user.id !== user_id && req.user.type !== 'admin') {
-    //   return res.status(403).json({ message: 'Não autorizado a criar endereço para este usuário' });
-    // }
 
     const address = await Address.create({
       user_id,
@@ -103,7 +85,6 @@ exports.create = async (req, res) => {
       country,
     });
 
-    // Retornar o endereço criado com informações do usuário
     const addressWithUser = await Address.findByPk(address.id, {
       include: [
         {
@@ -127,11 +108,6 @@ exports.update = async (req, res) => {
     if (!address) {
       return res.status(404).json({ message: 'Endereço não encontrado' });
     }
-
-    // Verificar autorização (comentado porque depende da implementação de autenticação)
-    // if (req.user.id !== address.user_id && req.user.type !== 'admin') {
-    //   return res.status(403).json({ message: 'Não autorizado a atualizar este endereço' });
-    // }
 
     const [updated] = await Address.update(req.body, { where: { id } });
 
@@ -161,11 +137,6 @@ exports.delete = async (req, res) => {
     if (!address) {
       return res.status(404).json({ message: 'Endereço não encontrado' });
     }
-
-    // Verificar autorização (comentado porque depende da implementação de autenticação)
-    // if (req.user.id !== address.user_id && req.user.type !== 'admin') {
-    //   return res.status(403).json({ message: 'Não autorizado a remover este endereço' });
-    // }
 
     await Address.destroy({ where: { id } });
     res.status(204).send();

@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cakeria - Minha Área | Dashboard</title>
 
-    <!-- Favicon -->
     <link rel="icon" href="/assets/favicon.ico" />
 
-    <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -16,13 +14,11 @@
       rel="stylesheet"
     />
 
-    <!-- Font Awesome para ícones -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
 
-    <!-- CSS -->
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/home.css" />
     <link rel="stylesheet" href="/components/components.css" />
@@ -33,9 +29,6 @@
     <header-component></header-component>
 
     <main class="home-main">
-    
-
-      <!-- Receitas Section -->
       <section id="receitas" class="section-receitas">
         <div class="container">
           <div class="section-header">
@@ -44,7 +37,6 @@
           </div>
 
           <div class="receitas-grid">
-            <!-- Receita Card 1 -->
             <div class="receita-card">
               <div class="receita-img">
                 <img src="/assets/receitas/bolo-chocolate.jpg" alt="Bolo de Chocolate" />
@@ -71,7 +63,6 @@
               </div>
             </div>
 
-            <!-- Receita Card 2 -->
             <div class="receita-card">
               <div class="receita-img">
                 <img src="/assets/receitas/cupcake-morango.jpg" alt="Cupcake de Morango" />
@@ -97,7 +88,6 @@
               </div>
             </div>
 
-            <!-- Receita Card 3 -->
             <div class="receita-card">
               <div class="receita-img">
                 <img src="/assets/receitas/torta-limao.jpg" alt="Torta de Limão" />
@@ -124,7 +114,6 @@
         </div>
       </section>
 
-      <!-- Pedidos Section -->
       <section id="pedidos" class="section-pedidos">
         <div class="container">
           <div class="section-header">
@@ -237,7 +226,6 @@
         </div>
       </section>
 
-      <!-- Compartilhar Section -->
       <section id="compartilhar" class="section-compartilhar">
         <div class="container">
           <div class="compartilhar-content">
@@ -265,7 +253,6 @@
         </div>
       </section>
 
-      <!-- Minhas Receitas Section -->
       <section id="minhas-receitas" class="section-minhas-receitas">
         <div class="container">
           <div class="section-header">
@@ -282,7 +269,6 @@
 
           <div id="publicadas" class="tab-content active">
             <div class="receitas-grid">
-              <!-- Receita Publicada 1 -->
               <div class="receita-card">
                 <div class="receita-img">
                   <img src="/assets/minhas-receitas/bolo-cenoura.jpg" alt="Bolo de Cenoura" />
@@ -306,7 +292,6 @@
                 </div>
               </div>
 
-              <!-- Receita Publicada 2 -->
               <div class="receita-card">
                 <div class="receita-img">
                   <img src="/assets/minhas-receitas/cookies.jpg" alt="Cookies" />
@@ -334,7 +319,6 @@
 
           <div id="favoritas" class="tab-content">
             <div class="receitas-grid">
-              <!-- Receita Favorita 1 -->
               <div class="receita-card">
                 <div class="receita-img">
                   <img src="/assets/receitas/bolo-chocolate.jpg" alt="Bolo de Chocolate" />
@@ -357,7 +341,6 @@
                 </div>
               </div>
 
-              <!-- Receita Favorita 2 -->
               <div class="receita-card">
                 <div class="receita-img">
                   <img src="/assets/receitas/torta-limao.jpg" alt="Torta de Limão" />
@@ -382,7 +365,6 @@
 
           <div id="rascunhos" class="tab-content">
             <div class="receitas-grid">
-              <!-- Rascunho 1 -->
               <div class="receita-card">
                 <div class="receita-img">
                   <img src="/assets/minhas-receitas/cheesecake.jpg" alt="Cheesecake" />
@@ -411,7 +393,6 @@
           </div>
 
           <div id="feitas" class="tab-content">
-            <!-- Estado vazio -->
             <div class="empty-state">
               <img src="/assets/icons/cooking.svg" alt="Cozinhando" class="empty-icon" />
               <h3>Nenhuma receita marcada como feita</h3>
@@ -422,7 +403,6 @@
         </div>
       </section>
 
-      <!-- Newsletter Section -->
       <section class="section-newsletter">
         <div class="container">
           <div class="newsletter-content">
@@ -443,13 +423,73 @@
 
     <footer-component></footer-component>
 
-    <!-- Scripts -->
+    <script src="./js/utils/toast.js"></script>
     <script src="./js/api.js"></script>
     <script src="./components/Header.js"></script>
+    <script src="./js/header-controller.js"></script>
     <script src="./js/login.js"></script>
-    <script src="./js/authGuard.js"></script>
-    <script src="./js/navigation.js"></script>
+    <script src="./js/auth-guard.js"></script>
+    <script src="./js/navegacao.js"></script>
     <script src="./js/logout.js"></script>
     <script src="./js/home.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        try {
+          const justLoggedIn = sessionStorage.getItem('justLoggedIn');
+
+          if (justLoggedIn === 'true') {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.name && window.Toast) {
+              Toast.success(`Bem-vindo(a), ${user.name}!`, {
+                position: 'top-center',
+                duration: 4000,
+              });
+            }
+            sessionStorage.removeItem('justLoggedIn');
+          }
+
+          const lastLogin = localStorage.getItem('lastLoginDate');
+          const today = new Date().toDateString();
+
+          if (lastLogin !== today && window.Toast) {
+            localStorage.setItem('lastLoginDate', today);
+
+            setTimeout(() => {
+              Toast.info('Confira nossas novidades!', {
+                title: 'Sugestão do dia',
+                duration: 5000,
+                position: 'bottom-right',
+              });
+            }, 2000);
+          }
+
+          const tabButtons = document.querySelectorAll('.tab-btn');
+          if (tabButtons.length > 0) {
+            tabButtons.forEach(btn => {
+              btn.addEventListener('click', function () {
+                const tabName = this.dataset.tab;
+                if (window.Toast && tabName) {
+                  const messages = {
+                    publicadas: 'Visualizando suas receitas publicadas',
+                    favoritas: 'Suas receitas favoritas',
+                    rascunhos: 'Seus rascunhos de receitas',
+                    feitas: 'Receitas que você já fez',
+                  };
+
+                  if (messages[tabName]) {
+                    Toast.info(messages[tabName], {
+                      duration: 2000,
+                      position: 'bottom-right',
+                    });
+                  }
+                }
+              });
+            });
+          }
+        } catch (error) {
+          console.error('Erro ao processar informações do usuário:', error);
+        }
+      });
+    </script>
   </body>
 </html>

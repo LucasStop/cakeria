@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cakeria | Compartilhar Receita</title>
+
+    <link rel="icon" href="/assets/favicon.ico" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="/css/compartilhar-receitas.css" />
+    <link rel="stylesheet" href="/css/notifications.css" />
+    <link rel="stylesheet" href="/css/loading-button.css" />
+    <link rel="stylesheet" href="/css/form-helpers.css" />
+    <link rel="stylesheet" href="/css/recipe-form-enhancements.css" />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/home.css" />
+    <link rel="stylesheet" href="./components/components.css" />
+  </head>
+  <body>
+    <header-component></header-component>
+
+    <main class="share-recipe-container">
+      <div class="container">
+        <section class="page-header">
+          <h1 class="page-title">Compartilhar Receita</h1>
+          <p class="page-subtitle">
+            Compartilhe sua receita favorita com nossa comunidade de amantes da confeitaria
+          </p>
+        </section>
+
+        <section class="recipe-form-section">
+          <form id="recipe-form" class="recipe-form" novalidate>
+            <div class="form-group">
+              <label for="recipe-title">Título da Receita</label>
+              <input
+                type="text"
+                id="recipe-title"
+                name="title"
+                placeholder="Ex: Bolo de Chocolate com Calda de Morango"
+                required
+              />
+              <span class="error-message" id="title-error"></span>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="recipe-category">Categoria</label>
+                <select id="recipe-category" name="category" required>
+                  <option value="" disabled selected>Selecione uma categoria</option>
+                </select>
+                <span class="error-message" id="category-error"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="recipe-difficulty">Nível de Dificuldade</label>
+                <select id="recipe-difficulty" name="difficulty" required>
+                  <option value="" disabled selected>Selecione uma dificuldade</option>
+                  <option value="facil">Fácil</option>
+                  <option value="medio">Médio</option>
+                  <option value="dificil">Difícil</option>
+                </select>
+                <span class="error-message" id="difficulty-error"></span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="recipe-prep-time">Tempo de Preparo (minutos)</label>
+                <input
+                  type="number"
+                  id="recipe-prep-time"
+                  name="prepTime"
+                  min="1"
+                  placeholder="Ex: 30"
+                  required
+                />
+                <span class="error-message" id="prep-time-error"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="recipe-cook-time">Tempo de Cozimento (minutos)</label>
+                <input
+                  type="number"
+                  id="recipe-cook-time"
+                  name="cookTime"
+                  min="0"
+                  placeholder="Ex: 45"
+                  required
+                />
+                <span class="error-message" id="cook-time-error"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="recipe-servings">Rendimento (porções)</label>
+                <input
+                  type="number"
+                  id="recipe-servings"
+                  name="servings"
+                  min="1"
+                  placeholder="Ex: 8"
+                  required
+                />
+                <span class="error-message" id="servings-error"></span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="recipe-description">Descrição Breve</label>
+              <textarea
+                id="recipe-description"
+                name="description"
+                rows="3"
+                placeholder="Uma breve descrição sobre sua receita..."
+                required
+              ></textarea>
+              <span class="error-message" id="description-error"></span>
+            </div>
+
+            <div class="form-group">
+              <label>Ingredientes</label>
+              <div id="ingredients-container">
+                <div class="ingredient-item">
+                  <input
+                    type="text"
+                    name="ingredients[]"
+                    placeholder="Ex: 2 xícaras de farinha de trigo"
+                    required
+                  />
+                  <button type="button" class="remove-btn"><i class="fas fa-times"></i></button>
+                </div>
+              </div>
+              <button type="button" id="add-ingredient" class="add-btn">
+                <i class="fas fa-plus"></i> Adicionar Ingrediente
+              </button>
+              <span class="error-message" id="ingredients-error"></span>
+            </div>
+
+            <div class="form-group">
+              <label>Modo de Preparo</label>
+              <div id="steps-container">
+                <div class="step-item">
+                  <div class="step-number">1</div>
+                  <textarea
+                    name="steps[]"
+                    rows="2"
+                    placeholder="Descreva o passo..."
+                    required
+                  ></textarea>
+                  <button type="button" class="remove-btn"><i class="fas fa-times"></i></button>
+                </div>
+              </div>
+              <button type="button" id="add-step" class="add-btn">
+                <i class="fas fa-plus"></i> Adicionar Passo
+              </button>
+              <span class="error-message" id="steps-error"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="recipe-image"
+                >Imagem da Receita <span id="image-requirement">(Obrigatório)</span></label
+              >
+              <div class="file-input-wrapper">
+                <input
+                  type="file"
+                  id="recipe-image"
+                  name="image"
+                  accept="image/*"
+                  data-required="true"
+                />
+                <div class="file-preview">
+                  <img id="image-preview" src="#" alt="Prévia da imagem" style="display: none" />
+                  <p id="file-name">Nenhum arquivo selecionado</p>
+                </div>
+              </div>
+              <p class="form-helper" id="image-helper" style="display: none">
+                Ao editar uma receita, você pode manter a imagem atual ou enviar uma nova.
+              </p>
+              <div
+                class="image-status"
+                id="image-status"
+                style="
+                  display: none;
+                  margin-top: 8px;
+                  padding: 8px;
+                  background-color: #f8f9fa;
+                  border-radius: 4px;
+                  font-size: 0.85rem;
+                "
+              >
+                <p>
+                  <strong>Status da imagem:</strong>
+                  <span id="image-status-text">Imagem atual será mantida</span>
+                </p>
+                <div id="edit-mode-info" style="display: none; margin-top: 4px">
+                  <p>
+                    <i class="fas fa-info-circle" style="color: #28a745"></i> Na edição de receitas,
+                    você pode manter a imagem atual.
+                  </p>
+                </div>
+              </div>
+              <span class="error-message" id="image-error"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="recipe-tags">Tags (separe com vírgulas)</label>
+              <input
+                type="text"
+                id="recipe-tags"
+                name="tags"
+                placeholder="Ex: chocolate, festa, rápido"
+              />
+              <span class="error-message" id="tags-error"></span>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" id="cancel-btn" class="btn btn-outline">Cancelar</button>
+              <button type="submit" id="submit-btn" class="btn btn-primary">
+                Compartilhar Receita
+              </button>
+            </div>
+
+            <div class="error-message" id="form-error"></div>
+          </form>
+        </section>
+      </div>
+    </main>
+
+    <footer-component></footer-component>
+
+    <script src="./js/utils/toast.js"></script>
+    <script src="./components/Footer.js"></script>
+    <script src="./js/notificacao.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/navegacao.js"></script>
+    <script src="./js/script.js"></script>
+    <script src="./js/logout.js"></script>
+    <script src="./js/permissoes.js"></script>
+    <script src="./js/recipe-form-utils.js"></script>
+    <script src="./js/recipe-form-debug.js"></script>
+    <script src="./js/recipe-image-handling.js"></script>
+    <script src="./js/validacao-formulario.js"></script>
+    <script src="./components/Header.js"></script>
+    <script src="./js/header-controller.js"></script>
+    <script src="./js/compartilhar-receita.js"></script>
+    <script src="./js/home.js"></script>
+    <script src="./js/auth-guard.js"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        if (!isAuthenticated()) {
+          const currentPath = window.location.pathname;
+          window.location.href = `/login.html?redirect=${encodeURIComponent(currentPath)}`;
+          return;
+        }
+
+        const showErrorOriginal = window.showError;
+
+        if (typeof showError === 'function') {
+          window.showError = function (elementId, message) {
+            if (typeof showErrorOriginal === 'function') {
+              showErrorOriginal(elementId, message);
+            }
+
+            if (elementId === 'form-error' && window.Toast) {
+              Toast.error(message, {
+                title: 'Erro no formulário',
+                position: 'bottom-right',
+                duration: 5000,
+              });
+            }
+          };
+        }
+
+        const form = document.getElementById('recipe-form');
+        if (form) {
+          const originalSubmit = form.onsubmit;
+
+          form.addEventListener('submit', function (e) {
+            if (window.Toast) {
+              Toast.info('Enviando receita...', {
+                position: 'top-center',
+                duration: 3000,
+              });
+            }
+          });
+
+          const cancelBtn = document.getElementById('cancel-btn');
+          if (cancelBtn) {
+            const originalClick = cancelBtn.onclick;
+
+            cancelBtn.addEventListener('click', function (e) {
+              e.preventDefault();
+
+              if (window.Toast) {
+                Toast.warning('Deseja realmente cancelar? Os dados não serão salvos.', {
+                  position: 'top-center',
+                  duration: 5000,
+                  closeButton: true,
+                });
+
+                setTimeout(() => {
+                  if (typeof originalClick === 'function') {
+                    originalClick.call(this);
+                  } else {
+                    window.location.href = '/receitas.html';
+                  }
+                }, 2000);
+              } else if (typeof originalClick === 'function') {
+                originalClick.call(this);
+              }
+            });
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

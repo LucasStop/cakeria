@@ -1,20 +1,18 @@
 const { User } = require('../models');
 const bcrypt = require('bcryptjs');
-const { generateToken } = require('../utils/auth');
+const { generateToken, verifyToken } = require('../utils/auth');
+const { authMiddleware } = require('../middlewares/auth.middleware');
 
-// Autentica usuário e retorna token
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Valida os dados de entrada
     if (!email || !password) {
       return res.status(400).json({
         message: 'Email e senha são obrigatórios',
       });
     }
 
-    // Procura usuário pelo email
     const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(401).json({
@@ -22,7 +20,6 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Compara a senha
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -30,15 +27,13 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Atualiza o último login
     await updateLastLogin(user.id);
 
-    // Gera o token JWT
     const token = generateToken(user);
 
-    // Retorna os dados do usuário e o token (excluindo senha)
     const userData = user.toJSON();
     delete userData.password;
+    delete userData.image;
 
     res.json({
       user: userData,
@@ -52,14 +47,79 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.refresh = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        message: 'Token não fornecido',
+      });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    const decoded = verifyToken(token);
+    if (!decoded) {
+      return res.status(401).json({
+        message: 'Token inválido ou expirado',
+      });
+    }
+
+    const user = await User.findByPk(decoded.id);
+    if (!user) {
+      return res.status(401).json({
+        message: 'Usuário não encontrado',
+      });
+    }
+
+    const newToken = generateToken(user);
+
+    await updateLastLogin(user.id);
+
+    res.json({
+      token: newToken,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Erro ao renovar token',
+      error: error.message,
+    });
+  }
+};
+
 async function updateLastLogin(userId) {
   try {
     const user = await User.findByPk(userId);
     if (user) {
       await user.update({ last_login: new Date() });
-      console.log('Último login atualizado com sucesso!');
     }
   } catch (error) {
     console.error('Erro ao atualizar último login:', error);
   }
 }
+
+exports.verify = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findByPk(userId, {
+      attributes: { exclude: ['password', 'image'] },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'Usuário não encontrado',
+      });
+    }
+
+    res.json({
+      user: user,
+      verified: true,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Erro ao verificar token',
+      error: error.message,
+    });
+  }
+};

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cakeria | Finalizar Compra</title>
+
+    <link rel="icon" href="/assets/favicon.ico" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./components/components.css" />
+    <link rel="stylesheet" href="./css/checkout.css" />
+    <link rel="stylesheet" href="./css/forms.css" />
+  </head>
+  <body>
+    <header-component></header-component>
+
+    <main class="container">
+      <section class="checkout-section">
+        <h1 class="section-title">Finalização de Compra</h1>
+
+        <div class="checkout-content">
+          <div class="checkout-form-container">
+            <h2>Dados de Entrega</h2>
+            <form id="checkout-form">
+              <div class="form-group">
+                <label for="address-select">Selecione um endereço</label>
+                <select id="address-select" name="address_id">
+                  <option value="" disabled selected>Selecione um endereço para entrega</option>
+                  <!-- Os endereços serão adicionados aqui dinamicamente -->
+                </select>
+                <button type="button" id="btn-new-address" class="btn btn-outline btn-sm">
+                  <i class="fas fa-plus"></i> Adicionar novo endereço
+                </button>
+                <p id="address-error" class="error-message"></p>
+              </div>
+
+              <div id="new-address-form" style="display: none;">
+                <div class="form-group">
+                  <label for="street">Rua*</label>
+                  <input type="text" id="street" name="street" required />
+                  <p id="street-error" class="error-message"></p>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="number">Número*</label>
+                    <input type="text" id="number" name="number" required />
+                    <p id="number-error" class="error-message"></p>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="complement">Complemento</label>
+                    <input type="text" id="complement" name="complement" />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="neighborhood">Bairro*</label>
+                    <input type="text" id="neighborhood" name="neighborhood" required />
+                    <p id="neighborhood-error" class="error-message"></p>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="city">Cidade*</label>
+                    <input type="text" id="city" name="city" required />
+                    <p id="city-error" class="error-message"></p>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="state">Estado*</label>
+                    <input type="text" id="state" name="state" required />
+                    <p id="state-error" class="error-message"></p>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="postal_code">CEP*</label>
+                    <input type="text" id="postal_code" name="postal_code" required />
+                    <p id="postal_code-error" class="error-message"></p>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="reference">Ponto de Referência</label>
+                  <input type="text" id="reference" name="reference" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="payment-method">Forma de Pagamento*</label>
+                <select id="payment-method" name="payment_method" required>
+                  <option value="" disabled selected>Selecione uma forma de pagamento</option>
+                  <option value="credit_card">Cartão de Crédito</option>
+                  <option value="debit_card">Cartão de Débito</option>
+                  <option value="pix">PIX</option>
+                  <option value="bank_transfer">Transferência Bancária</option>
+                  <option value="money">Dinheiro na Entrega</option>
+                </select>
+                <p id="payment-method-error" class="error-message"></p>
+              </div>
+
+              <div id="credit-card-fields" class="payment-fields" style="display: none;">
+                <!-- Campos de cartão seriam adicionados aqui em uma implementação real -->
+                <p class="info-message">
+                  <i class="fas fa-info-circle"></i> O pagamento com cartão será processado na entrega.
+                </p>
+              </div>
+
+              <div id="pix-fields" class="payment-fields" style="display: none;">
+                <p class="info-message">
+                  <i class="fas fa-info-circle"></i> As informações para pagamento via PIX serão enviadas
+                  para seu e-mail após a confirmação do pedido.
+                </p>
+              </div>
+
+              <div id="bank-transfer-fields" class="payment-fields" style="display: none;">
+                <p class="info-message">
+                  <i class="fas fa-info-circle"></i> Os dados bancários para transferência serão enviados
+                  para seu e-mail após a confirmação do pedido.
+                </p>
+              </div>
+
+              <div class="form-group">
+                <label for="notes">Observações para entrega</label>
+                <textarea id="notes" name="notes" rows="3" placeholder="Instruções especiais para entrega, etc."></textarea>
+              </div>
+            </form>
+          </div>
+
+          <div class="checkout-summary">
+            <h2>Resumo do Pedido</h2>
+            <div id="checkout-items">
+              <!-- Itens do carrinho serão inseridos aqui dinamicamente -->
+            </div>
+            <div class="summary-item">
+              <span>Subtotal</span>
+              <span id="checkout-subtotal">R$ 0,00</span>
+            </div>
+            <div class="summary-item">
+              <span>Frete</span>
+              <span id="checkout-shipping">R$ 0,00</span>
+            </div>
+            <div class="summary-item total">
+              <span>Total</span>
+              <span id="checkout-total">R$ 0,00</span>
+            </div>
+            <button id="btn-place-order" class="btn btn-primary btn-block">
+              Confirmar Pedido
+            </button>
+            <button id="btn-back-to-cart" class="btn btn-outline btn-block">
+              Voltar para o Carrinho
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer-component></footer-component>
+
+    <!-- Modal de confirmação do pedido -->
+    <div id="order-confirmation-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Confirmar Pedido</h2>
+          <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+          <p>Confirmar a finalização do seu pedido?</p>
+          <div class="order-summary">
+            <p><strong>Total:</strong> <span id="modal-total">R$ 0,00</span></p>
+            <p><strong>Forma de pagamento:</strong> <span id="modal-payment-method">Não selecionado</span></p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="confirm-order" class="btn btn-primary">Confirmar Pedido</button>
+          <button id="cancel-order" class="btn btn-outline">Revisar Pedido</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./js/utils/toast.js"></script>
+    <script src="./components/Header.js"></script>
+    <script src="./components/Footer.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/header-controller.js"></script>
+    <script src="./js/navegacao.js"></script>
+    <script src="./js/logout.js"></script>
+    <script src="./js/checkout.js"></script>
+  </body>
+</html>

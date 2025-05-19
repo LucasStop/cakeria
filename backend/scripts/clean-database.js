@@ -15,17 +15,18 @@ async function dropTables() {
     await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
 
     console.log('Removendo tabelas...');
-
-    await sequelize.query('DROP TABLE IF EXISTS order_products');
-    await sequelize.query('DROP TABLE IF EXISTS orders');
-    await sequelize.query('DROP TABLE IF EXISTS products');
-    await sequelize.query('DROP TABLE IF EXISTS categories');
-    await sequelize.query('DROP TABLE IF EXISTS addresses');
-    await sequelize.query('DROP TABLE IF EXISTS users');
+    await sequelize.query('DROP TABLE IF EXISTS order_product');
+    await sequelize.query('DROP TABLE IF EXISTS order');
+    await sequelize.query('DROP TABLE IF EXISTS product');
+    await sequelize.query('DROP TABLE IF EXISTS category');
+    await sequelize.query('DROP TABLE IF EXISTS comment_recipe');
+    await sequelize.query('DROP TABLE IF EXISTS recipe');
+    await sequelize.query('DROP TABLE IF EXISTS address');
+    await sequelize.query('DROP TABLE IF EXISTS user');
     await sequelize.query('DROP TABLE IF EXISTS admins');
 
-    await sequelize.query('DROP TABLE IF EXISTS `ENUM_users_type`');
-    await sequelize.query('DROP TABLE IF EXISTS `ENUM_orders_status`');
+    await sequelize.query('DROP TABLE IF EXISTS `ENUM_user_type`');
+    await sequelize.query('DROP TABLE IF EXISTS `ENUM_order_status`');
 
     await sequelize.query('DROP TABLE IF EXISTS SequelizeMeta');
     console.log('Tabela SequelizeMeta removida para permitir novas migrações');

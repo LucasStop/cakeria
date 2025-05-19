@@ -1,101 +1,117 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cakeria | Receita</title>
-  
-  <!-- Favicon -->
-  <link rel="icon" href="/assets/favicon.ico">
-  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-  <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png">
-  
-  <!-- Google Fonts - Poppins -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  
-  <!-- CSS -->
-  <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/css/receitas.css">
-  <link rel="stylesheet" href="/components/components.css" />
-</head>
-<body>  
-  <header-component></header-component>
-  
-  <main class="recipe-container">
-    <div class="container">
-      <div class="recipe-breadcrumb">
-        <a href="/"><i class="fas fa-home"></i> Início</a> &gt; 
-        <a href="/receitas.html">Receitas</a> &gt; 
-        <span id="recipe-breadcrumb-title">Carregando...</span>
-      </div>
-      
-      <div id="recipe-detail">
-        <!-- Conteúdo será carregado via JavaScript -->
-        <div class="loading-indicator">
-          <div class="spinner"></div>
-          <p>Carregando receita...</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cakeria | Receita</title>
+
+    <link rel="icon" href="/assets/favicon.ico" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/receitas.css" />
+    <link rel="stylesheet" href="/css/receita-detalhe.css" />
+    <link rel="stylesheet" href="/css/notifications.css" />
+    <link rel="stylesheet" href="/css/share-menu.css" />
+    <link rel="stylesheet" href="/css/recipe-ingredients.css" />
+    <link rel="stylesheet" href="/css/comment-edit.css" />
+    <link rel="stylesheet" href="/css/admin-controls.css" />
+    <link rel="stylesheet" href="/components/components.css" />
+  </head>
+  <body>
+    <header-component></header-component>
+
+    <main class="recipe-container">
+      <div class="container">
+        <div class="recipe-breadcrumb">
+          <a href="/"><i class="fas fa-home"></i> Início</a> &gt;
+          <a href="/receitas.html">Receitas</a> &gt;
+          <span id="recipe-breadcrumb-title">Carregando...</span>
         </div>
-      </div>
-      
-      <section class="recipe-comments_recipes" id="recipe-comments_recipes-section">
-        <h2 class="section-title">Comentários</h2>
-        
-        <div id="comment-form-container">
-          <!-- Formulário de comentário será adicionado via JavaScript se o usuário estiver logado -->
-        </div>
-        
-        <div id="comments_recipes-list">
-          <!-- Comentários serão carregados via JavaScript -->
+
+        <div id="recipe-detail">
           <div class="loading-indicator">
             <div class="spinner"></div>
-            <p>Carregando comentários...</p>
+            <p>Carregando receita...</p>
           </div>
         </div>
-      </section>
-      
-      <section class="related-recipes">
-        <h2 class="section-title">Receitas Relacionadas</h2>
-        <div class="related-recipes-grid" id="related-recipes">
-          <!-- Receitas relacionadas serão carregadas via JavaScript -->
-          <div class="loading-indicator">
-            <div class="spinner"></div>
-            <p>Carregando receitas relacionadas...</p>
+
+        <section class="recipe-comments" id="recipe-comments-section">
+          <h2 class="section-title"><i class="fas fa-comments"></i> Comentários</h2>
+
+          <div id="comment-form-container" class="comment-form">
+            <div class="comment-form-logged-out" id="comment-login-message">
+              <p>
+                Para deixar um comentário, por favor <a href="/login.html">faça login</a> ou
+                <a href="/registro.html">crie uma conta</a>.
+              </p>
+            </div>
+
+            <div class="comment-form-logged-in" id="comment-form-wrapper" style="display: none">
+              <textarea
+                id="comment-text"
+                placeholder="Deixe seu comentário sobre esta receita..."
+              ></textarea>
+              <button id="submit-comment" class="btn btn-primary">Enviar Comentário</button>
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
-  </main>
-  
-  <footer-component></footer-component>
 
-  <!-- Template para comentário -->
-  <template id="comment-template">
-    <div class="comment">
-      <div class="comment-avatar">
-        <div class="avatar-initials"></div>
+          <div id="comments-list" class="comments-list">
+            <div class="loading-indicator">
+              <div class="spinner"></div>
+              <p>Carregando comentários...</p>
+            </div>
+          </div>
+        </section>
       </div>
-      <div class="comment-content">
-        <div class="comment-header">
-          <h4 class="comment-author"></h4>
-          <span class="comment-date"></span>
-        </div>
-        <div class="comment-text"></div>
-      </div>
-    </div>
-  </template>
+    </main>
 
-  <!-- Carregar componentes primeiro -->
-  <script src="./components/Header.js"></script>
-  <script src="./components/Footer.js"></script>
-  <script src="./js/api.js"></script>
-  <script src="./js/navigation.js"></script>
-  <script src="./js/receita-detalhe.js"></script>
-  <script src="./js/authGuard.js"></script>
-  
-</body>
+    <footer-component></footer-component>
+
+    <template id="comment-template">
+      <div class="comment" data-comment-id="">
+        <div class="comment-avatar">
+          <div class="avatar-initials"></div>
+        </div>
+        <div class="comment-content">
+          <div class="comment-header">
+            <h4 class="comment-author"></h4>
+            <span class="comment-date"></span>
+            <div class="comment-actions" style="display: none">
+              <button class="btn-icon edit-comment" title="Editar comentário">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn-icon delete-comment" title="Excluir comentário">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <div class="comment-text"></div>
+        </div>
+      </div>
+    </template>
+    <script src="./components/Header.js"></script>
+    <script src="./components/Footer.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/header-controller.js"></script>
+    <script src="./js/notificacao.js"></script>
+    <script src="./js/navegacao.js"></script>
+    <script src="./js/permissoes.js"></script>
+    <script src="./js/logout.js"></script>
+    <script src="./js/receita-detalhe.js"></script>
+    <script src="./js/auth-guard.js"></script>
+  </body>
 </html>

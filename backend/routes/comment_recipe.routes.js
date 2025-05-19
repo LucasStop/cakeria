@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const commentController = require('../controllers/comment_recipe.controller');
+const { authenticate } = require('../middlewares/auth.middleware');
 
-router.post('/:recipeId', commentController.addComment);
-router.delete('/:id', commentController.deleteComment);
+router.get('/recipe/:recipeId', commentController.getRecipeComments);
 
-module.exports = router; // Adicionando a exportação que estava faltando
+router.post('/:recipeId', authenticate, commentController.addComment);
+router.delete('/:id', authenticate, commentController.deleteComment);
+router.put('/:id', authenticate, commentController.updateComment);
+
+module.exports = router;

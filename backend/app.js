@@ -17,15 +17,17 @@ const userRoutes = require('./routes/user.routes');
 const addressRoutes = require('./routes/address.routes');
 const orderRoutes = require('./routes/order.routes');
 const authRoutes = require('./routes/auth.routes');
-const recipeRoutes = require('./routes/recipe.routes'); // Adicionando importação das rotas de receitas
+const recipeRoutes = require('./routes/recipe.routes');
+const commentRoutes = require('./routes/comment_recipe.routes');
 
-app.use('/api/products', productRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/addresses', addressRoutes);
-app.use('/api/orders', orderRoutes);
+app.use('/api/product', productRoutes);
+app.use('/api/category', categoryRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/address', addressRoutes);
+app.use('/api/order', orderRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/recipes', recipeRoutes); // Registrando as rotas de receitas
+app.use('/api/recipe', recipeRoutes);
+app.use('/api/comment', commentRoutes);
 
 app.get('/', (req, res) => {
   res.send(`
@@ -68,11 +70,7 @@ app.get('/', (req, res) => {
 sequelize
   .sync({ force: false })
   .then(() => {
-    // console.log('Conexão com banco de dados estabelecida');
-    app.listen(PORT, () => {
-      // console.log(`Acesse: http://localhost:${PORT}`);
-      // console.log(`Porta recebida do .env: ${process.env.PORT}`);
-    });
+    app.listen(PORT, () => {});
   })
   .catch(err => {
     console.error('Erro ao conectar com o banco de dados:', err);

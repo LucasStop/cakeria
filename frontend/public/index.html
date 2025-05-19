@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cakeria - Doces Artesanais</title>
 
-    <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,7 +12,6 @@
       rel="stylesheet"
     />
 
-    <!-- Favicon -->
     <link rel="icon" href="/assets/favicon.ico" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
     <link
@@ -21,7 +19,6 @@
       type="image/png"
       href="/assets/favicon-32x32.png"
     />
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -48,9 +45,8 @@
         window.location.href = '/home.html';
       }
     </script>
-  </head>
-  <body>
-    <header-component variant="user"></header-component>
+  </head>  <body>
+    <header-component variant="client"></header-component>
     <main id="content">
       <section class="hero">
         <div class="overlay"></div>
@@ -120,7 +116,6 @@
         </div>
       </section>
 
-      <!-- Bolos Prontos Section -->
       <section class="ready-cakes">
         <div class="container">
           <div class="section-header">
@@ -175,7 +170,6 @@
         </div>
       </section>
 
-      <!-- Por que nos escolher -->
       <section class="why-choose">
         <div class="container">
           <div class="section-header">
@@ -217,7 +211,6 @@
         </div>
       </section>
 
-      <!-- Brand Intro -->
       <section class="brand-intro">
         <div class="container">
           <div class="brand-intro-content">
@@ -273,7 +266,6 @@
         </div>
       </section>
 
-      <!-- Instagram Gallery -->
       <section class="instagram">
         <div class="container">
           <div class="section-header">
@@ -322,7 +314,6 @@
         </div>
       </section>
 
-      <!-- Call to Action -->
       <section class="cta">
         <div class="overlay gradient"></div>
         <div class="container">
@@ -338,12 +329,88 @@
 
     <footer-component></footer-component>
 
-    <!-- Carregar componentes primeiro -->
+    <script src="./js/utils/toast.js"></script>
     <script src="./components/Header.js"></script>
     <script src="./components/Footer.js"></script>
     <script src="./js/api.js"></script>
-    <script src="./js/navigation.js"></script>
-    <script src="./js/script.js"></script>
-    <script src="/js/login.js"></script>
+    <script src="./js/header-controller.js"></script>
+    <script src="./js/navegacao.js"></script>
+    <script src="./js/cart-counter.js"></script>
+    <script src="./js/logout.js"></script>
+    <script src="./js/resourceLoader.js"></script>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (typeof window.Toast === 'undefined') {
+          console.error('ERRO CRÍTICO: Sistema Toast não está disponível!');
+          
+          const toastScript = document.createElement('script');
+          toastScript.src = './js/utils/toast.js';
+          toastScript.onload = function() {
+            
+            setTimeout(() => {
+              if (window.Toast) {
+                window.Toast.info('Sistema de notificações carregado!', {
+                  position: 'top-center',
+                  duration: 3000
+                });
+              }
+            }, 500);
+          };
+          document.body.appendChild(toastScript);
+        }
+        
+        if (urlParams.has('welcome') && window.Toast) {
+          window.Toast.info('Seja bem-vindo à Cakeria! Navegue por nossas delícias!', {
+            position: 'top-center',
+            duration: 5000
+          });
+        }
+        
+        setTimeout(() => {
+          if (window.Toast) {
+            const pedidoMessage = `
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-star" style="color: #ffb400; font-size: 1.2em;"></i>
+                <span>Para acessar a tela de receitas faça login ou cadastre-se</span>
+              </div>
+            `;
+            
+            window.Toast.info(pedidoMessage, {
+              position: 'bottom-right',
+              duration: 5000,
+              title: 'Pedido Especial'
+            });
+          } else {
+            console.error("Sistema Toast não disponível para mensagem de Pedido Especial");
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.style = 'position:fixed; bottom:20px; right:20px; background:#fff; border-left:4px solid #2196F3; padding:15px; box-shadow:0 4px 8px rgba(0,0,0,0.1); z-index:9999;';
+            alertDiv.innerHTML = 'Para acessar a tela de receitas faça login ou cadastre-se';
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+              document.body.removeChild(alertDiv);
+            }, 5000);
+          }
+        }, 1000);
+        
+        const monteBoloButtons = document.querySelectorAll('a[href="#cake-builder"], a.btn-primary:contains("Monte seu Bolo")');
+        
+        monteBoloButtons.forEach(btn => {
+          btn.addEventListener('click', function() {
+            if (window.Toast) {
+              Toast.success('Monte seu bolo personalizado em 4 passos simples!', {
+                position: 'top-center',
+                duration: 2000
+              });
+            }
+          });
+        });
+      });
+      
+    </script>
   </body>
 </html>

@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      image: {
+        type: DataTypes.BLOB('medium'),
+        allowNull: true,
+      },
       name: {
         type: DataTypes.STRING(100),
         allowNull: false,
@@ -20,6 +24,21 @@ module.exports = (sequelize, DataTypes) => {
             msg: 'O nome deve ter entre 3 e 100 caracteres',
           },
         },
+      },
+      slug: {
+        type: DataTypes.STRING(120),
+        allowNull: false,
+        unique: true,
+        validate: {
+          notEmpty: {
+            msg: 'O slug não pode estar vazio',
+          },
+        },
+      },
+      is_active: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
       },
       description: {
         type: DataTypes.TEXT,
@@ -83,19 +102,9 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      image_url: {
-        type: DataTypes.STRING(255),
-        allowNull: true,
-        validate: {
-          isUrl: {
-            msg: 'A URL da imagem deve ser válida',
-            allowEmpty: true,
-          },
-        },
-      },
     },
     {
-      tableName: 'products',
+      tableName: 'product',
       timestamps: true,
       paranoid: true,
       underscored: true,
@@ -107,15 +116,13 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'category_id',
       as: 'category',
     });
-
     Product.belongsToMany(models.Order, {
-      through: models.order_product,
+      through: models.OrderProduct,
       foreignKey: 'product_id',
       otherKey: 'order_id',
-      as: 'orders',
+      as: 'order',
     });
   };
-
   Product.beforeSave(async (product, options) => {
     if (product.price) {
       product.price = parseFloat(product.price).toFixed(2);
@@ -123,6 +130,15 @@ module.exports = (sequelize, DataTypes) => {
 
     if (product.expiry_date && !(product.expiry_date instanceof Date)) {
       product.expiry_date = new Date(product.expiry_date);
+    }
+
+    if (product.changed('name') || product.isNewRecord) {
+      product.slug = product.name
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/--+/g, '-')
+        .trim();
     }
   });
 

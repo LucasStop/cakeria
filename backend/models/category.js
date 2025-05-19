@@ -9,13 +9,23 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
       },
+      slug: {
+        type: DataTypes.STRING(120),
+        allowNull: false,
+        unique: true,
+      },
       description: {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      is_active: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
     },
     {
-      tableName: 'categories',
+      tableName: 'category',
       timestamps: true,
       paranoid: true,
       underscored: true,
@@ -25,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
   Category.associate = function (models) {
     Category.hasMany(models.Product, {
       foreignKey: 'category_id',
-      as: 'products',
+      as: 'product',
     });
   };
 

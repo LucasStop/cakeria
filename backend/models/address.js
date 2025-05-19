@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'addresses',
+      tableName: 'address',
       timestamps: true,
       paranoid: true,
       underscored: true,
