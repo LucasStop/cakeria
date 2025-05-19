@@ -40,8 +40,6 @@ exports.findOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-   
-
     const {
       name,
       description,
@@ -125,8 +123,6 @@ exports.create = async (req, res) => {
           console.error('Erro ao processar imagem:', imageError);
         }
       }
-
-     
 
       const product = await Product.create(productData);
 

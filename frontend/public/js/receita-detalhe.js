@@ -931,7 +931,6 @@ function showDeleteCommentConfirmation(comment) {
 }
 
 function showEditCommentForm(comment) {
-
   const commentElement = document.querySelector(`.comment[data-comment-id="${comment.id}"]`);
   if (commentElement) {
     commentElement.classList.add('editing');
@@ -987,7 +986,6 @@ function showEditCommentForm(comment) {
     try {
       saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
       saveButton.disabled = true;
-
 
       const response = await fetch(`${API.BASE_URL}/comment/${comment.id}`, {
         method: 'PUT',

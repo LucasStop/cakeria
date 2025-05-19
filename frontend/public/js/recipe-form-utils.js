@@ -2,7 +2,6 @@ async function ensureCategoriesLoaded() {
   const categorySelect = document.getElementById('recipe-category');
 
   if (categorySelect && categorySelect.options.length <= 1) {
-
     try {
       const loadingOption = document.createElement('option');
       loadingOption.textContent = 'Carregando categorias...';
