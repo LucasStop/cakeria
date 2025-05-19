@@ -12,7 +12,7 @@ const API = {
         console.log('Token expirado, redirecionando para login...');
         this.clearSession();        if (window.Toast) {
           Toast.error('Sua sessão expirou. Por favor, faça login novamente.', {
-            position: 'top-center',
+            position: 'bottom-right',
             duration: 5000,
           });
         } else {
@@ -157,7 +157,7 @@ const API = {
       if (this.isTokenExpired()) {
         this.stopExpirationChecker();        if (window.Toast) {
           Toast.error('Sua sessão expirou. Por favor, faça login novamente.', {
-            position: 'top-center',
+            position: 'bottom-right',
             duration: 6000,
           });
         } else {

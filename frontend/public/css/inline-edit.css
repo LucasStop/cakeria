@@ -1,0 +1,166 @@
+.admin-table tr.editing {
+  background-color: rgba(240, 248, 255, 0.7);
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+  transition: all 0.2s ease;
+}
+
+.admin-table .edit-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-bottom: 0;
+  box-sizing: border-box;
+  transition: border 0.2s ease;
+}
+
+.admin-table .edit-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.admin-table select.edit-input {
+  height: 32px;
+}
+
+.admin-table .save-btn {
+  color: #28a745;
+  margin-right: 8px;
+}
+
+.admin-table .cancel-btn {
+  color: #dc3545;
+}
+
+.admin-table tr.loading {
+  opacity: 0.7;
+}
+
+.admin-table .spinner {
+  color: #007bff;
+  text-align: center;
+}
+
+.admin-table td {
+  vertical-align: middle;
+}
+
+.admin-table .action-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 16px;
+  transition: transform 0.2s;
+  color: #007bff;
+}
+
+.admin-table .action-btn:hover {
+  transform: scale(1.2);
+}
+
+.admin-table .action-btn.delete-btn {
+  color: #dc3545;
+}
+
+.admin-table .action-btn.edit-btn {
+  color: #17a2b8;
+}
+
+.admin-table tr.success-highlight {
+  animation: success-fade 2s forwards;
+}
+
+@keyframes success-fade {
+  0% { background-color: rgba(40, 167, 69, 0.2); }
+  100% { background-color: transparent; }
+}
+
+.admin-table tr.error-highlight {
+  animation: error-fade 2s forwards;
+}
+
+@keyframes error-fade {
+  0% { background-color: rgba(220, 53, 69, 0.2); }
+  100% { background-color: transparent; }
+}
+
+/* Estilo para quando um item em edição está sendo salvo */
+.admin-table .edit-input.saving {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border-color: #ced4da;
+  cursor: not-allowed;
+}
+
+/* Animação de cancelamento da edição */
+.admin-table tr.edit-cancelled {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+.admin-table tr.highlight-delete {
+  background-color: rgba(220, 53, 69, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+.admin-table tr.pulse-delete {
+  animation: pulse-delete 1.5s infinite;
+}
+
+@keyframes pulse-delete {
+  0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+/* Estilos para o modal de carregando */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

@@ -440,9 +440,10 @@
           if (justLoggedIn === 'true') {
             const user = JSON.parse(localStorage.getItem('user'));
             if (user && user.name && window.Toast) {
-              Toast.success(`Bem-vindo(a), ${user.name}!`, {
-                position: 'top-center',
+              window.Toast.success(`Bem-vindo(a), ${user.name}!`, {
+                position: 'bottom-right',
                 duration: 4000,
+              
               });
             }
             sessionStorage.removeItem('justLoggedIn');

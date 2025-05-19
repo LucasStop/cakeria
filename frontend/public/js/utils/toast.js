@@ -11,6 +11,7 @@
       closeButton: true,
       pauseOnHover: true,
       title: null,
+      zIndex: 99999,
     },
 
     container: null,
@@ -292,7 +293,7 @@ window.addEventListener('load', function () {
 window.testToast = function () {
   if (window.Toast) {
     window.Toast.info('Teste de notificação - Isso deve estar visível!', {
-      position: 'top-center',
+      position: 'bottom-right',
       duration: 3000,
     });
     window.Toast._hasShownFirstToast = true;
