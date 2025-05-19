@@ -1,6 +1,4 @@
-/**
- * Estilos para o sistema de notificações Toast
- */
+
 
 .toast-container {
   position: fixed;
@@ -149,7 +147,6 @@
   font-size: 0.95rem;
 }
 
-/* Barra de progresso animada na parte inferior */
 .toast-progress {
   position: absolute;
   bottom: 0;
@@ -177,7 +174,6 @@
   }
 }
 
-/* Animações adicionais */
 @keyframes pulse {
   0% {
     transform: scale(1);
