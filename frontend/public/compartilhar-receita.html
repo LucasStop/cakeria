@@ -311,7 +311,6 @@
           const originalSubmit = form.onsubmit;
 
           form.addEventListener('submit', function (e) {
-
             if (window.Toast) {
               Toast.info('Enviando receita...', {
                 position: 'top-center',
@@ -325,7 +324,7 @@
             const originalClick = cancelBtn.onclick;
 
             cancelBtn.addEventListener('click', function (e) {
-              e.preventDefault(); 
+              e.preventDefault();
 
               if (window.Toast) {
                 Toast.warning('Deseja realmente cancelar? Os dados não serão salvos.', {

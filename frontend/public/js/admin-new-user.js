@@ -412,7 +412,7 @@ function setupAvatarUpload() {
       return;
     }
 
-    const maxSize = 5 * 1024 * 1024; 
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       showError('avatar-error', this, 'A imagem é muito grande. O tamanho máximo é 5MB.');
       this.value = '';

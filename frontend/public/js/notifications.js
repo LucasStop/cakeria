@@ -1,4 +1,3 @@
-
 const Notifications = {
   containerEl: null,
 

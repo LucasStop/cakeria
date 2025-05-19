@@ -12,7 +12,7 @@ module.exports = {
     });
 
     const futureDate = new Date();
-    futureDate.setMonth(futureDate.getMonth() + 1); 
+    futureDate.setMonth(futureDate.getMonth() + 1);
 
     return queryInterface.bulkInsert(
       'product',

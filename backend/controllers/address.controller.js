@@ -33,7 +33,6 @@ exports.findOne = async (req, res) => {
       return res.status(404).json({ message: 'Endereço não encontrado' });
     }
 
-  
     res.json(address);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar endereço', error: error.message });
@@ -48,7 +47,6 @@ exports.findByUser = async (req, res) => {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
 
-  
     const address = await Address.findAll({
       where: { user_id: userId },
       include: [
@@ -111,7 +109,6 @@ exports.update = async (req, res) => {
       return res.status(404).json({ message: 'Endereço não encontrado' });
     }
 
-
     const [updated] = await Address.update(req.body, { where: { id } });
 
     if (updated) {
@@ -140,7 +137,6 @@ exports.delete = async (req, res) => {
     if (!address) {
       return res.status(404).json({ message: 'Endereço não encontrado' });
     }
-
 
     await Address.destroy({ where: { id } });
     res.status(204).send();

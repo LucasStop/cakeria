@@ -30,7 +30,7 @@ class Footer extends HTMLElement {
         const href = link.getAttribute('href');
 
         if (href === '/') {
-          return; 
+          return;
         }
 
         e.preventDefault();
