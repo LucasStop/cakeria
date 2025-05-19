@@ -40,14 +40,24 @@ exports.findOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    upload.single('image')(req, res, async err => {
-      if (err) {
-        return res.status(400).json({ error: 'Erro no upload da imagem' });
-      }
+    // O middleware de upload já deve ter processado a imagem
+    // e adicionado o arquivo ao req.file, se houver
+    
+    console.log('Recebendo requisição para criar produto:', {
+      body: req.body,
+      file: req.file ? 'Arquivo recebido' : 'Sem arquivo'
+    });
 
-      const { name, description, price, size, stock, expiry_date, category_id, is_active } =
-        req.body;
+    const { name, description, price, size, stock, stock_quantity, expiration_date, category_id, is_active } = req.body;
+    
+    if (!name || !description || !category_id) {
+      return res.status(400).json({ 
+        error: 'Dados insuficientes',
+        details: 'Nome, descrição e categoria são obrigatórios'
+      });
+    }
 
+    try {
       // Gerar slug a partir do nome
       const slug = name
         .toLowerCase()
@@ -55,30 +65,94 @@ exports.create = async (req, res) => {
         .replace(/\s+/g, '-') // Substitui espaços por hífens
         .replace(/--+/g, '-') // Remove hífens duplicados
         .trim();
+      
+      // Preparar dados do produto com validação segura
       const productData = {
-        category_id,
-        name,
+        category_id: parseInt(category_id) || null,
+        name: name.trim(),
         slug,
-        description,
-        price: formatPriceForDatabase(price),
-        size,
-        stock: parseInt(stock),
-        expiry_date: formatDateForDatabase(expiry_date),
-        image: req.file ? fs.readFileSync(req.file.path) : null,
+        description: description.trim(),
+        is_active: is_active === 'false' ? false : true,
       };
-
-      // Se a imagem foi uploaded no sistema de arquivos, podemos excluí-la depois de ler
-      if (req.file) {
-        fs.unlinkSync(req.file.path);
+      
+      // Adicionar preço com validação segura
+      if (price) {
+        try {
+          productData.price = formatPriceForDatabase(price);
+        } catch (priceError) {
+          console.error('Erro ao processar preço:', priceError);
+          productData.price = 0;
+        }
       }
+      
+      // Adicionar tamanho
+      if (size) {
+        productData.size = size.trim();
+      }
+      
+      // Adicionar estoque com validação segura
+      const stockValue = stock_quantity || stock;
+      if (stockValue !== undefined && stockValue !== null) {
+        try {
+          productData.stock = parseInt(stockValue) || 0;
+        } catch (stockError) {
+          console.error('Erro ao processar estoque:', stockError);
+          productData.stock = 0;
+        }
+      } else {
+        productData.stock = 0;
+      }
+      
+      // Processar data de validade (obrigatória no modelo)
+      try {
+        // Usar expiration_date do formulário ou criar uma data padrão (1 ano no futuro)
+        if (expiration_date) {
+          productData.expiry_date = formatDateForDatabase(expiration_date);
+        } else {
+          // Criar data um ano no futuro como padrão
+          const defaultDate = new Date();
+          defaultDate.setFullYear(defaultDate.getFullYear() + 1);
+          productData.expiry_date = defaultDate;
+        }
+      } catch (dateError) {
+        console.error('Erro ao processar data:', dateError);
+        // Usar data padrão 1 ano no futuro
+        const defaultDate = new Date();
+        defaultDate.setFullYear(defaultDate.getFullYear() + 1);
+        productData.expiry_date = defaultDate;
+      }
+      
+      // Processar imagem com tratamento de erro
+      if (req.file) {
+        try {
+          productData.image = fs.readFileSync(req.file.path);
+          // Excluir o arquivo após lê-lo
+          fs.unlinkSync(req.file.path);
+        } catch (imageError) {
+          console.error('Erro ao processar imagem:', imageError);
+          // Continuar sem imagem
+        }
+      }
+      
+      console.log('Dados do produto validados:', {
+        ...productData,
+        expiry_date: productData.expiry_date ? 'Data definida' : 'Sem data',
+        image: productData.image ? 'Imagem incluída' : 'Sem imagem'
+      });
 
       const product = await Product.create(productData);
+      console.log('Produto criado com sucesso:', product.id);
+      
       res.status(201).json(product);
-    });
+    } catch (dbError) {
+      console.error('Erro ao criar produto no banco de dados:', dbError);
+      throw dbError;
+    }
   } catch (error) {
+    console.error('Erro ao criar produto:', error);
     res.status(400).json({
       message: 'Erro ao criar produto',
-      details: error.errors?.map(e => e.message) || error.message,
+      details: error.message || 'Erro desconhecido no servidor'
     });
   }
 };
@@ -199,11 +273,58 @@ exports.getImage = async (req, res) => {
 };
 
 function formatPriceForDatabase(price) {
-  return parseFloat(price.toString().replace('R$ ', '').replace('.', '').replace(',', '.'));
+  if (!price) return 0;
+  
+  try {
+    // Remover símbolos e substituir vírgula por ponto
+    const cleanedPrice = price.toString()
+      .replace(/[^\d.,]/g, '') // Remove tudo exceto dígitos, pontos e vírgulas
+      .replace(',', '.'); // Substitui vírgula por ponto
+    
+    // Converter para número e garantir duas casas decimais
+    const numericPrice = parseFloat(cleanedPrice);
+    
+    // Verificar se é um número válido
+    if (isNaN(numericPrice)) return 0;
+    
+    return parseFloat(numericPrice.toFixed(2));
+  } catch (error) {
+    console.error('Erro ao formatar preço:', error);
+    return 0; // Valor padrão em caso de erro
+  }
 }
 
 function formatDateForDatabase(date) {
-  if (!date) return null;
-  const [day, month, year] = date.split('/');
-  return new Date(`${year}-${month}-${day}`);
+  if (!date) return new Date();
+  
+  try {
+    // Verificar se já é um objeto Date
+    if (date instanceof Date) return date;
+    
+    // Verificar formatos possíveis: DD/MM/YYYY, YYYY-MM-DD, etc.
+    let parsedDate;
+    
+    if (date.includes('/')) {
+      // Formato DD/MM/YYYY
+      const [day, month, year] = date.split('/');
+      parsedDate = new Date(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+    } else if (date.includes('-')) {
+      // Formato YYYY-MM-DD
+      parsedDate = new Date(date);
+    } else {
+      // Outras tentativas
+      parsedDate = new Date(date);
+    }
+    
+    // Verificar se a data resultante é válida
+    if (isNaN(parsedDate.getTime())) {
+      throw new Error('Data inválida');
+    }
+    
+    return parsedDate;
+  } catch (error) {
+    console.error('Erro ao formatar data:', error);
+    // Retornar data atual em caso de erro
+    return new Date();
+  }
 }
