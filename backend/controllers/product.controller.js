@@ -169,53 +169,53 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    upload.single('image')(req, res, async err => {
-      if (err) {
-        return res.status(400).json({ error: 'Erro no upload da imagem' });
-      }
+    const { id } = req.params;
+    const product = await Product.findByPk(id);
 
-      const { id } = req.params;
-      const product = await Product.findByPk(id);
+    if (!product) {
+      return res.status(404).json({ message: 'Produto não encontrado' });
+    }
 
-      if (!product) {
-        return res.status(404).json({ message: 'Produto não encontrado' });
-      }
+    // Create update data with only the fields that are present
+    const updateData = {};
 
-      // Create update data with only the fields that are present
-      const updateData = {};
+    // Process only provided fields
+    if (req.body.name) updateData.name = req.body.name;
+    if (req.body.description) updateData.description = req.body.description;
+    if (req.body.category_id) updateData.category_id = req.body.category_id;
+    if (req.body.price !== undefined) updateData.price = formatPriceForDatabase(req.body.price);
+    if (req.body.size) updateData.size = req.body.size;
+    if (req.body.stock !== undefined) updateData.stock = parseInt(req.body.stock);
+    if (req.body.expiration_date || req.body.expiry_date) {
+      updateData.expiry_date = formatDateForDatabase(req.body.expiration_date || req.body.expiry_date);
+    }
+    if (req.body.is_active !== undefined)
+      updateData.is_active = req.body.is_active === 'false' ? false : Boolean(req.body.is_active);
 
-      // Process only provided fields
-      if (req.body.name) updateData.name = req.body.name;
-      if (req.body.description) updateData.description = req.body.description;
-      if (req.body.category_id) updateData.category_id = req.body.category_id;
-      if (req.body.price !== undefined) updateData.price = formatPriceForDatabase(req.body.price);
-      if (req.body.size) updateData.size = req.body.size;
-      if (req.body.stock !== undefined) updateData.stock = parseInt(req.body.stock);
-      if (req.body.expiry_date)
-        updateData.expiry_date = formatDateForDatabase(req.body.expiry_date);
-      if (req.body.is_active !== undefined)
-        updateData.is_active = req.body.is_active === 'false' ? false : Boolean(req.body.is_active);
+    // Update slug if name is provided
+    if (req.body.name) {
+      updateData.slug = req.body.name
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/--+/g, '-')
+        .trim();
+    }
 
-      // Update slug if name is provided
-      if (req.body.name) {
-        updateData.slug = req.body.name
-          .toLowerCase()
-          .replace(/[^\w\s-]/g, '')
-          .replace(/\s+/g, '-')
-          .replace(/--+/g, '-')
-          .trim();
-      }
-
-      // Process image if provided
-      if (req.file) {
+    // Process image if provided
+    if (req.file) {
+      try {
         updateData.image = fs.readFileSync(req.file.path);
         // Delete the file after reading it
         fs.unlinkSync(req.file.path);
+      } catch (imageError) {
+        console.error('Erro ao processar imagem:', imageError);
+        // Continuar sem atualizar a imagem
       }
+    }
 
-      await product.update(updateData);
-      res.json(await Product.findByPk(id, { include: [{ model: Category, as: 'category' }] }));
-    });
+    await product.update(updateData);
+    res.json(await Product.findByPk(id, { include: [{ model: Category, as: 'category' }] }));
   } catch (error) {
     res.status(400).json({
       message: 'Erro ao atualizar produto',

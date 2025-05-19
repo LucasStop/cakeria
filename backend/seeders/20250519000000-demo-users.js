@@ -12,7 +12,7 @@ module.exports = {
       [
         {
           name: 'Dev Cakeria',
-          email: 'dev@cakeria',
+          email: 'dev@cakeria.com',
           password: newUserPassword,
           cpf: '222.333.444-55',
           type: 'admin',
