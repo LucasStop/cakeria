@@ -3,6 +3,15 @@ const API_URL = 'http://localhost:3001/api';
 let produtos = [];
 let categorias = [];
 
+// Variáveis globais para filtros
+let filtroAtual = {
+  nome: '',
+  categoria: '',
+  precoMin: '',
+  precoMax: '',
+  validade: ''
+};
+
 const contentEl = document.getElementById('content');
 const produtosContainer = document.getElementById('produtos-container');
 const categoriasContainer = document.getElementById('categorias-container');
@@ -132,7 +141,385 @@ function renderizarCategorias(categoriasList) {
   categoriasContainer.innerHTML = html;
 }
 
-async function renderizarListaProdutos() {
+// Inicializar filtros
+function initializeFilters() {
+  console.log('Inicializando sistema de filtros...');
+  
+  // Verificar se estamos na página certa e se os elementos existem
+  const filterSection = document.querySelector('.filter-section');
+  if (!filterSection) {
+    console.warn('Seção de filtros não encontrada - pulando inicialização');
+    return;
+  }
+  
+  // Carregar categorias no filtro
+  setTimeout(() => {
+    carregarCategoriasFiltro();
+  }, 500); // Pequeno atraso para garantir que a API esteja pronta
+  
+  // Configurar event listeners para os filtros
+  const nameFilter = document.getElementById('filter-name');
+  if (nameFilter) {
+    nameFilter.addEventListener('input', function() {
+      filtroAtual.nome = this.value.trim();
+    });
+    
+    nameFilter.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        aplicarFiltros();
+      }
+    });
+  }
+  
+  const categoryFilter = document.getElementById('filter-category');
+  if (categoryFilter) {
+    categoryFilter.addEventListener('change', function() {
+      filtroAtual.categoria = this.value;
+    });
+  }
+  
+  const minPriceFilter = document.getElementById('filter-min-price');
+  if (minPriceFilter) {
+    minPriceFilter.addEventListener('input', function() {
+      filtroAtual.precoMin = this.value ? parseFloat(this.value) : '';
+    });
+  }
+  
+  const maxPriceFilter = document.getElementById('filter-max-price');
+  if (maxPriceFilter) {
+    maxPriceFilter.addEventListener('input', function() {
+      filtroAtual.precoMax = this.value ? parseFloat(this.value) : '';
+    });
+  }
+  
+  const expiryFilter = document.getElementById('filter-expiry');
+  if (expiryFilter) {
+    expiryFilter.addEventListener('change', function() {
+      filtroAtual.validade = this.value;
+    });
+  }
+  
+  const applyButton = document.getElementById('apply-filters');
+  if (applyButton) {
+    applyButton.addEventListener('click', aplicarFiltros);
+  }
+  
+  const clearButton = document.getElementById('clear-filters');
+  if (clearButton) {
+    clearButton.addEventListener('click', limparFiltros);
+  }
+  
+  const searchButton = document.getElementById('search-btn');
+  if (searchButton) {
+    searchButton.addEventListener('click', aplicarFiltros);
+  }
+}
+
+// Carregar categorias para o filtro - versão aprimorada
+async function carregarCategoriasFiltro() {
+  console.log("Iniciando carregamento de categorias para o filtro...");
+  const selectCategoria = document.getElementById('filter-category');
+  if (!selectCategoria) {
+    console.warn('Elemento select de categorias não encontrado');
+    return;
+  }
+  
+  // Limpar opções existentes, mantendo apenas a primeira (Todas as categorias)
+  while (selectCategoria.options.length > 1) {
+    selectCategoria.remove(1);
+  }
+  
+  try {
+    let categoriasList = [];
+    
+    // Abordagem 1: Usar categorias já carregadas na variável global
+    if (window.categorias && Array.isArray(window.categorias) && window.categorias.length > 0) {
+      console.log("Usando categorias da variável global:", window.categorias.length);
+      categoriasList = window.categorias;
+    } 
+    // Abordagem 2: Carregar via API.categorias.listar
+    else if (window.API && window.API.categorias && typeof window.API.categorias.listar === 'function') {
+      console.log("Tentando carregar categorias via API.categorias.listar()");
+      try {
+        categoriasList = await window.API.categorias.listar();
+        console.log("Categorias carregadas via API:", categoriasList.length);
+      } catch (apiError) {
+        console.error("Erro ao carregar via API.categorias.listar():", apiError);
+        throw apiError; // Passar para o próximo método
+      }
+    } 
+    // Abordagem 3: Carregar via fetch direto
+    else {
+      console.log("Tentando fetch direto para categorias");
+      const baseUrl = window.API?.BASE_URL || API_URL || 'http://localhost:3001/api';
+      
+      // Tentar diferentes endpoints
+      const possibleEndpoints = [
+        '/categories',
+        '/categorias',
+        '/categoria'
+      ];
+      
+      let success = false;
+      
+      for (const endpoint of possibleEndpoints) {
+        if (success) break;
+        
+        try {
+          const url = `${baseUrl}${endpoint}`;
+          console.log(`Tentando carregar de: ${url}`);
+          
+          const response = await fetch(url);
+          
+          if (response.ok) {
+            const data = await response.json();
+            categoriasList = Array.isArray(data) ? data : 
+                            (data.categorias || data.categories || data.data || data.items || []);
+            
+            console.log(`Categorias carregadas via fetch de ${endpoint}:`, categoriasList.length);
+            success = true;
+          }
+        } catch (endpointError) {
+          console.warn(`Falha ao carregar de ${endpoint}:`, endpointError);
+        }
+      }
+      
+      if (!success) {
+        throw new Error("Não foi possível carregar categorias de nenhum endpoint");
+      }
+    }
+
+    // Se temos categorias carregadas, preencher o select
+    if (categoriasList.length > 0) {
+      categoriasList.forEach(categoria => {
+        // Verificar se a opção já existe
+        if (!selectCategoria.querySelector(`option[value="${categoria.id}"]`)) {
+          const option = document.createElement('option');
+          option.value = categoria.id;
+          option.textContent = categoria.name;
+          selectCategoria.appendChild(option);
+        }
+      });
+      
+      console.log(`${categoriasList.length} categorias adicionadas ao filtro`);
+      
+      // Restaurar o valor selecionado se existir
+      if (filtroAtual.categoria) {
+        selectCategoria.value = filtroAtual.categoria;
+      }
+      
+      return true;
+    } else {
+      console.warn("Nenhuma categoria encontrada para preencher o filtro");
+      selectCategoria.innerHTML += '<option value="" disabled>Nenhuma categoria disponível</option>';
+      return false;
+    }
+  } catch (error) {
+    console.error('Erro ao carregar categorias para filtro:', error);
+    selectCategoria.innerHTML += '<option value="" disabled>Erro ao carregar categorias</option>';
+    
+    // Adicionar botão para tentar novamente
+    const filterItem = selectCategoria.closest('.filter-item');
+    if (filterItem && !filterItem.querySelector('.retry-button')) {
+      const retryButton = document.createElement('button');
+      retryButton.textContent = 'Tentar novamente';
+      retryButton.className = 'btn btn-sm retry-button';
+      retryButton.style.marginTop = '8px';
+      retryButton.addEventListener('click', function() {
+        this.disabled = true;
+        this.textContent = 'Carregando...';
+        carregarCategoriasFiltro().finally(() => {
+          this.disabled = false;
+          this.textContent = 'Tentar novamente';
+        });
+      });
+      filterItem.appendChild(retryButton);
+    }
+    
+    return false;
+  }
+}
+
+// Aplicar filtros
+function aplicarFiltros() {
+  console.log('Aplicando filtros:', filtroAtual);
+  
+  // Atualizar UI mostrando filtros ativos
+  atualizarFiltrosAtivos();
+  
+  // Recarregar produtos com filtros
+  renderizarListaProdutos(filtroAtual);
+  
+  // Notificação de filtros aplicados
+  if (window.Toast) {
+    window.Toast.info('Filtros aplicados com sucesso', {
+      position: 'bottom-right',
+      duration: 3000
+    });
+  }
+}
+
+// Limpar todos os filtros
+function limparFiltros() {
+  const nameFilter = document.getElementById('filter-name');
+  if (nameFilter) nameFilter.value = '';
+  
+  const categoryFilter = document.getElementById('filter-category');
+  if (categoryFilter) categoryFilter.value = '';
+  
+  const minPriceFilter = document.getElementById('filter-min-price');
+  if (minPriceFilter) minPriceFilter.value = '';
+  
+  const maxPriceFilter = document.getElementById('filter-max-price');
+  if (maxPriceFilter) maxPriceFilter.value = '';
+  
+  const expiryFilter = document.getElementById('filter-expiry');
+  if (expiryFilter) expiryFilter.value = '';
+  
+  // Resetar objeto de filtro
+  filtroAtual = {
+    nome: '',
+    categoria: '',
+    precoMin: '',
+    precoMax: '',
+    validade: ''
+  };
+  
+  // Limpar UI de filtros ativos
+  const activeFilters = document.getElementById('active-filters');
+  if (activeFilters) activeFilters.innerHTML = '';
+  
+  // Recarregar produtos sem filtros
+  renderizarListaProdutos();
+  
+  // Notificação de filtros limpos
+  if (window.Toast) {
+    window.Toast.info('Filtros removidos', {
+      position: 'bottom-right',
+      duration: 2000
+    });
+  }
+}
+
+// Atualizar a UI mostrando filtros ativos
+function atualizarFiltrosAtivos() {
+  const filtrosContainer = document.getElementById('active-filters');
+  if (!filtrosContainer) return;
+  
+  filtrosContainer.innerHTML = '';
+  let temFiltroAtivo = false;
+  
+  // Verificar e mostrar cada filtro ativo
+  if (filtroAtual.nome) {
+    criarMarcadorFiltro(filtrosContainer, 'Nome', filtroAtual.nome, () => {
+      document.getElementById('filter-name').value = '';
+      filtroAtual.nome = '';
+      aplicarFiltros();
+    });
+    temFiltroAtivo = true;
+  }
+  
+  if (filtroAtual.categoria) {
+    const selectCategoria = document.getElementById('filter-category');
+    const categoriaTexto = selectCategoria.options[selectCategoria.selectedIndex].text;
+    
+    criarMarcadorFiltro(filtrosContainer, 'Categoria', categoriaTexto, () => {
+      document.getElementById('filter-category').value = '';
+      filtroAtual.categoria = '';
+      aplicarFiltros();
+    });
+    temFiltroAtivo = true;
+  }
+  
+  if (filtroAtual.precoMin || filtroAtual.precoMax) {
+    let textoPreco = '';
+    if (filtroAtual.precoMin && filtroAtual.precoMax) {
+      textoPreco = `R$ ${filtroAtual.precoMin} até R$ ${filtroAtual.precoMax}`;
+    } else if (filtroAtual.precoMin) {
+      textoPreco = `A partir de R$ ${filtroAtual.precoMin}`;
+    } else {
+      textoPreco = `Até R$ ${filtroAtual.precoMax}`;
+    }
+    
+    criarMarcadorFiltro(filtrosContainer, 'Preço', textoPreco, () => {
+      document.getElementById('filter-min-price').value = '';
+      document.getElementById('filter-max-price').value = '';
+      filtroAtual.precoMin = '';
+      filtroAtual.precoMax = '';
+      aplicarFiltros();
+    });
+    temFiltroAtivo = true;
+  }
+  
+  if (filtroAtual.validade) {
+    let textoValidade = '';
+    switch(filtroAtual.validade) {
+      case 'valid':
+        textoValidade = 'Produtos válidos';
+        break;
+      case 'soon':
+        textoValidade = 'Vencimento próximo (30 dias)';
+        break;
+      case 'expired':
+        textoValidade = 'Produtos vencidos';
+        break;
+    }
+    
+    criarMarcadorFiltro(filtrosContainer, 'Validade', textoValidade, () => {
+      document.getElementById('filter-expiry').value = '';
+      filtroAtual.validade = '';
+      aplicarFiltros();
+    });
+    temFiltroAtivo = true;
+  }
+  
+  // Se tem algum filtro, adicionar opção para limpar todos
+  if (temFiltroAtivo) {
+    const limparTodos = document.createElement('button');
+    limparTodos.className = 'btn btn-sm btn-outline';
+    limparTodos.innerHTML = 'Limpar todos os filtros';
+    limparTodos.style.marginLeft = 'auto';
+    limparTodos.addEventListener('click', limparFiltros);
+    filtrosContainer.appendChild(limparTodos);
+  }
+}
+
+// Criar um marcador de filtro ativo
+function criarMarcadorFiltro(container, tipo, valor, onRemove) {
+  const filtroEl = document.createElement('div');
+  filtroEl.className = 'active-filter';
+  
+  // Selecionar ícone apropriado baseado no tipo de filtro
+  let iconClass = 'fa-tag';
+  switch(tipo.toLowerCase()) {
+    case 'nome': iconClass = 'fa-font'; break;
+    case 'categoria': iconClass = 'fa-list'; break; 
+    case 'preço': iconClass = 'fa-dollar-sign'; break;
+    case 'validade': iconClass = 'fa-calendar'; break;
+  }
+  
+  filtroEl.innerHTML = `
+    <i class="fas ${iconClass}"></i>
+    <span><strong>${tipo}:</strong> ${valor}</span>
+    <button type="button" title="Remover filtro"><i class="fas fa-times"></i></button>
+  `;
+  
+  // Adicionar evento para remover o filtro
+  filtroEl.querySelector('button').addEventListener('click', onRemove);
+  
+  container.appendChild(filtroEl);
+  
+  // Efeito de entrada
+  setTimeout(() => {
+    filtroEl.style.transform = 'scale(1.05)';
+    setTimeout(() => {
+      filtroEl.style.transform = 'scale(1)';
+    }, 150);
+  }, 10);
+}
+
+// Modificar a função existente para aceitar filtros
+async function renderizarListaProdutos(filtros = null) {
   try {
     contentEl.innerHTML = `
       <section class="products-list">
@@ -176,13 +563,73 @@ async function renderizarListaProdutos() {
       console.log('Produtos carregados via fetch direto:', produtos.length);
     }
 
+    // Após carregar os produtos, aplicar filtros antes de renderizar
+    if (filtros) {
+      produtos = filtrarProdutos(produtos, filtros);
+    }
+
     const mainContent = `
       <section class="products-list">
         <div class="container">
           <h1 class="section-title">Nossos Produtos</h1>
+          
+          <!-- Seção de filtros com estilo aprimorado -->
+          <section class="filter-section">
+            <h2 class="filter-title"><i class="fas fa-filter"></i> Filtrar Produtos</h2>
+            <div class="filter-container">
+              <div class="filter-item">
+                <label for="filter-name">Nome do produto</label>
+                <div class="search-box">
+                  <input type="text" id="filter-name" placeholder="Buscar produtos..." value="${filtros?.nome || ''}">
+                  <button id="search-btn" type="button"><i class="fas fa-search"></i></button>
+                </div>
+              </div>
+              
+              <div class="filter-item">
+                <label for="filter-category">Categoria</label>
+                <select id="filter-category">
+                  <option value="">Todas as categorias</option>
+                  <!-- As categorias serão carregadas dinamicamente -->
+                </select>
+              </div>
+              
+              <div class="filter-item">
+                <label for="filter-min-price">Preço</label>
+                <div class="price-range-container">
+                  <input type="number" id="filter-min-price" placeholder="Mín" min="0" step="0.01" value="${filtros?.precoMin || ''}">
+                  <span>até</span>
+                  <input type="number" id="filter-max-price" placeholder="Máx" min="0" step="0.01" value="${filtros?.precoMax || ''}">
+                </div>
+              </div>
+              
+              <div class="filter-item">
+                <label for="filter-expiry">Validade</label>
+                <select id="filter-expiry">
+                  <option value="">Todos os produtos</option>
+                  <option value="valid" ${filtros?.validade === 'valid' ? 'selected' : ''}>Produtos válidos</option>
+                  <option value="soon" ${filtros?.validade === 'soon' ? 'selected' : ''}>Vencimento próximo (30 dias)</option>
+                  <option value="expired" ${filtros?.validade === 'expired' ? 'selected' : ''}>Produtos vencidos</option>
+                </select>
+              </div>
+              
+              <div class="filter-actions">
+                <button id="apply-filters" class="btn btn-primary" type="button">
+                  <i class="fas fa-filter"></i> Aplicar Filtros
+                </button>
+                <button id="clear-filters" class="btn btn-outline" type="button">
+                  <i class="fas fa-times"></i> Limpar
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Área para filtros ativos -->
+          <div id="active-filters" class="active-filters-container"></div>
+
           ${produtos.length === 0 ? 
             `<div class="empty-state">
-              <p>Não encontramos produtos disponíveis no momento.</p>
+              <p>Nenhum produto encontrado${filtros ? ' com os filtros selecionados' : ''}.</p>
+              ${filtros ? '<button class="btn btn-outline" onclick="limparFiltros()">Limpar filtros</button>' : ''}
               ${isAdmin() ? `<a href="/registerProduct.html" class="btn btn-primary">Cadastrar Novo Produto</a>` : ''}
             </div>` :
             `<div class="featured-products">
@@ -195,8 +642,10 @@ async function renderizarListaProdutos() {
                     <div class="product-img" style="background-image: url('${imageUrl}')"></div>
                     <div class="product-info">
                       <h3>${produto.name}</h3>
-                      <p class="product-price">R$ ${parseFloat(produto.price).toFixed(2)}</p>
-                      <button class="btn btn-primary" onclick="verDetalhesProduto(${produto.id})">Ver Detalhes</button>
+                      <p class="product-price">R$ ${parseFloat(produto.price).toFixed(2).replace('.', ',')}</p>
+                      <button class="btn btn-primary" onclick="verDetalhesProduto(${produto.id})">
+                        <i class="fas fa-eye"></i> Ver Detalhes
+                      </button>
                     </div>
                   </div>`;
               }).join("")}
@@ -207,8 +656,16 @@ async function renderizarListaProdutos() {
     `;
 
     contentEl.innerHTML = mainContent;
-    currentPage = "produtos";
-    window.history.pushState({}, "", "/produtos");
+    
+    // Inicializar os filtros com um atraso maior para garantir que tudo esteja renderizado
+    setTimeout(() => {
+      initializeFilters();
+      
+      // Recriar os filtros ativos após renderizar
+      if (filtros) {
+        atualizarFiltrosAtivos();
+      }
+    }, 300);
     
     if (window.Toast && produtos.length > 0) {
       window.Toast.success(`${produtos.length} produtos carregados com sucesso!`, {
@@ -245,6 +702,54 @@ async function renderizarListaProdutos() {
       });
     }
   }
+}
+
+// Função para filtrar produtos com base nos critérios
+function filtrarProdutos(produtos, filtros) {
+  return produtos.filter(produto => {
+    // Filtrar por nome
+    if (filtros.nome && 
+        !produto.name.toLowerCase().includes(filtros.nome.toLowerCase()) && 
+        (!produto.description || !produto.description.toLowerCase().includes(filtros.nome.toLowerCase()))) {
+      return false;
+    }
+    
+    // Filtrar por categoria
+    if (filtros.categoria && produto.category_id != filtros.categoria) {
+      return false;
+    }
+    
+    // Filtrar por preço mínimo
+    if (filtros.precoMin && parseFloat(produto.price) < filtros.precoMin) {
+      return false;
+    }
+    
+    // Filtrar por preço máximo
+    if (filtros.precoMax && parseFloat(produto.price) > filtros.precoMax) {
+      return false;
+    }
+    
+    // Filtrar por validade
+    if (filtros.validade) {
+      const hoje = new Date();
+      const dataValidade = new Date(produto.expiry_date);
+      const diasParaVencer = Math.floor((dataValidade - hoje) / (1000 * 60 * 60 * 24));
+      
+      switch(filtros.validade) {
+        case 'valid': 
+          if (dataValidade < hoje) return false;
+          break;
+        case 'soon': 
+          if (diasParaVencer < 0 || diasParaVencer > 30) return false;
+          break;
+        case 'expired': 
+          if (dataValidade > hoje) return false;
+          break;
+      }
+    }
+    
+    return true;
+  });
 }
 
 function isAdmin() {
@@ -635,3 +1140,6 @@ window.verReceitaDetalhes = async function (id) {
 window.carregarConteudoHTML = carregarConteudoHTML;
 window.removerEstilosEspecificos = removerEstilosEspecificos;
 window.navegarParaHome = navegarParaHome;
+window.initializeFilters = initializeFilters;
+window.aplicarFiltros = aplicarFiltros;
+window.limparFiltros = limparFiltros;
