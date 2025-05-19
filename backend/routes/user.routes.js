@@ -5,10 +5,8 @@ const { authenticate } = require('../middlewares/auth.middleware');
 const multer = require('multer');
 const upload = multer();
 
-// Rota pública para criar usuários (registro)
 router.post('/', upload.single('image'), userController.create);
 
-// Rotas que precisam de autenticação
 router.get('/', authenticate, userController.findAll);
 router.get('/:id', authenticate, userController.findOne);
 router.put('/:id', authenticate, upload.single('image'), userController.update);

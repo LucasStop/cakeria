@@ -45,7 +45,7 @@ function loadUsers() {
   const typeFilter = document.getElementById('filterType').value;  
   showLoadingState(true);
   
-  fetch('http://localhost:3001/api/users', {
+  fetch('http://localhost:3001/api/user', {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`
@@ -208,11 +208,10 @@ function openEditModal(userId) {
   // Atualizar a visualização da imagem do usuário
   const avatarPreview = document.getElementById('editAvatarPreview');
   avatarPreview.innerHTML = ''; // Limpar conteúdo anterior
-  
-  // Verificar se o usuário tem imagem e mostrar
+    // Verificar se o usuário tem imagem e mostrar
   if (user.image) {
     const img = document.createElement('img');
-    img.src = `http://localhost:3001/api/users/${user.id}/image?t=${new Date().getTime()}`; // Evitar cache
+    img.src = `http://localhost:3001/api/user/${user.id}/image?t=${new Date().getTime()}`; // Evitar cache
     img.alt = `Foto de ${user.name}`;
     img.className = 'uploaded-avatar';
     avatarPreview.appendChild(img);
@@ -432,13 +431,12 @@ function setupEventListeners() {
 function createUser(userData) {
   const token = localStorage.getItem('token');
   
-  fetch('http://localhost:3001/api/users', {
+  fetch('http://localhost:3001/api/user', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     },
-    body: JSON.stringify(userData)
+    body: userData // Já deve ser um FormData
   })
   .then(response => {
     if (!response.ok) {
@@ -447,7 +445,8 @@ function createUser(userData) {
       });
     }
     return response.json();
-  })  .then(data => {
+  })
+  .then(data => {
     alert('Usuário criado com sucesso!');
     loadUsers();
   })
@@ -466,10 +465,9 @@ function updateUser(userId, formData) {
   const originalButtonText = submitButton.innerHTML;
   submitButton.disabled = true;
   submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+    console.log("Enviando atualização para usuário:", userId);
   
-  console.log("Enviando atualização para usuário:", userId);
-  
-  fetch(`http://localhost:3001/api/users/${userId}`, {
+  fetch(`http://localhost:3001/api/user/${userId}`, {
     method: 'PUT',
     headers: {
       'Authorization': `Bearer ${token}`
@@ -511,10 +509,9 @@ function deleteUser(userId) {
   const originalButtonText = deleteButton.innerHTML;
   deleteButton.disabled = true;
   deleteButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
+    console.log("Excluindo usuário:", userId);
   
-  console.log("Excluindo usuário:", userId);
-  
-  fetch(`http://localhost:3001/api/users/${userId}`, {
+  fetch(`http://localhost:3001/api/user/${userId}`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${token}`

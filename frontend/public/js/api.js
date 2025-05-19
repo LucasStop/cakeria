@@ -12,15 +12,19 @@ const API = {
         endpoint !== '/auth/refresh'
       ) {
         console.log('Token expirado, redirecionando para login...');
-        this.clearSession();
-
-        if (window.Toast) {
+        this.clearSession();        if (window.Toast) {
           Toast.error('Sua sessão expirou. Por favor, faça login novamente.', {
             position: 'top-center',
             duration: 5000,
           });
         } else {
-          alert('Sua sessão expirou. Por favor, faça login novamente.');
+          console.warn('Toast não está disponível, criando uma mensagem de fallback');
+          // Criar um elemento de notificação básica como alternativa
+          const fallbackToast = document.createElement('div');
+          fallbackToast.innerHTML = 'Sua sessão expirou. Por favor, faça login novamente.';
+          fallbackToast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#f44336;color:white;padding:12px 24px;border-radius:4px;z-index:9999;';
+          document.body.appendChild(fallbackToast);
+          setTimeout(() => document.body.removeChild(fallbackToast), 5000);
         }
 
         window.location.href = '/login.html?expired=true';
@@ -155,15 +159,19 @@ const API = {
       }
 
       if (this.isTokenExpired()) {
-        this.stopExpirationChecker();
-
-        if (window.Toast) {
+        this.stopExpirationChecker();        if (window.Toast) {
           Toast.error('Sua sessão expirou. Por favor, faça login novamente.', {
             position: 'top-center',
             duration: 6000,
           });
         } else {
-          alert('Sua sessão expirou. Por favor, faça login novamente.');
+          console.warn('Toast não está disponível, criando uma mensagem de fallback');
+          // Criar um elemento de notificação básica como alternativa
+          const fallbackToast = document.createElement('div');
+          fallbackToast.innerHTML = 'Sua sessão expirou. Por favor, faça login novamente.';
+          fallbackToast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#f44336;color:white;padding:12px 24px;border-radius:4px;z-index:9999;';
+          document.body.appendChild(fallbackToast);
+          setTimeout(() => document.body.removeChild(fallbackToast), 6000);
         }
 
         this.clearSession();

@@ -26,8 +26,9 @@ class Header extends HTMLElement {
             </nav>
             
             <div class="auth-buttons">
-              ${isLoggedIn
-          ? `<div class="user-menu">
+              ${
+                isLoggedIn
+                  ? `<div class="user-menu">
                     <div class="user-profile" id="user-profile-toggle">
                       <div class="user-avatar">
                         <div class="avatar-placeholder">
@@ -43,23 +44,24 @@ class Header extends HTMLElement {
                       </a>                      <a href="/pedidos/meus-pedidos.html" class="dropdown-item">
                         <i class="fa-solid fa-shopping-bag"></i> Meus Pedidos
                       </a>
-                      ${this.isAdmin(user)
-            ? `
+                      ${
+                        this.isAdmin(user)
+                          ? `
                       <a href="/admin.html" class="dropdown-item">
                         <i class="fa-solid fa-user-shield"></i> Área Admin
                       </a>`
-            : ''
-          }
+                          : ''
+                      }
                       <div class="dropdown-divider"></div>
                       <button class="dropdown-item logout-btn">
                         <i class="fa-solid fa-sign-out-alt"></i> Sair
                       </button>
                     </div>
                   </div>`
-          : `<button class="login-btn" data-route="login">
+                  : `<button class="login-btn" data-route="login">
                     <i class="fa-solid fa-user"></i> Login
                   </button>`
-        }
+              }
             </div>
             
             <button class="menu-toggle" aria-label="Menu">
@@ -90,11 +92,7 @@ class Header extends HTMLElement {
         
         <nav class="nav-bar">
           <ul class="nav-links">                
-            <li><a href="/admin.html" class="nav-link" data-route="admin"><i class="fa-solid fa-home"></i> Dashboard</a></li>
-            <li><a href="/categorias" class="nav-link" id="nav-categorias" data-route="categorias"><i class="fa-solid fa-tags"></i> Categorias</a></li>
-            <li><a href="/registerProduct.html" class="nav-link" data-route="registerProduct"><i class="fa-solid fa-cake-candles"></i> Produtos</a></li>
-            <li><a href="/pedidos/gerenciar.html" class="nav-link" id="nav-pedidos" data-route="pedidos"><i class="fa-solid fa-shopping-cart"></i> Pedidos</a></li>
-            <li><a href="/admin-users.html" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
+            
             
             <nav class="nav-bar">
               <ul class="nav-links">
@@ -102,7 +100,7 @@ class Header extends HTMLElement {
                 <li><a href="/produtos" class="nav-link" id="nav-produtos" data-route="produtos"><i class="fa-solid fa-box"></i> Produtos</a></li>
                 <li><a href="/registro-produto.html" class="nav-link" data-route="registro-produto"><i class="fa-solid fa-cake-candles"></i> Cadastrar produto</a></li>
                 <li><a href="/pedidos/gerenciar.html" class="nav-link" id="nav-pedidos" data-route="pedidos"><i class="fa-solid fa-shopping-cart"></i> Pedidos</a></li>
-                <li><a href="/usuarios" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
+                <li><a href="/admin-users.html" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
                 <li><a href="/index.html" class="nav-link" data-route="site"><i class="fa-solid fa-globe"></i> Ver Site</a></li>
               </ul>
             </nav>
@@ -130,8 +128,7 @@ class Header extends HTMLElement {
                 </button>
               </div>
             </div>
-            <span class="username">${user?.name || user?.email || 'Administrador'}</span>
-            <i class="fa-solid fa-chevron-down"></i>
+            
           </div>
           <div class="dropdown-menu">
             <a href="/perfil.html" class="dropdown-item nav-link" data-route="perfil">
