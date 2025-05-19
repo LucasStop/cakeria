@@ -145,7 +145,7 @@ function renderProductDetails(produto) {
   // Obter a URL da imagem do produto
   const imageUrl = window.ImageHelper ? 
     window.ImageHelper.getProductImageUrl(produto.id) : 
-    `${window.API?.BASE_URL || 'http://localhost:3001/api'}/products/image/${produto.id}`;
+    `${window.API?.BASE_URL || 'http://localhost:3001/api'}/product/image/${produto.id}`;
   
   // Formatar o preço
   const formattedPrice = formatCurrency(produto.price);

@@ -17,17 +17,17 @@ const userRoutes = require('./routes/user.routes');
 const addressRoutes = require('./routes/address.routes');
 const orderRoutes = require('./routes/order.routes');
 const authRoutes = require('./routes/auth.routes');
-const recipeRoutes = require('./routes/recipe.routes'); 
-const commentRoutes = require('./routes/comment_recipe.routes'); 
+const recipeRoutes = require('./routes/recipe.routes');
+const commentRoutes = require('./routes/comment_recipe.routes');
 
-app.use('/api/products', productRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/addresses', addressRoutes);
-app.use('/api/orders', orderRoutes);
+app.use('/api/product', productRoutes);
+app.use('/api/category', categoryRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/address', addressRoutes);
+app.use('/api/order', orderRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/recipes', recipeRoutes);
-app.use('/api/comments', commentRoutes); 
+app.use('/api/recipe', recipeRoutes);
+app.use('/api/comment', commentRoutes);
 
 app.get('/', (req, res) => {
   res.send(`

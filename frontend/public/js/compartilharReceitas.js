@@ -116,7 +116,7 @@ async function checkEditMode() {
     
     try {
       // Usar o método API.get em vez de fetch diretamente
-      const recipe = await API.get(`/recipes/${recipeId}`);
+      const recipe = await API.get(`/recipe/${recipeId}`);
       console.log('Dados da receita carregados com sucesso:', recipe);
       
       // Verificar permissões
@@ -139,7 +139,7 @@ async function checkEditMode() {
       console.log('Tentando método alternativo para buscar a receita...');
       
       try {
-        const response = await fetch(`${API.BASE_URL}/recipes/${recipeId}`, {
+        const response = await fetch(`${API.BASE_URL}/recipe/${recipeId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -473,7 +473,7 @@ async function loadCategories() {
 
     // Usar a API real para buscar categorias
     console.log('Fazendo requisição para obter categorias');
-    const categories = await API.get('/categories');
+    const categories = await API.get('/category');
     console.log('Categorias recebidas:', categories);
 
     // Verificar se temos categorias válidas
@@ -793,13 +793,13 @@ async function handleFormSubmit(e) {
     console.log('Dados da receita a serem enviados:', recipeData);
     
     // Configurar URL e método baseado no modo (edição ou criação)
-    let url = `${API.BASE_URL}/recipes`;
+    let url = `${API.BASE_URL}/recipe`;
     let method = 'POST';
     let successMessage = 'Sua receita foi compartilhada com sucesso!';
     let successTitle = 'Receita salva';
     
     if (isEditMode) {
-      url = `${API.BASE_URL}/recipes/${recipeId}`;
+      url = `${API.BASE_URL}/recipe/${recipeId}`;
       method = 'PUT';
       successMessage = 'Sua receita foi atualizada com sucesso!';
       successTitle = 'Receita atualizada';
@@ -846,7 +846,7 @@ async function handleFormSubmit(e) {
 
       try {
         console.log(`Enviando nova imagem para receita ${targetRecipeId}`);
-        const imageResponse = await fetch(`${API.BASE_URL}/recipes/${targetRecipeId}/image`, {
+        const imageResponse = await fetch(`${API.BASE_URL}/recipe/${targetRecipeId}/image`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,

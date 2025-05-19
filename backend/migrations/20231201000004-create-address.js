@@ -2,54 +2,54 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('products', {
+    await queryInterface.createTable('address', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      category_id: {
+      user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'categories',
+          model: 'user',
           key: 'id',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'RESTRICT',
+        onDelete: 'CASCADE',
       },
-      name: {
+      street: {
+        type: Sequelize.STRING(200),
+        allowNull: false,
+      },
+      number: {
+        type: Sequelize.STRING(10),
+        allowNull: false,
+      },
+      neighborhood: {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      description: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      price: {
-        type: Sequelize.DECIMAL(10, 2),
-        allowNull: false,
-      },
-      size: {
-        type: Sequelize.STRING(50),
-        allowNull: false,
-        comment: 'Peso ou tamanho do produto (ex: 500g, 1kg, 30cm)',
-      },
-      stock: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        defaultValue: 0,
-      },
-      expiry_date: {
-        type: Sequelize.DATEONLY,
-        allowNull: false,
-        comment: 'Data de validade do produto',
-      },
-      image_url: {
-        type: Sequelize.STRING(255),
+      complement: {
+        type: Sequelize.STRING(200),
         allowNull: true,
-        comment: 'URL da imagem do produto',
+      },
+      city: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
+      },
+      state: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
+      },
+      postal_code: {
+        type: Sequelize.STRING(20),
+        allowNull: false,
+      },
+      country: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -67,6 +67,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('products');
+    await queryInterface.dropTable('address');
   },
 };

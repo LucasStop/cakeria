@@ -80,7 +80,7 @@ class Header extends HTMLElement {
       if (isLoggedIn && user && user.id) {
         const token = localStorage.getItem('token');
         userImageUrl =
-          `${window.API?.BASE_URL || 'http://localhost:3001/api'}/users/${user.id}/image` +
+          `${window.API?.BASE_URL || 'http://localhost:3001/api'}/user/${user.id}/image` +
           (token ? `?token=${token}` : '');
       }
       this.innerHTML = `
