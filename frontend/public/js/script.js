@@ -77,33 +77,32 @@ async function carregarDetalhesProduto(id) {
 }
 
 function renderizarDetalhesProduto(produto) {
-  const mainContent = `
-    <section class="product-details">
-      <div class="product-image">
-        <img src="${
-          produto.image_id
-            ? `/imgs/${produto.image_id}`
-            : "/imgs/placeholder.png"
-        }" alt="${produto.name}">
+  const imageUrl = window.ImageHelper ? 
+    window.ImageHelper.getProductImageUrl(produto.id) : 
+    `${API.BASE_URL}/products/image/${produto.id}`;
+
+  contentEl.innerHTML = `
+    <div class="produto-detalhes">
+      <div class="produto-imagem">
+        <img src="${imageUrl}" alt="${produto.name}" onerror="this.onerror=null; this.src='/assets/default-product.png';">
       </div>
-      <div class="product-details-info">
+      <div class="produto-info">
         <h1>${produto.name}</h1>
-        <p class="product-category">Categoria: ${
-          produto.category?.name || "Não categorizado"
-        }</p>
-        <p class="product-details-price">R$ ${parseFloat(produto.price).toFixed(
-          2
-        )}</p>
-        <p class="product-details-description">${
-          produto.description || "Sem descrição disponível"
-        }</p>
-        <button class="btn btn-primary">Adicionar ao Carrinho</button>
-        <button class="btn btn-outline" onclick="navegarParaProdutos()">Voltar para Produtos</button>
+        <p class="produto-preco">R$ ${formatarPreco(produto.price)}</p>
+        <p class="produto-descricao">${produto.description}</p>
+        <div class="produto-meta">
+          <span class="produto-tamanho"><strong>Tamanho:</strong> ${produto.size || 'Não informado'}</span>
+          <span class="produto-estoque"><strong>Estoque:</strong> ${produto.stock} unidades</span>
+        </div>
+        <div class="produto-acoes">
+          <button class="btn btn-primary" id="adicionar-carrinho" data-id="${produto.id}">
+            Adicionar ao Carrinho
+          </button>
+        </div>
       </div>
-    </section>
+    </div>
   `;
 
-  contentEl.innerHTML = mainContent;
   currentPage = "produto";
   window.history.pushState({}, "", `/produtos/${produto.id}`);
 }
@@ -135,7 +134,6 @@ function renderizarCategorias(categoriasList) {
 
 async function renderizarListaProdutos() {
   try {
-    // Mostrar indicador de carregamento enquanto os produtos são buscados
     contentEl.innerHTML = `
       <section class="products-list">
         <div class="container">
@@ -150,15 +148,12 @@ async function renderizarListaProdutos() {
 
     console.log('Iniciando carregamento de produtos...');
     
-    // Verificar se a API está inicializada corretamente
     if (!API || !API.produtos || typeof API.produtos.listar !== 'function') {
       console.error('API não está configurada corretamente:', API);
       throw new Error('Configuração da API não está completa');
     }
 
-    // Tentar fazer a requisição com tratamento detalhado de erros
     try {
-      // Carregar produtos do banco de dados
       console.log('Chamando API.produtos.listar()...');
       produtos = await API.produtos.listar();
       console.log(`Carregados ${produtos ? produtos.length : 0} produtos do banco de dados`);
@@ -170,7 +165,6 @@ async function renderizarListaProdutos() {
     } catch (apiError) {
       console.error('Erro específico da API:', apiError);
       
-      // Tentar um fallback direto usando fetch
       console.log('Tentando método alternativo com fetch direto...');
       const response = await fetch(`${API.BASE_URL || 'http://localhost:3001/api'}/produtos`);
       
@@ -182,7 +176,6 @@ async function renderizarListaProdutos() {
       console.log('Produtos carregados via fetch direto:', produtos.length);
     }
 
-    // Agora renderizar com os produtos atualizados
     const mainContent = `
       <section class="products-list">
         <div class="container">
@@ -193,18 +186,20 @@ async function renderizarListaProdutos() {
               ${isAdmin() ? `<a href="/registerProduct.html" class="btn btn-primary">Cadastrar Novo Produto</a>` : ''}
             </div>` :
             `<div class="featured-products">
-              ${produtos.map(produto => `
-                <div class="product-card">
-                  <div class="product-img" style="background-image: url('${
-                    produto.image_id ? `/imgs/${produto.image_id}` : "/imgs/placeholder.png"
-                  }')"></div>
-                  <div class="product-info">
-                    <h3>${produto.name}</h3>
-                    <p class="product-price">R$ ${parseFloat(produto.price).toFixed(2)}</p>
-                    <button class="btn btn-primary" onclick="verDetalhesProduto(${produto.id})">Ver Detalhes</button>
-                  </div>
-                </div>`
-              ).join("")}
+              ${produtos.map(produto => {
+                const imageUrl = window.ImageHelper ? 
+                  window.ImageHelper.getProductImageUrl(produto.id) : 
+                  `${API.BASE_URL}/products/image/${produto.id}`;
+                return `
+                  <div class="product-card">
+                    <div class="product-img" style="background-image: url('${imageUrl}')"></div>
+                    <div class="product-info">
+                      <h3>${produto.name}</h3>
+                      <p class="product-price">R$ ${parseFloat(produto.price).toFixed(2)}</p>
+                      <button class="btn btn-primary" onclick="verDetalhesProduto(${produto.id})">Ver Detalhes</button>
+                    </div>
+                  </div>`;
+              }).join("")}
             </div>`
           }
         </div>
@@ -215,7 +210,6 @@ async function renderizarListaProdutos() {
     currentPage = "produtos";
     window.history.pushState({}, "", "/produtos");
     
-    // Notificar sobre o número de produtos carregados
     if (window.Toast && produtos.length > 0) {
       window.Toast.success(`${produtos.length} produtos carregados com sucesso!`, {
         position: 'bottom-right',
@@ -253,7 +247,6 @@ async function renderizarListaProdutos() {
   }
 }
 
-// Função auxiliar para verificar se o usuário atual é administrador
 function isAdmin() {
   try {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -292,7 +285,6 @@ function renderizarListaCategorias() {
   window.history.pushState({}, '', '/categorias');
 }
 
-// Função para navegar para a página inicial
 function navegarParaHome() {
   window.location.href = '/index.html';
   currentPage = 'home';
@@ -333,7 +325,6 @@ function navegarParaCompartilharReceitas() {
   currentPage = 'compartilharReceitas';
 }
 
-// Garantir que a função esteja disponível globalmente
 window.navegarParaHome = navegarParaHome;
 window.navegarParaCompartilharReceitas = navegarParaCompartilharReceitas;
 
@@ -342,7 +333,6 @@ function navegarParaAdmin() {
   currentPage = 'admin';
 }
 
-// Função para carregar conteúdo HTML de arquivos externos
 async function carregarConteudoHTML(url) {
   try {
     const response = await fetch(url);
@@ -352,27 +342,20 @@ async function carregarConteudoHTML(url) {
 
     const html = await response.text();
 
-    // Extrair o conteúdo usando DOMParser
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
 
-    // Limpar estilos específicos anteriores antes de inserir novo conteúdo
     removerEstilosEspecificos();
 
-    // Buscar e aplicar estilos específicos do documento
     const styles = Array.from(doc.querySelectorAll('style, link[rel="stylesheet"]'));
 
-    // Verificar quais estilos já existem para evitar duplicação
     const existingStyleUrls = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(
       link => link.getAttribute('href')
     );
 
-    // Aplicar estilos da página carregada
     styles.forEach(style => {
-      // Para link de stylesheet externo
       if (style.tagName === 'LINK' && style.getAttribute('rel') === 'stylesheet') {
         const href = style.getAttribute('href');
-        // Só adiciona se não for o CSS principal (styles.css) ou components.css
         if (
           !existingStyleUrls.includes(href) &&
           !href.includes('styles.css') &&
@@ -385,9 +368,7 @@ async function carregarConteudoHTML(url) {
           linkEl.setAttribute('data-page-specific', 'true');
           document.head.appendChild(linkEl);
         }
-      }
-      // Para estilos inline
-      else if (style.tagName === 'STYLE') {
+      } else if (style.tagName === 'STYLE') {
         const styleEl = document.createElement('style');
         styleEl.setAttribute('data-page-specific', 'true');
         styleEl.textContent = style.textContent;
@@ -395,40 +376,32 @@ async function carregarConteudoHTML(url) {
       }
     });
 
-    // Extrair o conteúdo principal
     let mainContent;
     if (doc.querySelector('main')) {
       mainContent = doc.querySelector('main').innerHTML;
     } else if (doc.querySelector('body')) {
-      // Se não encontrar a tag main, busca o conteúdo do body excluindo scripts e estilos
       const bodyContent = doc.querySelector('body');
-      // Remover scripts e estilos do conteúdo copiado
       Array.from(bodyContent.querySelectorAll('script, style, link')).forEach(el => el.remove());
       mainContent = bodyContent.innerHTML;
     } else {
       throw new Error('Conteúdo não encontrado');
     }
 
-    // Inserir o novo conteúdo
     contentEl.innerHTML = mainContent;
 
-    // Definir a página atual baseada no URL
     if (url.includes('receitas')) {
       currentPage = 'receitas';
       window.history.pushState({}, '', '/receitas');
 
-      // Adicionar CSS específico para receitas se não estiver já incluído
       adicionarCSS('/css/receitas.css');
     } else if (url.includes('sobre')) {
       currentPage = 'sobre';
       window.history.pushState({}, '', '/sobre');
 
-      // Adicionar CSS específico para sobre se não estiver já incluído
       adicionarCSS('/css/sobre.css');
       adicionarCSS('/css/animations.css');
     }
 
-    // Executar scripts que possam estar no conteúdo carregado
     const scripts = Array.from(contentEl.querySelectorAll('script'));
     scripts.forEach(oldScript => {
       const newScript = document.createElement('script');
@@ -439,9 +412,7 @@ async function carregarConteudoHTML(url) {
       oldScript.parentNode.replaceChild(newScript, oldScript);
     });
 
-    // Se estiver na página sobre, inicializar animações de scroll
     if (url.includes('sobre')) {
-      // Verificar se o script de animações já foi carregado
       setTimeout(() => {
         if (typeof initScrollAnimations === 'function') {
           initScrollAnimations();
@@ -460,10 +431,8 @@ async function carregarConteudoHTML(url) {
   }
 }
 
-// Função auxiliar para carregar um script
 async function carregarScript(src) {
   return new Promise((resolve, reject) => {
-    // Verificar se o script já existe
     if (document.querySelector(`script[src="${src}"]`)) {
       resolve();
       return;
@@ -477,7 +446,6 @@ async function carregarScript(src) {
   });
 }
 
-// Função auxiliar para adicionar CSS se não estiver já carregado
 function adicionarCSS(href) {
   const existingLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(link =>
     link.getAttribute('href')
@@ -495,9 +463,7 @@ function adicionarCSS(href) {
   return false;
 }
 
-// Função auxiliar para remover estilos específicos de página
 function removerEstilosEspecificos() {
-  // Remover estilos específicos anteriores antes de inserir novos
   Array.from(
     document.querySelectorAll('style[data-page-specific], link[data-page-specific]')
   ).forEach(el => el.remove());
@@ -525,7 +491,6 @@ window.verProdutosPorCategoria = async function (categoriaId) {
 
 window.verReceitaDetalhes = async function (id) {
   try {
-    // Tentar carregar do arquivo HTML dedicado
     const response = await fetch(`/receitas/${id}.html`);
 
     if (response.ok) {
@@ -542,12 +507,10 @@ window.verReceitaDetalhes = async function (id) {
       return;
     }
 
-    // Fallback para os dados estáticos se o arquivo não existir
     throw new Error('Arquivo HTML da receita não encontrado');
   } catch (error) {
     console.log('Usando dados estáticos para a receita:', error);
 
-    // Resto do código existente usando os dados estáticos
     const receitas = [
       {
         id: 1,
