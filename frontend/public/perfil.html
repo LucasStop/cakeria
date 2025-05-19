@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cakeria | Meu Perfil</title>
 
-    <!-- Favicon -->
     <link rel="icon" href="/assets/favicon.ico" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
     <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
 
-    <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,13 +16,11 @@
       rel="stylesheet"
     />
 
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     />
 
-    <!-- CSS -->
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/home.css" />
     <link rel="stylesheet" href="./css/perfil.css" />
@@ -43,7 +39,6 @@
         </section>
 
         <section class="profile-content">
-          <!-- Abas de navegação -->
           <div class="profile-tabs">
             <button class="tab-btn active" data-tab="personal-info">
               <i class="fas fa-user"></i> Informações Pessoais
@@ -56,9 +51,7 @@
             </button>
           </div>
 
-          <!-- Conteúdo das abas -->
           <div class="tab-content-wrapper">
-            <!-- Aba de Informações Pessoais -->
             <div class="tab-content active" id="personal-info-content">
               <div
                 class="profile-info-flex"
@@ -204,11 +197,9 @@
               </div>
             </div>
 
-            <!-- Aba de Endereços -->
             <div class="tab-content" id="addresses-content">
               <div class="addresses-container">
                 <div class="addresses-list" id="addresses-list">
-                  <!-- Endereços serão carregados dinamicamente via JavaScript -->
                   <div class="loading-indicator">
                     <div class="spinner"></div>
                     <p>Carregando endereços...</p>
@@ -221,7 +212,6 @@
                   </button>
                 </div>
 
-                <!-- Formulário de adição/edição de endereço (inicialmente oculto) -->
                 <div
                   class="address-form-container"
                   id="address-form-container"
@@ -330,7 +320,6 @@
               </div>
             </div>
 
-            <!-- Aba de Segurança -->
             <div class="tab-content" id="security-content">
               <form id="security-form" class="profile-form">
                 <div class="form-group password-group">
@@ -404,7 +393,6 @@
                 </div>
               </form>
 
-              <!-- Deletar conta -->
               <div class="danger-zone">
                 <h3><i class="fas fa-exclamation-triangle"></i> Zona de Perigo</h3>
                 <p>
@@ -423,7 +411,6 @@
 
     <footer-component></footer-component>
 
-    <!-- Templates para endereços -->
     <template id="address-card-template">
       <div class="address-card">
         <div class="address-content">
@@ -442,7 +429,6 @@
       </div>
     </template>
 
-    <!-- Modal de confirmação de exclusão -->
     <div class="modal" id="delete-confirm-modal">
       <div class="modal-content">
         <h3>Confirmar exclusão</h3>
@@ -454,7 +440,6 @@
       </div>
     </div>
 
-    <!-- Modal de confirmação de exclusão de conta -->
     <div class="modal" id="delete-user-modal">
       <div class="modal-content">
         <h3>Excluir Conta</h3>
@@ -472,7 +457,6 @@
       </div>
     </div>
 
-    <!-- Carregar componentes primeiro -->
     <script src="./components/Header.js"></script>
     <script src="./components/Footer.js"></script>
     <script src="./js/api.js"></script>

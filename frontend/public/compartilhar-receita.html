@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cakeria | Compartilhar Receita</title>
 
-    <!-- Favicon -->
     <link rel="icon" href="/assets/favicon.ico" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
     <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
 
-    <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,13 +16,11 @@
       rel="stylesheet"
     />
 
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
 
-    <!-- CSS -->
     <link rel="stylesheet" href="/css/compartilhar-receita.css" />
     <link rel="stylesheet" href="/css/notifications.css" />
     <link rel="stylesheet" href="/css/loading-button.css" />
@@ -65,7 +61,6 @@
                 <label for="recipe-category">Categoria</label>
                 <select id="recipe-category" name="category" required>
                   <option value="" disabled selected>Selecione uma categoria</option>
-                  <!-- As categorias serão carregadas dinamicamente via JavaScript -->
                 </select>
                 <span class="error-message" id="category-error"></span>
               </div>
@@ -238,7 +233,6 @@
               </button>
             </div>
 
-            <!-- Mensagem de erro do formulário -->
             <div class="error-message" id="form-error"></div>
           </form>
         </section>
@@ -247,7 +241,6 @@
 
     <footer-component></footer-component>
 
-    <!-- Carregar componentes primeiro -->
     <script src="./js/utils/toast.js"></script>
     <script src="./components/Footer.js"></script>
     <script src="./js/notificacao.js"></script>
