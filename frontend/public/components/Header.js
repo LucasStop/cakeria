@@ -48,9 +48,8 @@ class Header extends HTMLElement {
             </nav>
             
             <div class="auth-buttons">
-              ${
-                isLoggedIn
-                  ? `<div class="user-menu">
+              ${isLoggedIn
+          ? `<div class="user-menu">
                   <a href="/carrinho.html" class="cart-icon-wrapper" title="Carrinho de Compras">
                    <i class="fa-solid fa-shopping-cart"></i>
                    <span class="cart-count">0</span>
@@ -76,24 +75,23 @@ class Header extends HTMLElement {
                       <a href="/pedidos/meus-pedidos.html" class="dropdown-item">
                         <i class="fa-solid fa-shopping-bag"></i> Meus Pedidos
                       </a>
-                      ${
-                        this.isAdmin(user)
-                          ? `
+                      ${this.isAdmin(user)
+            ? `
                       <a href="/admin.html" class="dropdown-item">
                         <i class="fa-solid fa-user-shield"></i> Área Admin
                       </a>`
-                          : ''
-                      }
+            : ''
+          }
                       <div class="dropdown-divider"></div>
                       <button class="dropdown-item logout-btn">
                         <i class="fa-solid fa-sign-out-alt"></i> Sair
                       </button>
                     </div>
                   </div>`
-                  : `<button class="login-btn" data-route="login">
+          : `<button class="login-btn" data-route="login">
                     <i class="fa-solid fa-user"></i> Login
                   </button>`
-              }
+        }
             </div>
             
             <button class="menu-toggle" aria-label="Menu">
@@ -138,6 +136,8 @@ class Header extends HTMLElement {
             <nav class="nav-bar">
               <ul class="nav-links">
                 <li><a href="/admin-produtos.html" class="nav-link" id="nav-produtos" data-route="produtos"><i class="fa-solid fa-box"></i> Produtos</a></li>
+                                <li><a href="/receitas.html" class="nav-link" data-route="receitas"><i class="fa-solid fa-utensils"></i> Receitas</a></li>
+
                 <li><a href="/pedidos/gerenciar.html" class="nav-link" id="nav-pedidos" data-route="pedidos"><i class="fa-solid fa-shopping-cart"></i> Pedidos</a></li>
                 <li><a href="/admin-users.html" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
               </ul>
@@ -158,6 +158,9 @@ class Header extends HTMLElement {
                 </a>
                 <a href="/index.html" class="dropdown-item">
                   <i class="fa-solid fa-home"></i> Voltar ao Site
+                </a>
+                <a href="/admin.html" class="dropdown-item">
+                  <i class="fa-solid fa-user-shield"></i> Painel
                 </a>
                 <div class="dropdown-divider"></div>
                 <button class="dropdown-item logout-btn">
