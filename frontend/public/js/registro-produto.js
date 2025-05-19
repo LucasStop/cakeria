@@ -72,6 +72,8 @@ function initializeForm() {
   setupLiveValidation();
 
   markRequiredFields();
+
+  console.log('Formulário de cadastro de produto inicializado');
 }
 
 function markRequiredFields() {
@@ -189,13 +191,14 @@ async function loadCategories() {
     categorySelect.innerHTML =
       '<option value="" disabled selected>Carregando categorias...</option>';
 
-    const possibleEndpoints = ['/category'];
+    const possibleEndpoints = ['/categories', '/categorias', '/categoria', '/category'];
 
     let categories = [];
     let succeeded = false;
 
     for (const endpoint of possibleEndpoints) {
       try {
+        console.log(`Tentando carregar categorias de ${API.BASE_URL}${endpoint}`);
         const response = await fetch(`${API.BASE_URL}${endpoint}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
@@ -206,6 +209,7 @@ async function loadCategories() {
             ? data
             : data.categories || data.data || data.items || [];
           succeeded = true;
+          console.log(`Categorias carregadas com sucesso de ${endpoint}:`, categories);
           break;
         }
       } catch (endpointError) {
@@ -342,6 +346,8 @@ async function handleProductSubmit(e) {
   }
 
   try {
+    console.log('Preparando dados para envio...');
+
     const formData = new FormData();
     formData.append('name', nameInput.value.trim());
     formData.append('price', parseFloat(priceInput.value.replace(',', '.')));
@@ -368,12 +374,23 @@ async function handleProductSubmit(e) {
       formData.append('image', imageInput.files[0]);
     }
 
+    console.log('Enviando dados:', {
+      name: nameInput.value,
+      price: parseFloat(priceInput.value.replace(',', '.')),
+      stock_quantity: parseInt(stockInput.value),
+      expiration_date: expirationInput.value || 'não especificada',
+      size: sizeSelect.value === 'custom' ? customSizeInput.value : sizeSelect.value,
+      category_id: categorySelect.value,
+      description: descriptionInput ? descriptionInput.value : '',
+      hasImage: imageInput && imageInput.files.length > 0,
+    });
+
     const token = localStorage.getItem('token');
     if (!token) {
       throw new Error('Usuário não autenticado. Faça login novamente.');
     }
 
-    const possibleEndpoints = ['/product'];
+    const possibleEndpoints = ['/products', '/produtos', '/product', '/produto'];
 
     const possibleServers = [API.BASE_URL, 'http://localhost:3001/api'];
 
@@ -391,6 +408,7 @@ async function handleProductSubmit(e) {
 
       for (const endpoint of possibleEndpoints) {
         const url = `${server}${endpoint}`;
+        console.log(`Tentando enviar para endpoint: ${url}`);
 
         try {
           const abortController = new AbortController();
@@ -407,8 +425,11 @@ async function handleProductSubmit(e) {
             clearTimeout(timeoutId);
           });
 
+          console.log(`Status da resposta para ${endpoint}:`, response.status);
+
           if (response.ok) {
             if (API.produtos) API.produtos.ENDPOINT = endpoint;
+            console.log(`Endpoint ${endpoint} funcionou! Salvando para uso futuro.`);
             success = true;
             break;
           }
@@ -444,6 +465,7 @@ async function handleProductSubmit(e) {
     }
 
     const responseData = await response.json();
+    console.log('Produto cadastrado com sucesso:', responseData);
 
     if (formErrorDisplay) {
       formErrorDisplay.textContent = 'Produto cadastrado com sucesso!';

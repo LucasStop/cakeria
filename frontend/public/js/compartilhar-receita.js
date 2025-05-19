@@ -24,6 +24,7 @@ function initFormValidation() {
   const imageInput = document.getElementById('recipe-image');
   if (imageInput && imageInput.getAttribute('data-required') === 'true') {
     imageInput.setAttribute('required', '');
+    console.log('Imagem configurada como obrigatória por padrão');
   }
 }
 
@@ -46,12 +47,16 @@ async function checkEditMode() {
     const urlParams = new URLSearchParams(window.location.search);
     const recipeId = urlParams.get('id');
 
+    console.log('Verificando modo de edição, ID da receita:', recipeId);
+
     if (!recipeId) {
+      console.log('Modo: criação de nova receita');
       document.querySelector('.page-title').textContent = 'Compartilhar Nova Receita';
       document.getElementById('submit-btn').textContent = 'Compartilhar Receita';
       return;
     }
 
+    console.log('Modo: edição de receita existente, ID:', recipeId);
     document.querySelector('.page-title').textContent = 'Editar Receita';
     document.getElementById('submit-btn').textContent = 'Salvar Alterações';
 
@@ -85,8 +90,11 @@ async function checkEditMode() {
       throw new Error('Você precisa estar autenticado para editar receitas');
     }
 
+    console.log(`Buscando dados da receita ${recipeId} na API...`);
+
     try {
       const recipe = await API.get(`/recipe/${recipeId}`);
+      console.log('Dados da receita carregados com sucesso:', recipe);
 
       if (!canEditRecipe(recipe)) {
         console.error('Usuário não tem permissão para editar esta receita');
@@ -101,6 +109,8 @@ async function checkEditMode() {
     } catch (apiError) {
       console.error('Erro na chamada à API:', apiError);
 
+      console.log('Tentando método alternativo para buscar a receita...');
+
       try {
         const response = await fetch(`${API.BASE_URL}/recipe/${recipeId}`, {
           headers: {
@@ -113,6 +123,7 @@ async function checkEditMode() {
         }
 
         const recipe = await response.json();
+        console.log('Dados obtidos pelo método alternativo:', recipe);
 
         if (!canEditRecipe(recipe)) {
           throw new Error('Sem permissão para editar esta receita');
@@ -158,6 +169,8 @@ async function checkEditMode() {
 }
 
 function fillFormWithRecipeData(recipe) {
+  console.log('Preenchendo formulário com dados:', recipe);
+
   document.getElementById('recipe-title').value = recipe.title || '';
 
   const formHeader = document.querySelector('.page-subtitle');
@@ -179,9 +192,15 @@ function fillFormWithRecipeData(recipe) {
     }
 
     if (categoryId !== undefined && categoryId !== null) {
+      console.log('Tentando selecionar categoria ID:', categoryId);
+
       const categoryIdStr = String(categoryId);
 
       const options = Array.from(categorySelect.options);
+      console.log(
+        'Opções de categoria disponíveis:',
+        options.map(o => ({ value: o.value, text: o.textContent }))
+      );
 
       try {
         categorySelect.value = categoryIdStr;
@@ -190,10 +209,12 @@ function fillFormWithRecipeData(recipe) {
           const option = categorySelect.querySelector(`option[value="${categoryIdStr}"]`);
           if (option) {
             option.selected = true;
-
+          } else {
             throw new Error('Opção não encontrada');
           }
         }
+
+        console.log('Categoria selecionada:', categorySelect.value);
       } catch (e) {
         console.warn('Falha ao selecionar categoria:', e);
 
@@ -203,12 +224,13 @@ function fillFormWithRecipeData(recipe) {
           tempOption.textContent = recipe.category.name + ' (carregamento temporário)';
           categorySelect.appendChild(tempOption);
           categorySelect.value = categoryIdStr;
+          console.log('Adicionada categoria temporária:', recipe.category.name);
         }
       }
-
+    } else {
       console.warn('ID de categoria não definido na receita:', recipe);
     }
-
+  } else {
     console.error('Elemento select de categoria não encontrado');
   }
 
@@ -234,11 +256,15 @@ function fillFormWithRecipeData(recipe) {
   document.getElementById('recipe-servings').value = recipe.servings || '';
   document.getElementById('recipe-description').value = recipe.description || '';
 
+  console.log('Ingredientes da receita:', recipe.ingredients);
+
   const ingredientsContainer = document.getElementById('ingredients-container');
   ingredientsContainer.innerHTML = '';
 
   const ingredients =
     typeof recipe.ingredients === 'string' ? recipe.ingredients.split('\n') : recipe.ingredients;
+
+  console.log('Ingredientes processados:', ingredients);
 
   if (ingredients && ingredients.length > 0) {
     ingredients.forEach(ingredient => {
@@ -256,7 +282,7 @@ function fillFormWithRecipeData(recipe) {
         });
       }
     });
-
+  } else {
     const ingredientItem = document.createElement('div');
     ingredientItem.className = 'ingredient-item';
     ingredientItem.innerHTML = `
@@ -270,11 +296,15 @@ function fillFormWithRecipeData(recipe) {
     });
   }
 
+  console.log('Instruções da receita:', recipe.instructions);
+
   const stepsContainer = document.getElementById('steps-container');
   stepsContainer.innerHTML = '';
 
   const instructions =
     typeof recipe.instructions === 'string' ? recipe.instructions.split('\n') : recipe.instructions;
+
+  console.log('Instruções processadas:', instructions);
 
   if (instructions && instructions.length > 0) {
     instructions.forEach((step, index) => {
@@ -294,7 +324,7 @@ function fillFormWithRecipeData(recipe) {
         });
       }
     });
-
+  } else {
     const stepItem = document.createElement('div');
     stepItem.className = 'step-item';
     stepItem.innerHTML = `
@@ -312,6 +342,7 @@ function fillFormWithRecipeData(recipe) {
 
   if (recipe.imageUrl || recipe.image_url) {
     const imageUrl = recipe.imageUrl || recipe.image_url;
+    console.log('Exibindo imagem da receita:', imageUrl);
 
     const imagePreview = document.getElementById('image-preview');
     imagePreview.src = imageUrl;
@@ -326,6 +357,7 @@ function fillFormWithRecipeData(recipe) {
     if (imageInput) {
       imageInput.required = false;
       imageInput.removeAttribute('required');
+      console.log('Removido atributo required do campo de imagem em fillFormWithRecipeData');
 
       const requirementSpan = document.getElementById('image-requirement');
       if (requirementSpan) {
@@ -351,6 +383,7 @@ function fillFormWithRecipeData(recipe) {
 
 async function loadCategories() {
   try {
+    console.log('Iniciando carregamento de categorias');
     const categorySelect = document.getElementById('recipe-category');
 
     if (!categorySelect) {
@@ -364,7 +397,9 @@ async function loadCategories() {
       categorySelect.appendChild(firstOption);
     }
 
+    console.log('Fazendo requisição para obter categorias');
     const categories = await API.get('/category');
+    console.log('Categorias recebidas:', categories);
 
     if (!Array.isArray(categories) || categories.length === 0) {
       console.warn('Nenhuma categoria retornada da API');
@@ -382,6 +417,8 @@ async function loadCategories() {
       option.textContent = category.name;
       categorySelect.appendChild(option);
     });
+
+    console.log(`${categories.length} categorias carregadas com sucesso`);
   } catch (error) {
     console.error('Erro ao carregar categorias:', error);
     showError('category-error', 'Não foi possível carregar as categorias. Tente novamente.');
@@ -444,6 +481,7 @@ function setupEventListeners() {
   });
 
   document.getElementById('recipe-form').addEventListener('submit', function (e) {
+    console.log('Formulário enviado');
     e.preventDefault();
 
     if (!validateForm()) {
@@ -512,8 +550,10 @@ function validateForm() {
   const hasNewImage = imageInput && imageInput.files && imageInput.files.length > 0;
 
   if (isEditMode && hasCurrentImage && !hasNewImage) {
+    console.log('Validação: imagem atual será mantida, campo de imagem é opcional');
   } else if (!hasNewImage && !isEditMode) {
     showError('image-error', 'Por favor, selecione uma imagem para a receita.');
+    console.log('Validação: sem imagem selecionada em modo de criação. Validação falha.');
     isValid = false;
   }
 
@@ -576,6 +616,14 @@ async function handleFormSubmit(e) {
 
     const currentImageUrl = form.dataset.currentImageUrl || null;
 
+    console.log(
+      'Formulário submetido. Modo de edição:',
+      isEditMode ? 'Sim' : 'Não',
+      'ID:',
+      recipeId
+    );
+    console.log('URL da imagem atual:', currentImageUrl);
+
     const ingredients = Array.from(document.querySelectorAll('input[name="ingredients[]"]'))
       .map(input => input.value.trim())
       .filter(value => value);
@@ -632,7 +680,10 @@ async function handleFormSubmit(e) {
 
     if (isEditMode && currentImageUrl && !hasNewImage) {
       recipeData.imageUrl = currentImageUrl;
+      console.log('Mantendo a imagem atual:', currentImageUrl);
     }
+
+    console.log('Dados da receita a serem enviados:', recipeData);
 
     let url = `${API.BASE_URL}/recipe`;
     let method = 'POST';
@@ -644,8 +695,12 @@ async function handleFormSubmit(e) {
       method = 'PUT';
       successMessage = 'Sua receita foi atualizada com sucesso!';
       successTitle = 'Receita atualizada';
+      console.log(`Atualizando receita ${recipeId} com URL: ${url}`);
+    } else {
+      console.log('Criando nova receita');
     }
 
+    console.log(`Enviando requisição ${method} para ${url}`);
     const response = await fetch(url, {
       method: method,
       headers: {
@@ -670,6 +725,7 @@ async function handleFormSubmit(e) {
     }
 
     const savedRecipe = await response.json();
+    console.log('Receita salva com sucesso:', savedRecipe);
 
     if (hasNewImage) {
       const targetRecipeId = isEditMode ? recipeId : savedRecipe.id;
@@ -677,6 +733,7 @@ async function handleFormSubmit(e) {
       imageFormData.append('image', imageInput.files[0]);
 
       try {
+        console.log(`Enviando nova imagem para receita ${targetRecipeId}`);
         const imageResponse = await fetch(`${API.BASE_URL}/recipe/${targetRecipeId}/image`, {
           method: 'POST',
           headers: {
@@ -687,11 +744,16 @@ async function handleFormSubmit(e) {
 
         if (!imageResponse.ok) {
           console.warn('A receita foi salva, mas houve problema ao enviar a imagem');
+        } else {
+          console.log('Nova imagem enviada com sucesso');
         }
       } catch (imageError) {
         console.warn('Erro ao enviar imagem:', imageError);
       }
     } else if (isEditMode) {
+      console.log('Nenhuma nova imagem fornecida. Mantendo a imagem existente.');
+    } else {
+      console.log('Nenhuma imagem fornecida para a nova receita.');
     }
 
     Notifications.success(successMessage, successTitle);
