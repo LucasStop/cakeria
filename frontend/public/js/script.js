@@ -630,7 +630,7 @@ async function renderizarListaProdutos(filtros = null) {
               ? `<div class="empty-state">
               <p>Nenhum produto encontrado${filtros ? ' com os filtros selecionados' : ''}.</p>
               ${filtros ? '<button class="btn btn-outline" onclick="limparFiltros()">Limpar filtros</button>' : ''}
-              ${isAdmin() ? `<a href="/registerProduct.html" class="btn btn-primary">Cadastrar Novo Produto</a>` : ''}
+              ${isAdmin() ? `<a href="/registro-produto.html" class="btn btn-primary">Cadastrar Novo Produto</a>` : ''}
             </div>`
               : `<div class="featured-products">
               ${produtos
@@ -804,8 +804,8 @@ function navegarParaHome() {
 }
 
 function navegarParaCadastrarProdutos() {
-  window.location.href = '/registerProduct.html';
-  currentPage = 'registerProduct';
+  window.location.href = '/registro-produto.html';
+  currentPage = 'registro-produto';
 }
 
 function navegarParaProdutos() {
@@ -834,8 +834,8 @@ function navegarParaSobre() {
 
 function navegarParaCompartilharReceitas() {
   console.log('Navegando para compartilhar receitas...');
-  window.location.href = '/compartilharReceitas.html';
-  currentPage = 'compartilharReceitas';
+  window.location.href = '/compartilhar-receita.html';
+  currentPage = 'compartilhar-receita';
 }
 
 window.navegarParaHome = navegarParaHome;

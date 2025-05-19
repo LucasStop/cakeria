@@ -47,10 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       // Verificar autenticação antes de redirecionar
       if (isAuthenticated()) {
-        window.location.href = '/compartilharReceitas.html';
+        window.location.href = '/compartilhar-receita.html';
       } else {
         // Redirecionar para login com redirecionamento para compartilharReceitas
-        window.location.href = `/login.html?redirect=${encodeURIComponent('/compartilharReceitas.html')}`;
+        window.location.href = `/login.html?redirect=${encodeURIComponent('/compartilhar-receita.html')}`;
         if (window.Toast) {
           Toast.warning('Você precisa fazer login para compartilhar receitas', {
             duration: 5000,
@@ -220,7 +220,7 @@ function showEmptyState() {
       <div class="no-recipes-message">
         <i class="fas fa-utensils"></i>
         <p>Nenhuma receita encontrada. Seja o primeiro a compartilhar!</p>
-        <a href="/compartilharReceitas.html" class="btn btn-primary">Compartilhar Receita</a>
+        <a href="/compartilhar-receita.html" class="btn btn-primary">Compartilhar Receita</a>
       </div>
     `;
   }
@@ -462,7 +462,7 @@ async function displayRecipes(recipes) {
               editButton.addEventListener('click', e => {
                 e.preventDefault();
                 e.stopPropagation();
-                window.location.href = `/compartilharReceitas.html?id=${recipe.id}`;
+                window.location.href = `/compartilhar-receita.html?id=${recipe.id}`;
               });
             }
           } else {
