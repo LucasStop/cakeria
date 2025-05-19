@@ -330,7 +330,6 @@ function handleSubmit(e) {
       .then(async response => {
         if (response.ok) {
           const responseData = await response.json();
-          console.log('Usuário registrado com sucesso:', responseData);
 
           alert('Usuário cadastrado com sucesso!');
           window.location.href = 'admin-users.html';
@@ -373,7 +372,6 @@ function handleSubmit(e) {
       .then(async response => {
         if (response.ok) {
           const responseData = await response.json();
-          console.log('Usuário registrado com sucesso:', responseData);
 
           alert('Usuário cadastrado com sucesso!');
           window.location.href = 'admin-users.html';

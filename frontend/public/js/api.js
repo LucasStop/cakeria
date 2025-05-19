@@ -9,7 +9,6 @@ const API = {
         endpoint !== '/auth/login' &&
         endpoint !== '/auth/refresh'
       ) {
-        console.log('Token expirado, redirecionando para login...');
         this.clearSession();
 
         if (window.Toast) {
@@ -82,13 +81,6 @@ const API = {
       const currentTime = Math.floor(Date.now() / 1000);
       const isExpired = payload.exp < currentTime;
 
-      if (isExpired) {
-        console.log('Token expirado:', {
-          expiração: new Date(payload.exp * 1000).toLocaleString(),
-          agora: new Date().toLocaleString(),
-        });
-      }
-
       return isExpired;
     } catch (error) {
       console.error('Erro ao verificar token:', error);
@@ -99,19 +91,16 @@ const API = {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     sessionStorage.removeItem('justLoggedIn');
-    console.log('Sessão limpa');
   },
 
   async refreshToken() {
     try {
-      console.log('Tentando renovar o token...');
       const response = await this.request('/auth/refresh', {
         method: 'POST',
       });
 
       if (response && response.token) {
         localStorage.setItem('token', response.token);
-        console.log('Token renovado com sucesso!');
         return true;
       }
       return false;
@@ -127,10 +116,6 @@ const API = {
     }
 
     const token = localStorage.getItem('token');
-    if (!token) {
-      console.log('Sem token, verificador de expiração não será iniciado.');
-      return;
-    }
 
     this.expirationCheckerId = setInterval(() => {
       const publicPages = ['/login.html', '/registro.html', '/index.html', '/'];
@@ -166,15 +151,12 @@ const API = {
         window.location.href = '/login.html?expired=true';
       }
     }, 30000);
-
-    console.log('Verificador de expiração de token iniciado.');
   },
 
   stopExpirationChecker() {
     if (this.expirationCheckerId) {
       clearInterval(this.expirationCheckerId);
       this.expirationCheckerId = null;
-      console.log('Verificador de expiração de token parado.');
     }
   },
 
@@ -251,29 +233,22 @@ const API = {
 
 if (!API.BASE_URL) {
   API.BASE_URL = 'http://localhost:3001/api';
-  console.log('API.BASE_URL definida como padrão:', API.BASE_URL);
 }
 
-const PRODUCT_ENDPOINTS = ['/products', '/produtos', '/product', '/produto'];
+const PRODUCT_ENDPOINTS = ['/product'];
 
 API.produtos = {
   listar: async function () {
-    console.log('API.produtos.listar: Iniciando chamada para API...');
-
     let errors = [];
 
     for (const endpoint of PRODUCT_ENDPOINTS) {
       try {
-        console.log(`API.produtos.listar: Tentando endpoint ${endpoint}...`);
-
         const response = await fetch(`${API.BASE_URL}${endpoint}`, {
           method: 'GET',
           headers: {
             Accept: 'application/json',
           },
         });
-
-        console.log(`API.produtos.listar: Status da resposta para ${endpoint}:`, response.status);
 
         if (!response.ok) {
           const error = new Error(`Erro HTTP: ${response.status}`);
@@ -283,14 +258,7 @@ API.produtos = {
         }
 
         const data = await response.json();
-        console.log(
-          `API.produtos.listar: Dados recebidos de ${endpoint}:`,
-          data.length ? `${data.length} itens` : 'Objeto ou array vazio'
-        );
 
-        console.log(
-          `API.produtos.listar: Endpoint ${endpoint} funcionou! Salvando para uso futuro.`
-        );
         API.produtos.ENDPOINT = endpoint;
 
         if (Array.isArray(data)) {
@@ -320,7 +288,6 @@ API.produtos = {
         ok: false,
         error: e,
       }));
-      console.log('API health check:', healthCheck.ok ? 'OK' : 'Falhou');
     } catch (e) {
       console.error('API health check falhou:', e);
     }
@@ -329,13 +296,11 @@ API.produtos = {
       const rootResponse = await fetch(API.BASE_URL).catch(e => ({ ok: false, error: e }));
       if (rootResponse.ok) {
         const rootData = await rootResponse.text();
-        console.log('Resposta da raiz da API:', rootData.substring(0, 300));
       }
     } catch (e) {
       console.error('Falha ao acessar raiz da API:', e);
     }
 
-    console.log('API.produtos.listar: Retornando produtos mockados');
     return [
       {
         id: 1,
@@ -402,7 +367,6 @@ API.testarEndpoints = async function () {
 
   for (const endpoint of endpoints) {
     try {
-      console.log(`Testando endpoint ${endpoint}...`);
       const response = await fetch(`${API.BASE_URL}${endpoint}`);
       resultados[endpoint] = {
         status: response.status,
@@ -435,7 +399,6 @@ window.API = API;
 document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has('logout')) {
-    console.log('Usuário acabou de fazer logout, não verificando expiração');
     return;
   }
 
