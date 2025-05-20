@@ -7,12 +7,12 @@ exports.findAll = async (req, res) => {
     const showAll = req.query.all === 'true';
     const whereClause = showAll ? {} : { is_active: true };
 
-    const categories = await Category.findAll({
+    const category = await Category.findAll({
       where: whereClause,
       order: [['name', 'ASC']],
     });
 
-    res.json(categories);
+    res.json(category);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar categorias', error: error.message });
   }
@@ -29,7 +29,7 @@ exports.findBySlug = async (req, res) => {
       include: [
         {
           model: Product,
-          as: 'products',
+          as: 'product',
         },
       ],
     });
@@ -51,7 +51,7 @@ exports.findOne = async (req, res) => {
       include: [
         {
           model: Product,
-          as: 'products',
+          as: 'product',
         },
       ],
     });

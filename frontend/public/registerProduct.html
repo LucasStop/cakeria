@@ -1,131 +1,125 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cakeria | Cadastro de Produto</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cakeria | Cadastrar Produto</title>
+  
+  <!-- Favicon -->
   <link rel="icon" href="/assets/favicon.ico" />
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
   <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
+  
+  <!-- Google Fonts - Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <!-- CSS -->
   <link rel="stylesheet" href="./css/styles.css" />
-  <link rel="stylesheet" href="./css/registro.css" />
+  <link rel="stylesheet" href="./components/components.css" />
+  <link rel="stylesheet" href="./css/admin.css" />
+  <link rel="stylesheet" href="./css/forms.css" />
+  <link rel="stylesheet" href="./css/form-errors.css" />
 </head>
-
 <body>
-  <div class="split-layout">
-    <div class="logo-section">
-      <div class="content">
-        <a href="/">
-          <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="login-logo" />
-        </a>
-        <p>Registre um novo produto</p>
-      </div>
-    </div>
-
-    <div class="form-section">
-      <div class="login-container">
-        <div id="register-card" class="login-card">
-          <div class="login-header">
-            <h2>Cadastrar Produto</h2>
-            <p>Preencha os campos abaixo</p>
+  <header-component></header-component>
+  
+  <main class="container">
+    <section class="form-section">
+      <h1 class="section-title">Cadastrar Novo Produto</h1>
+      
+      <div class="card">
+        <form id="product-form" novalidate>
+          <p id="form-error" class="error-message"></p>
+          
+          <div class="form-group">
+            <label for="product-name">Nome do Produto*</label>
+            <input type="text" id="product-name" name="name" required>
+            <p id="nome-error" class="error-message"></p>
           </div>
-          <form id="register-form" class="login-form">
-            <!-- Nome do Produto -->
-            <div class="form-row">
-              <div class="form-col">
-                <div class="form-group">
-                  <label for="product-name">Nome do Produto</label>
-                  <input type="text" id="product-name" name="name" placeholder="Nome do produto" required />
-                  <span id="name-error" class="error-message"></span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Descrição -->
-            <div class="form-row">
-              <div class="form-col">
-                <div class="form-group">
-                  <label for="product-description">Descrição</label>
-                  <input type="text" id="product-description" name="description" placeholder="Descrição do produto"
-                    required />
-                  <span id="description-error" class="error-message"></span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Preço e Peso/Tamanho -->
-            <div class="form-row">
-              <div class="form-col">
-                <div class="form-group">
-                  <label for="product-price">Preço</label>
-                  <input type="text" id="product-price" name="price" placeholder="Preço do produto" required />
-                  <span id="price-error" class="error-message"></span>
-                </div>
-              </div>
-              <div class="form-col">
-                <div class="form-group">
-                  <label for="product-size">Peso/Tamanho</label>
-                  <input type="text" id="product-size" name="size" placeholder="Peso ou tamanho do produto" required />
-                  <span id="size-error" class="error-message"></span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Imagem -->
-            <div class="form-row">
-              <div class="form-col">
-                <div class="form-group">
-                  <label for="product-image">Imagem do Produto</label>
-                  <input type="file" id="product-image" name="image" accept="image/*" required />
-                  <span id="image-error" class="error-message"></span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Estoque e Validade -->
-            <div class="form-row">
-              <div class="form-col">
-                <div class="form-group">
-                  <label for="product-stock">Quantidade em Estoque</label>
-                  <input type="number" id="product-stock" name="stock" placeholder="Quantidade disponível" required />
-                  <span id="stock-error" class="error-message"></span>
-                </div>
-              </div>
-              <div class="form-col">
-                <div class="form-group">
-                  <label for="product-expiry">Data de Validade</label>
-                  <input type="text" id="product-expiry" name="expiry" placeholder="DD/MM/AAAA" required />
-                  <span id="expiry-error" class="error-message"></span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Botão de Cadastro -->
-            <div class="form-row">
-              <div class="form-col full-width">
-                <button type="submit" class="btn btn-primary btn-login">
-                  Cadastrar Produto
-                </button>
-              </div>
-            </div>
-          </form>
-          <div class="login-footer">
-            <p>Voltar para a <a href="admin.html">Página Inicial</a></p>
+          
+          <div class="form-group">
+            <label for="product-price">Preço (R$)*</label>
+            <input type="text" id="product-price" name="price" placeholder="0,00" required>
+            <p id="preco-error" class="error-message"></p>
           </div>
-        </div>
+          
+          <!-- Novo campo: Quantidade em estoque -->
+          <div class="form-group">
+            <label for="product-stock">Quantidade em Estoque*</label>
+            <input type="number" id="product-stock" name="stock" min="0" step="1" value="0" required>
+            <p id="stock-error" class="error-message"></p>
+          </div>
+          
+          <!-- Novo campo: Data de Validade -->
+          <div class="form-group">
+            <label for="product-expiration">Data de Validade</label>
+            <input type="date" id="product-expiration" name="expiration_date">
+            <p class="help-text">Deixe em branco para produtos sem data de validade específica</p>
+            <p id="expiration-error" class="error-message"></p>
+          </div>
+          
+          <!-- Novo campo: Tamanho -->
+          <div class="form-group">
+            <label for="product-size">Tamanho</label>
+            <select id="product-size" name="size">
+              <option value="" selected>Selecione um tamanho (opcional)</option>
+              <option value="P">Pequeno</option>
+              <option value="M">Médio</option>
+              <option value="G">Grande</option>
+              <option value="custom">Personalizado</option>
+            </select>
+            <div id="custom-size-container" style="display: none; margin-top: 10px;">
+              <input type="text" id="product-custom-size" name="custom_size" placeholder="Especifique o tamanho (ex: 15cm, 500g)">
+            </div>
+            <p id="size-error" class="error-message"></p>
+          </div>
+          
+          <div class="form-group">
+            <label for="product-category">Categoria*</label>
+            <select id="product-category" name="category_id" required>
+              <option value="" disabled selected>Selecione uma categoria</option>
+            </select>
+            <p id="categoria-error" class="error-message"></p>
+          </div>
+          
+          <div class="form-group">
+            <label for="product-description">Descrição</label>
+            <textarea id="product-description" name="description" rows="4"></textarea>
+            <p id="descricao-error" class="error-message"></p>
+          </div>
+          
+          <div class="form-group">
+            <label for="product-image">Imagem do Produto</label>
+            <input type="file" id="product-image" name="image" accept="image/*">
+            <p class="help-text">Formato: JPG, PNG ou GIF. Tamanho máximo: 5MB.</p>
+            <p id="imagem-error" class="error-message"></p>
+            <div id="image-preview" class="image-preview"></div>
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="window.history.back()">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Cadastrar Produto</button>
+          </div>
+        </form>
       </div>
-    </div>  </div>
+    </section>
+  </main>
+  
+  <footer-component></footer-component>
+  
+  <!-- Scripts -->
+  <script src="./js/utils/toast.js"></script>
   <script src="./components/Header.js"></script>
+  <script src="./components/Footer.js"></script>
   <script src="./js/api.js"></script>
   <script src="./js/headerController.js"></script>
+  <script src="./js/navigation.js"></script>
   <script src="./js/logout.js"></script>
-  <script src="./js/produtos.js"></script>
-
+  <script src="./js/registerProduct.js"></script>
 </body>
-
 </html>

@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('users', 'image', {
+    await queryInterface.addColumn('user', 'image', {
       type: Sequelize.BLOB('long'),
       allowNull: true,
       comment: 'Imagem do usuário em formato binário (BLOB)',
@@ -11,6 +11,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn('users', 'image');
+    await queryInterface.removeColumn('user', 'image');
   },
 };
