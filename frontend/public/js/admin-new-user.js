@@ -334,11 +334,13 @@ function handleSubmit(e) {
       state: form.elements.state.value,
     };
     
-    formData.append('address', JSON.stringify(addressData));
-    
-    // Enviar dados com a imagem
-    fetch(`http://localhost:3001/api/users`, {
+    formData.append('address', JSON.stringify([addressData]));
+      // Enviar dados com a imagem
+    fetch(`http://localhost:3001/api/user`, {
       method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
       body: formData
     })
     .then(async response => {
@@ -376,12 +378,11 @@ function handleSubmit(e) {
         city: form.elements.city.value,
         state: form.elements.state.value,
       },
-    };
-
-    fetch(`http://localhost:3001/api/users`, {
+    };    fetch(`http://localhost:3001/api/user`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
       body: JSON.stringify(userData),
     })
