@@ -1,4 +1,4 @@
-// headerController.js - Controla qual versão do header deve ser exibida
+// header-controller.js - Controla qual versão do header deve ser exibida
 
 document.addEventListener('DOMContentLoaded', function() {
   // Obtenha a referência ao componente do header

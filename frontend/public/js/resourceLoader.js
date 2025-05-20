@@ -49,9 +49,9 @@ function loadProductCSS() {
  */
 function initializeProductModal() {
   // Garantir que o script de detalhes do produto seja carregado
-  if (!window.ProductDetails && !document.querySelector('script[src*="productDetails.js"]')) {
+  if (!window.ProductDetails && !document.querySelector('script[src*="detalhes-produto.js"]')) {
     const script = document.createElement('script');
-    script.src = '/js/productDetails.js';
+    script.src = '/js/detalhes-produto.js';
     document.body.appendChild(script);
     
     // Depois que o script for carregado, verificar se precisamos corrigir a função verDetalhesProduto
@@ -103,7 +103,7 @@ function fixProductDetailFunction() {
 }
 
 /**
- * Carrega os detalhes do produto de forma similar à implementação no productDetails.js
+ * Carrega os detalhes do produto de forma similar à implementação no detalhes-produto.js
  */
 async function loadProductDetails(productId) {
   try {

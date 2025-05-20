@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   // Verificar autenticação
   if (!isLoggedInAsAdmin()) {
-    window.location.href = '/login.html?redirect=/registerProduct.html';
+    window.location.href = '/login.html?redirect=/registro-produto.html';
     return;
   }
 

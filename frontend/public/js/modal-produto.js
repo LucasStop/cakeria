@@ -310,13 +310,13 @@ const ProductModal = {
     const modalContent = document.getElementById('product-modal-content');
     if (!modalContent) return;
     
-    // Usar o script productDetails.js se disponível
+    // Usar o script detalhes-produto.js se disponível
     if (window.renderProductDetails && typeof window.renderProductDetails === 'function') {
       window.renderProductDetails(produto);
       return;
     }
     
-    // Renderização básica caso o script productDetails.js não esteja disponível
+    // Renderização básica caso o script detalhes-produto.js não esteja disponível
     const imageUrl = window.ImageHelper ? 
       window.ImageHelper.getProductImageUrl(produto.id) : 
       `${window.API?.BASE_URL || 'http://localhost:3001/api'}/product/image/${produto.id}`;
