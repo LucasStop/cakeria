@@ -38,9 +38,15 @@
 
 /* Animação pulsante para campos com erro */
 @keyframes pulseBorder {
-  0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.6); }
-  70% { box-shadow: 0 0 0 8px rgba(231, 76, 60, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(231, 76, 60, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+  }
 }
 
 .pulse-field {
@@ -100,9 +106,16 @@
 
 /* Animação para o contêiner de erro */
 @keyframes errorShake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
 }
 
 .shake-error {

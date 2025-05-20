@@ -22,13 +22,13 @@ body.edit-mode .form-helper {
   transition: color 0.3s ease;
 }
 
-#image-requirement:contains("(Opcional)"),
+#image-requirement:contains('(Opcional)'),
 #image-requirement.optional {
   color: #28a745;
 }
 
 /* Highlight image preview when in edit mode */
-body.edit-mode #image-preview[src]:not([src="#"]) {
+body.edit-mode #image-preview[src]:not([src='#']) {
   border: 2px solid #28a745;
   border-radius: 5px;
   box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);

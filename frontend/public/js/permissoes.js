@@ -9,7 +9,7 @@ function isAuthenticated() {
 function getCurrentUser() {
   const userJson = localStorage.getItem('user');
   if (!userJson) return null;
-  
+
   try {
     return JSON.parse(userJson);
   } catch (e) {
@@ -34,11 +34,11 @@ function isOwner(resourceOwnerId) {
 function canEditRecipe(recipe) {
   // Admins podem editar qualquer receita
   if (isAdmin()) return true;
-  
+
   // Verifica se o usuário atual é o autor da receita
   const user = getCurrentUser();
   if (!user) return false;
-  
+
   const recipeUserId = recipe.userId || recipe.user_id;
   return user.id === recipeUserId;
 }
@@ -53,11 +53,11 @@ function canDeleteRecipe(recipe) {
 function canDeleteComment(comment) {
   // Admins podem excluir qualquer comentário
   if (isAdmin()) return true;
-  
+
   // Usuários podem excluir seus próprios comentários
   const user = getCurrentUser();
   if (!user) return false;
-  
+
   const commentUserId = comment.user_id;
   return user.id === commentUserId;
 }
@@ -67,7 +67,7 @@ function canEditComment(comment) {
   // Apenas o autor do comentário pode editar (não admin)
   const user = getCurrentUser();
   if (!user) return false;
-  
+
   const commentUserId = comment.user_id;
   return user.id === commentUserId;
 }

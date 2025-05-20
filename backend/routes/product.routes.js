@@ -6,7 +6,7 @@ const upload = require('../utils/upload');
 
 // Rotas públicas
 router.get('/', productController.findAll);
-router.get('/image/:id', productController.getImage); 
+router.get('/image/:id', productController.getImage);
 router.get('/slug/:slug', productController.findBySlug);
 router.get('/category/:categoryId', productController.findByCategory);
 router.get('/:id', productController.findOne);

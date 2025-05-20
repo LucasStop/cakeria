@@ -61,7 +61,7 @@ exports.create = async (req, res) => {
   if (!user_id || !product || !Array.isArray(product) || product.length === 0) {
     return res.status(400).json({
       message: 'Dados inválidos',
-      details: 'É necessário informar usuário e pelo menos um produto'
+      details: 'É necessário informar usuário e pelo menos um produto',
     });
   }
 
@@ -69,7 +69,7 @@ exports.create = async (req, res) => {
     // Verifica o estoque de todos os produtos antes de criar o pedido
     const productIds = product.map(product => product.id);
     const productFromDB = await Product.findAll({
-      where: { id: productIds }
+      where: { id: productIds },
     });
 
     // Cria um mapa para verificação rápida
@@ -86,19 +86,19 @@ exports.create = async (req, res) => {
       if (!dbProduct) {
         invalidProduct.push({
           id: product.id,
-          error: 'Produto não encontrado'
+          error: 'Produto não encontrado',
         });
       } else if (!dbProduct.is_active) {
         invalidProduct.push({
           id: product.id,
           name: dbProduct.name,
-          error: 'Produto indisponível'
+          error: 'Produto indisponível',
         });
       } else if (dbProduct.stock < product.quantity) {
         invalidProduct.push({
           id: product.id,
           name: dbProduct.name,
-          error: `Estoque insuficiente. Disponível: ${dbProduct.stock}`
+          error: `Estoque insuficiente. Disponível: ${dbProduct.stock}`,
         });
       }
     });
@@ -106,7 +106,7 @@ exports.create = async (req, res) => {
     if (invalidProduct.length > 0) {
       return res.status(400).json({
         message: 'Não foi possível criar o pedido',
-        errors: invalidProduct
+        errors: invalidProduct,
       });
     }
 
@@ -132,10 +132,7 @@ exports.create = async (req, res) => {
         // Atualiza o estoque de cada produto
         for (const product of product) {
           const dbProduct = productMap[product.id];
-          await dbProduct.update(
-            { stock: dbProduct.stock - product.quantity },
-            { transaction: t }
-          );
+          await dbProduct.update({ stock: dbProduct.stock - product.quantity }, { transaction: t });
         }
       }
 
@@ -157,9 +154,9 @@ exports.updateStatus = async (req, res) => {
   const { status } = req.body;
 
   if (!status || !['pending', 'paid', 'complete', 'cancelled'].includes(status)) {
-    return res.status(400).json({ 
-      message: 'Status inválido', 
-      details: 'Status deve ser: pending, paid, complete ou cancelled' 
+    return res.status(400).json({
+      message: 'Status inválido',
+      details: 'Status deve ser: pending, paid, complete ou cancelled',
     });
   }
 
@@ -174,7 +171,7 @@ exports.updateStatus = async (req, res) => {
     }
 
     const oldStatus = order.status;
-    
+
     // Se o status é o mesmo, não precisamos fazer nada
     if (oldStatus === status) {
       return res.json(order);
@@ -191,10 +188,7 @@ exports.updateStatus = async (req, res) => {
           for (const product of order.product) {
             const quantity = product.order_product?.quantity || 0;
             if (quantity > 0) {
-              await product.update(
-                { stock: product.stock + quantity },
-                { transaction: t }
-              );
+              await product.update({ stock: product.stock + quantity }, { transaction: t });
             }
           }
         }

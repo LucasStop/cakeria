@@ -69,7 +69,7 @@
   flex: 1;
 }
 
-.avatar-input input[type="file"] {
+.avatar-input input[type='file'] {
   display: none;
 }
 

@@ -3,7 +3,8 @@
 module.exports = (sequelize, DataTypes) => {
   const Product = sequelize.define(
     'Product',
-    {      category_id: {
+    {
+      category_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
@@ -11,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BLOB('medium'), // MEDIUMBLOB - até 16MB
         allowNull: true,
         // Removemos a validação isUrl já que agora é um binário
-      },      name: {
+      },
+      name: {
         type: DataTypes.STRING(100),
         allowNull: false,
         validate: {
@@ -23,7 +25,8 @@ module.exports = (sequelize, DataTypes) => {
             msg: 'O nome deve ter entre 3 e 100 caracteres',
           },
         },
-      },      slug: {
+      },
+      slug: {
         type: DataTypes.STRING(120),
         allowNull: false,
         unique: true,
@@ -83,7 +86,8 @@ module.exports = (sequelize, DataTypes) => {
           },
           min: {
             args: [0],
-            msg: 'O estoque não pode ser negativo',          },
+            msg: 'O estoque não pode ser negativo',
+          },
         },
       },
       expiry_date: {
@@ -135,8 +139,8 @@ module.exports = (sequelize, DataTypes) => {
       product.slug = product.name
         .toLowerCase()
         .replace(/[^\w\s-]/g, '') // Remove caracteres especiais
-        .replace(/\s+/g, '-')     // Substitui espaços por hífens
-        .replace(/--+/g, '-')     // Remove hífens duplicados
+        .replace(/\s+/g, '-') // Substitui espaços por hífens
+        .replace(/--+/g, '-') // Remove hífens duplicados
         .trim();
     }
   });

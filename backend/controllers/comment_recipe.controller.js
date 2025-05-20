@@ -49,13 +49,13 @@ module.exports = {
       if (!req.user) {
         return res.status(401).json({ message: 'Usuário não autenticado' });
       }
-      
+
       // Se o usuário for admin ou o autor do comentário, permite excluir
       if (req.user.type === 'admin' || comment.user_id === req.user.id) {
         await comment.destroy();
         return res.json({ message: 'Comentário excluído com sucesso' });
       }
-      
+
       return res.status(403).json({ message: 'Não autorizado a excluir este comentário' });
     } catch (error) {
       console.error('Erro ao excluir comentário:', error);
@@ -80,7 +80,7 @@ module.exports = {
       res.status(500).json({ message: 'Erro ao listar comentários' });
     }
   },
-  
+
   // Atualizar comentário
   updateComment: async (req, res) => {
     try {
@@ -96,20 +96,20 @@ module.exports = {
       if (!req.user) {
         return res.status(401).json({ message: 'Usuário não autenticado' });
       }
-      
+
       // Apenas o autor do comentário ou admin pode editar
       if (req.user.type === 'admin' || comment.user_id === req.user.id) {
         comment.content = content;
         await comment.save();
-        
+
         // Buscar o comentário atualizado com dados do autor
         const updatedComment = await Comment.findByPk(comment.id, {
           include: [{ model: User, as: 'author', attributes: ['id', 'name'] }],
         });
-        
+
         return res.json(updatedComment);
       }
-      
+
       return res.status(403).json({ message: 'Não autorizado a editar este comentário' });
     } catch (error) {
       console.error('Erro ao atualizar comentário:', error);
