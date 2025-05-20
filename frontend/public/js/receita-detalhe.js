@@ -798,7 +798,7 @@ function setupAdminButtons(recipe) {
       const editButton = managementControls.querySelector('.edit-recipe-btn');
       if (editButton) {
         editButton.addEventListener('click', () => {
-          window.location.href = `/compartilharReceitas.html?id=${recipe.id}`;
+          window.location.href = `/compartilhar-receita.html?id=${recipe.id}`;
         });
       }
     } else {

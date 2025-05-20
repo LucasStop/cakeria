@@ -48,7 +48,7 @@ function checkAuthStatus() {
       'Acesso restrito'
     );
     setTimeout(() => {
-      window.location.href = '/login.html?redirect=/compartilharReceitas.html';
+      window.location.href = '/login.html?redirect=/compartilhar-receita.html';
     }, 2000);
   }
 
