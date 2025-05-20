@@ -6,8 +6,8 @@ const Navigation = {
   },
 
   navegarParaCadastrarProdutos: function () {
-    window.location.href = '/registerProduct.html';
-    this.currentPage = 'registerProduct';
+    window.location.href = '/registro-produto.html';
+    this.currentPage = 'registro-produto';
   },
 
   navegarParaProdutos: function () {
@@ -54,8 +54,8 @@ const Navigation = {
   },
 
   navegarParaCompartilharReceitas: function () {
-    window.location.href = '/compartilharReceitas.html';
-    this.currentPage = 'compartilharReceitas';
+    window.location.href = '/compartilhar-receita.html';
+    this.currentPage = 'compartilhar-receita';
   },
 
   navegarParaHome: function () {
@@ -78,11 +78,11 @@ const Navigation = {
       this.navegarParaProdutos();
     } else if (path === '/categorias') {
       this.navegarParaCategorias();
-    } else if (path === '/registerProduct') {
+    } else if (path === '/register-product') {
       this.navegarParaRegistroProduct();
     } else if (path === '/sobre') {
       this.navegarParaSobre();
-    } else if (path === '/compartilharReceitas') {
+    } else if (path === '/compartilhar-receita') {
       this.navegarParaCompartilharReceitas();
     } else if (path.startsWith('/receitas/')) {
       const receitaId = parseInt(path.split('/').pop());
