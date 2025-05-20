@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'categories',
+      tableName: 'category',
       timestamps: true,
       paranoid: true,
       underscored: true,
@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
   Category.associate = function (models) {
     Category.hasMany(models.Product, {
       foreignKey: 'category_id',
-      as: 'products',
+      as: 'product',
     });
   };
 

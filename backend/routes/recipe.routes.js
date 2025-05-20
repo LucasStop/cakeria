@@ -4,12 +4,12 @@ const recipeController = require('../controllers/recipe.controller');
 const { authenticate } = require('../middlewares/auth.middleware');
 
 // Rotas públicas
-router.get('/', recipeController.getAllRecipes);
-router.get('/:id', recipeController.getRecipeById);
+router.get('/', recipeController.getAll);
+router.get('/:id', recipeController.getById);
 
 // Rotas protegidas que requerem autenticação
-router.post('/', authenticate, recipeController.createRecipe);
-router.put('/:id', authenticate, recipeController.updateRecipe);
-router.delete('/:id', authenticate, recipeController.deleteRecipe);
+router.post('/', authenticate, recipeController.create);
+router.put('/:id', authenticate, recipeController.update);
+router.delete('/:id', authenticate, recipeController.delete);
 
 module.exports = router;

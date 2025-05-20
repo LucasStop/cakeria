@@ -2,13 +2,13 @@ const { Order, Product, User, order_product, sequelize } = require('../models');
 
 exports.findAll = async (req, res) => {
   try {
-    const orders = await Order.findAll({
+    const order = await Order.findAll({
       include: [
         { model: User, as: 'user', attributes: ['id', 'name', 'email'] },
-        { model: Product, as: 'products' },
+        { model: Product, as: 'product' },
       ],
     });
-    res.json(orders);
+    res.json(order);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar pedidos', error: error.message });
   }
@@ -17,11 +17,11 @@ exports.findAll = async (req, res) => {
 exports.findByUser = async (req, res) => {
   const { userId } = req.params;
   try {
-    const orders = await Order.findAll({
+    const order = await Order.findAll({
       where: { user_id: userId },
-      include: [{ model: Product, as: 'products' }],
+      include: [{ model: Product, as: 'product' }],
     });
-    res.json(orders);
+    res.json(order);
   } catch (error) {
     res.status(500).json({
       message: 'Erro ao buscar pedidos do usuário',
@@ -38,7 +38,7 @@ exports.findOne = async (req, res) => {
         { model: User, as: 'user', attributes: ['id', 'name', 'email'] },
         {
           model: Product,
-          as: 'products',
+          as: 'product',
           through: {
             model: order_product,
             attributes: ['quantity'],
@@ -56,46 +56,46 @@ exports.findOne = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-  const { user_id, products, total } = req.body;
+  const { user_id, product, total } = req.body;
 
-  if (!user_id || !products || !Array.isArray(products) || products.length === 0) {
-    return res.status(400).json({ 
-      message: 'Dados inválidos', 
-      details: 'É necessário informar usuário e pelo menos um produto' 
+  if (!user_id || !product || !Array.isArray(product) || product.length === 0) {
+    return res.status(400).json({
+      message: 'Dados inválidos',
+      details: 'É necessário informar usuário e pelo menos um produto'
     });
   }
 
   try {
     // Verifica o estoque de todos os produtos antes de criar o pedido
-    const productIds = products.map(product => product.id);
-    const productsFromDB = await Product.findAll({
+    const productIds = product.map(product => product.id);
+    const productFromDB = await Product.findAll({
       where: { id: productIds }
     });
 
     // Cria um mapa para verificação rápida
-    const productsMap = {};
-    productsFromDB.forEach(product => {
-      productsMap[product.id] = product;
+    const productMap = {};
+    productFromDB.forEach(product => {
+      productMap[product.id] = product;
     });
 
     // Verifica se todos os produtos estão disponíveis e têm estoque suficiente
-    const invalidProducts = [];
-    products.forEach(product => {
-      const dbProduct = productsMap[product.id];
-      
+    const invalidProduct = [];
+    product.forEach(product => {
+      const dbProduct = productMap[product.id];
+
       if (!dbProduct) {
-        invalidProducts.push({
+        invalidProduct.push({
           id: product.id,
           error: 'Produto não encontrado'
         });
       } else if (!dbProduct.is_active) {
-        invalidProducts.push({
+        invalidProduct.push({
           id: product.id,
           name: dbProduct.name,
           error: 'Produto indisponível'
         });
       } else if (dbProduct.stock < product.quantity) {
-        invalidProducts.push({
+        invalidProduct.push({
           id: product.id,
           name: dbProduct.name,
           error: `Estoque insuficiente. Disponível: ${dbProduct.stock}`
@@ -103,10 +103,10 @@ exports.create = async (req, res) => {
       }
     });
 
-    if (invalidProducts.length > 0) {
+    if (invalidProduct.length > 0) {
       return res.status(400).json({
         message: 'Não foi possível criar o pedido',
-        errors: invalidProducts
+        errors: invalidProduct
       });
     }
 
@@ -120,18 +120,18 @@ exports.create = async (req, res) => {
         { transaction: t }
       );
 
-      if (products && products.length) {
-        const order_products = products.map(product => ({
+      if (product && product.length) {
+        const order_product = product.map(product => ({
           order_id: order.id,
           product_id: product.id,
           quantity: product.quantity,
         }));
 
-        await order_product.bulkCreate(order_products, { transaction: t });
+        await order_product.bulkCreate(order_product, { transaction: t });
 
         // Atualiza o estoque de cada produto
-        for (const product of products) {
-          const dbProduct = productsMap[product.id];
+        for (const product of product) {
+          const dbProduct = productMap[product.id];
           await dbProduct.update(
             { stock: dbProduct.stock - product.quantity },
             { transaction: t }
@@ -143,7 +143,7 @@ exports.create = async (req, res) => {
     });
 
     const createdOrder = await Order.findByPk(result.id, {
-      include: [{ model: Product, as: 'products' }],
+      include: [{ model: Product, as: 'product' }],
     });
 
     res.status(201).json(createdOrder);
@@ -166,7 +166,7 @@ exports.updateStatus = async (req, res) => {
   try {
     // Busca o pedido primeiro para verificar se existe e obter o status atual
     const order = await Order.findByPk(id, {
-      include: [{ model: Product, as: 'products' }],
+      include: [{ model: Product, as: 'product' }],
     });
 
     if (!order) {
@@ -187,8 +187,8 @@ exports.updateStatus = async (req, res) => {
         await order.update({ status }, { transaction: t });
 
         // Se o pedido tem produtos, devolvemos ao estoque
-        if (order.products && order.products.length) {
-          for (const product of order.products) {
+        if (order.product && order.product.length) {
+          for (const product of order.product) {
             const quantity = product.order_product?.quantity || 0;
             if (quantity > 0) {
               await product.update(
@@ -206,7 +206,7 @@ exports.updateStatus = async (req, res) => {
 
     // Busca o pedido atualizado
     const updatedOrder = await Order.findByPk(id, {
-      include: [{ model: Product, as: 'products' }],
+      include: [{ model: Product, as: 'product' }],
     });
 
     res.json(updatedOrder);

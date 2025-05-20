@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cakeria | Produtos</title>
+  <link rel="icon" href="/assets/favicon.ico" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="./css/styles.css" />
+  <link rel="stylesheet" href="./css/produtos.css" />
+  <link rel="stylesheet" href="./components/components.css" />
+  <link rel="stylesheet" href="./css/product-modal.css" />
+</head>
+
+<body>
+  <header-component></header-component>
+
+  <main id="content">
+    <div class="container">
+      <!-- Adicionar seção de filtros -->
+      <section class="filter-section">
+        <h2 class="filter-title">Filtrar Produtos</h2>
+        <div class="filter-container">
+          <div class="filter-item">
+            <label for="filter-name">Nome do produto</label>
+            <div class="search-box">
+              <input type="text" id="filter-name" placeholder="Buscar produtos...">
+              <button id="search-btn" type="button"><i class="fas fa-search"></i></button>
+            </div>
+          </div>
+          
+          <div class="filter-item">
+            <label for="filter-category">Categoria</label>
+            <select id="filter-category">
+              <option value="">Todas as categorias</option>
+              <!-- As categorias serão carregadas dinamicamente -->
+            </select>
+          </div>
+          
+          <div class="filter-item">
+            <label for="filter-min-price">Preço</label>
+            <div class="price-range-container">
+              <input type="number" id="filter-min-price" placeholder="Mín" min="0" step="0.01">
+              <span>até</span>
+              <input type="number" id="filter-max-price" placeholder="Máx" min="0" step="0.01">
+            </div>
+          </div>
+          
+          <div class="filter-item">
+            <label for="filter-expiry">Validade</label>
+            <select id="filter-expiry">
+              <option value="">Todos os produtos</option>
+              <option value="valid">Produtos válidos</option>
+              <option value="soon">Vencimento próximo (30 dias)</option>
+              <option value="expired">Produtos vencidos</option>
+            </select>
+          </div>
+          
+          <div class="filter-actions">
+            <button id="apply-filters" class="btn btn-primary" type="button">Aplicar Filtros</button>
+            <button id="clear-filters" class="btn btn-outline" type="button">Limpar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Área para filtros ativos -->
+      <div id="active-filters" class="active-filters-container"></div>
+
+      <!-- Loading indicator (existente) -->
+      <div class="loading-indicator">
+        <div class="spinner"></div>
+        <p>Carregando produtos...</p>
+      </div>
+    </div>
+  </main>
+
+  <footer-component></footer-component>
+
+  <!-- Scripts -->
+  <script src="./js/utils/toast.js"></script>
+  <script src="./components/Header.js"></script>
+  <script src="./components/Footer.js"></script>
+  <script src="./js/api.js"></script>
+  <script src="./js/utils/imageHelper.js"></script>
+  <script src="./js/headerController.js"></script>
+  <script src="./js/navigation.js"></script>
+  <script src="./js/script.js"></script>
+  <script src="./js/productDetails.js"></script>
+  <script src="./js/logout.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Inicializar filtros
+      if (window.initializeFilters) {
+        window.initializeFilters();
+      }
+      
+      // Carregar produtos assim que a página for carregada
+      if (window.renderizarListaProdutos) {
+        window.renderizarListaProdutos();
+      } else {
+        setTimeout(function() {
+          if (window.renderizarListaProdutos) {
+            window.renderizarListaProdutos();
+          } else {
+            console.error('Função renderizarListaProdutos não encontrada!');
+            document.querySelector('#content').innerHTML = 
+              '<div class="container"><p class="error">Erro ao carregar produtos. Tente novamente mais tarde.</p></div>';
+          }
+        }, 1000);
+      }
+    });
+  </script>
+</body>
+</html>
