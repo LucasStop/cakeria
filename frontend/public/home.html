@@ -452,18 +452,21 @@
     <script src="./js/navegacao.js"></script>
     <script src="./js/logout.js"></script>
     <script src="./js/home.js"></script>
-      <!-- Script para adicionar toast -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         try {
           const justLoggedIn = sessionStorage.getItem('justLoggedIn');
-          
-          if (justLoggedIn === 'true') {
+            
+            if (justLoggedIn === 'true') {
             const user = JSON.parse(localStorage.getItem('user'));
             if (user && user.name && window.Toast) {
               Toast.success(`Bem-vindo(a), ${user.name}!`, {
-                position: 'top-center',
-                duration: 4000
+              position: 'top-center',
+              duration: 4000,
+               style: { 
+              marginTop: '200px',
+              zIndex: 10000 
+            } 
               });
             }
             sessionStorage.removeItem('justLoggedIn');

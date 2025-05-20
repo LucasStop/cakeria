@@ -1,7 +1,6 @@
 const { User, Address, sequelize } = require('../models');
 const bcrypt = require('bcryptjs');
 
-// User finding options without password
 const userAttributes = {
   attributes: { exclude: ['password'] },
 };
@@ -135,7 +134,6 @@ exports.update = async (req, res) => {
 
       if (address) {
         if ((address.postal_code || address.cep) && (address.street || address.number)) {
-          // Se o endereço tem um ID, atualiza o endereço existente
           if (address.id) {
             const addressExists = await Address.findOne({
               where: { id: address.id, user_id: id },
@@ -143,7 +141,6 @@ exports.update = async (req, res) => {
             });
 
             if (addressExists) {
-              // Atualiza o endereço existente
               await Address.update(
                 {
                   street: address.street || addressExists.street,

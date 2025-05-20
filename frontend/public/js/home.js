@@ -38,7 +38,6 @@ function updateUserDisplay(user) {
 
 async function loadDashboardData() {
   try {
-    // logica para implementar
   } catch (error) {
     console.error('Erro ao carregar dados da dashboard:', error);
   }
