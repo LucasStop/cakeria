@@ -1,18 +1,18 @@
 // header-controller.js - Controla qual versão do header deve ser exibida
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // Obtenha a referência ao componente do header
   const headerComponent = document.querySelector('header-component');
-  
+
   // Se o componente header existe e não tem um atributo variant explícito
   if (headerComponent && !headerComponent.hasAttribute('variant')) {
     // Verifica se o usuário está logado
     const isLoggedIn = localStorage.getItem('token') !== null;
-    
+
     if (isLoggedIn) {
       // Obtenha as informações do usuário
       const user = getCurrentUser();
-      
+
       // Define o atributo variant com base no tipo de usuário
       if (isAdmin(user)) {
         // Se estamos em uma página admin e o usuário é admin

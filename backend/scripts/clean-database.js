@@ -14,7 +14,8 @@ async function dropTables() {
 
     await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
 
-    console.log('Removendo tabelas...');    await sequelize.query('DROP TABLE IF EXISTS order_product');
+    console.log('Removendo tabelas...');
+    await sequelize.query('DROP TABLE IF EXISTS order_product');
     await sequelize.query('DROP TABLE IF EXISTS order');
     await sequelize.query('DROP TABLE IF EXISTS product');
     await sequelize.query('DROP TABLE IF EXISTS category');

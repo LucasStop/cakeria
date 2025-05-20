@@ -50,24 +50,21 @@ exports.login = async (req, res) => {
 
 exports.refresh = async (req, res) => {
   try {
-  
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({
         message: 'Token não fornecido',
       });
     }
-    
+
     const token = authHeader.split(' ')[1];
-    
- 
+
     const decoded = verifyToken(token);
     if (!decoded) {
       return res.status(401).json({
         message: 'Token inválido ou expirado',
       });
     }
-    
 
     const user = await User.findByPk(decoded.id);
     if (!user) {
@@ -75,13 +72,11 @@ exports.refresh = async (req, res) => {
         message: 'Usuário não encontrado',
       });
     }
-    
 
     const newToken = generateToken(user);
-    
 
     await updateLastLogin(user.id);
-    
+
     // Retornar o novo token
     res.json({
       token: newToken,

@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Verificar se o usuário está logado e é admin
   checkAdminAccess();
-  
+
   const form = document.getElementById('userForm');
   if (form) form.addEventListener('submit', handleSubmit);
 
@@ -13,32 +13,32 @@ document.addEventListener('DOMContentLoaded', () => {
 // Verificar se o usuário tem acesso de administrador
 function checkAdminAccess() {
   const token = localStorage.getItem('token');
-  
+
   if (!token) {
     alert('Você precisa estar logado como administrador para acessar esta página.');
     window.location.href = 'login.html?redirect=admin-new-user.html';
     return;
   }
-  
+
   // Verificar se o usuário é um administrador
   fetch('http://localhost:3001/api/auth/verify', {
     method: 'GET',
     headers: {
-      'Authorization': `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   })
-  .then(response => response.json())
-  .then(data => {
-    if (!data.user || data.user.type !== 'admin') {
-      alert('Acesso restrito apenas para administradores.');
-      window.location.href = 'index.html';
-    }
-  })
-  .catch(error => {
-    console.error('Erro ao verificar permissões:', error);
-    alert('Erro ao verificar suas permissões. Por favor, faça login novamente.');
-    window.location.href = 'login.html';
-  });
+    .then(response => response.json())
+    .then(data => {
+      if (!data.user || data.user.type !== 'admin') {
+        alert('Acesso restrito apenas para administradores.');
+        window.location.href = 'index.html';
+      }
+    })
+    .catch(error => {
+      console.error('Erro ao verificar permissões:', error);
+      alert('Erro ao verificar suas permissões. Por favor, faça login novamente.');
+      window.location.href = 'login.html';
+    });
 }
 
 function initPasswordToggles() {
@@ -313,7 +313,7 @@ function handleSubmit(e) {
   // Se temos um avatar, usamos FormData para enviar
   if (hasAvatar) {
     const formData = new FormData();
-    
+
     // Adicionar todos os campos ao FormData
     formData.append('name', form.elements.name.value);
     formData.append('email', form.elements.email.value);
@@ -322,7 +322,7 @@ function handleSubmit(e) {
     formData.append('password', password);
     formData.append('type', userType);
     formData.append('image', fileInput.files[0]);
-    
+
     // Dados de endereço
     const addressData = {
       cep: form.elements.cep.value,
@@ -333,31 +333,31 @@ function handleSubmit(e) {
       city: form.elements.city.value,
       state: form.elements.state.value,
     };
-    
+
     formData.append('address', JSON.stringify(addressData));
-    
+
     // Enviar dados com a imagem
     fetch(`http://localhost:3001/api/users`, {
       method: 'POST',
-      body: formData
+      body: formData,
     })
-    .then(async response => {
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log('Usuário registrado com sucesso:', responseData);
-        
-        alert('Usuário cadastrado com sucesso!');
-        window.location.href = 'admin-users.html';
-      } else {
-        const errorData = await response.json();
-        console.error('Erro ao registrar usuário:', errorData);
-        alert('Erro ao cadastrar usuário: ' + (errorData.message || 'Erro desconhecido'));
-      }
-    })
-    .catch(error => {
-      console.error('Erro na requisição:', error);
-      alert('Erro na requisição: ' + error.message);
-    });
+      .then(async response => {
+        if (response.ok) {
+          const responseData = await response.json();
+          console.log('Usuário registrado com sucesso:', responseData);
+
+          alert('Usuário cadastrado com sucesso!');
+          window.location.href = 'admin-users.html';
+        } else {
+          const errorData = await response.json();
+          console.error('Erro ao registrar usuário:', errorData);
+          alert('Erro ao cadastrar usuário: ' + (errorData.message || 'Erro desconhecido'));
+        }
+      })
+      .catch(error => {
+        console.error('Erro na requisição:', error);
+        alert('Erro na requisição: ' + error.message);
+      });
   } else {
     // Sem avatar, usamos o método original com JSON
     const userData = {
@@ -385,23 +385,23 @@ function handleSubmit(e) {
       },
       body: JSON.stringify(userData),
     })
-    .then(async response => {
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log('Usuário registrado com sucesso:', responseData);
-        
-        alert('Usuário cadastrado com sucesso!');
-        window.location.href = 'admin-users.html';
-      } else {
-        const errorData = await response.json();
-        console.error('Erro ao registrar usuário:', errorData);
-        alert('Erro ao cadastrar usuário: ' + (errorData.message || 'Erro desconhecido'));
-      }
-    })
-    .catch(error => {
-      console.error('Erro na requisição:', error);
-      alert('Erro na requisição: ' + error.message);
-    });
+      .then(async response => {
+        if (response.ok) {
+          const responseData = await response.json();
+          console.log('Usuário registrado com sucesso:', responseData);
+
+          alert('Usuário cadastrado com sucesso!');
+          window.location.href = 'admin-users.html';
+        } else {
+          const errorData = await response.json();
+          console.error('Erro ao registrar usuário:', errorData);
+          alert('Erro ao cadastrar usuário: ' + (errorData.message || 'Erro desconhecido'));
+        }
+      })
+      .catch(error => {
+        console.error('Erro na requisição:', error);
+        alert('Erro na requisição: ' + error.message);
+      });
   }
 }
 
@@ -409,28 +409,28 @@ function setupAvatarUpload() {
   const fileInput = document.getElementById('register-avatar');
   const selectButton = document.getElementById('select-avatar-btn');
   const previewDiv = document.getElementById('avatar-preview');
-  
+
   if (!fileInput || !selectButton || !previewDiv) return;
-  
+
   // Ao clicar no botão, aciona o input de arquivo
   selectButton.addEventListener('click', () => {
     fileInput.click();
   });
-  
+
   // Quando um arquivo é selecionado
-  fileInput.addEventListener('change', function() {
+  fileInput.addEventListener('change', function () {
     const file = this.files[0];
-    
+
     // Verificações básicas
     if (!file) return;
-    
+
     // Verificar tipo do arquivo
     if (!file.type.startsWith('image/')) {
       showError('avatar-error', this, 'Por favor, selecione um arquivo de imagem válido.');
       this.value = '';
       return;
     }
-    
+
     // Verificar tamanho do arquivo (5MB máximo)
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
@@ -438,24 +438,24 @@ function setupAvatarUpload() {
       this.value = '';
       return;
     }
-    
+
     // Limpar qualquer erro
     clearError('avatar-error', this);
-    
+
     // Exibir a prévia da imagem
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       // Remover o ícone padrão
       while (previewDiv.firstChild) {
         previewDiv.removeChild(previewDiv.firstChild);
       }
-      
+
       // Criar e adicionar a prévia da imagem
       const img = document.createElement('img');
       img.src = e.target.result;
       previewDiv.appendChild(img);
     };
-    
+
     reader.readAsDataURL(file);
   });
 }

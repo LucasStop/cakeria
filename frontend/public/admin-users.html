@@ -1,22 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Administração de Usuários | Cakeria</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
     <link rel="stylesheet" href="./components/components.css" />
-    <link rel="manifest" href="assets/site.webmanifest">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="assets/site.webmanifest" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet" />
-    <!-- CSS -->    <link rel="stylesheet" href="css/admin-users.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/admin-users.css" />
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/index.css" />
     <link rel="stylesheet" href="./css/user-edit.css" />
@@ -25,171 +30,180 @@
     <link rel="stylesheet" href="./components/dashboards/css/styles.css" />
 
     <script src="/components/Footer.js"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <header-component variant="admin"></header-component>
     <main class="container">
-        <div class="title-container">
-            <h1 class="page-title">Gerenciamento de Usuários</h1>
+      <div class="title-container">
+        <h1 class="page-title">Gerenciamento de Usuários</h1>
+      </div>
+
+      <div class="admin-dashboard">
+        <div class="admin-card wide-card">
+          <div class="search-filter">
+            <input type="text" id="searchUser" placeholder="Buscar por nome ou email..." />
+            <select id="filterType">
+              <option value="">Todos os tipos</option>
+              <option value="client">Clientes</option>
+              <option value="admin">Administradores</option>
+            </select>
+            <a href="admin-new-user.html" class="btn btn-primary"
+              ><i class="fas fa-plus"></i> Novo</a
+            >
+          </div>
+
+          <div class="table-responsive">
+            <table id="usersTable" class="admin-table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Email</th>
+                  <th>Tipo</th>
+                  <th>Telefone</th>
+                  <th>Último Login</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div id="pagination" class="pagination"></div>
         </div>
-        
-        <div class="admin-dashboard">
-            <div class="admin-card wide-card">
-                
-                <div class="search-filter">
-                    <input type="text" id="searchUser" placeholder="Buscar por nome ou email...">
-                    <select id="filterType">
-                        <option value="">Todos os tipos</option>
-                        <option value="client">Clientes</option>
-                        <option value="admin">Administradores</option>
-                    </select>
-                    <a href="admin-new-user.html" class="btn btn-primary"><i class="fas fa-plus"></i> Novo</a>
-                </div>
+      </div>
 
-                <div class="table-responsive">
-                    <table id="usersTable" class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Email</th>
-                                <th>Tipo</th>
-                                <th>Telefone</th>
-                                <th>Último Login</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
+      <div id="editUserModal" class="modal">
+        <div class="modal-content">
+          <span class="close-modal">&times;</span>
+          <h2>Editar Usuário</h2>
+          <form id="editUserForm" class="admin-form">
+            <input type="hidden" id="editUserId" />
 
-                <div id="pagination" class="pagination">
+            <!-- Nome e Email -->
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="editName">Nome Completo*</label>
+                  <input type="text" id="editName" name="editName" required />
+                  <span class="error-message" id="edit-name-error"></span>
                 </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="editEmail">E-mail*</label>
+                  <input type="email" id="editEmail" name="editEmail" required />
+                  <span class="error-message" id="edit-email-error"></span>
+                </div>
+              </div>
             </div>
+
+            <!-- CPF e Telefone -->
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="editCpf">CPF</label>
+                  <input type="text" id="editCpf" name="editCpf" placeholder="000.000.000-00" />
+                  <span class="error-message" id="edit-cpf-error"></span>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="editPhone">Telefone</label>
+                  <input
+                    type="text"
+                    id="editPhone"
+                    name="editPhone"
+                    placeholder="(00) 00000-0000"
+                  />
+                  <span class="error-message" id="edit-phone-error"></span>
+                </div>
+              </div>
+            </div>
+            <!-- Senha Atual -->
+            <div class="form-group">
+              <label for="editCurrentPassword">Senha Atual (necessária para alterar a senha)</label>
+              <input type="password" id="editCurrentPassword" name="editCurrentPassword" />
+              <button type="button" class="password-toggle" id="editCurrentPasswordToggle">
+                <i class="fas fa-eye"></i>
+              </button>
+              <span class="error-message" id="edit-current-password-error"></span>
+            </div>
+
+            <!-- Nova Senha -->
+            <div class="form-group">
+              <label for="editPassword">Nova Senha (deixe em branco para manter a atual)</label>
+              <input type="password" id="editPassword" name="editPassword" minlength="6" />
+              <button type="button" class="password-toggle" id="editPasswordToggle">
+                <i class="fas fa-eye"></i>
+              </button>
+              <span class="error-message" id="edit-password-error"></span>
+            </div>
+
+            <!-- Tipo de usuário -->
+            <div class="form-group">
+              <label for="editType">Tipo de Usuário*</label>
+              <select id="editType" name="editType" required>
+                <option value="client">Cliente</option>
+                <option value="admin">Administrador</option>
+              </select>
+              <span class="error-message" id="edit-type-error"></span>
+            </div>
+
+            <!-- Foto de perfil -->
+            <div class="form-group">
+              <label for="editAvatar">Foto de Perfil (opcional)</label>
+              <div class="avatar-upload-container">
+                <div class="avatar-preview">
+                  <div class="avatar-preview-img" id="editAvatarPreview">
+                    <i class="fas fa-user default-avatar-icon"></i>
+                  </div>
+                </div>
+                <div class="avatar-input">
+                  <input type="file" id="editAvatar" name="editAvatar" accept="image/*" />
+                  <button type="button" id="editSelectAvatarBtn" class="btn-select-avatar">
+                    Alterar Imagem
+                  </button>
+                  <span class="avatar-help-text">Tamanho máximo: 5MB. Formatos: JPG, PNG</span>
+                  <span class="error-message" id="edit-avatar-error"></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn-primary">
+                <i class="fas fa-save"></i> Salvar Alterações
+              </button>
+              <button type="button" class="btn-secondary close-modal">Cancelar</button>
+            </div>
+          </form>
         </div>
-
-        <div id="editUserModal" class="modal">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h2>Editar Usuário</h2>
-                <form id="editUserForm" class="admin-form">
-                    <input type="hidden" id="editUserId">
-
-                    <!-- Nome e Email -->
-                    <div class="form-row">
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="editName">Nome Completo*</label>
-                                <input type="text" id="editName" name="editName" required>
-                                <span class="error-message" id="edit-name-error"></span>
-                            </div>
-                        </div>
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="editEmail">E-mail*</label>
-                                <input type="email" id="editEmail" name="editEmail" required>
-                                <span class="error-message" id="edit-email-error"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CPF e Telefone -->
-                    <div class="form-row">
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="editCpf">CPF</label>
-                                <input type="text" id="editCpf" name="editCpf" placeholder="000.000.000-00">
-                                <span class="error-message" id="edit-cpf-error"></span>
-                            </div>
-                        </div>
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="editPhone">Telefone</label>
-                                <input type="text" id="editPhone" name="editPhone" placeholder="(00) 00000-0000">
-                                <span class="error-message" id="edit-phone-error"></span>
-                            </div>
-                        </div>
-                    </div>                    <!-- Senha Atual -->
-                    <div class="form-group">
-                        <label for="editCurrentPassword">Senha Atual (necessária para alterar a senha)</label>
-                        <input type="password" id="editCurrentPassword" name="editCurrentPassword">
-                        <button type="button" class="password-toggle" id="editCurrentPasswordToggle">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <span class="error-message" id="edit-current-password-error"></span>
-                    </div>
-
-                    <!-- Nova Senha -->
-                    <div class="form-group">
-                        <label for="editPassword">Nova Senha (deixe em branco para manter a atual)</label>
-                        <input type="password" id="editPassword" name="editPassword" minlength="6">
-                        <button type="button" class="password-toggle" id="editPasswordToggle">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <span class="error-message" id="edit-password-error"></span>
-                    </div>
-
-                    <!-- Tipo de usuário -->
-                    <div class="form-group">
-                        <label for="editType">Tipo de Usuário*</label>
-                        <select id="editType" name="editType" required>
-                            <option value="client">Cliente</option>
-                            <option value="admin">Administrador</option>
-                        </select>
-                        <span class="error-message" id="edit-type-error"></span>
-                    </div>
-
-                    <!-- Foto de perfil -->
-                    <div class="form-group">
-                        <label for="editAvatar">Foto de Perfil (opcional)</label>
-                        <div class="avatar-upload-container">
-                            <div class="avatar-preview">
-                                <div class="avatar-preview-img" id="editAvatarPreview">
-                                    <i class="fas fa-user default-avatar-icon"></i>
-                                </div>
-                            </div>
-                            <div class="avatar-input">
-                                <input type="file" id="editAvatar" name="editAvatar" accept="image/*">
-                                <button type="button" id="editSelectAvatarBtn" class="btn-select-avatar">
-                                    Alterar Imagem
-                                </button>
-                                <span class="avatar-help-text">Tamanho máximo: 5MB. Formatos: JPG, PNG</span>
-                                <span class="error-message" id="edit-avatar-error"></span>
-                            </div>
-                        </div>
-                    </div>                    <div class="form-actions">
-                        <button type="submit" class="btn-primary">
-                            <i class="fas fa-save"></i> Salvar Alterações
-                        </button>
-                        <button type="button" class="btn-secondary close-modal">Cancelar</button>
-                    </div>
-                </form>
-            </div>
-        </div>        <div id="deleteConfirmModal" class="modal">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h2>Confirmar Exclusão</h2>
-                <div class="warning-message">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <p>Você está prestes a excluir o usuário <strong><span id="deleteUserName"></span></strong>.</p>
-                    <p>Esta operação <strong>NÃO</strong> pode ser desfeita!</p>
-                </div>
-                <input type="hidden" id="deleteUserId">
-                <div class="form-actions">
-                    <button id="confirmDelete" class="btn-danger">
-                        <i class="fas fa-trash"></i> Excluir Permanentemente
-                    </button>
-                    <button class="btn-secondary close-modal">Cancelar</button>
-                </div>
-            </div>
+      </div>
+      <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content">
+          <span class="close-modal">&times;</span>
+          <h2>Confirmar Exclusão</h2>
+          <div class="warning-message">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>
+              Você está prestes a excluir o usuário
+              <strong><span id="deleteUserName"></span></strong>.
+            </p>
+            <p>Esta operação <strong>NÃO</strong> pode ser desfeita!</p>
+          </div>
+          <input type="hidden" id="deleteUserId" />
+          <div class="form-actions">
+            <button id="confirmDelete" class="btn-danger">
+              <i class="fas fa-trash"></i> Excluir Permanentemente
+            </button>
+            <button class="btn-secondary close-modal">Cancelar</button>
+          </div>
         </div>
+      </div>
     </main>
 
-    <div id="footer-container"></div>    <script src="components/Header.js"></script>
+    <div id="footer-container"></div>
+    <script src="components/Header.js"></script>
     <script src="components/Footer.js"></script>
     <script src="js/admin-users.js"></script>
-    
-</body>
-
+  </body>
 </html>

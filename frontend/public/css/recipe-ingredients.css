@@ -54,7 +54,7 @@
   .recipe-ingredients {
     grid-template-columns: 1fr;
   }
-  
+
   .recipe-ingredients li {
     padding: 16px 18px;
   }

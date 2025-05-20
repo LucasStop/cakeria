@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   try {
     // Inicializar validação de formulário
     initFormValidation();
-    
+
     // Carregar categorias primeiro
     await loadCategories();
 
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Configurar prévia da imagem
     setupImagePreview();
   } catch (error) {
-    console.error("Erro na inicialização da página:", error);
+    console.error('Erro na inicialização da página:', error);
     Notifications.error(
       'Ocorreu um erro ao inicializar da página. Tente novamente.',
       'Erro de inicialização'
@@ -51,8 +51,6 @@ function checkAuthStatus() {
       window.location.href = '/login.html?redirect=/compartilhar-receita.html';
     }, 2000);
   }
-
-
 }
 
 // Verificar se estamos no modo de edição
@@ -61,9 +59,9 @@ async function checkEditMode() {
     // Verificar se há ID de receita na URL (modo de edição)
     const urlParams = new URLSearchParams(window.location.search);
     const recipeId = urlParams.get('id');
-    
+
     console.log('Verificando modo de edição, ID da receita:', recipeId);
-    
+
     if (!recipeId) {
       // Modo de criação de nova receita
       console.log('Modo: criação de nova receita');
@@ -71,15 +69,15 @@ async function checkEditMode() {
       document.getElementById('submit-btn').textContent = 'Compartilhar Receita';
       return;
     }
-    
+
     // Modo de edição - carregar dados da receita
     console.log('Modo: edição de receita existente, ID:', recipeId);
     document.querySelector('.page-title').textContent = 'Editar Receita';
     document.getElementById('submit-btn').textContent = 'Salvar Alterações';
-    
+
     // Adicionar classe para sinalizar que estamos no modo de edição
     document.body.classList.add('edit-mode');
-    
+
     // Adicionar aviso visível sobre o modo de edição
     const pageHeader = document.querySelector('.page-header');
     if (pageHeader) {
@@ -92,33 +90,33 @@ async function checkEditMode() {
       `;
       pageHeader.appendChild(editModeAlert);
     }
-    
+
     // Adicionar ID como atributo de dados ao formulário
     const form = document.getElementById('recipe-form');
     if (!form) {
       console.error('Formulário não encontrado');
       throw new Error('Elemento de formulário não encontrado');
     }
-    
+
     form.dataset.recipeId = recipeId;
-    
+
     // Garantir que as categorias estão carregadas antes de continuar
     await ensureCategoriesLoaded();
-    
+
     // Buscar token de autenticação
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('Token de autenticação não encontrado');
       throw new Error('Você precisa estar autenticado para editar receitas');
     }
-    
+
     console.log(`Buscando dados da receita ${recipeId} na API...`);
-    
+
     try {
       // Usar o método API.get em vez de fetch diretamente
       const recipe = await API.get(`/recipe/${recipeId}`);
       console.log('Dados da receita carregados com sucesso:', recipe);
-      
+
       // Verificar permissões
       if (!canEditRecipe(recipe)) {
         console.error('Usuário não tem permissão para editar esta receita');
@@ -128,60 +126,57 @@ async function checkEditMode() {
         }, 2000);
         return;
       }
-      
+
       // Preencher o formulário com os dados da receita
       fillFormWithRecipeData(recipe);
-      
     } catch (apiError) {
       console.error('Erro na chamada à API:', apiError);
-      
+
       // Tentar alternativa com fetch direta como fallback
       console.log('Tentando método alternativo para buscar a receita...');
-      
+
       try {
         const response = await fetch(`${API.BASE_URL}/recipe/${recipeId}`, {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
-        
+
         if (!response.ok) {
           throw new Error(`Erro HTTP: ${response.status}`);
         }
-        
+
         const recipe = await response.json();
         console.log('Dados obtidos pelo método alternativo:', recipe);
-        
+
         // Verificar permissões
         if (!canEditRecipe(recipe)) {
           throw new Error('Sem permissão para editar esta receita');
         }
-        
+
         // Preencher formulário
         fillFormWithRecipeData(recipe);
-        
       } catch (fetchError) {
         console.error('Também falhou o método alternativo:', fetchError);
         throw new Error(`Falha ao carregar dados da receita: ${apiError.message}`);
       }
     }
-    
   } catch (error) {
     console.error('Erro ao verificar modo de edição:', error);
-    
+
     // Exibir mensagem de erro mais informativa
     Notifications.error(
       `Erro ao carregar dados para edição: ${error.message}. Por favor, tente novamente ou contate o suporte.`,
       'Erro no carregamento'
     );
-    
+
     // Verificar se existe o elemento de erro para formulário e mostrar detalhes
     const formError = document.getElementById('form-error');
     if (formError) {
       formError.textContent = `Detalhes: ${error.message}`;
       formError.classList.add('active');
     }
-    
+
     // Adicionar botão para tentar novamente
     const formActions = document.querySelector('.form-actions');
     if (formActions) {
@@ -189,16 +184,16 @@ async function checkEditMode() {
         <a href="/receitas.html" class="btn btn-outline">Voltar para Receitas</a>
         <button type="button" id="retry-btn" class="btn btn-primary">Tentar Novamente</button>
       `;
-      
+
       // Adicionar event listener para o botão de retry
       const retryBtn = document.getElementById('retry-btn');
       if (retryBtn) {
-        retryBtn.addEventListener('click', function() {
+        retryBtn.addEventListener('click', function () {
           window.location.reload();
         });
       }
     }
-    
+
     // Lidar com problemas específicos de categorias
     handleCategoryLoadingError();
   }
@@ -207,24 +202,24 @@ async function checkEditMode() {
 // Preencher formulário com dados da receita
 function fillFormWithRecipeData(recipe) {
   console.log('Preenchendo formulário com dados:', recipe);
-  
+
   // Preencher campos básicos com verificação e fallbacks
   document.getElementById('recipe-title').value = recipe.title || '';
-  
+
   // Outros preenchimentos de campos...
-  
+
   // Vamos inserir uma mensagem mais visível no formulário para indicar o modo de edição
   const formHeader = document.querySelector('.page-subtitle');
   if (formHeader && recipe.id) {
     formHeader.innerHTML = `Você está editando a receita <strong>"${recipe.title}"</strong>. Modifique o que for necessário e salve as alterações.`;
     formHeader.style.color = '#28a745';
   }
-  
+
   // Verificar categoria e selecionar se disponível
   const categorySelect = document.getElementById('recipe-category');
   if (categorySelect) {
     let categoryId = recipe.categoryId;
-    
+
     // Diferentes formatos possíveis para o ID da categoria
     if (categoryId === undefined) {
       if (recipe.category_id !== undefined) {
@@ -233,22 +228,25 @@ function fillFormWithRecipeData(recipe) {
         categoryId = recipe.category.id;
       }
     }
-    
+
     if (categoryId !== undefined && categoryId !== null) {
       console.log('Tentando selecionar categoria ID:', categoryId);
-      
+
       // Converter para string para garantir compatibilidade
       const categoryIdStr = String(categoryId);
-      
+
       // Listar opções disponíveis para debug
       const options = Array.from(categorySelect.options);
-      console.log('Opções de categoria disponíveis:', options.map(o => ({ value: o.value, text: o.textContent })));
-      
+      console.log(
+        'Opções de categoria disponíveis:',
+        options.map(o => ({ value: o.value, text: o.textContent }))
+      );
+
       // Tentar várias abordagens para selecionar a categoria
       try {
         // Abordagem 1: Atribuição direta
         categorySelect.value = categoryIdStr;
-        
+
         // Verificar se funcionou
         if (categorySelect.value !== categoryIdStr) {
           // Abordagem 2: Buscar element e selecionar
@@ -259,11 +257,11 @@ function fillFormWithRecipeData(recipe) {
             throw new Error('Opção não encontrada');
           }
         }
-        
+
         console.log('Categoria selecionada:', categorySelect.value);
       } catch (e) {
         console.warn('Falha ao selecionar categoria:', e);
-        
+
         // Adicionar a categoria faltante como opção temporária
         if (recipe.category && recipe.category.name) {
           const tempOption = document.createElement('option');
@@ -280,7 +278,7 @@ function fillFormWithRecipeData(recipe) {
   } else {
     console.error('Elemento select de categoria não encontrado');
   }
-  
+
   // Preencher outros campos com validação
   const difficultySelect = document.getElementById('recipe-difficulty');
   if (difficultySelect) {
@@ -293,34 +291,33 @@ function fillFormWithRecipeData(recipe) {
     } else if (!difficulty || difficulty === 'médio' || difficulty === 'medium') {
       difficulty = 'medio';
     }
-    
+
     // Verificar se o valor existe nas opções
     const options = Array.from(difficultySelect.options);
     const hasValue = options.some(o => o.value === difficulty);
-    
+
     difficultySelect.value = hasValue ? difficulty : 'medio';
   }
-  
+
   // Outros campos com validação e conversão de tipo
   document.getElementById('recipe-prep-time').value = recipe.prepTime || recipe.prep_time || '';
   document.getElementById('recipe-cook-time').value = recipe.cookTime || recipe.cook_time || '';
   document.getElementById('recipe-servings').value = recipe.servings || '';
   document.getElementById('recipe-description').value = recipe.description || '';
-  
+
   // Log para depuração de renderização dos ingredientes
   console.log('Ingredientes da receita:', recipe.ingredients);
-  
+
   // Preencher ingredientes
   const ingredientsContainer = document.getElementById('ingredients-container');
   ingredientsContainer.innerHTML = ''; // Limpar container
-  
+
   // Se os ingredientes estiverem em formato de string, dividir por quebras de linha
-  const ingredients = typeof recipe.ingredients === 'string' 
-    ? recipe.ingredients.split('\n') 
-    : recipe.ingredients;
-  
+  const ingredients =
+    typeof recipe.ingredients === 'string' ? recipe.ingredients.split('\n') : recipe.ingredients;
+
   console.log('Ingredientes processados:', ingredients);
-    
+
   if (ingredients && ingredients.length > 0) {
     ingredients.forEach(ingredient => {
       if (ingredient && ingredient.trim()) {
@@ -331,9 +328,9 @@ function fillFormWithRecipeData(recipe) {
           <button type="button" class="remove-btn"><i class="fas fa-times"></i></button>
         `;
         ingredientsContainer.appendChild(ingredientItem);
-        
+
         // Adicionar evento de remoção
-        ingredientItem.querySelector('.remove-btn').addEventListener('click', function() {
+        ingredientItem.querySelector('.remove-btn').addEventListener('click', function () {
           ingredientsContainer.removeChild(ingredientItem);
         });
       }
@@ -347,27 +344,26 @@ function fillFormWithRecipeData(recipe) {
       <button type="button" class="remove-btn"><i class="fas fa-times"></i></button>
     `;
     ingredientsContainer.appendChild(ingredientItem);
-    
+
     // Adicionar evento de remoção
-    ingredientItem.querySelector('.remove-btn').addEventListener('click', function() {
+    ingredientItem.querySelector('.remove-btn').addEventListener('click', function () {
       ingredientsContainer.removeChild(ingredientItem);
     });
   }
-  
+
   // Log para depuração de renderização das instruções
   console.log('Instruções da receita:', recipe.instructions);
-  
+
   // Preencher passos de preparo
   const stepsContainer = document.getElementById('steps-container');
   stepsContainer.innerHTML = ''; // Limpar container
-  
+
   // Se as instruções estiverem em formato de string, dividir por quebras de linha
-  const instructions = typeof recipe.instructions === 'string' 
-    ? recipe.instructions.split('\n') 
-    : recipe.instructions;
-  
+  const instructions =
+    typeof recipe.instructions === 'string' ? recipe.instructions.split('\n') : recipe.instructions;
+
   console.log('Instruções processadas:', instructions);
-    
+
   if (instructions && instructions.length > 0) {
     instructions.forEach((step, index) => {
       if (step && step.trim()) {
@@ -379,9 +375,9 @@ function fillFormWithRecipeData(recipe) {
           <button type="button" class="remove-btn"><i class="fas fa-times"></i></button>
         `;
         stepsContainer.appendChild(stepItem);
-        
+
         // Adicionar evento de remoção
-        stepItem.querySelector('.remove-btn').addEventListener('click', function() {
+        stepItem.querySelector('.remove-btn').addEventListener('click', function () {
           stepsContainer.removeChild(stepItem);
           updateStepNumbers();
         });
@@ -397,28 +393,28 @@ function fillFormWithRecipeData(recipe) {
       <button type="button" class="remove-btn"><i class="fas fa-times"></i></button>
     `;
     stepsContainer.appendChild(stepItem);
-    
+
     // Adicionar evento de remoção
-    stepItem.querySelector('.remove-btn').addEventListener('click', function() {
+    stepItem.querySelector('.remove-btn').addEventListener('click', function () {
       stepsContainer.removeChild(stepItem);
       updateStepNumbers();
     });
   }
-  
+
   // Se a receita tem imagem, mostrar imagem atual
   if (recipe.imageUrl || recipe.image_url) {
     const imageUrl = recipe.imageUrl || recipe.image_url;
     console.log('Exibindo imagem da receita:', imageUrl);
-    
+
     const imagePreview = document.getElementById('image-preview');
     imagePreview.src = imageUrl;
     imagePreview.style.display = 'block';
-    
+
     const fileNameEl = document.getElementById('file-name');
     if (fileNameEl) {
       fileNameEl.textContent = 'Imagem atual';
     }
-    
+
     // Como já existe uma imagem, tornar o campo de imagem opcional
     const imageInput = document.getElementById('recipe-image');
     if (imageInput) {
@@ -426,7 +422,7 @@ function fillFormWithRecipeData(recipe) {
       imageInput.required = false;
       imageInput.removeAttribute('required');
       console.log('Removido atributo required do campo de imagem em fillFormWithRecipeData');
-      
+
       // Mudar o texto do campo para indicar que é opcional
       const requirementSpan = document.getElementById('image-requirement');
       if (requirementSpan) {
@@ -437,14 +433,14 @@ function fillFormWithRecipeData(recipe) {
       if (imageHelper) {
         imageHelper.style.display = 'block';
       }
-      
-      // Exibir o status da imagem 
+
+      // Exibir o status da imagem
       const imageStatus = document.getElementById('image-status');
       if (imageStatus) {
         imageStatus.style.display = 'block';
       }
     }
-    
+
     // Armazenar a URL da imagem atual como atributo de dados do formulário
     const form = document.getElementById('recipe-form');
     if (form) {
@@ -458,7 +454,7 @@ async function loadCategories() {
   try {
     console.log('Iniciando carregamento de categorias');
     const categorySelect = document.getElementById('recipe-category');
-    
+
     if (!categorySelect) {
       console.error('Elemento select de categorias não encontrado');
       return;
@@ -480,8 +476,8 @@ async function loadCategories() {
     if (!Array.isArray(categories) || categories.length === 0) {
       console.warn('Nenhuma categoria retornada da API');
       const option = document.createElement('option');
-      option.value = "";
-      option.textContent = "Sem categorias disponíveis";
+      option.value = '';
+      option.textContent = 'Sem categorias disponíveis';
       option.disabled = true;
       categorySelect.appendChild(option);
       return;
@@ -494,7 +490,7 @@ async function loadCategories() {
       option.textContent = category.name;
       categorySelect.appendChild(option);
     });
-    
+
     console.log(`${categories.length} categorias carregadas com sucesso`);
   } catch (error) {
     console.error('Erro ao carregar categorias:', error);
@@ -536,25 +532,23 @@ function setupEventListeners() {
         `;
     container.appendChild(newStep);
 
-
     newStep.querySelector('.remove-btn').addEventListener('click', function () {
       container.removeChild(newStep);
- 
+
       updateStepNumbers();
     });
   });
 
-
   document.getElementById('cancel-btn').addEventListener('click', function () {
     Notifications.confirm(
       'Tem certeza que deseja cancelar? Todas as informações preenchidas serão perdidas.',
-    
+
       function () {
         window.location.href = '/receitas.html';
       },
-    
+
       null,
- 
+
       {
         title: 'Cancelar edição',
         confirmText: 'Sim, cancelar',
@@ -564,25 +558,24 @@ function setupEventListeners() {
   });
 
   // Submissão do formulário
-  document.getElementById('recipe-form').addEventListener('submit', function(e) {
+  document.getElementById('recipe-form').addEventListener('submit', function (e) {
     console.log('Formulário enviado');
     e.preventDefault();
-    
+
     // Validar o formulário antes de processar
     if (!validateForm()) {
       console.error('Validação falhou');
       return;
     }
-    
+
     // Adicionar classe para mostrar o spinner de carregamento
     const submitBtn = document.getElementById('submit-btn');
     submitBtn.classList.add('loading');
     submitBtn.disabled = true;
-    
+
     // Processar e enviar o formulário
     handleFormSubmit(e);
   });
-
 
   document.querySelectorAll('.remove-btn').forEach(btn => {
     btn.addEventListener('click', function () {
@@ -600,12 +593,12 @@ function setupEventListeners() {
 // Validar formulário antes do envio
 function validateForm() {
   let isValid = true;
-  
+
   // Verificar se estamos em modo de edição
   const form = document.getElementById('recipe-form');
   const isEditMode = !!form.dataset.recipeId;
   const hasCurrentImage = !!form.dataset.currentImageUrl;
-  
+
   // Lista de campos obrigatórios (exceto a imagem que tem regra especial)
   const requiredFields = [
     { id: 'recipe-title', name: 'Título' },
@@ -614,9 +607,9 @@ function validateForm() {
     { id: 'recipe-prep-time', name: 'Tempo de preparo' },
     { id: 'recipe-cook-time', name: 'Tempo de cozimento' },
     { id: 'recipe-servings', name: 'Rendimento' },
-    { id: 'recipe-description', name: 'Descrição' }
+    { id: 'recipe-description', name: 'Descrição' },
   ];
-  
+
   // Verificar todos os campos obrigatórios
   requiredFields.forEach(field => {
     const element = document.getElementById(field.id);
@@ -625,25 +618,25 @@ function validateForm() {
       isValid = false;
     }
   });
-  
+
   // Verificar ingredientes
   const ingredients = document.querySelectorAll('input[name="ingredients[]"]');
   if (ingredients.length === 0 || !Array.from(ingredients).some(i => i.value.trim())) {
     showError('ingredients-error', 'Adicione pelo menos um ingrediente.');
     isValid = false;
   }
-  
+
   // Verificar passos
   const steps = document.querySelectorAll('textarea[name="steps[]"]');
   if (steps.length === 0 || !Array.from(steps).some(s => s.value.trim())) {
     showError('steps-error', 'Adicione pelo menos um passo no modo de preparo.');
     isValid = false;
   }
-  
+
   // Verificar o campo de imagem
   const imageInput = document.getElementById('recipe-image');
   const hasNewImage = imageInput && imageInput.files && imageInput.files.length > 0;
-  
+
   // Se estamos editando e temos uma imagem atual, o campo é opcional
   if (isEditMode && hasCurrentImage && !hasNewImage) {
     console.log('Validação: imagem atual será mantida, campo de imagem é opcional');
@@ -654,7 +647,7 @@ function validateForm() {
     console.log('Validação: sem imagem selecionada em modo de criação. Validação falha.');
     isValid = false;
   }
-  
+
   // Se o formulário não é válido, exibir mensagem geral
   if (!isValid) {
     showError('form-error', 'Por favor, corrija os erros no formulário antes de prosseguir.');
@@ -665,7 +658,7 @@ function validateForm() {
       submitBtn.disabled = false;
     }
   }
-  
+
   return isValid;
 }
 
@@ -720,18 +713,23 @@ async function handleFormSubmit(e) {
     // Verificar se estamos em modo de edição ou criação
     const recipeId = form.dataset.recipeId;
     const isEditMode = !!recipeId;
-    
+
     // Armazenar a URL da imagem atual ao editar
     const currentImageUrl = form.dataset.currentImageUrl || null;
-    
-    console.log('Formulário submetido. Modo de edição:', isEditMode ? 'Sim' : 'Não', 'ID:', recipeId);
+
+    console.log(
+      'Formulário submetido. Modo de edição:',
+      isEditMode ? 'Sim' : 'Não',
+      'ID:',
+      recipeId
+    );
     console.log('URL da imagem atual:', currentImageUrl);
 
     // Coletar múltiplos ingredientes e passos corretamente
     const ingredients = Array.from(document.querySelectorAll('input[name="ingredients[]"]'))
       .map(input => input.value.trim())
       .filter(value => value); // Remover valores vazios
-    
+
     const steps = Array.from(document.querySelectorAll('textarea[name="steps[]"]'))
       .map(textarea => textarea.value.trim())
       .filter(value => value); // Remover valores vazios
@@ -750,7 +748,12 @@ async function handleFormSubmit(e) {
 
     // Adicionar tags como array
     const tagsString = formData.get('tags');
-    const tags = tagsString ? tagsString.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+    const tags = tagsString
+      ? tagsString
+          .split(',')
+          .map(tag => tag.trim())
+          .filter(tag => tag)
+      : [];
     formData.delete('tags');
 
     // Obter o token de autenticação
@@ -768,7 +771,7 @@ async function handleFormSubmit(e) {
     // Verificar se há uma nova imagem selecionada
     const imageInput = document.getElementById('recipe-image');
     const hasNewImage = imageInput && imageInput.files && imageInput.files.length > 0;
-    
+
     // Construir objeto de dados para a API
     const recipeData = {
       title: formData.get('title'),
@@ -780,9 +783,9 @@ async function handleFormSubmit(e) {
       description: formData.get('description'),
       ingredients: ingredients.join('\n'),
       instructions: steps.join('\n'),
-      userId: user.id
+      userId: user.id,
     };
-    
+
     // Se estamos em modo de edição e temos uma URL de imagem atual mas nenhuma nova imagem foi selecionada
     if (isEditMode && currentImageUrl && !hasNewImage) {
       // Manter a URL da imagem atual
@@ -791,13 +794,13 @@ async function handleFormSubmit(e) {
     }
 
     console.log('Dados da receita a serem enviados:', recipeData);
-    
+
     // Configurar URL e método baseado no modo (edição ou criação)
     let url = `${API.BASE_URL}/recipe`;
     let method = 'POST';
     let successMessage = 'Sua receita foi compartilhada com sucesso!';
     let successTitle = 'Receita salva';
-    
+
     if (isEditMode) {
       url = `${API.BASE_URL}/recipe/${recipeId}`;
       method = 'PUT';
@@ -880,7 +883,7 @@ async function handleFormSubmit(e) {
       error.message || 'Verifique os dados e tente novamente.',
       'Erro ao compartilhar receita'
     );
-    
+
     // Reativar o botão
     const submitBtn = document.getElementById('submit-btn');
     if (submitBtn) {

@@ -79,24 +79,24 @@
   transform: translateY(0);
 }
 
-.whatsapp { 
-  background-color: #25D366;
+.whatsapp {
+  background-color: #25d366;
 }
 
-.facebook { 
-  background-color: #1877F2;
+.facebook {
+  background-color: #1877f2;
 }
 
-.twitter { 
-  background-color: #1DA1F2;
+.twitter {
+  background-color: #1da1f2;
 }
 
-.email { 
-  background-color: #FF5722;
+.email {
+  background-color: #ff5722;
 }
 
-.copy-link { 
-  background-color: #607D8B; 
+.copy-link {
+  background-color: #607d8b;
 }
 
 .share-button i {
@@ -128,7 +128,7 @@
   .share-buttons {
     grid-template-columns: 1fr;
   }
-  
+
   .share-menu-content {
     padding: 20px;
   }

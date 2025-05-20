@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     logoutBtn.addEventListener('click', logout);
     console.log('Evento de logout registrado no botão principal');
   }
-  
+
   // Botões de logout no dropdown do header
   const logoutBtns = document.querySelectorAll('.logout-btn');
   logoutBtns.forEach(btn => {
