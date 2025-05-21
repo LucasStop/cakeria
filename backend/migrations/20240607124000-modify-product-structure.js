@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.renameColumn('product', 'image_url', 'image');
 
     await queryInterface.changeColumn('product', 'image', {
-      type: Sequelize.BLOB('medium'), 
+      type: Sequelize.BLOB('medium'),
       allowNull: true,
       comment: 'Imagem do produto em formato binário',
     });
@@ -38,9 +38,9 @@ module.exports = {
     for (const product of products) {
       const slug = product.name
         .toLowerCase()
-        .replace(/[^\w\s-]/g, '') 
-        .replace(/\s+/g, '-')  
-        .replace(/--+/g, '-') 
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/--+/g, '-')
         .trim();
 
       await queryInterface.sequelize.query(

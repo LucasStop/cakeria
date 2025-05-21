@@ -21,14 +21,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         unique: true,
         validate: {
-          is: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,  
+          is: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
         },
       },
       password: {
         type: DataTypes.STRING(256),
         allowNull: false,
         validate: {
-          len: [6, 256], 
+          len: [6, 256],
         },
       },
       type: {
@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(20),
         allowNull: true,
         validate: {
-          is: /^\(\d{2}\) \d{4,5}-\d{4}$/, 
+          is: /^\(\d{2}\) \d{4,5}-\d{4}$/,
         },
       },
       last_login: {

@@ -65,7 +65,7 @@ const Navigation = {
     const path = window.location.pathname;
 
     if (path === '/' || path === '/index.html') {
-      return; 
+      return;
     }
 
     if (path.startsWith('/produtos/') && path.length > 10) {

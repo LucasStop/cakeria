@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function () {
   if (!document.getElementById('product-modal-overlay')) {
     createModalStructure();
@@ -67,7 +66,7 @@ window.verDetalhesProduto = async function (productId) {
 function openProductModal() {
   const modalOverlay = document.getElementById('product-modal-overlay');
   modalOverlay.classList.add('active');
-  document.body.style.overflow = 'hidden'; 
+  document.body.style.overflow = 'hidden';
 
   const modalContent = document.getElementById('product-modal-content');
   modalContent.innerHTML = `
@@ -81,7 +80,7 @@ function openProductModal() {
 function closeProductModal() {
   const modalOverlay = document.getElementById('product-modal-overlay');
   modalOverlay.classList.remove('active');
-  document.body.style.overflow = ''; 
+  document.body.style.overflow = '';
 }
 
 async function loadProductDetails(productId) {
@@ -340,7 +339,7 @@ function setupAddToCartButton(produto) {
     const quantity = parseInt(document.getElementById('product-quantity').value);
 
     addToCart(produto, quantity);
-al
+    al;
     closeProductModal();
 
     showCartConfirmation(produto, quantity);

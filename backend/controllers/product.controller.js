@@ -67,9 +67,9 @@ exports.create = async (req, res) => {
     try {
       const slug = name
         .toLowerCase()
-        .replace(/[^\w\s-]/g, '') 
-        .replace(/\s+/g, '-') 
-        .replace(/--+/g, '-') 
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/--+/g, '-')
         .trim();
 
       const productData = {
@@ -271,7 +271,7 @@ exports.getImage = async (req, res) => {
       return res.status(404).send('Imagem não encontrada');
     }
 
-    res.set('Content-Type', 'image/jpeg'); 
+    res.set('Content-Type', 'image/jpeg');
     return res.send(product.image);
   } catch (error) {
     res.status(500).json({
@@ -287,8 +287,8 @@ function formatPriceForDatabase(price) {
   try {
     const cleanedPrice = price
       .toString()
-      .replace(/[^\d.,]/g, '') 
-      .replace(',', '.'); 
+      .replace(/[^\d.,]/g, '')
+      .replace(',', '.');
 
     const numericPrice = parseFloat(cleanedPrice);
 
@@ -297,7 +297,8 @@ function formatPriceForDatabase(price) {
     return parseFloat(numericPrice.toFixed(2));
   } catch (error) {
     console.error('Erro ao formatar preço:', error);
-    return 0; }
+    return 0;
+  }
 }
 
 function formatDateForDatabase(date) {

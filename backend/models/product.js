@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       image: {
-        type: DataTypes.BLOB('medium'), 
+        type: DataTypes.BLOB('medium'),
         allowNull: true,
       },
       name: {
@@ -115,7 +115,8 @@ module.exports = (sequelize, DataTypes) => {
     Product.belongsTo(models.Category, {
       foreignKey: 'category_id',
       as: 'category',
-    });    Product.belongsToMany(models.Order, {
+    });
+    Product.belongsToMany(models.Order, {
       through: models.OrderProduct,
       foreignKey: 'product_id',
       otherKey: 'order_id',
@@ -134,9 +135,9 @@ module.exports = (sequelize, DataTypes) => {
     if (product.changed('name') || product.isNewRecord) {
       product.slug = product.name
         .toLowerCase()
-        .replace(/[^\w\s-]/g, '') 
-        .replace(/\s+/g, '-')  
-        .replace(/--+/g, '-') 
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/--+/g, '-')
         .trim();
     }
   });

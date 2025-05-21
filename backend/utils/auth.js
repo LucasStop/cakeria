@@ -10,7 +10,7 @@ exports.generateToken = user => {
       id: user.id,
       email: user.email,
       name: user.name,
-      type: user.type, 
+      type: user.type,
     },
     JWT_SECRET,
     { expiresIn: JWT_EXPIRATION }

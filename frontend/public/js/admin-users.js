@@ -207,7 +207,7 @@ function openEditModal(userId) {
   document.getElementById('editPhone').value = user.phone || '';
 
   const avatarPreview = document.getElementById('editAvatarPreview');
-  avatarPreview.innerHTML = ''; 
+  avatarPreview.innerHTML = '';
 
   if (user.image) {
     const img = document.createElement('img');
@@ -473,7 +473,7 @@ function updateUser(userId, formData) {
       console.log('Usuário atualizado com sucesso:', data);
       alert('Usuário atualizado com sucesso!');
       document.getElementById('editUserModal').style.display = 'none';
-      loadUsers(); 
+      loadUsers();
     })
     .catch(error => {
       console.error('Erro na atualização:', error);
@@ -517,7 +517,7 @@ function deleteUser(userId) {
           })
           .catch(() => {
             throw new Error('Erro ao excluir usuário');
-          }); 
+          });
       }
 
       return response.json().catch(() => ({ success: true }));
@@ -525,7 +525,7 @@ function deleteUser(userId) {
     .then(() => {
       alert('Usuário excluído com sucesso!');
       document.getElementById('deleteConfirmModal').style.display = 'none';
-      loadUsers(); 
+      loadUsers();
     })
     .catch(error => {
       console.error('Erro na exclusão:', error);

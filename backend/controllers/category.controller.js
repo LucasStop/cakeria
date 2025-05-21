@@ -93,8 +93,8 @@ exports.create = async (req, res) => {
 
     const slug = req.body.name
       .toLowerCase()
-      .replace(/[^\w\s-]/g, '') 
-      .replace(/\s+/g, '-') 
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
       .replace(/--+/g, '-')
       .trim();
 
@@ -143,7 +143,7 @@ exports.update = async (req, res) => {
       const existingCategory = await Category.findOne({
         where: {
           name: updateData.name,
-          id: { [sequelize.Op.ne]: id }, 
+          id: { [sequelize.Op.ne]: id },
         },
       });
 
@@ -161,7 +161,7 @@ exports.update = async (req, res) => {
       const existingSlug = await Category.findOne({
         where: {
           slug: updateData.slug,
-          id: { [sequelize.Op.ne]: id }, 
+          id: { [sequelize.Op.ne]: id },
         },
       });
 
@@ -174,7 +174,7 @@ exports.update = async (req, res) => {
       const existingSlug = await Category.findOne({
         where: {
           slug: updateData.slug,
-          id: { [sequelize.Op.ne]: id }, 
+          id: { [sequelize.Op.ne]: id },
         },
       });
 
