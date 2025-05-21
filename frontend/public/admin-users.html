@@ -15,12 +15,10 @@
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Google Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <!-- CSS -->
     <link rel="stylesheet" href="css/admin-users.css" />
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/index.css" />
@@ -80,7 +78,6 @@
           <form id="editUserForm" class="admin-form">
             <input type="hidden" id="editUserId" />
 
-            <!-- Nome e Email -->
             <div class="form-row">
               <div class="form-col">
                 <div class="form-group">
@@ -98,7 +95,6 @@
               </div>
             </div>
 
-            <!-- CPF e Telefone -->
             <div class="form-row">
               <div class="form-col">
                 <div class="form-group">
@@ -120,7 +116,6 @@
                 </div>
               </div>
             </div>
-            <!-- Senha Atual -->
             <div class="form-group">
               <label for="editCurrentPassword">Senha Atual (necessária para alterar a senha)</label>
               <input type="password" id="editCurrentPassword" name="editCurrentPassword" />
@@ -130,7 +125,6 @@
               <span class="error-message" id="edit-current-password-error"></span>
             </div>
 
-            <!-- Nova Senha -->
             <div class="form-group">
               <label for="editPassword">Nova Senha (deixe em branco para manter a atual)</label>
               <input type="password" id="editPassword" name="editPassword" minlength="6" />
@@ -140,7 +134,6 @@
               <span class="error-message" id="edit-password-error"></span>
             </div>
 
-            <!-- Tipo de usuário -->
             <div class="form-group">
               <label for="editType">Tipo de Usuário*</label>
               <select id="editType" name="editType" required>
@@ -150,7 +143,6 @@
               <span class="error-message" id="edit-type-error"></span>
             </div>
 
-            <!-- Foto de perfil -->
             <div class="form-group">
               <label for="editAvatar">Foto de Perfil (opcional)</label>
               <div class="avatar-upload-container">
