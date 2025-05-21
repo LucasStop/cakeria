@@ -258,7 +258,7 @@ async function getUserById(userId) {
     // Valores específicos para testes
     if (userId === 27) {
       user.name = 'Renan Herculano';
-      user.email = 'renan@gmail.com';
+      user.email = 'renan@gmail.com.br';
     }
 
     userCache[userId] = user;
