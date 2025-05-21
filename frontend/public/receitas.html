@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cakeria | Receitas</title>
 
-    <!-- Favicon -->
     <link rel="icon" href="/assets/favicon.ico" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
     <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
 
-    <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,13 +16,11 @@
       rel="stylesheet"
     />
 
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
 
-    <!-- CSS -->
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/receitas.css" />
     <link rel="stylesheet" href="./css/home.css" />
@@ -51,7 +47,6 @@
             <div class="filters">
               <select id="category-filter">
                 <option value="">Todas as categorias</option>
-                <!-- Categorias serão adicionadas via JavaScript -->
               </select>
 
               <select id="sort-recipes">
@@ -72,7 +67,6 @@
         </section>
 
         <section class="recipes-grid" id="recipes-grid">
-          <!-- Receitas serão carregadas dinamicamente -->
           <div class="loading-indicator">
             <div class="spinner"></div>
             <p>Carregando receitas...</p>
@@ -80,14 +74,12 @@
         </section>
 
         <div class="pagination" id="recipes-pagination">
-          <!-- Paginação será adicionada via JavaScript -->
         </div>
       </div>
     </main>
 
     <footer-component></footer-component>
 
-    <!-- Template para cartão de receita -->
     <template id="recipe-card-template">
       <div class="recipe-card">
         <div class="recipe-image">
@@ -125,7 +117,6 @@
         </div>
       </div>
     </template>
-    <!-- Scripts -->
     <script src="./js/utils/toast.js"></script>
     <script src="./components/Header.js"></script>
     <script src="./components/Footer.js"></script>
