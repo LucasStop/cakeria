@@ -85,14 +85,12 @@ function renderRecipeDetails(recipe) {
           <div class="recipe-section">
             <h2><i class="fas fa-utensils"></i> Ingredientes</h2>
             <ul class="recipe-ingredients">
-              <!-- Ingredientes serão inseridos aqui via JavaScript -->
             </ul>
           </div>
           
           <div class="recipe-section">
             <h2><i class="fas fa-list-ol"></i> Modo de Preparo</h2>
             <ol class="recipe-instructions">
-              <!-- Instruções serão inseridos aqui via JavaScript -->
             </ol>
           </div>
           

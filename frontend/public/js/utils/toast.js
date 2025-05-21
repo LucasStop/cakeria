@@ -1,7 +1,3 @@
-/**
- * Sistema de notificações Toast aprimorado
- * Versão com correção de bugs
- */
 
 (function () {
   if (window.Toast) {

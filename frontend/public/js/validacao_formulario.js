@@ -1,7 +1,3 @@
-/**
- * Escuta a validação do formulário e impede o envio
- * se não atender aos critérios customizados
- */
 document.addEventListener('DOMContentLoaded', function () {
   const recipeForm = document.getElementById('recipe-form');
   if (!recipeForm) return;

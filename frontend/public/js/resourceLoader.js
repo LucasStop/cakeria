@@ -1,6 +1,4 @@
-/**
- * Resource Loader - Carrega dinamicamente recursos CSS e JS conforme necessário
- */
+
 
 document.addEventListener('DOMContentLoaded', function () {
   const isHomePage =
@@ -19,9 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-/**
- * Carrega os arquivos CSS necessários para produtos
- */
 function loadProductCSS() {
   if (!document.querySelector('link[href*="product-modal.css"]')) {
     const modalStyle = document.createElement('link');
@@ -38,9 +33,6 @@ function loadProductCSS() {
   }
 }
 
-/**
- * Inicializa o modal de detalhes do produto
- */
 function initializeProductModal() {
   if (!window.ProductDetails && !document.querySelector('script[src*="detalhes-produto.js"]')) {
     const script = document.createElement('script');
@@ -53,9 +45,6 @@ function initializeProductModal() {
   }
 }
 
-/**
- * Corrige possíveis conflitos na função verDetalhesProduto
- */
 function fixProductDetailFunction() {
   if (!window.verDetalhesProduto || typeof window.verDetalhesProduto !== 'function') {
     console.warn(
