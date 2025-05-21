@@ -1,4 +1,3 @@
-/* Share Menu Styles */
 .share-menu {
   position: fixed;
   top: 0;
@@ -123,7 +122,6 @@
   background-color: #e0e0e0;
 }
 
-/* Media queries for mobile */
 @media screen and (max-width: 768px) {
   .share-buttons {
     grid-template-columns: 1fr;

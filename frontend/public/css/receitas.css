@@ -6,7 +6,7 @@
 .recipes-header {
   text-align: center;
   margin-bottom: 40px;
-  margin-top: 50px; /* Adicionando margem superior específica */
+  margin-top: 50px; 
 }
 .recipes-header2 {
   text-align: center;
@@ -17,7 +17,7 @@
   color: var(--color-primary);
   font-size: 2.5rem;
   margin-bottom: 15px;
-  margin-top: 30px; /* Adicionando margem superior ao título */
+  margin-top: 30px; 
 }
 
 .page-subtitle {
@@ -291,7 +291,6 @@
   }
 }
 
-/* Mensagens de erro e vazio */
 .error-message,
 .no-recipes-message {
   grid-column: 1 / -1;
@@ -306,7 +305,6 @@
   margin-bottom: 1rem;
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
   .recipes-actions {
     flex-direction: column;

@@ -124,7 +124,6 @@
   color: #666;
 }
 
-/* Container para metadados com melhor visualização */
 .product-modal-meta {
   display: flex;
   flex-wrap: wrap;
@@ -145,19 +144,19 @@
 }
 
 .product-modal-meta-item:nth-child(1) {
-  border-left-color: #4299e1; /* Azul para categoria */
+  border-left-color: #4299e1; 
 }
 
 .product-modal-meta-item:nth-child(2) {
-  border-left-color: #48bb78; /* Verde para tamanho */
+  border-left-color: #48bb78; 
 }
 
 .product-modal-meta-item:nth-child(3) {
-  border-left-color: #ed8936; /* Laranja para validade */
+  border-left-color: #ed8936; 
 }
 
 .product-modal-meta-item.expired {
-  border-left-color: #e53e3e; /* Vermelho para produtos vencidos */
+  border-left-color: #e53e3e;
 }
 
 .product-modal-meta-item strong {
@@ -181,7 +180,6 @@
   color: #e53e3e;
 }
 
-/* Estilos para datas de validade */
 .expired-text {
   color: #e53e3e;
   font-weight: 600;
@@ -311,7 +309,6 @@
   color: #e53e3e;
 }
 
-/* Animação de loading quando estiver carregando os detalhes */
 .product-modal-loading {
   display: flex;
   flex-direction: column;
@@ -340,7 +337,6 @@
   }
 }
 
-/* Toast de confirmação para adicionar ao carrinho */
 .cart-toast {
   position: fixed;
   bottom: 20px;

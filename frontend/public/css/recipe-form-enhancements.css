@@ -1,6 +1,4 @@
-/* Estilos para o formulário de compartilhamento de receitas */
 
-/* Indicador visual para campos opcionais */
 .optional-field-indicator {
   font-size: 0.85rem;
   color: #28a745;
@@ -8,7 +6,6 @@
   font-weight: normal;
 }
 
-/* Destaque para imagem atual */
 #image-preview.has-image {
   border: 2px solid #28a745;
   border-radius: 8px;
@@ -18,7 +15,6 @@
   margin: 10px 0;
 }
 
-/* Campo de imagem opcional em modo de edição */
 body.edit-mode .file-input-wrapper {
   position: relative;
 }
@@ -36,7 +32,6 @@ body.edit-mode .file-input-wrapper::after {
   z-index: 1;
 }
 
-/* Status da imagem */
 .image-status {
   background-color: #f8f9fa;
   border-left: 4px solid #28a745;
@@ -50,7 +45,6 @@ body.edit-mode .file-input-wrapper::after {
   border-left-color: #ffc107;
 }
 
-/* Melhorar a exibição do nome do arquivo */
 #file-name {
   margin-top: 5px;
   font-size: 0.9em;
@@ -62,7 +56,6 @@ body.edit-mode .file-input-wrapper::after {
   font-weight: 500;
 }
 
-/* Melhorar visibilidade do texto de ajuda */
 .form-helper {
   background-color: #f8f9fa;
   padding: 5px 10px;
