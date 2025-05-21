@@ -440,7 +440,7 @@ async function loadUserAddresses(userId) {
     addressesList.innerHTML =
       '<div class="loading-indicator"><div class="spinner"></div><p>Carregando endereços...</p></div>';
 
-    const addresses = await API.Addresses.getByUser(userId);
+    const addresses = await API.Address.getByUser(userId);
 
     addressesList.innerHTML = '';
 

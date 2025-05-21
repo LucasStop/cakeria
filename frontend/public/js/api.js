@@ -201,7 +201,7 @@ const API = {
     },
   },
 
-  address: {
+  Address: {
     getByUser(userId) {
       return API.request(`/address/user/${userId}`);
     },
