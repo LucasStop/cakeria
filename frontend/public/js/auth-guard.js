@@ -59,10 +59,6 @@ function handleLogout() {
   window.location.href = '/login.html';
 }
 
-/**
- * Função para proteger páginas específicas
- * Esta função pode ser chamada em qualquer página para verificar autenticação
- */
 function protectPage() {
   if (!isAuthenticated()) {
     const currentPath = window.location.pathname;
@@ -72,8 +68,6 @@ function protectPage() {
   return true;
 }
 
-/**
- */
 function initAuthGuard() {
   const isLoginPage = window.location.pathname.includes('login.html');
   const isIndexPage =

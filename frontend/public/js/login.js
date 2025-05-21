@@ -1,16 +1,8 @@
-/**
- * Verifica se o usuário está autenticado
- * @returns {boolean}
- */
 function isAuthenticated() {
   const token = localStorage.getItem('token');
   return !!token;
 }
 
-/**
- * Obtém as informações do usuário atual
- * @returns {Object|null}
- */
 function getCurrentUser() {
   try {
     const userStr = localStorage.getItem('user');
