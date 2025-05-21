@@ -173,7 +173,6 @@ function fillFormWithRecipeData(recipe) {
 
   document.getElementById('recipe-title').value = recipe.title || '';
 
-
   const formHeader = document.querySelector('.page-subtitle');
   if (formHeader && recipe.id) {
     formHeader.innerHTML = `Você está editando a receita <strong>"${recipe.title}"</strong>. Modifique o que for necessário e salve as alterações.`;
@@ -260,7 +259,7 @@ function fillFormWithRecipeData(recipe) {
   console.log('Ingredientes da receita:', recipe.ingredients);
 
   const ingredientsContainer = document.getElementById('ingredients-container');
-  ingredientsContainer.innerHTML = '';  
+  ingredientsContainer.innerHTML = '';
 
   const ingredients =
     typeof recipe.ingredients === 'string' ? recipe.ingredients.split('\n') : recipe.ingredients;
@@ -300,7 +299,7 @@ function fillFormWithRecipeData(recipe) {
   console.log('Instruções da receita:', recipe.instructions);
 
   const stepsContainer = document.getElementById('steps-container');
-  stepsContainer.innerHTML = ''; 
+  stepsContainer.innerHTML = '';
 
   const instructions =
     typeof recipe.instructions === 'string' ? recipe.instructions.split('\n') : recipe.instructions;
@@ -627,11 +626,11 @@ async function handleFormSubmit(e) {
 
     const ingredients = Array.from(document.querySelectorAll('input[name="ingredients[]"]'))
       .map(input => input.value.trim())
-      .filter(value => value); 
+      .filter(value => value);
 
     const steps = Array.from(document.querySelectorAll('textarea[name="steps[]"]'))
       .map(textarea => textarea.value.trim())
-      .filter(value => value); 
+      .filter(value => value);
 
     if (ingredients.length === 0) {
       throw new Error('Adicione pelo menos um ingrediente à receita');

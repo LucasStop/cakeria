@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const commonConfig = {
-  timezone: '-03:00', 
+  timezone: '-03:00',
   dialectOptions: {
     dateStrings: true,
     typeCast: true,

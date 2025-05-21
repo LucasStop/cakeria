@@ -92,7 +92,7 @@ const API = {
       return isExpired;
     } catch (error) {
       console.error('Erro ao verificar token:', error);
-      return false; 
+      return false;
     }
   },
   clearSession() {
@@ -254,12 +254,7 @@ if (!API.BASE_URL) {
   console.log('API.BASE_URL definida como padrão:', API.BASE_URL);
 }
 
-const PRODUCT_ENDPOINTS = [
-  '/products',  
-  '/produtos',  
-  '/product', 
-  '/produto', 
-];
+const PRODUCT_ENDPOINTS = ['/products', '/produtos', '/product', '/produto'];
 
 API.produtos = {
   listar: async function () {
@@ -284,7 +279,7 @@ API.produtos = {
           const error = new Error(`Erro HTTP: ${response.status}`);
           error.status = response.status;
           errors.push({ endpoint, error });
-          continue; 
+          continue;
         }
 
         const data = await response.json();

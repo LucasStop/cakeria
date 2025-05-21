@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function () {
   const headerComponent = document.querySelector('header-component');
 

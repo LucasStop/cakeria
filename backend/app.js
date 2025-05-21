@@ -70,8 +70,7 @@ app.get('/', (req, res) => {
 sequelize
   .sync({ force: false })
   .then(() => {
-    app.listen(PORT, () => {
-    });
+    app.listen(PORT, () => {});
   })
   .catch(err => {
     console.error('Erro ao conectar com o banco de dados:', err);
