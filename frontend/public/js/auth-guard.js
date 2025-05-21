@@ -103,10 +103,8 @@ function initAuthGuard() {
   }
 }
 
-// Inicializa a verificação de autenticação quando a página carrega
 document.addEventListener('DOMContentLoaded', initAuthGuard);
 
-// Exportar funções para uso global
 window.isAuthenticated = isAuthenticated;
 window.getCurrentUser = getCurrentUser;
 window.protectPage = protectPage;

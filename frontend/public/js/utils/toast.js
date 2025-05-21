@@ -3,15 +3,12 @@
  * Versão com correção de bugs
  */
 
-// IIFE para evitar conflitos globais
 (function () {
-  // Verificar se o Toast já existe globalmente
   if (window.Toast) {
     console.warn('Toast já está definido globalmente. Não será reinstanciado.');
     return;
   }
 
-  // Namespace para o sistema Toast
   const Toast = {
     defaultOptions: {
       duration: 4000,
@@ -23,9 +20,8 @@
 
     container: null,
     cssLoaded: false,
-    debug: true, // Habilitar logs para depuração
+    debug: true,
 
-    // Inicializar o sistema de Toast
     init() {
       if (this.debug) console.log('[Toast] Inicializando sistema de Toast');
 
@@ -38,33 +34,27 @@
         if (this.debug) console.log('[Toast] Contêiner criado e anexado ao body');
       }
 
-      // Garantir que o CSS esteja carregado
       this.ensureToastCssLoaded();
     },
 
-    // Garantir que o CSS do toast esteja carregado
     ensureToastCssLoaded() {
       if (this.cssLoaded) return;
 
       if (this.debug) console.log('[Toast] Verificando se o CSS está carregado');
 
-      // Verificar se o CSS do toast já está carregado
       if (!document.querySelector('link[href*="toast.css"]')) {
         if (this.debug) console.log('[Toast] CSS não encontrado, carregando dinamicamente');
 
-        // Carregar o CSS do toast dinamicamente
         const toastStyle = document.createElement('link');
         toastStyle.rel = 'stylesheet';
         toastStyle.href = '/css/toast.css';
         document.head.appendChild(toastStyle);
 
-        // Adicionar evento para verificar quando o CSS for carregado
         toastStyle.onload = () => {
           this.cssLoaded = true;
           if (this.debug) console.log('[Toast] CSS carregado com sucesso');
         };
 
-        // Adicionar fallback caso o carregamento falhe
         toastStyle.onerror = () => {
           console.error('[Toast] Erro ao carregar CSS do toast');
           this.addFallbackStyles();
@@ -75,7 +65,6 @@
       }
     },
 
-    // Adicionar estilos de fallback caso o CSS não carregue
     addFallbackStyles() {
       const style = document.createElement('style');
       style.textContent = `
@@ -130,7 +119,6 @@
       if (this.debug) console.log('[Toast] Estilos de fallback adicionados');
     },
 
-    // Criar um novo toast
     create(message, options = {}) {
       try {
         this.init();
@@ -139,26 +127,20 @@
 
         if (this.debug) console.log('[Toast] Criando toast com mensagem:', message);
 
-        // Criar elemento toast
         const toast = document.createElement('div');
         toast.className = `custom-toast ${settings.type || 'info'}`;
 
-        // Configurar o contêiner de acordo com a posição
         this.container.className = `toast-container ${settings.position || 'bottom-right'}`;
 
-        // Conteúdo do toast
         let toastContent = '';
 
-        // Adicionar cabeçalho se tiver título ou botão de fechar
         if (settings.title || settings.closeButton) {
           toastContent += '<div class="toast-header">';
 
-          // Título
           if (settings.title) {
             toastContent += `<span class="toast-title">${settings.title}</span>`;
           }
 
-          // Botão de fechar
           if (settings.closeButton) {
             toastContent += '<button class="toast-close">&times;</button>';
           }
@@ -166,13 +148,11 @@
           toastContent += '</div>';
         }
 
-        // Ícone baseado no tipo
         let iconClass = 'fa-info-circle';
         if (settings.type === 'success') iconClass = 'fa-check-circle';
         if (settings.type === 'error') iconClass = 'fa-exclamation-circle';
         if (settings.type === 'warning') iconClass = 'fa-exclamation-triangle';
 
-        // Mensagem com ícone
         toastContent += `
           <div class="toast-message">
             <div class="toast-icon">
@@ -186,15 +166,12 @@
 
         toast.innerHTML = toastContent;
 
-        // Adicionar ao container
         this.container.appendChild(toast);
 
-        // Mostrar com animação
         setTimeout(() => {
           toast.classList.add('show');
         }, 10);
 
-        // Configurar eventos
         if (settings.closeButton) {
           const closeBtn = toast.querySelector('.toast-close');
           if (closeBtn) {
@@ -204,7 +181,6 @@
           }
         }
 
-        // Pausar timer quando mouse estiver sobre o toast
         if (settings.pauseOnHover) {
           let timeoutId;
 
@@ -219,7 +195,6 @@
           });
         }
 
-        // Auto remover após duração especificada
         if (settings.duration > 0) {
           setTimeout(() => {
             this.remove(toast);
@@ -231,12 +206,10 @@
         return toast;
       } catch (error) {
         console.error('[Toast] Erro ao criar toast:', error);
-        // Tentar criar um toast de fallback muito simples
         this.showFallbackToast(message, options.type || 'info');
       }
     },
 
-    // Remover um toast
     remove(toast) {
       if (!toast) return;
 
@@ -248,10 +221,9 @@
           toast.parentNode.removeChild(toast);
           if (this.debug) console.log('[Toast] Toast removido');
         }
-      }, 300); // Tempo para a animação de saída
+      }, 300);
     },
 
-    // Toast bem simples para fallback em caso de erro crítico
     showFallbackToast(message, type) {
       console.log(`[Toast Fallback] ${type}: ${message}`);
 
@@ -267,7 +239,6 @@
       toast.style.zIndex = '9999';
       toast.style.maxWidth = '350px';
 
-      // Cor específica de acordo com o tipo
       const colors = {
         success: '#4CAF50',
         error: '#F44336',
@@ -280,7 +251,6 @@
 
       document.body.appendChild(toast);
 
-      // Auto-remover após 5 segundos
       setTimeout(() => {
         if (toast.parentNode) {
           document.body.removeChild(toast);
@@ -288,7 +258,6 @@
       }, 5000);
     },
 
-    // Métodos de conveniência
     success(message, options = {}) {
       return this.create(message, { ...options, type: 'success' });
     },
@@ -306,21 +275,17 @@
     },
   };
 
-  // Expor o objeto global
   window.Toast = Toast;
 
-  // Verificar se o DOM já está carregado
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       Toast.init();
     });
   } else {
-    // O DOM já está carregado
     Toast.init();
   }
 })();
 
-// Adicionar evento de verificação para alertar se o Toast está funcionando
 window.addEventListener('load', function () {
   setTimeout(() => {
     if (window.Toast && !window.Toast._hasShownFirstToast) {
@@ -329,7 +294,6 @@ window.addEventListener('load', function () {
   }, 1000);
 });
 
-// Função de debug para testar o Toast
 window.testToast = function () {
   if (window.Toast) {
     window.Toast.info('Teste de notificação - Isso deve estar visível!', {

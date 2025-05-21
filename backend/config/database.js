@@ -1,8 +1,7 @@
 require('dotenv').config();
 
-// Configurações comuns para todos os ambientes
 const commonConfig = {
-  timezone: '-03:00', // Horário de São Paulo (UTC-3)
+  timezone: '-03:00', 
   dialectOptions: {
     dateStrings: true,
     typeCast: true,

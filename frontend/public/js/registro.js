@@ -14,7 +14,6 @@ function initPasswordToggles() {
     button.addEventListener('click', function () {
       const input = this.previousElementSibling;
 
-      // Botão de mostrar/esconder senha
       if (input.type === 'password') {
         input.type = 'text';
         this.querySelector('svg').innerHTML =
@@ -116,7 +115,6 @@ function addValidation(id, validateFn, errorId, errorMsg, formatFn = null) {
   });
 }
 
-// Validações
 const isNotEmpty = val => val.trim() !== '';
 const isValidName = val => val.trim().split(' ').length >= 2;
 const isValidEmail = val => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
@@ -147,7 +145,6 @@ const isValidNumber = val => /^\d+$/.test(val);
 const isValidLettersOnly = val =>
   val.trim() !== '' && /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ ]+$/.test(val);
 
-// Formatações
 function formatPhone(input) {
   input.value = input.value
     .replace(/\D/g, '')
@@ -176,7 +173,6 @@ function formatLettersOnly(input) {
   input.value = input.value.replace(/[0-9]/g, '');
 }
 
-// Erros
 function showError(id, input, msg) {
   input.classList.add('invalid-input');
   document.getElementById(id).textContent = msg;
@@ -187,7 +183,6 @@ function clearError(id, input) {
   document.getElementById(id).textContent = '';
 }
 
-// Busca CEP
 function fetchAddress(cep) {
   cep = cep.replace(/\D/g, '');
 
@@ -214,7 +209,6 @@ function fetchAddress(cep) {
       if (cityField) cityField.value = data.localidade || '';
       if (stateField) stateField.value = data.uf || '';
 
-      // Limpar erros dos campos preenchidos automaticamente
       if (data.logradouro) clearError('street-error', streetField);
       if (data.bairro) clearError('neighborhood-error', neighborhoodField);
       if (data.localidade) clearError('city-error', cityField);
@@ -229,7 +223,6 @@ function fetchAddress(cep) {
 function handleSubmit(e) {
   e.preventDefault();
 
-  // Validar todos os campos
   let isValid = true;
 
   const fields = {
@@ -275,11 +268,9 @@ function handleSubmit(e) {
   const fileInput = document.getElementById('register-avatar');
   const hasAvatar = fileInput && fileInput.files && fileInput.files.length > 0;
 
-  // Se temos um avatar, usamos FormData para enviar
   if (hasAvatar) {
     const formData = new FormData();
 
-    // Adicionar todos os campos ao FormData
     formData.append('name', form.elements.name.value);
     formData.append('email', form.elements.email.value);
     formData.append('phone', form.elements.phone.value);
@@ -287,7 +278,6 @@ function handleSubmit(e) {
     formData.append('password', password);
     formData.append('image', fileInput.files[0]);
 
-    // Dados de endereço
     const addressData = {
       cep: form.elements.cep.value,
       street: form.elements.street.value,
@@ -300,7 +290,6 @@ function handleSubmit(e) {
 
     formData.append('address', JSON.stringify(addressData));
 
-    // Enviar dados com a imagem
     fetch(`http://localhost:3001/api/user`, {
       method: 'POST',
       body: formData,
@@ -322,7 +311,6 @@ function handleSubmit(e) {
         console.error('Erro na requisição:', error);
       });
   } else {
-    // Sem avatar, usamos o método original com JSON
     const userData = {
       name: form.elements.name.value,
       email: form.elements.email.value,
@@ -375,45 +363,36 @@ function setupAvatarUpload() {
 
   if (!fileInput || !selectButton || !previewDiv) return;
 
-  // Ao clicar no botão, aciona o input de arquivo
   selectButton.addEventListener('click', () => {
     fileInput.click();
   });
 
-  // Quando um arquivo é selecionado
   fileInput.addEventListener('change', function () {
     const file = this.files[0];
 
-    // Verificações básicas
     if (!file) return;
 
-    // Verificar tipo do arquivo
     if (!file.type.startsWith('image/')) {
       showError('avatar-error', this, 'Por favor, selecione um arquivo de imagem válido.');
       this.value = '';
       return;
     }
 
-    // Verificar tamanho do arquivo (5MB máximo)
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       showError('avatar-error', this, 'A imagem é muito grande. O tamanho máximo é 5MB.');
       this.value = '';
       return;
     }
 
-    // Limpar qualquer erro
     clearError('avatar-error', this);
 
-    // Exibir a prévia da imagem
     const reader = new FileReader();
     reader.onload = function (e) {
-      // Remover o ícone padrão
       while (previewDiv.firstChild) {
         previewDiv.removeChild(previewDiv.firstChild);
       }
 
-      // Criar e adicionar a prévia da imagem
       const img = document.createElement('img');
       img.src = e.target.result;
       previewDiv.appendChild(img);

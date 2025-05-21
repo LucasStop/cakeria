@@ -1,22 +1,14 @@
-/**
- * Sistema de detalhes de produto em modal e gerenciamento de carrinho
- */
 
-// Inicialização do sistema de modal quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', function () {
-  // Verificar se a estrutura do modal já existe
   if (!document.getElementById('product-modal-overlay')) {
-    // Criar e adicionar o modal ao body
     createModalStructure();
   }
 
-  // Inicializar carrinho se não existir
   if (!localStorage.getItem('cart')) {
     localStorage.setItem('cart', JSON.stringify([]));
   }
 });
 
-// Criar a estrutura HTML do modal
 function createModalStructure() {
   const modalHTML = `
     <div id="product-modal-overlay" class="product-modal-overlay">
@@ -37,7 +29,6 @@ function createModalStructure() {
 
   document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-  // Adicionar evento para fechar o modal
   const modalOverlay = document.getElementById('product-modal-overlay');
   const closeBtn = modalOverlay.querySelector('.product-modal-close');
 
@@ -45,14 +36,12 @@ function createModalStructure() {
     closeProductModal();
   });
 
-  // Fechar modal ao clicar fora dele
   modalOverlay.addEventListener('click', function (event) {
     if (event.target === modalOverlay) {
       closeProductModal();
     }
   });
 
-  // Fechar modal com a tecla ESC
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape' && modalOverlay.classList.contains('active')) {
       closeProductModal();
@@ -60,16 +49,12 @@ function createModalStructure() {
   });
 }
 
-// Função global para visualizar detalhes do produto
 window.verDetalhesProduto = async function (productId) {
   try {
-    // Abrir o modal com loading
     openProductModal();
 
-    // Buscar os detalhes do produto
     const produto = await loadProductDetails(productId);
 
-    // Renderizar os detalhes do produto no modal
     renderProductDetails(produto);
   } catch (error) {
     console.error('Erro ao carregar detalhes do produto:', error);
@@ -79,13 +64,11 @@ window.verDetalhesProduto = async function (productId) {
   }
 };
 
-// Abrir o modal de produto
 function openProductModal() {
   const modalOverlay = document.getElementById('product-modal-overlay');
   modalOverlay.classList.add('active');
-  document.body.style.overflow = 'hidden'; // Impedir scroll do body
+  document.body.style.overflow = 'hidden'; 
 
-  // Resetar conteúdo para loading
   const modalContent = document.getElementById('product-modal-content');
   modalContent.innerHTML = `
     <div class="product-modal-loading">
@@ -95,24 +78,19 @@ function openProductModal() {
   `;
 }
 
-// Fechar o modal de produto
 function closeProductModal() {
   const modalOverlay = document.getElementById('product-modal-overlay');
   modalOverlay.classList.remove('active');
-  document.body.style.overflow = ''; // Restaurar scroll
+  document.body.style.overflow = ''; 
 }
 
-// Carregar os detalhes do produto da API
 async function loadProductDetails(productId) {
   try {
-    // Usar a API.produtos.obterPorId se disponível
     if (window.API && window.API.produtos && typeof window.API.produtos.obterPorId === 'function') {
       return await window.API.produtos.obterPorId(productId);
     } else {
-      // Fallback para fetch direto
       const baseUrl = window.API?.BASE_URL || 'http://localhost:3001/api';
 
-      // Tentar diferentes possíveis endpoints
       const possibleEndpoints = [
         `/products/${productId}`,
         `/produtos/${productId}`,
@@ -139,28 +117,21 @@ async function loadProductDetails(productId) {
   }
 }
 
-// Renderizar os detalhes do produto no modal
 function renderProductDetails(produto) {
   const modalContent = document.getElementById('product-modal-content');
 
-  // Obter a URL da imagem do produto
   const imageUrl = window.ImageHelper
     ? window.ImageHelper.getProductImageUrl(produto.id)
     : `${window.API?.BASE_URL || 'http://localhost:3001/api'}/product/image/${produto.id}`;
 
-  // Formatar o preço
   const formattedPrice = formatCurrency(produto.price);
 
-  // Determinar o status do estoque
   const stockStatus = getStockStatus(produto.stock);
 
-  // Obter o nome da categoria (com fallbacks para diferentes estruturas de dados)
   const categoryName = getCategoryName(produto);
 
-  // Formatar data de validade se existir (com verificação de diferentes campos)
   const expiryDate = getFormattedExpiryDate(produto);
 
-  // Construir o HTML dos detalhes do produto
   const productDetailsHTML = `
     <div class="product-modal-image">
       <img src="${imageUrl}" alt="${produto.name}" onerror="this.onerror=null; this.src='/assets/default-product.png';">
@@ -208,19 +179,15 @@ function renderProductDetails(produto) {
     </div>
   `;
 
-  // Adicionar o HTML ao modal
   modalContent.innerHTML = productDetailsHTML;
 
-  // Adicionar footer com informação de estoque
   const modalElement = document.querySelector('.product-modal');
 
-  // Remover footer existente se houver
   const existingFooter = modalElement.querySelector('.product-modal-footer');
   if (existingFooter) {
     existingFooter.remove();
   }
 
-  // Adicionar novo footer
   const footerHTML = `
     <div class="product-modal-footer">
       <div class="stock-info ${stockStatus.class}">${stockStatus.text}</div>
@@ -228,16 +195,12 @@ function renderProductDetails(produto) {
   `;
   modalElement.insertAdjacentHTML('beforeend', footerHTML);
 
-  // Configurar eventos dos botões de quantidade
   setupQuantityButtons(produto.stock || 10);
 
-  // Configurar evento do botão de adicionar ao carrinho
   setupAddToCartButton(produto);
 }
 
-// Função auxiliar para obter o nome da categoria com várias fallbacks
 function getCategoryName(produto) {
-  // Verificar diferentes formatos possíveis da categoria
   if (typeof produto.category_name === 'string' && produto.category_name) {
     return produto.category_name;
   }
@@ -274,13 +237,10 @@ function getCategoryName(produto) {
     }
   }
 
-  // Se chegou aqui, não foi possível determinar o nome da categoria
   return 'Não categorizado';
 }
 
-// Função auxiliar para formatar a data de validade com verificação de vários formatos possíveis
 function getFormattedExpiryDate(produto) {
-  // Lista de possíveis nomes de campo para data de validade
   const possibleFields = [
     'expiration_date',
     'expirationDate',
@@ -293,7 +253,6 @@ function getFormattedExpiryDate(produto) {
     'expiry',
   ];
 
-  // Procurar o primeiro campo que existe e tem valor
   let expiryValue = null;
   for (const field of possibleFields) {
     if (produto[field]) {
@@ -302,19 +261,15 @@ function getFormattedExpiryDate(produto) {
     }
   }
 
-  // Se não encontrou nenhum valor, retornar "Não especificada"
   if (!expiryValue) return 'Não especificada';
 
-  // Converter para Date
   try {
     const expiryDate = new Date(expiryValue);
 
-    // Verificar se é uma data válida
     if (isNaN(expiryDate.getTime())) {
       return 'Data inválida';
     }
 
-    // Verificar se já venceu
     const today = new Date();
     if (expiryDate < today) {
       const diffTime = Math.abs(today - expiryDate);
@@ -326,7 +281,6 @@ function getFormattedExpiryDate(produto) {
       return `<span class="expired-text">Vencido há ${diffDays} dias</span>`;
     }
 
-    // Se vai vencer em breve (próximos 7 dias)
     const nextWeek = new Date();
     nextWeek.setDate(today.getDate() + 7);
 
@@ -340,7 +294,6 @@ function getFormattedExpiryDate(produto) {
       return `<span class="expiring-soon">Vence em ${diffDays} dias</span>`;
     }
 
-    // Caso contrário, mostrar a data formatada
     return expiryDate.toLocaleDateString('pt-BR');
   } catch (error) {
     console.error('Erro ao processar data de validade:', error);
@@ -348,7 +301,6 @@ function getFormattedExpiryDate(produto) {
   }
 }
 
-// Configurar os botões de quantidade
 function setupQuantityButtons(maxStock) {
   const minusBtn = document.querySelector('.quantity-btn.minus');
   const plusBtn = document.querySelector('.quantity-btn.plus');
@@ -381,38 +333,29 @@ function setupQuantityButtons(maxStock) {
   });
 }
 
-// Configurar o botão de adicionar ao carrinho
 function setupAddToCartButton(produto) {
   const addToCartBtn = document.querySelector('.add-to-cart-btn');
 
   addToCartBtn.addEventListener('click', function () {
     const quantity = parseInt(document.getElementById('product-quantity').value);
 
-    // Adicionar ao carrinho
     addToCart(produto, quantity);
-
-    // Fechar o modal
+al
     closeProductModal();
 
-    // Mostrar confirmação
     showCartConfirmation(produto, quantity);
   });
 }
 
-// Adicionar produto ao carrinho
 function addToCart(produto, quantity) {
   try {
-    // Obter carrinho atual
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-    // Verificar se o produto já está no carrinho
     const existingProductIndex = cart.findIndex(item => item.id === produto.id);
 
     if (existingProductIndex !== -1) {
-      // Se já existe, atualizar a quantidade
       cart[existingProductIndex].quantity += quantity;
     } else {
-      // Se não existe, adicionar novo item
       cart.push({
         id: produto.id,
         name: produto.name,
@@ -422,10 +365,8 @@ function addToCart(produto, quantity) {
       });
     }
 
-    // Salvar carrinho atualizado
     localStorage.setItem('cart', JSON.stringify(cart));
 
-    // Notificar atualização de carrinho (se houver event listeners)
     const event = new CustomEvent('cartUpdated', {
       detail: {
         action: 'add',
@@ -435,7 +376,6 @@ function addToCart(produto, quantity) {
     });
     document.dispatchEvent(event);
 
-    // Atualizar o contador do carrinho na interface (se existir)
     updateCartCounter();
 
     return true;
@@ -445,15 +385,12 @@ function addToCart(produto, quantity) {
   }
 }
 
-// Mostrar toast de confirmação de adição ao carrinho
 function showCartConfirmation(produto, quantity) {
-  // Remover toast existente se houver
   const existingToast = document.querySelector('.cart-toast');
   if (existingToast) {
     existingToast.remove();
   }
 
-  // Criar novo toast
   const toastHTML = `
     <div class="cart-toast">
       <i class="fas fa-check-circle"></i>
@@ -468,12 +405,10 @@ function showCartConfirmation(produto, quantity) {
 
   const toast = document.querySelector('.cart-toast');
 
-  // Mostrar toast com pequeno delay para animação
   setTimeout(() => {
     toast.classList.add('active');
   }, 10);
 
-  // Adicionar evento para fechar o toast
   const closeBtn = toast.querySelector('.cart-toast-close');
   closeBtn.addEventListener('click', () => {
     toast.classList.remove('active');
@@ -482,7 +417,6 @@ function showCartConfirmation(produto, quantity) {
     }, 300);
   });
 
-  // Fechar automaticamente após 5 segundos
   setTimeout(() => {
     if (toast) {
       toast.classList.remove('active');
@@ -494,7 +428,6 @@ function showCartConfirmation(produto, quantity) {
     }
   }, 5000);
 
-  // Usar Toast.js se estiver disponível
   if (window.Toast) {
     window.Toast.success(`${produto.name} adicionado ao carrinho!`, {
       position: 'bottom-right',
@@ -503,7 +436,6 @@ function showCartConfirmation(produto, quantity) {
   }
 }
 
-// Mostrar erro no modal
 function showErrorInModal(errorMessage) {
   const modalContent = document.getElementById('product-modal-content');
 
@@ -516,12 +448,10 @@ function showErrorInModal(errorMessage) {
   `;
 }
 
-// Formatar moeda
 function formatCurrency(value) {
   return 'R$ ' + parseFloat(value).toFixed(2).replace('.', ',');
 }
 
-// Obter status do estoque
 function getStockStatus(stock) {
   if (!stock || stock <= 0) {
     return {
@@ -541,13 +471,11 @@ function getStockStatus(stock) {
   }
 }
 
-// Atualizar contador de itens no carrinho na interface
 function updateCartCounter() {
   try {
     const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
     const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
-    // Procurar por elementos que possam representar um contador de carrinho
     const possibleCounters = [
       document.querySelector('.cart-count'),
       document.querySelector('.cart-counter'),
@@ -555,7 +483,6 @@ function updateCartCounter() {
       document.querySelector('[data-cart-count]'),
     ];
 
-    // Atualizar o primeiro contador válido encontrado
     for (const counter of possibleCounters) {
       if (counter) {
         counter.textContent = totalItems;
@@ -572,7 +499,6 @@ function updateCartCounter() {
   }
 }
 
-// Exportar funções globais
 window.ProductDetails = {
   openModal: openProductModal,
   closeModal: closeProductModal,

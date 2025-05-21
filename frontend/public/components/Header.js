@@ -5,7 +5,6 @@ class Header extends HTMLElement {
   connectedCallback() {
     const isLoggedIn = localStorage.getItem('token') !== null;
     const user = this.getCurrentUser();
-    // Obtenha o atributo de variante ou determine com base na função isAdmin
     const variant = this.getAttribute('variant') || (this.isAdmin(user) ? 'admin' : 'client');
 
     if (variant === 'client') {

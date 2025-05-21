@@ -1,4 +1,3 @@
-// Função para renderizar os itens do carrinho
 function renderCart() {
   const cartItems = document.getElementById('cart-items');
   if (!cartItems) return;
@@ -6,7 +5,6 @@ function renderCart() {
   const items = getCartItems();
 
   items.forEach(item => {
-    // Usar o helper para obter a URL da imagem do produto
     const imageUrl = window.ImageHelper
       ? window.ImageHelper.getProductImageUrl(item.id)
       : `${API.BASE_URL}/product/image/${item.id}`;
@@ -36,18 +34,15 @@ function renderCart() {
   });
 }
 
-// Função para obter os itens do carrinho
 function getCartItems() {
   const cart = JSON.parse(localStorage.getItem('cart') || '[]');
   return cart;
 }
 
-// Função para formatar o preço
 function formatPrice(price) {
   return parseFloat(price).toFixed(2).replace('.', ',');
 }
 
-// Função para adicionar eventos aos botões de quantidade
 function setupCartEventListeners() {
   const cartItems = document.getElementById('cart-items');
   if (!cartItems) return;
@@ -78,7 +73,6 @@ function setupCartEventListeners() {
   });
 }
 
-// Inicializar o carrinho
 document.addEventListener('DOMContentLoaded', () => {
   renderCart();
   setupCartEventListeners();

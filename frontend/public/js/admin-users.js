@@ -206,19 +206,16 @@ function openEditModal(userId) {
   document.getElementById('editType').value = user.type;
   document.getElementById('editPhone').value = user.phone || '';
 
-  // Atualizar a visualização da imagem do usuário
   const avatarPreview = document.getElementById('editAvatarPreview');
-  avatarPreview.innerHTML = ''; // Limpar conteúdo anterior
+  avatarPreview.innerHTML = ''; 
 
-  // Verificar se o usuário tem imagem e mostrar
   if (user.image) {
     const img = document.createElement('img');
-    img.src = `http://localhost:3001/api/users/${user.id}/image?t=${new Date().getTime()}`; // Evitar cache
+    img.src = `http://localhost:3001/api/users/${user.id}/image?t=${new Date().getTime()}`;
     img.alt = `Foto de ${user.name}`;
     img.className = 'uploaded-avatar';
     avatarPreview.appendChild(img);
   } else {
-    // Exibir ícone padrão se não houver imagem
     const icon = document.createElement('i');
     icon.className = 'fas fa-user default-avatar-icon';
     avatarPreview.appendChild(icon);
@@ -271,9 +268,7 @@ function setupFormMasks() {
   });
 }
 
-// Configurar event listeners
 function setupEventListeners() {
-  // Evento para visualizar imagem selecionada
   document.getElementById('editAvatar').addEventListener('change', function (e) {
     const file = e.target.files[0];
     if (file) {
@@ -303,12 +298,10 @@ function setupEventListeners() {
       reader.readAsDataURL(file);
     }
   });
-  // Botão para selecionar nova imagem
   document.getElementById('editSelectAvatarBtn').addEventListener('click', function () {
     document.getElementById('editAvatar').click();
   });
 
-  // Toggle para mostrar/ocultar senha
   document.getElementById('editPasswordToggle').addEventListener('click', function () {
     const passwordField = document.getElementById('editPassword');
     const icon = this.querySelector('i');
@@ -324,7 +317,6 @@ function setupEventListeners() {
     }
   });
 
-  // Toggle para mostrar/ocultar senha atual
   document.getElementById('editCurrentPasswordToggle').addEventListener('click', function () {
     const passwordField = document.getElementById('editCurrentPassword');
     const icon = this.querySelector('i');
@@ -339,14 +331,12 @@ function setupEventListeners() {
       icon.classList.add('fa-eye');
     }
   });
-  // Form de edição de usuário
   document.getElementById('editUserForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     const userId = document.getElementById('editUserId').value;
     const avatarFile = document.getElementById('editAvatar').files[0];
 
-    // Validar campos obrigatórios
     const name = document.getElementById('editName').value.trim();
     const email = document.getElementById('editEmail').value.trim();
 
@@ -364,7 +354,6 @@ function setupEventListeners() {
       document.getElementById('edit-email-error').textContent = '';
     }
 
-    // Criar FormData para enviar dados multipart (incluindo a imagem)
     const formData = new FormData();
     formData.append('name', name);
     formData.append('email', email);
@@ -372,7 +361,6 @@ function setupEventListeners() {
     formData.append('type', document.getElementById('editType').value);
     formData.append('phone', document.getElementById('editPhone').value || '');
 
-    // Senha e senha atual (se estiver mudando a senha)
     const password = document.getElementById('editPassword').value;
     const currentPassword = document.getElementById('editCurrentPassword').value;
 
@@ -386,7 +374,6 @@ function setupEventListeners() {
       formData.append('currentPassword', currentPassword);
     }
 
-    // Adicionar imagem se houver
     if (avatarFile) {
       formData.append('image', avatarFile);
     }
@@ -394,16 +381,14 @@ function setupEventListeners() {
     updateUser(userId, formData);
   });
 
-  // Confirmação de exclusão
   document.getElementById('confirmDelete').addEventListener('click', function () {
     const userId = document.getElementById('deleteUserId').value;
     deleteUser(userId);
   });
 
-  // Filtros de pesquisa  document.getElementById('searchUser').addEventListener('input', debounce(loadUsers, 300));
+  document.getElementById('searchUser').addEventListener('input', debounce(loadUsers, 300));
   document.getElementById('filterType').addEventListener('change', loadUsers);
 
-  // Fechar modais
   document.querySelectorAll('.close-modal').forEach(elem => {
     elem.addEventListener('click', function () {
       document.getElementById('editUserModal').style.display = 'none';
@@ -411,7 +396,6 @@ function setupEventListeners() {
     });
   });
 
-  // Fechar modal clicando fora
   window.addEventListener('click', function (event) {
     if (event.target === document.getElementById('editUserModal')) {
       document.getElementById('editUserModal').style.display = 'none';
@@ -421,7 +405,6 @@ function setupEventListeners() {
     }
   });
 
-  // Verificar se o botão de cancelar existe e adicionar evento
   const cancelButtons = document.querySelectorAll('button.btn-secondary.close-modal');
   cancelButtons.forEach(button => {
     button.addEventListener('click', function () {
@@ -431,7 +414,6 @@ function setupEventListeners() {
   });
 }
 
-// Criar novo usuário
 function createUser(userData) {
   const token = localStorage.getItem('token');
 
@@ -461,11 +443,9 @@ function createUser(userData) {
     });
 }
 
-// Atualizar usuário
 function updateUser(userId, formData) {
   const token = localStorage.getItem('token');
 
-  // Mostrar feedback visual de carregamento
   const submitButton = document.querySelector('#editUserForm button[type="submit"]');
   const originalButtonText = submitButton.innerHTML;
   submitButton.disabled = true;
@@ -493,24 +473,21 @@ function updateUser(userId, formData) {
       console.log('Usuário atualizado com sucesso:', data);
       alert('Usuário atualizado com sucesso!');
       document.getElementById('editUserModal').style.display = 'none';
-      loadUsers(); // Recarregar a lista de usuários
+      loadUsers(); 
     })
     .catch(error => {
       console.error('Erro na atualização:', error);
       alert('Erro ao atualizar usuário: ' + error.message);
     })
     .finally(() => {
-      // Restaurar o botão
       submitButton.disabled = false;
       submitButton.innerHTML = originalButtonText;
     });
 }
 
-// Excluir usuário
 function deleteUser(userId) {
   const token = localStorage.getItem('token');
 
-  // Mostrar feedback visual de carregamento
   const deleteButton = document.getElementById('confirmDelete');
   const originalButtonText = deleteButton.innerHTML;
   deleteButton.disabled = true;
@@ -527,13 +504,11 @@ function deleteUser(userId) {
     .then(response => {
       console.log('Resposta da exclusão:', response.status);
 
-      // Status 204 é sucesso sem conteúdo
       if (response.status === 204) {
         console.log('Usuário excluído com sucesso (status 204)');
         return { success: true };
       }
 
-      // Se não for 204 e não for ok, provavelmente é um erro
       if (!response.ok) {
         return response
           .json()
@@ -542,29 +517,26 @@ function deleteUser(userId) {
           })
           .catch(() => {
             throw new Error('Erro ao excluir usuário');
-          }); // Se não conseguir ler como JSON
+          }); 
       }
 
-      // Tentar ler como JSON se houver conteúdo
       return response.json().catch(() => ({ success: true }));
     })
     .then(() => {
       alert('Usuário excluído com sucesso!');
       document.getElementById('deleteConfirmModal').style.display = 'none';
-      loadUsers(); // Recarregar a lista de usuários
+      loadUsers(); 
     })
     .catch(error => {
       console.error('Erro na exclusão:', error);
       alert('Erro ao excluir usuário: ' + error.message);
     })
     .finally(() => {
-      // Restaurar o botão
       deleteButton.disabled = false;
       deleteButton.innerHTML = originalButtonText;
     });
 }
 
-// Utilitários
 function showLoadingState(isLoading) {
   const tableBody = document.querySelector('#usersTable tbody');
   if (isLoading) {
@@ -572,7 +544,6 @@ function showLoadingState(isLoading) {
   }
 }
 
-// Função para limitar a frequência de chamadas (debounce)
 function debounce(func, delay) {
   let timeout;
   return function (...args) {
