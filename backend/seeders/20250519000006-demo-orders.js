@@ -28,7 +28,7 @@ module.exports = {
       'order',
       [
         {
-          user_id: userMap['lucas@gmail.com'],
+          user_id: userMap['lucas@gmail.com.br'],
           order_date: today,
           status: 'pending',
           total: 89.97,
@@ -36,7 +36,7 @@ module.exports = {
           updated_at: today,
         },
         {
-          user_id: userMap['renan@gmail.com'],
+          user_id: userMap['renan@gmail.com.br'],
           order_date: yesterday,
           status: 'paid',
           total: 73.5,
@@ -44,7 +44,7 @@ module.exports = {
           updated_at: yesterday,
         },
         {
-          user_id: userMap['eduardo@gmail.com'],
+          user_id: userMap['eduardo@gmail.com.br'],
           order_date: lastWeek,
           status: 'complete',
           total: 129.99,
@@ -52,7 +52,7 @@ module.exports = {
           updated_at: lastWeek,
         },
         {
-          user_id: userMap['joao@gmail.com'],
+          user_id: userMap['joao@gmail.com.br'],
           order_date: twoWeeksAgo,
           status: 'complete',
           total: 65.98,

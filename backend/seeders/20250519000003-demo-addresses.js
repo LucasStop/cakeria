@@ -17,7 +17,7 @@ module.exports = {
       'address',
       [
         {
-          user_id: userMap['dev@cakeria'],
+          user_id: userMap['dev@cakeria.com.br'],
           street: 'Avenida Tecnológica',
           number: '42',
           neighborhood: 'Parque Digital',
@@ -30,7 +30,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
-          user_id: userMap['lucas@gmail.com'],
+          user_id: userMap['lucas@gmail.com.br'],
           street: 'Rua dos Desenvolvedores',
           number: '123',
           neighborhood: 'Jardim Código',
@@ -43,7 +43,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
-          user_id: userMap['renan@gmail.com'],
+          user_id: userMap['renan@gmail.com.br'],
           street: 'Rua da Programação',
           number: '456',
           neighborhood: 'Vila JavaScript',
@@ -56,7 +56,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
-          user_id: userMap['eduardo@gmail.com'],
+          user_id: userMap['eduardo@gmail.com.br'],
           street: 'Alameda dos Sistemas',
           number: '789',
           neighborhood: 'Parque Database',
@@ -69,7 +69,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
-          user_id: userMap['joao@gmail.com'],
+          user_id: userMap['joao@gmail.com.br'],
           street: 'Avenida do Frontend',
           number: '1010',
           neighborhood: 'Jardim Web',

@@ -12,7 +12,7 @@ module.exports = {
       [
         {
           name: 'Dev Cakeria',
-          email: 'dev@cakeria.com',
+          email: 'dev@cakeria.com.br',
           password: newUserPassword,
           cpf: '222.333.444-55',
           type: 'admin',
@@ -23,7 +23,7 @@ module.exports = {
         },
         {
           name: 'Lucas Stopinski',
-          email: 'lucas@gmail.com',
+          email: 'lucas@gmail.com.br',
           password: newUserPassword,
           cpf: '333.444.555-66',
           type: 'client',
@@ -34,7 +34,7 @@ module.exports = {
         },
         {
           name: 'Renan Herculano',
-          email: 'renan@gmail.com',
+          email: 'renan@gmail.com.br',
           password: newUserPassword,
           cpf: '444.555.666-77',
           type: 'client',
@@ -45,7 +45,7 @@ module.exports = {
         },
         {
           name: 'Eduardo Fabri',
-          email: 'eduardo@gmail.com',
+          email: 'eduardo@gmail.com.br',
           password: newUserPassword,
           cpf: '555.666.777-88',
           type: 'client',
@@ -56,7 +56,7 @@ module.exports = {
         },
         {
           name: 'João Victor',
-          email: 'joao@gmail.com',
+          email: 'joao@gmail.com.br',
           password: newUserPassword,
           cpf: '666.777.888-99',
           type: 'client',
