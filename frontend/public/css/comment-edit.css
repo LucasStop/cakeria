@@ -1,11 +1,9 @@
-/* Estilo para comentários em edição */
 .comment.editing {
   background-color: rgba(255, 248, 220, 0.5);
   border-left: 3px solid #f0c040;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilos para o diálogo de edição */
 .edit-comment-dialog {
   position: fixed;
   top: 0;

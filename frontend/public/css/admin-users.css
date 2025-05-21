@@ -1,4 +1,3 @@
-/* ===== VARIÁVEIS ===== */
 :root {
   --primary: #ff6b6b;
   --primary-dark: #ff5252;
@@ -116,14 +115,12 @@ body {
   transform: none;
 }
 
-/* Formulários */
 .admin-form {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
 }
 
-/* Estilo para o formulário em duas colunas, seguindo registro.css */
 .form-row {
   display: flex;
   gap: 16px;
@@ -173,7 +170,6 @@ body {
   background-color: #fff;
 }
 
-/* Estilo para campos inválidos */
 .invalid-input {
   border: 1px solid #ff3333 !important;
   background-color: #fff0f0 !important;
@@ -183,7 +179,6 @@ body {
   box-shadow: 0 0 0 3px rgba(255, 51, 51, 0.2) !important;
 }
 
-/* Estilo para mensagens de erro */
 .error-message {
   display: block;
   color: #ff3333;
@@ -199,7 +194,6 @@ body {
   margin-top: 1rem;
 }
 
-/* Botões no estilo do registro.css */
 .btn btn-primary {
   width: 15%;
   padding: 12px;
@@ -287,7 +281,6 @@ body {
   background-color: #c82333;
 }
 
-/* Tabela com estilo atualizado */
 .table-responsive {
   overflow-x: auto;
   margin-top: 1.5rem;
@@ -374,7 +367,6 @@ body {
   min-width: 150px;
 }
 
-/* Paginação com estilo atualizado */
 .pagination {
   display: flex;
   justify-content: center;
@@ -403,7 +395,6 @@ body {
   background-color: #f0f0f0;
 }
 
-/* Modal com estilos atualizados */
 .modal {
   display: none;
   position: fixed;
@@ -464,7 +455,6 @@ body {
   transform: rotate(90deg);
 }
 
-/* Ações na tabela com estilo atualizado */
 .table-actions {
   display: flex;
   gap: 0.75rem;
@@ -512,7 +502,6 @@ body {
   background-color: rgba(220, 53, 69, 0.15);
 }
 
-/* Estilo para headers da admin card */
 .admin-card h2 {
   color: #333;
   font-size: 1.4rem;
@@ -532,7 +521,6 @@ body {
   left: 0;
 }
 
-/* Estilos para o toggle de visualização da senha */
 .password-toggle {
   position: absolute;
   right: 12px;
@@ -568,7 +556,6 @@ body {
   padding-right: 40px;
 }
 
-/* Estilos para o upload de avatar */
 .avatar-upload-container {
   display: flex;
   align-items: center;

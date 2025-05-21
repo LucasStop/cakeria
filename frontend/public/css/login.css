@@ -1,4 +1,3 @@
-/* Login Page Styles */
 body {
   background-color: #f9f9f9;
   margin: 0;
@@ -129,7 +128,6 @@ body {
   background-color: #fff;
 }
 
-/* Estilo para o toggle de visualização da senha */
 .password-toggle {
   position: absolute;
   right: 12px;
@@ -163,7 +161,6 @@ body {
   padding-right: 40px;
 }
 
-/* Estilo para campos inválidos */
 .invalid-input {
   border: 1px solid #ff3333 !important;
   background-color: #fff0f0 !important;
@@ -173,7 +170,6 @@ body {
   box-shadow: 0 0 0 3px rgba(255, 51, 51, 0.2) !important;
 }
 
-/* Estilo para mensagens de erro */
 .error-message {
   display: block;
   color: #ff3333;
