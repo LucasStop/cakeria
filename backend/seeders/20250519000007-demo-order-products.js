@@ -2,7 +2,6 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    // Primeiro, vamos obter os IDs dos pedidos e produtos que criamos
     const orders = await queryInterface.sequelize.query('SELECT id, status, user_id FROM `order`;');
 
     const products = await queryInterface.sequelize.query('SELECT id, name FROM product;');
@@ -13,16 +12,12 @@ module.exports = {
     const productRows = products[0];
     const userRows = users[0];
 
-    // Criar mapa de emails para IDs
     const userMap = {};
     userRows.forEach(user => {
       userMap[user.email] = user.id;
     });
-
-    // Mapear pedidos por usuário e status
     const userOrders = {};
     orderRows.forEach(order => {
-      // Encontrar email do usuário pelo ID
       const userEmail = userRows.find(user => user.id === order.user_id)?.email;
       if (userEmail) {
         if (!userOrders[userEmail]) {
@@ -32,7 +27,6 @@ module.exports = {
       }
     });
 
-    // Mapear produtos por nome
     const productMap = {};
     productRows.forEach(product => {
       productMap[product.name] = product.id;

@@ -140,10 +140,8 @@
     <script src="./js/login.js"></script>
     <script src="./js/home.js"></script>
 
-    <!-- Script para demonstrar toast na página -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        // Mostrar toast quando a página carregar
         setTimeout(() => {
           if (window.Toast) {
             Toast.info('Descubra novas receitas deliciosas!', {
@@ -153,7 +151,6 @@
           }
         }, 1000);
 
-        // Adicionar toast ao botão de busca
         const searchBtn = document.getElementById('search-btn');
         const searchInput = document.getElementById('search-recipes');
 
@@ -169,7 +166,6 @@
               });
             }
 
-            // Preserva comportamento original se existir
             if (typeof originalClick === 'function') {
               originalClick.call(this, e);
             }

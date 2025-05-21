@@ -3,9 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 
-// Filtro para aceitar apenas imagens
 const fileFilter = (req, file, cb) => {
-  // Aceitar apenas imagens
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
@@ -13,30 +11,26 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Criar middleware do multer com tratamento de erro
 const upload = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, os.tmpdir()); // Usar diretório temporário do sistema
+      cb(null, os.tmpdir()); 
     },
     filename: function (req, file, cb) {
-      // Criar nome de arquivo único para evitar colisões
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       const ext = path.extname(file.originalname);
       cb(null, file.fieldname + '-' + uniqueSuffix + ext);
     }
   }),
   limits: {
-    fileSize: 5 * 1024 * 1024, // Limite de 5MB
+    fileSize: 5 * 1024 * 1024, 
   },
   fileFilter: fileFilter,
 });
 
-// Envolver o middleware do multer em um wrapper que captura erros
 const safeUpload = {
   single: function (fieldName) {
     return function (req, res, next) {
-      // Usar o middleware do multer em um try-catch
       try {
         const middleware = upload.single(fieldName);
 

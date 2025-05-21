@@ -70,10 +70,7 @@ app.get('/', (req, res) => {
 sequelize
   .sync({ force: false })
   .then(() => {
-    // console.log('Conexão com banco de dados estabelecida');
     app.listen(PORT, () => {
-      // console.log(`Acesse: http://localhost:${PORT}`);
-      // console.log(`Porta recebida do .env: ${process.env.PORT}`);
     });
   })
   .catch(err => {

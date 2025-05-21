@@ -1,28 +1,21 @@
-const { Recipe, User, sequelize } = require('../models'); // Adicionar sequelize para ter acesso a todos os modelos
+const { Recipe, User, sequelize } = require('../models'); 
 
-// Renomear funções para ficarem consistentes com as rotas
 exports.getAll = async (req, res) => {
   try {
-    // Opções de filtro a partir dos query params
     const { category, author, status, difficulty } = req.query;
     
-    // Construir condições de filtro
     const whereConditions = {};
     
-    // Filtrar por status se fornecido
     if (status) {
       whereConditions.status = status;
     } else {
-      // Por padrão, trazer apenas receitas publicadas
       whereConditions.status = 'publicado';
     }
     
-    // Filtrar por dificuldade se fornecida
     if (difficulty) {
       whereConditions.difficulty = difficulty;
     }
     
-    // Condições para joins
     const includeConditions = [
       {
         model: User,
@@ -36,7 +29,6 @@ exports.getAll = async (req, res) => {
       }
     ];
     
-    // Filtrar por categoria se fornecida
     if (category) {
       includeConditions[1].where = { 
         [sequelize.Op.or]: [
@@ -46,7 +38,6 @@ exports.getAll = async (req, res) => {
       };
     }
     
-    // Filtrar por autor se fornecido
     if (author) {
       includeConditions[0].where = {
         id: author
@@ -89,14 +80,12 @@ exports.getById = async (req, res) => {
       return res.status(404).json({ message: 'Receita não encontrada' });
     }
 
-    // Incrementar a contagem de visualizações
     if (recipe.views === null || recipe.views === undefined) {
       recipe.views = 1;
     } else {
       recipe.views += 1;
     }
 
-    // Salvar a atualização da contagem de visualizações
     await recipe.save();
 
     console.log(`Visualizações da receita ${recipe.id} incrementadas para ${recipe.views}`);
@@ -113,7 +102,6 @@ exports.getById = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    // Garante que o usuário esteja autenticado
     if (!req.user) {
       return res.status(401).json({ message: 'Usuário não autenticado' });
     }    const { 
@@ -129,7 +117,6 @@ exports.create = async (req, res) => {
       status 
     } = req.body;
 
-    // Validar campos obrigatórios
     if (!title || !description || !ingredients || !instructions) {
       return res.status(400).json({ 
         message: 'Campos obrigatórios ausentes',
@@ -137,7 +124,6 @@ exports.create = async (req, res) => {
       });
     }
 
-    // Verificar se a categoria existe, caso tenha sido informada
     if (category_id) {
       const category = await sequelize.models.Category.findByPk(category_id);
       if (!category) {
@@ -148,11 +134,10 @@ exports.create = async (req, res) => {
       }
     }
 
-    // Verificar e processar a imagem se for fornecida
     let image = null;
     if (req.file && req.file.buffer) {
       image = req.file.buffer;
-    }    // Criar o objeto com os dados da receita
+    }   
     const recipeData = {
       title,
       description,
@@ -168,9 +153,7 @@ exports.create = async (req, res) => {
       image
     };
 
-    // Criar a receita no banco de dados
     const recipe = await Recipe.create(recipeData);
-      // Buscar a receita com os dados do autor para retornar
     const recipeWithAuthor = await Recipe.findByPk(recipe.id, {
       include: [
         {
@@ -201,18 +184,16 @@ exports.update = async (req, res) => {
   try {
     const recipeId = req.params.id;
 
-    // Verificar se a receita existe
     const recipe = await Recipe.findByPk(recipeId);
     if (!recipe) {
       return res.status(404).json({ message: 'Receita não encontrada' });
-    }    // Verificar permissões (usuário admin ou o autor da receita)
+    }    
     const isOwner = recipe.user_id === req.user.id;
     
     if (req.user.type !== 'admin' && !isOwner) {
       return res.status(403).json({ message: 'Você não tem permissão para editar esta receita' });
     }
 
-    // Extrair campos específicos para atualização
     const { 
       title, 
       description, 
@@ -226,10 +207,9 @@ exports.update = async (req, res) => {
       status 
     } = req.body;
 
-    // Criar objeto para atualização
     const updateData = {};
 
-    // Adicionar apenas os campos fornecidos    if (title !== undefined) updateData.title = title;
+    if (title !== undefined) updateData.title = title;
     if (description !== undefined) updateData.description = description;
     if (ingredients !== undefined) updateData.ingredients = ingredients;
     if (instructions !== undefined) updateData.instructions = instructions;
@@ -238,7 +218,6 @@ exports.update = async (req, res) => {
     if (servings !== undefined) updateData.servings = servings;
     if (difficulty !== undefined) updateData.difficulty = difficulty;
     if (category_id !== undefined) {
-      // Verificar se a categoria existe, caso tenha sido informada
       if (category_id) {
         const category = await sequelize.models.Category.findByPk(category_id);
         if (!category) {
@@ -252,14 +231,12 @@ exports.update = async (req, res) => {
     }
     if (status !== undefined) updateData.status = status;
 
-    // Verificar e processar a imagem se for fornecida
     if (req.file && req.file.buffer) {
       updateData.image = req.file.buffer;
-    }    // Não permitir mudar o userId da receita
+    }    
     delete updateData.user_id;
 
-    // Realizar a atualização
-    await recipe.update(updateData);    // Buscar a receita atualizada com dados do autor e categoria
+    await recipe.update(updateData);    
     const updatedRecipe = await Recipe.findByPk(recipeId, {
       include: [
         {
@@ -288,7 +265,7 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const recipeId = req.params.id;    // Verificar se a receita existe
+    const recipeId = req.params.id;  
     const recipe = await Recipe.findByPk(recipeId, {
       include: [
         {
@@ -306,22 +283,19 @@ exports.delete = async (req, res) => {
 
     if (!recipe) {
       return res.status(404).json({ message: 'Receita não encontrada' });
-    }    // Verificar permissões (usuário admin ou o autor da receita)
+    }   
     const isOwner = recipe.user_id === req.user.id;
     
     if (req.user.type !== 'admin' && !isOwner) {
       return res.status(403).json({ message: 'Você não tem permissão para excluir esta receita' });
     }
 
-    // Verificar se há comentários associados
     const commentCount = await recipe.countComment_recipe();
     
-    // Excluir os comentários primeiro, se existirem
     if (commentCount > 0) {
       console.log(`Excluindo ${commentCount} comentários associados à receita ${recipeId}`);
     }
 
-    // Excluir a receita (vai excluir em cascata os comentários devido à configuração no modelo)
     await recipe.destroy();
     
     res.status(200).json({ 
@@ -338,7 +312,6 @@ exports.delete = async (req, res) => {
   }
 };
 
-// Obter a imagem de uma receita
 exports.getImage = async (req, res) => {
   try {
     const { id } = req.params;
@@ -348,7 +321,6 @@ exports.getImage = async (req, res) => {
       return res.status(404).json({ message: 'Imagem da receita não encontrada' });
     }
     
-    // Definir o tipo de conteúdo como imagem
     res.set('Content-Type', 'image/jpeg');
     res.send(recipe.image);
   } catch (error) {
@@ -360,28 +332,24 @@ exports.getImage = async (req, res) => {
   }
 };
 
-// Adicionar imagem a uma receita existente
 exports.addImage = async (req, res) => {
   try {
     const recipeId = req.params.id;
     
-    // Verificar se a receita existe
     const recipe = await Recipe.findByPk(recipeId);
     if (!recipe) {
       return res.status(404).json({ message: 'Receita não encontrada' });
-    }    // Verificar permissões (usuário admin ou o autor da receita)
+    }   
     const isOwner = recipe.user_id === req.user.id;
     
     if (req.user.type !== 'admin' && !isOwner) {
       return res.status(403).json({ message: 'Você não tem permissão para modificar esta receita' });
     }
 
-    // Verificar se a imagem foi enviada
     if (!req.file || !req.file.buffer) {
       return res.status(400).json({ message: 'Nenhuma imagem fornecida' });
     }
 
-    // Atualizar a imagem da receita
     recipe.image = req.file.buffer;
     await recipe.save();
 

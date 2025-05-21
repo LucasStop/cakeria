@@ -1,35 +1,28 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // Verificar se o usuário tem permissão para acessar a área de administração
   checkAdminAccess();
 
-  // Inicializar gráficos e funcionalidades da área administrativa
   initAdminDashboard();
 });
 
-// Verificar se o usuário está autenticado e tem permissão de administrador
 function checkAdminAccess() {
   const user = getCurrentUser();
 
   if (!isAuthenticated()) {
-    // Redirecionar para a página de login se não estiver autenticado
     window.location.href = '/login.html?redirect=/admin.html';
     return;
   }
 
   if (!isAdmin(user)) {
-    // Redirecionar para a página inicial se não for administrador
     window.location.href = '/index.html';
     alert('Acesso restrito. Você não tem permissão para acessar a área administrativa.');
     return;
   }
 }
 
-// Verificar se o usuário está autenticado
 function isAuthenticated() {
   return localStorage.getItem('token') !== null;
 }
 
-// Obter informações do usuário atual
 function getCurrentUser() {
   try {
     const userStr = localStorage.getItem('user');
@@ -40,12 +33,10 @@ function getCurrentUser() {
   }
 }
 
-// Verificar se o usuário é administrador
 function isAdmin(user) {
   return user && (user.type === 'admin' || user.isAdmin === true);
 }
 
-// Inicializar o dashboard administrativo
 function initAdminDashboard() {
   const ctxUsers = document.getElementById('usersChart').getContext('2d');
   const ctxOrders = document.getElementById('ordersChart').getContext('2d');
@@ -91,7 +82,6 @@ function initAdminDashboard() {
     },
   });
 
-  // Gráfico de Produtos
   new Chart(ctxProducts, {
     type: 'pie',
     data: {

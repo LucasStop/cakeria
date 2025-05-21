@@ -1,6 +1,3 @@
-// scripts.js
-
-// Proteger a página - verificar se o usuário está autenticado
 function protectPage() {
   const user = getCurrentUser();
   if (!user) {
@@ -8,18 +5,15 @@ function protectPage() {
   }
 }
 
-// Obtém o usuário atual do armazenamento local
 function getCurrentUser() {
   const userJson = localStorage.getItem('user');
   return userJson ? JSON.parse(userJson) : null;
 }
 
-// Verifica se o usuário está autenticado
 function isAuthenticated() {
   return !!getCurrentUser();
 }
 
-// Atualiza a exibição do usuário no cabeçalho
 function updateUserDisplay(user) {
   const userNameEl = document.getElementById('user-name');
   if (userNameEl) {
@@ -27,29 +21,22 @@ function updateUserDisplay(user) {
   }
 }
 
-// Página de receitas não precisa ser protegida totalmente, apenas verificar autenticação para ações específicas
 document.addEventListener('DOMContentLoaded', () => {
-  // Obtém o usuário atual se estiver autenticado
   const user = getCurrentUser();
 
-  // Atualizar exibição do usuário se estiver autenticado
   if (user && typeof updateUserDisplay === 'function') {
     updateUserDisplay(user);
   }
 
-  // Inicializar a página de receitas
   initRecipesPage();
 
-  // Configurar botão de compartilhar receita para verificar autenticação quando clicado
   const newRecipeBtn = document.getElementById('new-recipe-btn');
   if (newRecipeBtn) {
     newRecipeBtn.addEventListener('click', function (e) {
       e.preventDefault();
-      // Verificar autenticação antes de redirecionar
       if (isAuthenticated()) {
         window.location.href = '/compartilhar-receita.html';
       } else {
-        // Redirecionar para login com redirecionamento para compartilharReceitas
         window.location.href = `/login.html?redirect=${encodeURIComponent('/compartilhar-receita.html')}`;
         if (window.Toast) {
           Toast.warning('Você precisa fazer login para compartilhar receitas', {
@@ -62,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Variáveis e seletores
 const recipesGrid = document.getElementById('recipes-grid');
 const paginationContainer = document.getElementById('recipes-pagination');
 const searchInput = document.getElementById('search-recipes');
@@ -71,20 +57,16 @@ const categoryFilter = document.getElementById('category-filter');
 const sortSelect = document.getElementById('sort-recipes');
 const recipeTemplate = document.getElementById('recipe-card-template');
 
-// Estado da aplicação
 let currentPage = 1;
 let totalPages = 1;
 
-// Inicializa a página de receitas
 function initRecipesPage() {
   console.log('Inicializando página de receitas...');
   setupEventListeners();
   fetchRecipes();
 }
 
-// Configura os event listeners
 function setupEventListeners() {
-  // Busca de receitas
   if (searchBtn && searchInput) {
     searchBtn.addEventListener('click', () => {
       const searchTerm = searchInput.value.trim();
@@ -107,19 +89,14 @@ function setupEventListeners() {
     });
   }
 
-  // Botão para compartilhar nova receita
   const newRecipeBtn = document.getElementById('new-recipe-btn');
   if (newRecipeBtn) {
     newRecipeBtn.addEventListener('click', () => {
-      // Implementar compartilhamento de nova receita
       console.log('Compartilhar nova receita');
-      // showNewRecipeModal();
     });
   }
 
-  // Filtro por categoria
   if (categoryFilter) {
-    // Adicionar categorias dinamicamente
     const categories = ['Bolos', 'Tortas', 'Doces', 'Salgados', 'Bebidas', 'Sem Glúten', 'Veganos'];
     categories.forEach(category => {
       const option = document.createElement('option');
@@ -136,7 +113,6 @@ function setupEventListeners() {
     });
   }
 
-  // Ordenação de receitas
   if (sortSelect) {
     sortSelect.addEventListener('change', () => {
       const sortOption = sortSelect.value;
@@ -147,7 +123,6 @@ function setupEventListeners() {
   }
 }
 
-// Buscar receitas da API
 async function fetchRecipes() {
   console.log('Buscando receitas do servidor...');
   showLoading();
@@ -201,7 +176,6 @@ async function fetchRecipes() {
   }
 }
 
-// Exibir indicador de carregamento
 function showLoading() {
   if (recipesGrid) {
     recipesGrid.innerHTML = `
@@ -213,7 +187,6 @@ function showLoading() {
   }
 }
 
-// Exibir mensagem quando não há receitas
 function showEmptyState() {
   if (recipesGrid) {
     recipesGrid.innerHTML = `
@@ -226,7 +199,6 @@ function showEmptyState() {
   }
 }
 
-// Exibir mensagem de erro
 function showError() {
   if (recipesGrid) {
     recipesGrid.innerHTML = `
@@ -239,10 +211,8 @@ function showError() {
   }
 }
 
-// Cache para evitar requisições repetidas
 const userCache = {};
 
-// Função para buscar detalhes do usuário por ID
 async function getUserById(userId) {
   console.log(`Tentando buscar usuário com ID ${userId}...`);
 
@@ -251,11 +221,8 @@ async function getUserById(userId) {
   }
 
   try {
-    // Simulação de resposta para desenvolvimento
-    // Em produção, seria substituído pela chamada real da API
     const user = { id: userId, name: `Usuário #${userId}` };
 
-    // Valores específicos para testes
     if (userId === 27) {
       user.name = 'Renan Herculano';
       user.email = 'renan@gmail.com.br';
@@ -269,25 +236,19 @@ async function getUserById(userId) {
   }
 }
 
-// Exibir receitas na página
 async function displayRecipes(recipes) {
-  // Limpar o grid
   if (!recipesGrid) return;
   recipesGrid.innerHTML = '';
 
   console.log('Começando a exibir receitas. Total:', recipes.length);
 
-  // Para cada receita, criar um card
   for (const recipe of recipes) {
     console.log('Processando receita:', recipe);
 
-    // Verificar se temos o template
     if (!recipeTemplate) {
-      // Se não tivermos o template, criar um HTML básico
       const card = document.createElement('div');
       card.className = 'recipe-card';
 
-      // Dados da receita
       const title = recipe.title || 'Sem título';
       const description = recipe.description || 'Sem descrição';
       const author = recipe.author?.name || 'Autor desconhecido';
@@ -311,22 +272,18 @@ async function displayRecipes(recipes) {
 
       recipesGrid.appendChild(card);
     } else {
-      // Se temos o template, usamos ele
       const card = recipeTemplate.content.cloneNode(true);
 
-      // Preencher dados
       const img = card.querySelector('.recipe-image img');
       img.src = recipe.image_url || '/assets/placeholder.jpg';
       img.alt = recipe.title;
 
       card.querySelector('.recipe-title').textContent = recipe.title;
 
-      // Autor - Melhor tratamento para diferentes formatos de dados
       const authorSpan = card.querySelector('.author-name');
       if (authorSpan) {
         let authorName = null;
 
-        // Verificar diferentes possibilidades para o nome do autor
         if (recipe.author?.name) {
           authorName = recipe.author.name;
         } else if (recipe.user?.name) {
@@ -334,7 +291,6 @@ async function displayRecipes(recipes) {
         } else if (recipe.userName) {
           authorName = recipe.userName;
         } else if (recipe.userId || recipe.user_id) {
-          // Se tiver apenas o ID do usuário, buscar o nome na API
           const userId = recipe.userId || recipe.user_id;
 
           if (userCache[userId]) {
@@ -395,42 +351,34 @@ async function displayRecipes(recipes) {
         }
       }
 
-      // Visualizações
       const viewsSpan = card.querySelector('.views-count');
       if (viewsSpan) {
         const viewCount = recipe.views || 0;
         viewsSpan.textContent = viewCount;
 
-        // Adicionar classe para destacar receitas populares (mais de 10 visualizações)
         if (viewCount > 10) {
           const viewsIcon = card.querySelector('.recipe-views i');
           if (viewsIcon) {
             viewsIcon.classList.remove('far');
             viewsIcon.classList.add('fas');
-            viewsIcon.style.color = '#e55757'; // Destacar ícone com cor
+            viewsIcon.style.color = '#e55757';
           }
         }
       }
 
-      // Descrição
       const excerpt = card.querySelector('.recipe-excerpt');
       if (excerpt) excerpt.textContent = recipe.description?.substring(0, 120) + '...';
 
-      // Dificuldade
       const difficultySpan = card.querySelector('.recipe-difficulty');
       if (difficultySpan) difficultySpan.textContent = recipe.difficulty || 'Médio';
 
-      // Tempo - Melhor tratamento para diferentes formatos
       const timeSpan = card.querySelector('.time-text');
       if (timeSpan) {
-        // Considerar todas as possibilidades de nomenclatura
         const prepTime = recipe.prep_time || recipe.prepTime || 0;
         const cookTime = recipe.cook_time || recipe.cookTime || 0;
 
-        // Ajuste para garantir que os valores são tratados como números
         const totalTime = parseInt(prepTime) + parseInt(cookTime);
 
-        // Formatação melhorada
         if (totalTime > 0) {
           timeSpan.textContent = `${totalTime} min`;
         } else if (recipe.totalTime || recipe.total_time) {
@@ -440,16 +388,13 @@ async function displayRecipes(recipes) {
         }
       }
 
-      // Link para a receita
       const recipeLink = card.querySelector('.recipe-link');
       if (recipeLink) {
         recipeLink.href = `/receita.html?id=${recipe.id}`;
       }
 
-      // Botões de administração
       const adminActions = card.querySelector('.recipe-admin-actions');
       if (adminActions) {
-        // Verificar se o usuário pode editar/excluir esta receita
         const canEdit = canEditRecipe(recipe);
         const canDelete = canDeleteRecipe(recipe);
 
@@ -466,7 +411,6 @@ async function displayRecipes(recipes) {
               });
             }
           } else {
-            // Esconder botão de edição se não tiver permissão
             const editButton = adminActions.querySelector('.edit-recipe');
             if (editButton) {
               editButton.style.display = 'none';
@@ -483,7 +427,6 @@ async function displayRecipes(recipes) {
               });
             }
           } else {
-            // Esconder botão de exclusão se não tiver permissão
             const deleteButton = adminActions.querySelector('.delete-recipe');
             if (deleteButton) {
               deleteButton.style.display = 'none';
@@ -499,7 +442,6 @@ async function displayRecipes(recipes) {
 
 console.log(`${recipes.length} receitas exibidas com sucesso`);
 
-// Mostrar confirmação para excluir receita na página de listagem
 function showDeleteConfirmation(recipe) {
   const dialog = document.createElement('div');
   dialog.className = 'confirmation-dialog';
@@ -516,21 +458,17 @@ function showDeleteConfirmation(recipe) {
 
   document.body.appendChild(dialog);
 
-  // Manipular botão de cancelar
   const cancelButton = dialog.querySelector('.dialog-btn-cancel');
   cancelButton.addEventListener('click', () => {
     dialog.remove();
   });
 
-  // Manipular botão de confirmar
   const confirmButton = dialog.querySelector('.dialog-btn-confirm');
   confirmButton.addEventListener('click', async () => {
     try {
-      // Adicionar indicador de carregamento
       confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
       confirmButton.disabled = true;
 
-      // Fazer a requisição para excluir a receita
       await fetch(`${API.BASE_URL}/recipe/${recipe.id}`, {
         method: 'DELETE',
         headers: {
@@ -538,10 +476,8 @@ function showDeleteConfirmation(recipe) {
         },
       });
 
-      // Mostrar notificação de sucesso
       showNotification('Receita excluída com sucesso!', 'success');
 
-      // Recarregar a lista de receitas
       setTimeout(() => {
         fetchRecipes();
         dialog.remove();
@@ -554,20 +490,16 @@ function showDeleteConfirmation(recipe) {
   });
 }
 
-// Função para exibir notificações
 function showNotification(message, type = 'info') {
-  // Verificar se temos o objeto de notificações global
   if (window.Notifications) {
     window.Notifications[type](message);
   } else {
-    // Fallback: criar uma notificação simples
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
 
     document.body.appendChild(notification);
 
-    // Remover após 5 segundos
     setTimeout(() => {
       notification.classList.add('fade-out');
       setTimeout(() => {
@@ -577,7 +509,6 @@ function showNotification(message, type = 'info') {
   }
 }
 
-// Exportar funções para uso global
 window.fetchRecipes = fetchRecipes;
 window.verReceitaDetalhes = function (id) {
   console.log(`Ver detalhes da receita ${id}`);
