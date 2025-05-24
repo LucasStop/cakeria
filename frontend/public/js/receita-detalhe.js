@@ -239,7 +239,7 @@ async function fetchComments(recipeId) {
   `;
 
   try {
-    const response = await fetch(`${API.BASE_URL}/comments/recipe/${recipeId}`);
+    const response = await fetch(`${API.BASE_URL}/comment/recipe/${recipeId}`);
 
     if (!response.ok) {
       throw new Error(`Erro ao buscar comentários: ${response.status}`);
@@ -380,7 +380,7 @@ async function postComment(recipeId, content) {
     throw new Error('Você precisa estar logado para comentar');
   }
 
-  const response = await fetch(`${API.BASE_URL}/comments/${recipeId}`, {
+  const response = await fetch(`${API.BASE_URL}/comment/${recipeId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -395,6 +395,68 @@ async function postComment(recipeId, content) {
   }
 
   return await response.json();
+}
+
+async function deleteCommentOnServer(commentId) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    showNotification('Sessão expirada. Por favor, faça login novamente.', 'error');
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API.BASE_URL}/comment/${commentId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Erro ao deletar comentário: ${response.status}`);
+    }
+    showNotification('Comentário excluído com sucesso!', 'success');
+    const commentElement = document.querySelector(`.comment[data-comment-id="${commentId}"]`);
+    if (commentElement) {
+      commentElement.remove();
+    } else {
+      const recipeId = getRecipeIdFromUrl();
+      if (recipeId) fetchComments(recipeId);
+    }
+  } catch (error) {
+    console.error('Erro ao excluir comentário:', error);
+    showNotification(error.message || 'Não foi possível excluir o comentário.', 'error');
+  }
+}
+
+// Função para atualizar comentário (adapte o nome se já existir uma)
+async function updateCommentOnServer(commentId, newContent) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    showNotification('Sessão expirada. Por favor, faça login novamente.', 'error');
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API.BASE_URL}/comment/${commentId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ content: newContent }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Erro ao atualizar comentário: ${response.status}`);
+    }
+    showNotification('Comentário atualizado com sucesso!', 'success');
+    const recipeId = getRecipeIdFromUrl();
+    if (recipeId) fetchComments(recipeId); // Recarrega para simplicidade
+  } catch (error) {
+    console.error('Erro ao atualizar comentário:', error);
+    showNotification(error.message || 'Não foi possível atualizar o comentário.', 'error');
+  }
 }
 
 function getUserInitials(name) {
@@ -849,7 +911,7 @@ function showDeleteCommentConfirmation(comment) {
       confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
       confirmButton.disabled = true;
 
-      await fetch(`${API.BASE_URL}/comments/${comment.id}`, {
+      await fetch(`${API.BASE_URL}/comment/${comment.id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -930,7 +992,7 @@ function showEditCommentForm(comment) {
 
       console.log('Enviando atualização para o comentário:', comment.id);
 
-      const response = await fetch(`${API.BASE_URL}/comments/${comment.id}`, {
+      const response = await fetch(`${API.BASE_URL}/comment/${comment.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
