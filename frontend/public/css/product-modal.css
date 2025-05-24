@@ -144,15 +144,15 @@
 }
 
 .product-modal-meta-item:nth-child(1) {
-  border-left-color: #4299e1; 
+  border-left-color: #4299e1;
 }
 
 .product-modal-meta-item:nth-child(2) {
-  border-left-color: #48bb78; 
+  border-left-color: #48bb78;
 }
 
 .product-modal-meta-item:nth-child(3) {
-  border-left-color: #ed8936; 
+  border-left-color: #ed8936;
 }
 
 .product-modal-meta-item.expired {
