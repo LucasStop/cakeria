@@ -1,4 +1,3 @@
-
 (function () {
   if (window.Toast) {
     console.warn('Toast já está definido globalmente. Não será reinstanciado.');

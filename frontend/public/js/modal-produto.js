@@ -1,4 +1,3 @@
-
 const ProductModal = {
   isInitialized: false,
   overlayElement: null,
