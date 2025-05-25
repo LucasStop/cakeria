@@ -159,7 +159,7 @@ class Header extends HTMLElement {
                 </button>
               </div>
             </div>
-            </div>            <button class="menu-toggle" aria-label="Menu">
+            <button class="menu-toggle" aria-label="Menu">
               <span class="bar"></span>
               <span class="bar"></span>
               <span class="bar"></span>
@@ -337,6 +337,7 @@ class Header extends HTMLElement {
     navBar.classList.toggle('active');
     menuToggle.classList.toggle('active');
     overlay.classList.toggle('active');
+    document.body.classList.toggle('page-content-obscured'); // Add this line
 
     if (navBar.classList.contains('active')) {
       const isLoggedIn = localStorage.getItem('token') !== null;
@@ -379,6 +380,7 @@ class Header extends HTMLElement {
     navBar.classList.remove('active');
     menuToggle.classList.remove('active');
     overlay.classList.remove('active');
+    document.body.classList.remove('page-content-obscured'); // Add this line
 
     const mobileLoginItem = navBar.querySelector('.mobile-login-item');
     if (mobileLoginItem) {
