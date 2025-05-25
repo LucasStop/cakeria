@@ -32,6 +32,38 @@ body {
   line-height: 1.6;
   color: var(--text-color);
   background-color: #fcfcfc;
+  position: relative; /* Necessário para o z-index do pseudo-elemento */
+}
+
+/* Estilos para o overlay da página inteira */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Cor e opacidade do overlay */
+  z-index: 999; /* Abaixo do header (que é 10000), acima do conteúdo */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none; /* O overlay em si não deve ser interativo */
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+body.page-content-obscured::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Opcional: Desabilitar a rolagem do corpo quando o menu está aberto */
+body.page-content-obscured {
+  overflow: hidden;
+}
+
+/* Garante que o conteúdo principal (não o header) não seja clicável quando o menu está aberto */
+body.page-content-obscured > *:not(header-component):not(script):not(style):not(link) {
+  pointer-events: none;
 }
 
 .container {
