@@ -1,7 +1,7 @@
 const { Product, Category } = require('../models');
 const sequelize = require('../models').sequelize;
-const upload = require('../utils/upload'); // Certifique-se de que este arquivo/função existe
-const fs = require('fs'); // Importando fs para leitura de arquivos
+const upload = require('../utils/upload');
+const fs = require('fs');
 
 exports.findAll = async (req, res) => {
   try {
@@ -40,9 +40,6 @@ exports.findOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    // O middleware de upload já deve ter processado a imagem
-    // e adicionado o arquivo ao req.file, se houver
-
     console.log('Recebendo requisição para criar produto:', {
       body: req.body,
       file: req.file ? 'Arquivo recebido' : 'Sem arquivo',
@@ -68,15 +65,13 @@ exports.create = async (req, res) => {
     }
 
     try {
-      // Gerar slug a partir do nome
       const slug = name
         .toLowerCase()
-        .replace(/[^\w\s-]/g, '') // Remove caracteres especiais
-        .replace(/\s+/g, '-') // Substitui espaços por hífens
-        .replace(/--+/g, '-') // Remove hífens duplicados
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/--+/g, '-')
         .trim();
 
-      // Preparar dados do produto com validação segura
       const productData = {
         category_id: parseInt(category_id) || null,
         name: name.trim(),
@@ -85,7 +80,6 @@ exports.create = async (req, res) => {
         is_active: is_active === 'false' ? false : true,
       };
 
-      // Adicionar preço com validação segura
       if (price) {
         try {
           productData.price = formatPriceForDatabase(price);
@@ -95,12 +89,10 @@ exports.create = async (req, res) => {
         }
       }
 
-      // Adicionar tamanho
       if (size) {
         productData.size = size.trim();
       }
 
-      // Adicionar estoque com validação segura
       const stockValue = stock_quantity || stock;
       if (stockValue !== undefined && stockValue !== null) {
         try {
@@ -113,34 +105,27 @@ exports.create = async (req, res) => {
         productData.stock = 0;
       }
 
-      // Processar data de validade (obrigatória no modelo)
       try {
-        // Usar expiration_date do formulário ou criar uma data padrão (1 ano no futuro)
         if (expiration_date) {
           productData.expiry_date = formatDateForDatabase(expiration_date);
         } else {
-          // Criar data um ano no futuro como padrão
           const defaultDate = new Date();
           defaultDate.setFullYear(defaultDate.getFullYear() + 1);
           productData.expiry_date = defaultDate;
         }
       } catch (dateError) {
         console.error('Erro ao processar data:', dateError);
-        // Usar data padrão 1 ano no futuro
         const defaultDate = new Date();
         defaultDate.setFullYear(defaultDate.getFullYear() + 1);
         productData.expiry_date = defaultDate;
       }
 
-      // Processar imagem com tratamento de erro
       if (req.file) {
         try {
           productData.image = fs.readFileSync(req.file.path);
-          // Excluir o arquivo após lê-lo
           fs.unlinkSync(req.file.path);
         } catch (imageError) {
           console.error('Erro ao processar imagem:', imageError);
-          // Continuar sem imagem
         }
       }
 
@@ -169,53 +154,49 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    upload.single('image')(req, res, async err => {
-      if (err) {
-        return res.status(400).json({ error: 'Erro no upload da imagem' });
-      }
+    const { id } = req.params;
+    const product = await Product.findByPk(id);
 
-      const { id } = req.params;
-      const product = await Product.findByPk(id);
+    if (!product) {
+      return res.status(404).json({ message: 'Produto não encontrado' });
+    }
 
-      if (!product) {
-        return res.status(404).json({ message: 'Produto não encontrado' });
-      }
+    const updateData = {};
 
-      // Create update data with only the fields that are present
-      const updateData = {};
+    if (req.body.name) updateData.name = req.body.name;
+    if (req.body.description) updateData.description = req.body.description;
+    if (req.body.category_id) updateData.category_id = req.body.category_id;
+    if (req.body.price !== undefined) updateData.price = formatPriceForDatabase(req.body.price);
+    if (req.body.size) updateData.size = req.body.size;
+    if (req.body.stock !== undefined) updateData.stock = parseInt(req.body.stock);
+    if (req.body.expiration_date || req.body.expiry_date) {
+      updateData.expiry_date = formatDateForDatabase(
+        req.body.expiration_date || req.body.expiry_date
+      );
+    }
+    if (req.body.is_active !== undefined)
+      updateData.is_active = req.body.is_active === 'false' ? false : Boolean(req.body.is_active);
 
-      // Process only provided fields
-      if (req.body.name) updateData.name = req.body.name;
-      if (req.body.description) updateData.description = req.body.description;
-      if (req.body.category_id) updateData.category_id = req.body.category_id;
-      if (req.body.price !== undefined) updateData.price = formatPriceForDatabase(req.body.price);
-      if (req.body.size) updateData.size = req.body.size;
-      if (req.body.stock !== undefined) updateData.stock = parseInt(req.body.stock);
-      if (req.body.expiry_date)
-        updateData.expiry_date = formatDateForDatabase(req.body.expiry_date);
-      if (req.body.is_active !== undefined)
-        updateData.is_active = req.body.is_active === 'false' ? false : Boolean(req.body.is_active);
+    if (req.body.name) {
+      updateData.slug = req.body.name
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/--+/g, '-')
+        .trim();
+    }
 
-      // Update slug if name is provided
-      if (req.body.name) {
-        updateData.slug = req.body.name
-          .toLowerCase()
-          .replace(/[^\w\s-]/g, '')
-          .replace(/\s+/g, '-')
-          .replace(/--+/g, '-')
-          .trim();
-      }
-
-      // Process image if provided
-      if (req.file) {
+    if (req.file) {
+      try {
         updateData.image = fs.readFileSync(req.file.path);
-        // Delete the file after reading it
         fs.unlinkSync(req.file.path);
+      } catch (imageError) {
+        console.error('Erro ao processar imagem:', imageError);
       }
+    }
 
-      await product.update(updateData);
-      res.json(await Product.findByPk(id, { include: [{ model: Category, as: 'category' }] }));
-    });
+    await product.update(updateData);
+    res.json(await Product.findByPk(id, { include: [{ model: Category, as: 'category' }] }));
   } catch (error) {
     res.status(400).json({
       message: 'Erro ao atualizar produto',
@@ -290,8 +271,7 @@ exports.getImage = async (req, res) => {
       return res.status(404).send('Imagem não encontrada');
     }
 
-    // Definir os cabeçalhos adequados para retornar a imagem
-    res.set('Content-Type', 'image/jpeg'); // Ou determinar dinamicamente baseado no tipo de imagem
+    res.set('Content-Type', 'image/jpeg');
     return res.send(product.image);
   } catch (error) {
     res.status(500).json({
@@ -305,22 +285,19 @@ function formatPriceForDatabase(price) {
   if (!price) return 0;
 
   try {
-    // Remover símbolos e substituir vírgula por ponto
     const cleanedPrice = price
       .toString()
-      .replace(/[^\d.,]/g, '') // Remove tudo exceto dígitos, pontos e vírgulas
-      .replace(',', '.'); // Substitui vírgula por ponto
+      .replace(/[^\d.,]/g, '')
+      .replace(',', '.');
 
-    // Converter para número e garantir duas casas decimais
     const numericPrice = parseFloat(cleanedPrice);
 
-    // Verificar se é um número válido
     if (isNaN(numericPrice)) return 0;
 
     return parseFloat(numericPrice.toFixed(2));
   } catch (error) {
     console.error('Erro ao formatar preço:', error);
-    return 0; // Valor padrão em caso de erro
+    return 0;
   }
 }
 
@@ -328,25 +305,19 @@ function formatDateForDatabase(date) {
   if (!date) return new Date();
 
   try {
-    // Verificar se já é um objeto Date
     if (date instanceof Date) return date;
 
-    // Verificar formatos possíveis: DD/MM/YYYY, YYYY-MM-DD, etc.
     let parsedDate;
 
     if (date.includes('/')) {
-      // Formato DD/MM/YYYY
       const [day, month, year] = date.split('/');
       parsedDate = new Date(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
     } else if (date.includes('-')) {
-      // Formato YYYY-MM-DD
       parsedDate = new Date(date);
     } else {
-      // Outras tentativas
       parsedDate = new Date(date);
     }
 
-    // Verificar se a data resultante é válida
     if (isNaN(parsedDate.getTime())) {
       throw new Error('Data inválida');
     }
@@ -354,7 +325,6 @@ function formatDateForDatabase(date) {
     return parsedDate;
   } catch (error) {
     console.error('Erro ao formatar data:', error);
-    // Retornar data atual em caso de erro
     return new Date();
   }
 }

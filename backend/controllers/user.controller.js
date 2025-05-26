@@ -200,7 +200,7 @@ exports.delete = async (req, res) => {
       await User.destroy({ where: { id }, transaction: t });
     });
 
-    res.status(204).send();
+    res.status(200).json({ message: 'Usuário removido com sucesso' });
   } catch (error) {
     res.status(500).json({ message: 'Erro ao remover usuário', error: error.message });
   }

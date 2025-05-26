@@ -2,13 +2,34 @@ class Header extends HTMLElement {
   constructor() {
     super();
   }
-  connectedCallback() {
+  async connectedCallback() {
     const isLoggedIn = localStorage.getItem('token') !== null;
     const user = this.getCurrentUser();
-    // Obtenha o atributo de variante ou determine com base na função isAdmin
     const variant = this.getAttribute('variant') || (this.isAdmin(user) ? 'admin' : 'client');
 
     if (variant === 'client') {
+      const isLoggedIn = localStorage.getItem('token') !== null;
+      const user = this.getCurrentUser();
+      let userImageUrl = '';
+
+      if (isLoggedIn && user && user.id) {
+        try {
+          const token = localStorage.getItem('token');
+          const response = await fetch(
+            `${window.API?.BASE_URL || 'http://localhost:3001/api'}/user/${user.id}/image`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          if (response.ok) {
+            const blob = await response.blob();
+            userImageUrl = URL.createObjectURL(blob);
+          }
+        } catch (error) {
+          console.error('Error fetching user image:', error);
+          userImageUrl = '';
+        }
+      }
       this.innerHTML = `
         <header class="header">
           <div class="container">
@@ -31,10 +52,11 @@ class Header extends HTMLElement {
                   ? `<div class="user-menu">
                     <div class="user-profile" id="user-profile-toggle">
                       <div class="user-avatar">
-                        <div class="avatar-placeholder">
-                          <span class="avatar-initial">${this.getUserInitials(user)}</span>
-                        </div>
-                      </div>
+                  <img src="${userImageUrl}" alt="Avatar" class="user-avatar-img" >
+                  <div class="avatar-placeholder" style="${userImageUrl ? 'display:none;' : 'display:flex;'};width:40px;height:40px;align-items:center;justify-content:center;">
+                    <span class="avatar-initial">${this.getUserInitials(user)}</span>
+                  </div>
+                </div>
                       <span class="username">${user?.name || user?.email || 'Usuário'}</span>
                       <i class="fa-solid fa-chevron-down"></i>
                     </div>
@@ -77,22 +99,31 @@ class Header extends HTMLElement {
       const isLoggedIn = localStorage.getItem('token') !== null;
       const user = this.getCurrentUser();
       let userImageUrl = '';
+
       if (isLoggedIn && user && user.id) {
-        const token = localStorage.getItem('token');
-        userImageUrl =
-          `${window.API?.BASE_URL || 'http://localhost:3001/api'}/user/${user.id}/image` +
-          (token ? `?token=${token}` : '');
+        try {
+          const token = localStorage.getItem('token');
+          const response = await fetch(
+            `${window.API?.BASE_URL || 'http://localhost:3001/api'}/user/${user.id}/image`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          if (response.ok) {
+            const blob = await response.blob();
+            userImageUrl = URL.createObjectURL(blob);
+          }
+        } catch (error) {
+          console.error('Error fetching user image:', error);
+          userImageUrl = '';
+        }
       }
       this.innerHTML = `
         <header class="header admin-header">
           <div class="container">
-        <div class="logo-container">
-          <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo">
-        </div>
-        
-        <nav class="nav-bar">
-          <ul class="nav-links">                
-            
+            <div class="logo-container">
+              <img src="/assets/logo_cakeria.png" alt="Cakeria Logo" class="header-logo">
+            </div>
             
             <nav class="nav-bar">
               <ul class="nav-links">
@@ -107,7 +138,7 @@ class Header extends HTMLElement {
             <div class="user-menu">
               <div class="user-profile" id="user-profile-toggle">
                 <div class="user-avatar">
-                  <img src="${userImageUrl}" alt="Avatar" class="user-avatar-img" style="display:${userImageUrl ? 'block' : 'none'};width:40px;height:40px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                  <img src="${userImageUrl}" alt="Avatar" class="user-avatar-img" >
                   <div class="avatar-placeholder" style="${userImageUrl ? 'display:none;' : 'display:flex;'};width:40px;height:40px;align-items:center;justify-content:center;">
                     <span class="avatar-initial">${this.getUserInitials(user)}</span>
                   </div>
@@ -128,26 +159,11 @@ class Header extends HTMLElement {
                 </button>
               </div>
             </div>
-            
-          </div>
-          <div class="dropdown-menu">
-            <a href="/perfil.html" class="dropdown-item nav-link" data-route="perfil">
-          <i class="fa-solid fa-user"></i> Meu Perfil
-            </a>
-            <a href="/index.html" class="dropdown-item">
-          <i class="fa-solid fa-home"></i> Voltar ao Site
-            </a>
-            <div class="dropdown-divider"></div>
-            <button class="dropdown-item logout-btn">
-          <i class="fa-solid fa-sign-out-alt"></i> Sair
+            <button class="menu-toggle" aria-label="Menu">
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
             </button>
-          </div>
-        </div>
-        </div>            <button class="menu-toggle" aria-label="Menu">
-          <span class="bar"></span>
-          <span class="bar"></span>
-          <span class="bar"></span>
-        </button>
           </div>
           <div class="overlay"></div>
         </header>
@@ -321,6 +337,7 @@ class Header extends HTMLElement {
     navBar.classList.toggle('active');
     menuToggle.classList.toggle('active');
     overlay.classList.toggle('active');
+    document.body.classList.toggle('page-content-obscured'); // Add this line
 
     if (navBar.classList.contains('active')) {
       const isLoggedIn = localStorage.getItem('token') !== null;
@@ -363,6 +380,7 @@ class Header extends HTMLElement {
     navBar.classList.remove('active');
     menuToggle.classList.remove('active');
     overlay.classList.remove('active');
+    document.body.classList.remove('page-content-obscured'); // Add this line
 
     const mobileLoginItem = navBar.querySelector('.mobile-login-item');
     if (mobileLoginItem) {
@@ -378,6 +396,7 @@ class Header extends HTMLElement {
 
     window.location.href = '/index.html?logout=true';
   }
+
   highlightCurrentPage() {
     const path = window.location.pathname;
     const links = this.querySelectorAll('.nav-link');
@@ -408,4 +427,38 @@ if (typeof window !== 'undefined') {
   const scriptElement = document.createElement('script');
   scriptElement.src = '/js/header-controller.js';
   document.head.appendChild(scriptElement);
+}
+
+async function loadUserImage(userId) {
+  const userImage = document.getElementById('profile-user-image');
+  const avatarPlaceholder = document.getElementById('profile-avatar-placeholder');
+  const avatarInitials = document.getElementById('profile-avatar-initials');
+  if (!userImage || !userId) return;
+  const token = localStorage.getItem('token');
+  try {
+    const response = await fetch(`${window.API.BASE_URL}/user/${userId}/image`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (response.ok) {
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      userImage.src = imageUrl;
+      userImage.style.display = 'block';
+      if (avatarPlaceholder) avatarPlaceholder.style.display = 'none';
+    } else {
+      if (avatarPlaceholder && avatarInitials) {
+        const user = getCurrentUser();
+        avatarInitials.textContent = getUserInitials(user);
+        avatarPlaceholder.style.display = 'flex';
+      }
+      userImage.style.display = 'none';
+    }
+  } catch (e) {
+    if (avatarPlaceholder && avatarInitials) {
+      const user = getCurrentUser();
+      avatarInitials.textContent = getUserInitials(user);
+      avatarPlaceholder.style.display = 'flex';
+    }
+    userImage.style.display = 'none';
+  }
 }

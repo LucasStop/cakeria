@@ -3,15 +3,16 @@
 module.exports = (sequelize, DataTypes) => {
   const Product = sequelize.define(
     'Product',
-    {      category_id: {
+    {
+      category_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
       image: {
-        type: DataTypes.BLOB('medium'), // MEDIUMBLOB - até 16MB
+        type: DataTypes.BLOB('medium'),
         allowNull: true,
-        // Removemos a validação isUrl já que agora é um binário
-      },      name: {
+      },
+      name: {
         type: DataTypes.STRING(100),
         allowNull: false,
         validate: {
@@ -23,7 +24,8 @@ module.exports = (sequelize, DataTypes) => {
             msg: 'O nome deve ter entre 3 e 100 caracteres',
           },
         },
-      },      slug: {
+      },
+      slug: {
         type: DataTypes.STRING(120),
         allowNull: false,
         unique: true,
@@ -83,7 +85,8 @@ module.exports = (sequelize, DataTypes) => {
           },
           min: {
             args: [0],
-            msg: 'O estoque não pode ser negativo',          },
+            msg: 'O estoque não pode ser negativo',
+          },
         },
       },
       expiry_date: {
@@ -113,9 +116,8 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'category_id',
       as: 'category',
     });
-
     Product.belongsToMany(models.Order, {
-      through: models.order_product,
+      through: models.OrderProduct,
       foreignKey: 'product_id',
       otherKey: 'order_id',
       as: 'order',
@@ -130,13 +132,12 @@ module.exports = (sequelize, DataTypes) => {
       product.expiry_date = new Date(product.expiry_date);
     }
 
-    // Gerar slug a partir do nome do produto se o nome foi alterado ou se o produto é novo
     if (product.changed('name') || product.isNewRecord) {
       product.slug = product.name
         .toLowerCase()
-        .replace(/[^\w\s-]/g, '') // Remove caracteres especiais
-        .replace(/\s+/g, '-')     // Substitui espaços por hífens
-        .replace(/--+/g, '-')     // Remove hífens duplicados
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/--+/g, '-')
         .trim();
     }
   });

@@ -1,20 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cakeria | Receitas</title>
 
-    <!-- Favicon -->
     <link rel="icon" href="/assets/favicon.ico" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="/assets/favicon-32x32.png"
-    />
+    <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
 
-    <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -22,18 +16,16 @@
       rel="stylesheet"
     />
 
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
 
-    <!-- CSS -->
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/receitas.css" />
-    <link rel="stylesheet" href="./css/home.css">
-    <link rel="stylesheet" href="./css/admin-controls.css">
-    <link rel="stylesheet" href="./components/components.css">
+    <link rel="stylesheet" href="./css/home.css" />
+    <link rel="stylesheet" href="./css/admin-controls.css" />
+    <link rel="stylesheet" href="./components/components.css" />
   </head>
   <body>
     <header-component></header-component>
@@ -48,18 +40,13 @@
 
           <div class="recipes-actions">
             <div class="search-box">
-              <input
-                type="text"
-                id="search-recipes"
-                placeholder="Buscar receitas..."
-              />
+              <input type="text" id="search-recipes" placeholder="Buscar receitas..." />
               <button id="search-btn"><i class="fas fa-search"></i></button>
             </div>
 
             <div class="filters">
               <select id="category-filter">
                 <option value="">Todas as categorias</option>
-                <!-- Categorias serão adicionadas via JavaScript -->
               </select>
 
               <select id="sort-recipes">
@@ -69,14 +56,17 @@
               </select>
             </div>
 
-            <button id="new-recipe-btn" class="btn btn-primary" onclick="window.location.assign('/compartilhar-receita.html')">
+            <button
+              id="new-recipe-btn"
+              class="btn btn-primary"
+              onclick="window.location.assign('/compartilhar-receita.html')"
+            >
               Compartilhar receita
             </button>
           </div>
         </section>
 
         <section class="recipes-grid" id="recipes-grid">
-          <!-- Receitas serão carregadas dinamicamente -->
           <div class="loading-indicator">
             <div class="spinner"></div>
             <p>Carregando receitas...</p>
@@ -84,14 +74,12 @@
         </section>
 
         <div class="pagination" id="recipes-pagination">
-          <!-- Paginação será adicionada via JavaScript -->
         </div>
       </div>
     </main>
 
     <footer-component></footer-component>
 
-    <!-- Template para cartão de receita -->
     <template id="recipe-card-template">
       <div class="recipe-card">
         <div class="recipe-image">
@@ -117,7 +105,7 @@
               ><i class="far fa-clock"></i> <span class="time-text"></span
             ></span>
             <a href="#" class="recipe-link">Ver Receita</a>
-            <div class="recipe-admin-actions" style="display: none;">
+            <div class="recipe-admin-actions" style="display: none">
               <button class="btn-icon edit-recipe" title="Editar receita">
                 <i class="fas fa-edit"></i>
               </button>
@@ -128,7 +116,8 @@
           </div>
         </div>
       </div>
-    </template>    <!-- Scripts -->    <script src="./js/utils/toast.js"></script>
+    </template>
+    <script src="./js/utils/toast.js"></script>
     <script src="./components/Header.js"></script>
     <script src="./components/Footer.js"></script>
     <script src="./js/api.js"></script>
@@ -141,37 +130,33 @@
     <script src="./js/script.js"></script>
     <script src="./js/login.js"></script>
     <script src="./js/home.js"></script>
-    
-    <!-- Script para demonstrar toast na página -->
+
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        // Mostrar toast quando a página carregar
         setTimeout(() => {
           if (window.Toast) {
             Toast.info('Descubra novas receitas deliciosas!', {
               position: 'bottom-right',
-              duration: 5000
+              duration: 5000,
             });
           }
         }, 1000);
-        
-        // Adicionar toast ao botão de busca
+
         const searchBtn = document.getElementById('search-btn');
         const searchInput = document.getElementById('search-recipes');
-        
+
         if (searchBtn && searchInput) {
           const originalClick = searchBtn.onclick;
-          
-          searchBtn.addEventListener('click', function(e) {
+
+          searchBtn.addEventListener('click', function (e) {
             const searchTerm = searchInput.value.trim();
             if (searchTerm && window.Toast) {
               Toast.info(`Buscando por: "${searchTerm}"`, {
                 position: 'top-right',
-                duration: 3000
+                duration: 3000,
               });
             }
-            
-            // Preserva comportamento original se existir
+
             if (typeof originalClick === 'function') {
               originalClick.call(this, e);
             }

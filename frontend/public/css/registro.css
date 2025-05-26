@@ -98,7 +98,6 @@ body {
   font-size: 0.85rem;
 }
 
-/* Estilos para o formulário em duas colunas */
 .form-row {
   display: flex;
   gap: 16px;
@@ -140,7 +139,6 @@ body {
   background-color: #fff;
 }
 
-/* Estilo para campos inválidos */
 .invalid-input {
   border: 1px solid #ff3333 !important;
   background-color: #fff0f0 !important;
@@ -150,7 +148,6 @@ body {
   box-shadow: 0 0 0 3px rgba(255, 51, 51, 0.2) !important;
 }
 
-/* Estilo para mensagens de erro */
 .error-message {
   display: block;
   color: #ff3333;
@@ -205,7 +202,6 @@ body {
   text-decoration: underline;
 }
 
-/* Estilos para os campos de endereço em uma única linha */
 .address-row {
   gap: 16px;
 }
@@ -267,7 +263,6 @@ body {
   }
 }
 
-/* Estilo para o toggle de visualização da senha */
 .password-toggle {
   position: absolute;
   right: 12px;
@@ -301,7 +296,6 @@ body {
   padding-right: 40px;
 }
 
-/* Estilos para o upload de avatar */
 .avatar-upload-container {
   display: flex;
   align-items: center;
@@ -362,7 +356,7 @@ body {
     align-items: center;
     text-align: center;
   }
-  
+
   .avatar-input {
     width: 100%;
     align-items: center;

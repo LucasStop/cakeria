@@ -11,7 +11,9 @@
   align-items: center;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
 }
 
 .product-modal-overlay.active {
@@ -31,7 +33,9 @@
   flex-direction: column;
   transform: translateY(20px);
   opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
 }
 
 .product-modal-overlay.active .product-modal {
@@ -120,7 +124,6 @@
   color: #666;
 }
 
-/* Container para metadados com melhor visualização */
 .product-modal-meta {
   display: flex;
   flex-wrap: wrap;
@@ -135,25 +138,25 @@
   background-color: white;
   padding: 10px 15px;
   border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   min-width: 120px;
   border-left: 3px solid #e5e7eb;
 }
 
 .product-modal-meta-item:nth-child(1) {
-  border-left-color: #4299e1; /* Azul para categoria */
+  border-left-color: #4299e1;
 }
 
 .product-modal-meta-item:nth-child(2) {
-  border-left-color: #48bb78; /* Verde para tamanho */
+  border-left-color: #48bb78;
 }
 
 .product-modal-meta-item:nth-child(3) {
-  border-left-color: #ed8936; /* Laranja para validade */
+  border-left-color: #ed8936;
 }
 
 .product-modal-meta-item.expired {
-  border-left-color: #e53e3e; /* Vermelho para produtos vencidos */
+  border-left-color: #e53e3e;
 }
 
 .product-modal-meta-item strong {
@@ -177,7 +180,6 @@
   color: #e53e3e;
 }
 
-/* Estilos para datas de validade */
 .expired-text {
   color: #e53e3e;
   font-weight: 600;
@@ -186,7 +188,7 @@
 }
 
 .expired-text::before {
-  content: "⚠️";
+  content: '⚠️';
   position: absolute;
   left: 0;
   top: 50%;
@@ -202,7 +204,7 @@
 }
 
 .expiring-soon::before {
-  content: "⏳";
+  content: '⏳';
   position: absolute;
   left: 0;
   top: 50%;
@@ -307,7 +309,6 @@
   color: #e53e3e;
 }
 
-/* Animação de loading quando estiver carregando os detalhes */
 .product-modal-loading {
   display: flex;
   flex-direction: column;
@@ -328,11 +329,14 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-/* Toast de confirmação para adicionar ao carrinho */
 .cart-toast {
   position: fixed;
   bottom: 20px;
@@ -341,13 +345,15 @@
   color: white;
   padding: 15px 25px;
   border-radius: 4px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   z-index: 1100;
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
 .cart-toast.active {

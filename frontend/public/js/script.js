@@ -3,7 +3,6 @@ const API_URL = 'http://localhost:3001/api';
 let produtos = [];
 let categorias = [];
 
-// Variáveis globais para filtros
 let filtroAtual = {
   nome: '',
   categoria: '',
@@ -16,7 +15,6 @@ const contentEl = document.getElementById('content');
 const produtosContainer = document.getElementById('produtos-container');
 const categoriasContainer = document.getElementById('categorias-container');
 const verProdutosBtn = document.getElementById('ver-produtos');
-// const navRegiterProduct = document.getElementById('nav-register-product');
 const navCategorias = document.getElementById('nav-categorias');
 const navAdmin = document.getElementById('nav-admin');
 
@@ -141,23 +139,19 @@ function renderizarCategorias(categoriasList) {
   categoriasContainer.innerHTML = html;
 }
 
-// Inicializar filtros
 function initializeFilters() {
   console.log('Inicializando sistema de filtros...');
 
-  // Verificar se estamos na página certa e se os elementos existem
   const filterSection = document.querySelector('.filter-section');
   if (!filterSection) {
     console.warn('Seção de filtros não encontrada - pulando inicialização');
     return;
   }
 
-  // Carregar categorias no filtro
   setTimeout(() => {
     carregarCategoriasFiltro();
-  }, 500); // Pequeno atraso para garantir que a API esteja pronta
+  }, 500);
 
-  // Configurar event listeners para os filtros
   const nameFilter = document.getElementById('filter-name');
   if (nameFilter) {
     nameFilter.addEventListener('input', function () {
@@ -215,7 +209,6 @@ function initializeFilters() {
   }
 }
 
-// Carregar categorias para o filtro - versão aprimorada
 async function carregarCategoriasFiltro() {
   console.log('Iniciando carregamento de categorias para o filtro...');
   const selectCategoria = document.getElementById('filter-category');
@@ -224,7 +217,6 @@ async function carregarCategoriasFiltro() {
     return;
   }
 
-  // Limpar opções existentes, mantendo apenas a primeira (Todas as categorias)
   while (selectCategoria.options.length > 1) {
     selectCategoria.remove(1);
   }
@@ -232,13 +224,10 @@ async function carregarCategoriasFiltro() {
   try {
     let categoriasList = [];
 
-    // Abordagem 1: Usar categorias já carregadas na variável global
     if (window.categorias && Array.isArray(window.categorias) && window.categorias.length > 0) {
       console.log('Usando categorias da variável global:', window.categorias.length);
       categoriasList = window.categorias;
-    }
-    // Abordagem 2: Carregar via API.categorias.listar
-    else if (
+    } else if (
       window.API &&
       window.API.categorias &&
       typeof window.API.categorias.listar === 'function'
@@ -249,11 +238,9 @@ async function carregarCategoriasFiltro() {
         console.log('Categorias carregadas via API:', categoriasList.length);
       } catch (apiError) {
         console.error('Erro ao carregar via API.categorias.listar():', apiError);
-        throw apiError; // Passar para o próximo método
+        throw apiError;
       }
-    }
-    // Abordagem 3: Carregar via fetch direto
-    else {
+    } else {
       console.log('Tentando fetch direto para categorias');
 
       try {
@@ -279,10 +266,8 @@ async function carregarCategoriasFiltro() {
       }
     }
 
-    // Se temos categorias carregadas, preencher o select
     if (categoriasList.length > 0) {
       categoriasList.forEach(categoria => {
-        // Verificar se a opção já existe
         if (!selectCategoria.querySelector(`option[value="${categoria.id}"]`)) {
           const option = document.createElement('option');
           option.value = categoria.id;
@@ -293,7 +278,6 @@ async function carregarCategoriasFiltro() {
 
       console.log(`${categoriasList.length} categorias adicionadas ao filtro`);
 
-      // Restaurar o valor selecionado se existir
       if (filtroAtual.categoria) {
         selectCategoria.value = filtroAtual.categoria;
       }
@@ -309,7 +293,6 @@ async function carregarCategoriasFiltro() {
     console.error('Erro ao carregar categorias para filtro:', error);
     selectCategoria.innerHTML += '<option value="" disabled>Erro ao carregar categorias</option>';
 
-    // Adicionar botão para tentar novamente
     const filterItem = selectCategoria.closest('.filter-item');
     if (filterItem && !filterItem.querySelector('.retry-button')) {
       const retryButton = document.createElement('button');
@@ -331,17 +314,13 @@ async function carregarCategoriasFiltro() {
   }
 }
 
-// Aplicar filtros
 function aplicarFiltros() {
   console.log('Aplicando filtros:', filtroAtual);
 
-  // Atualizar UI mostrando filtros ativos
   atualizarFiltrosAtivos();
 
-  // Recarregar produtos com filtros
   renderizarListaProdutos(filtroAtual);
 
-  // Notificação de filtros aplicados
   if (window.Toast) {
     window.Toast.info('Filtros aplicados com sucesso', {
       position: 'bottom-right',
@@ -350,7 +329,6 @@ function aplicarFiltros() {
   }
 }
 
-// Limpar todos os filtros
 function limparFiltros() {
   const nameFilter = document.getElementById('filter-name');
   if (nameFilter) nameFilter.value = '';
@@ -367,7 +345,6 @@ function limparFiltros() {
   const expiryFilter = document.getElementById('filter-expiry');
   if (expiryFilter) expiryFilter.value = '';
 
-  // Resetar objeto de filtro
   filtroAtual = {
     nome: '',
     categoria: '',
@@ -376,14 +353,11 @@ function limparFiltros() {
     validade: '',
   };
 
-  // Limpar UI de filtros ativos
   const activeFilters = document.getElementById('active-filters');
   if (activeFilters) activeFilters.innerHTML = '';
 
-  // Recarregar produtos sem filtros
   renderizarListaProdutos();
 
-  // Notificação de filtros limpos
   if (window.Toast) {
     window.Toast.info('Filtros removidos', {
       position: 'bottom-right',
@@ -392,7 +366,6 @@ function limparFiltros() {
   }
 }
 
-// Atualizar a UI mostrando filtros ativos
 function atualizarFiltrosAtivos() {
   const filtrosContainer = document.getElementById('active-filters');
   if (!filtrosContainer) return;
@@ -400,7 +373,6 @@ function atualizarFiltrosAtivos() {
   filtrosContainer.innerHTML = '';
   let temFiltroAtivo = false;
 
-  // Verificar e mostrar cada filtro ativo
   if (filtroAtual.nome) {
     criarMarcadorFiltro(filtrosContainer, 'Nome', filtroAtual.nome, () => {
       document.getElementById('filter-name').value = '';
@@ -464,7 +436,6 @@ function atualizarFiltrosAtivos() {
     temFiltroAtivo = true;
   }
 
-  // Se tem algum filtro, adicionar opção para limpar todos
   if (temFiltroAtivo) {
     const limparTodos = document.createElement('button');
     limparTodos.className = 'btn btn-sm btn-outline';
@@ -475,12 +446,10 @@ function atualizarFiltrosAtivos() {
   }
 }
 
-// Criar um marcador de filtro ativo
 function criarMarcadorFiltro(container, tipo, valor, onRemove) {
   const filtroEl = document.createElement('div');
   filtroEl.className = 'active-filter';
 
-  // Selecionar ícone apropriado baseado no tipo de filtro
   let iconClass = 'fa-tag';
   switch (tipo.toLowerCase()) {
     case 'nome':
@@ -503,12 +472,10 @@ function criarMarcadorFiltro(container, tipo, valor, onRemove) {
     <button type="button" title="Remover filtro"><i class="fas fa-times"></i></button>
   `;
 
-  // Adicionar evento para remover o filtro
   filtroEl.querySelector('button').addEventListener('click', onRemove);
 
   container.appendChild(filtroEl);
 
-  // Efeito de entrada
   setTimeout(() => {
     filtroEl.style.transform = 'scale(1.05)';
     setTimeout(() => {
@@ -517,7 +484,6 @@ function criarMarcadorFiltro(container, tipo, valor, onRemove) {
   }, 10);
 }
 
-// Modificar a função existente para aceitar filtros
 async function renderizarListaProdutos(filtros = null) {
   try {
     contentEl.innerHTML = `
@@ -562,7 +528,6 @@ async function renderizarListaProdutos(filtros = null) {
       console.log('Produtos carregados via fetch direto:', produtos.length);
     }
 
-    // Após carregar os produtos, aplicar filtros antes de renderizar
     if (filtros) {
       produtos = filtrarProdutos(produtos, filtros);
     }
@@ -572,7 +537,6 @@ async function renderizarListaProdutos(filtros = null) {
         <div class="container">
           <h1 class="section-title">Nossos Produtos</h1>
           
-          <!-- Seção de filtros com estilo aprimorado -->
           <section class="filter-section">
             <h2 class="filter-title"><i class="fas fa-filter"></i> Filtrar Produtos</h2>
             <div class="filter-container">
@@ -588,7 +552,6 @@ async function renderizarListaProdutos(filtros = null) {
                 <label for="filter-category">Categoria</label>
                 <select id="filter-category">
                   <option value="">Todas as categorias</option>
-                  <!-- As categorias serão carregadas dinamicamente -->
                 </select>
               </div>
               
@@ -622,7 +585,6 @@ async function renderizarListaProdutos(filtros = null) {
             </div>
           </section>
 
-          <!-- Área para filtros ativos -->
           <div id="active-filters" class="active-filters-container"></div>
 
           ${
@@ -659,11 +621,9 @@ async function renderizarListaProdutos(filtros = null) {
 
     contentEl.innerHTML = mainContent;
 
-    // Inicializar os filtros com um atraso maior para garantir que tudo esteja renderizado
     setTimeout(() => {
       initializeFilters();
 
-      // Recriar os filtros ativos após renderizar
       if (filtros) {
         atualizarFiltrosAtivos();
       }
@@ -709,10 +669,8 @@ async function renderizarListaProdutos(filtros = null) {
   }
 }
 
-// Função para filtrar produtos com base nos critérios
 function filtrarProdutos(produtos, filtros) {
   return produtos.filter(produto => {
-    // Filtrar por nome
     if (
       filtros.nome &&
       !produto.name.toLowerCase().includes(filtros.nome.toLowerCase()) &&
@@ -722,22 +680,18 @@ function filtrarProdutos(produtos, filtros) {
       return false;
     }
 
-    // Filtrar por categoria
     if (filtros.categoria && produto.category_id != filtros.categoria) {
       return false;
     }
 
-    // Filtrar por preço mínimo
     if (filtros.precoMin && parseFloat(produto.price) < filtros.precoMin) {
       return false;
     }
 
-    // Filtrar por preço máximo
     if (filtros.precoMax && parseFloat(produto.price) > filtros.precoMax) {
       return false;
     }
 
-    // Filtrar por validade
     if (filtros.validade) {
       const hoje = new Date();
       const dataValidade = new Date(produto.expiry_date);
@@ -988,24 +942,19 @@ window.renderizarListaCategorias = renderizarListaCategorias;
 
 window.verDetalhesProduto = async function (id) {
   try {
-    // Garantir que o CSS necessário esteja carregado
     if (window.ResourceLoader) {
       window.ResourceLoader.loadProductCSS();
     }
 
-    // Se o módulo de detalhes do produto estiver disponível, usar ele
     if (window.ProductDetails) {
-      // Abrir o modal com loading
       if (typeof window.openProductModal === 'function') {
         window.openProductModal();
       } else if (window.ProductDetails.openModal) {
         window.ProductDetails.openModal();
       }
 
-      // Buscar os detalhes do produto
       const produto = await window.API.produtos.obterPorId(id);
 
-      // Renderizar os detalhes do produto
       if (typeof window.renderProductDetails === 'function') {
         window.renderProductDetails(produto);
       }
@@ -1013,7 +962,6 @@ window.verDetalhesProduto = async function (id) {
       return;
     }
 
-    // Implementação original (fallback)
     await carregarDetalhesProduto(id);
   } catch (error) {
     console.error('Erro ao carregar detalhes do produto:', error);
@@ -1027,7 +975,6 @@ window.verDetalhesProduto = async function (id) {
       `;
     }
 
-    // Tentar mostrar uma notificação
     if (window.Toast) {
       window.Toast.error('Não foi possível carregar os detalhes do produto');
     }

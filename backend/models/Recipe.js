@@ -19,12 +19,10 @@ module.exports = (sequelize, DataTypes) => {
       ingredients: {
         type: DataTypes.TEXT,
         allowNull: false,
-        // Remover qualquer conversão automática para JSON
       },
       instructions: {
         type: DataTypes.TEXT,
         allowNull: false,
-        // Remover qualquer conversão automática para JSON
       },
       prepTime: {
         type: DataTypes.INTEGER,
@@ -41,10 +39,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM('Fácil', 'Médio', 'Difícil'),
         defaultValue: 'Médio',
       },
-      // image_id: {
-      //   type: DataTypes.STRING,
-      // },
-      userId: {
+      user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -52,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
           key: 'id',
         },
       },
-      categoryId: {
+      category_id: {
         type: DataTypes.INTEGER,
         references: {
           model: 'category',
@@ -76,6 +71,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       tableName: 'recipe',
       timestamps: true,
+      paranoid: true,
       underscored: true,
     }
   );

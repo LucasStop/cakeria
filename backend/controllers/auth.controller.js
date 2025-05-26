@@ -31,7 +31,6 @@ exports.login = async (req, res) => {
 
     const token = generateToken(user);
 
-    // Retorna os dados do usuário e o token (excluindo senha e a imagem)
     const userData = user.toJSON();
     delete userData.password;
     delete userData.image;
@@ -50,24 +49,21 @@ exports.login = async (req, res) => {
 
 exports.refresh = async (req, res) => {
   try {
-  
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({
         message: 'Token não fornecido',
       });
     }
-    
+
     const token = authHeader.split(' ')[1];
-    
- 
+
     const decoded = verifyToken(token);
     if (!decoded) {
       return res.status(401).json({
         message: 'Token inválido ou expirado',
       });
     }
-    
 
     const user = await User.findByPk(decoded.id);
     if (!user) {
@@ -75,14 +71,11 @@ exports.refresh = async (req, res) => {
         message: 'Usuário não encontrado',
       });
     }
-    
 
     const newToken = generateToken(user);
-    
 
     await updateLastLogin(user.id);
-    
-    // Retornar o novo token
+
     res.json({
       token: newToken,
     });
@@ -105,14 +98,10 @@ async function updateLastLogin(userId) {
   }
 }
 
-// Verificar token e retornar dados do usuário
 exports.verify = async (req, res) => {
   try {
-    // A verificação do token já foi feita pelo middleware de autenticação
-    // O req.user foi adicionado pelo middleware e contém os dados do usuário logado
     const userId = req.user.id;
 
-    // Buscar os dados atualizados do usuário
     const user = await User.findByPk(userId, {
       attributes: { exclude: ['password', 'image'] },
     });

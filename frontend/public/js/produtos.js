@@ -194,18 +194,6 @@ async function handleRegisterSubmit(e) {
   if (!isValid) return;
 
   console.log('Dados do produto:', Object.fromEntries(formData));
-
-  // Aqui você pode enviar os dados para o servidor
-  // try {
-  //   const response = await fetch('/api/products', {
-  //     method: 'POST',
-  //     body: formData
-  //   });
-  //   const result = await response.json();
-  //   console.log('Sucesso:', result);
-  // } catch (error) {
-  //   console.error('Erro:', error);
-  // }
 }
 
 function showError(inputElement, errorElementId, errorMessage) {

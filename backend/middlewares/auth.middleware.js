@@ -8,7 +8,6 @@ exports.authenticate = exports.authMiddleware = (req, res, next) => {
       return res.status(401).json({ message: 'Token de autenticação não fornecido' });
     }
 
-
     const parts = authHeader.split(' ');
     if (parts.length !== 2 || parts[0] !== 'Bearer') {
       return res.status(401).json({ message: 'Formato de token inválido' });
@@ -21,7 +20,6 @@ exports.authenticate = exports.authMiddleware = (req, res, next) => {
       return res.status(401).json({ message: 'Token inválido ou expirado' });
     }
 
-   
     req.user = decoded;
     next();
   } catch (error) {

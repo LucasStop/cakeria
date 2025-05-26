@@ -1,288 +1,271 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Adicionar Novo Usuário | Cakeria</title>  <link rel="stylesheet" href="css/index.css">
-  <link rel="stylesheet" href="css/admin-controls.css">
-  <link rel="stylesheet" href="css/admin-users.css">
-  <link rel="stylesheet" href="css/registro.css">
-  <link rel="stylesheet" href="css/admin-new-user.css">
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-  <link rel="manifest" href="assets/site.webmanifest">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-   <link rel="stylesheet" href="./css/styles.css" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adicionar Novo Usuário | Cakeria</title>
+    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/admin-controls.css" />
+    <link rel="stylesheet" href="css/admin-users.css" />
+    <link rel="stylesheet" href="css/registro.css" />
+    <link rel="stylesheet" href="css/admin-new-user.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
+    <link rel="manifest" href="assets/site.webmanifest" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/index.css" />
     <link rel="stylesheet" href="./components/components.css" />
     <link rel="stylesheet" href="./components/dashboards/css/styles.css" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
-</head>
-<body>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header-component variant="admin"></header-component>
+    <main class="container">
+      <div class="title-container">
+        <h1 class="page-title">Adicionar Novo Usuário</h1>
+        <a href="admin-users.html" class="btn btn-primary"
+          ><i class="fas fa-arrow-left"></i> Voltar à Lista</a
+        >
+      </div>
 
-<header-component variant="admin"></header-component>
-  <main class="container">
-    <div class="title-container">
-      <h1 class="page-title">Adicionar Novo Usuário</h1>
-      <a href="admin-users.html" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Voltar à Lista</a>
-    </div>
-    
-    <div class="admin-dashboard">
-      <div class="admin-card full-width">
-        <form id="userForm" class="admin-form">
-          <!-- Primeira linha: Nome e Email -->
-          <div class="form-row">
-            <div class="form-col">
-              <div class="form-group">
-                <label for="register-name">Nome completo*</label>
-                <input
-                  type="text"
-                  id="register-name"
-                  name="name"
-                  placeholder="Seu nome completo"
-                  required
-                />
-                <span id="name-error" class="error-message"></span>
+      <div class="admin-dashboard">
+        <div class="admin-card full-width">
+          <form id="userForm" class="admin-form">
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="register-name">Nome completo*</label>
+                  <input
+                    type="text"
+                    id="register-name"
+                    name="name"
+                    placeholder="Seu nome completo"
+                    required
+                  />
+                  <span id="name-error" class="error-message"></span>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="register-email">E-mail*</label>
+                  <input
+                    type="email"
+                    id="register-email"
+                    name="email"
+                    placeholder="Seu e-mail"
+                    required
+                  />
+                  <span id="email-error" class="error-message"></span>
+                </div>
               </div>
             </div>
-            <div class="form-col">
-              <div class="form-group">
-                <label for="register-email">E-mail*</label>
-                <input
-                  type="email"
-                  id="register-email"
-                  name="email"
-                  placeholder="Seu e-mail"
-                  required
-                />
-                <span id="email-error" class="error-message"></span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Segunda linha: Telefone e CPF -->
-          <div class="form-row">
-            <div class="form-col">
-              <div class="form-group">
-                <label for="register-phone">Telefone*</label>
-                <input
-                  type="tel"
-                  id="register-phone"
-                  name="phone"
-                  placeholder="(00) 00000-0000"
-                  required
-                />
-                <span id="phone-error" class="error-message"></span>
-              </div>
-            </div>
-            <div class="form-col">
-              <div class="form-group">
-                <label for="register-cpf">CPF*</label>
-                <input
-                  type="text"
-                  id="register-cpf"
-                  name="cpf"
-                  placeholder="000.000.000-00"
-                  required
-                />
-                <span id="cpf-error" class="error-message"></span>
-              </div>
-            </div>
-          </div>
 
-          <!-- Avatar do usuário -->
-          <div class="form-row">
-            <div class="form-col full-width">
-              <div class="form-group">
-                <label for="register-avatar">Foto de Perfil (opcional)</label>
-                <div class="avatar-upload-container">
-                  <div class="avatar-preview">
-                    <div id="avatar-preview">
-                      <i class="fas fa-user default-avatar-icon"></i>
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="register-phone">Telefone*</label>
+                  <input
+                    type="tel"
+                    id="register-phone"
+                    name="phone"
+                    placeholder="(00) 00000-0000"
+                    required
+                  />
+                  <span id="phone-error" class="error-message"></span>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="register-cpf">CPF*</label>
+                  <input
+                    type="text"
+                    id="register-cpf"
+                    name="cpf"
+                    placeholder="000.000.000-00"
+                    required
+                  />
+                  <span id="cpf-error" class="error-message"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col full-width">
+                <div class="form-group">
+                  <label for="register-avatar">Foto de Perfil (opcional)</label>
+                  <div class="avatar-upload-container">
+                    <div class="avatar-preview">
+                      <div id="avatar-preview">
+                        <i class="fas fa-user default-avatar-icon"></i>
+                      </div>
                     </div>
-                  </div>
-                  <div class="avatar-input">
-                    <input type="file" id="register-avatar" name="avatar" accept="image/*" />
-                    <button type="button" id="select-avatar-btn" class="btn btn-outline">
-                      Selecionar Imagem
-                    </button>
-                    <span class="avatar-help-text">Tamanho máximo: 5MB. Formatos: JPG, PNG</span>
-                    <span id="avatar-error" class="error-message"></span>
+                    <div class="avatar-input">
+                      <input type="file" id="register-avatar" name="avatar" accept="image/*" />
+                      <button type="button" id="select-avatar-btn" class="btn btn-outline">
+                        Selecionar Imagem
+                      </button>
+                      <span class="avatar-help-text">Tamanho máximo: 5MB. Formatos: JPG, PNG</span>
+                      <span id="avatar-error" class="error-message"></span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Endereço em uma única linha: CEP, Rua e Número -->
-          <div class="form-row address-row">
-            <div class="form-col cep-col">
-              <div class="form-group">
-                <label for="register-cep">CEP*</label>
-                <input
-                  type="text"
-                  id="register-cep"
-                  name="cep"
-                  placeholder="00000-000"
-                  required
-                />
-                <span id="cep-error" class="error-message"></span>
+            <div class="form-row address-row">
+              <div class="form-col cep-col">
+                <div class="form-group">
+                  <label for="register-cep">CEP*</label>
+                  <input
+                    type="text"
+                    id="register-cep"
+                    name="cep"
+                    placeholder="00000-000"
+                    required
+                  />
+                  <span id="cep-error" class="error-message"></span>
+                </div>
+              </div>
+              <div class="form-col street-col">
+                <div class="form-group">
+                  <label for="register-street">Rua*</label>
+                  <input
+                    type="text"
+                    id="register-street"
+                    name="street"
+                    placeholder="Nome da rua"
+                    required
+                  />
+                  <span id="street-error" class="error-message"></span>
+                </div>
+              </div>
+              <div class="form-col number-col">
+                <div class="form-group">
+                  <label for="register-number">Nº*</label>
+                  <input
+                    type="text"
+                    id="register-number"
+                    name="number"
+                    placeholder="123"
+                    required
+                  />
+                  <span id="number-error" class="error-message"></span>
+                </div>
+              </div>
+              <div class="form-col complement-col">
+                <div class="form-group">
+                  <label for="register-complement">Complemento</label>
+                  <input
+                    type="text"
+                    id="register-complement"
+                    name="complement"
+                    placeholder="Apto, bloco, etc."
+                  />
+                  <span id="complement-error" class="error-message"></span>
+                </div>
               </div>
             </div>
-            <div class="form-col street-col">
-              <div class="form-group">
-                <label for="register-street">Rua*</label>
-                <input
-                  type="text"
-                  id="register-street"
-                  name="street"
-                  placeholder="Nome da rua"
-                  required
-                />
-                <span id="street-error" class="error-message"></span>
-              </div>
-            </div>
-            <div class="form-col number-col">
-              <div class="form-group">
-                <label for="register-number">Nº*</label>
-                <input
-                  type="text"
-                  id="register-number"
-                  name="number"
-                  placeholder="123"
-                  required
-                />
-                <span id="number-error" class="error-message"></span>
-              </div>
-            </div>
-            <div class="form-col complement-col">
-              <div class="form-group">
-                <label for="register-complement">Complemento</label>
-                <input
-                  type="text"
-                  id="register-complement"
-                  name="complement"
-                  placeholder="Apto, bloco, etc."
-                />
-                <span id="complement-error" class="error-message"></span>
-              </div>
-            </div>
-          </div>
 
-          <!-- Adicionando campos de bairro, cidade e estado -->
-          <div class="form-row">
-            <div class="form-col">
-              <div class="form-group">
-                <label for="register-neighborhood">Bairro*</label>
-                <input
-                  type="text"
-                  id="register-neighborhood"
-                  name="neighborhood"
-                  placeholder="Bairro"
-                  required
-                />
-                <span id="neighborhood-error" class="error-message"></span>
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="register-neighborhood">Bairro*</label>
+                  <input
+                    type="text"
+                    id="register-neighborhood"
+                    name="neighborhood"
+                    placeholder="Bairro"
+                    required
+                  />
+                  <span id="neighborhood-error" class="error-message"></span>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="register-city">Cidade*</label>
+                  <input type="text" id="register-city" name="city" placeholder="Cidade" required />
+                  <span id="city-error" class="error-message"></span>
+                </div>
+              </div>
+              <div class="form-col" style="flex: 0.5">
+                <div class="form-group">
+                  <label for="register-state">UF*</label>
+                  <input type="text" id="register-state" name="state" placeholder="UF" required />
+                  <span id="state-error" class="error-message"></span>
+                </div>
               </div>
             </div>
-            <div class="form-col">
-              <div class="form-group">
-                <label for="register-city">Cidade*</label>
-                <input
-                  type="text"
-                  id="register-city"
-                  name="city"
-                  placeholder="Cidade"
-                  required
-                />
-                <span id="city-error" class="error-message"></span>
-              </div>
-            </div>
-            <div class="form-col" style="flex: 0.5">
-              <div class="form-group">
-                <label for="register-state">UF*</label>
-                <input type="text" id="register-state" name="state" placeholder="UF" required />
-                <span id="state-error" class="error-message"></span>
-              </div>
-            </div>
-          </div>
 
-          <!-- Senha e Confirmar Senha -->
-          <div class="form-row">
-            <div class="form-col">
-              <div class="form-group">
-                <label for="register-password">Senha*</label>
-                <input
-                  type="password"
-                  id="register-password"
-                  name="password"
-                  placeholder="Sua senha"
-                  required
-                />
-                <button
-                  type="button"
-                  class="password-toggle"
-                  aria-label="Mostrar/ocultar senha"
-                >
-                  <i class="fas fa-eye"></i>
-                </button>
-                <span id="password-error" class="error-message"></span>
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="register-password">Senha*</label>
+                  <input
+                    type="password"
+                    id="register-password"
+                    name="password"
+                    placeholder="Sua senha"
+                    required
+                  />
+                  <button type="button" class="password-toggle" aria-label="Mostrar/ocultar senha">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <span id="password-error" class="error-message"></span>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="register-confirm-password">Confirmar Senha*</label>
+                  <input
+                    type="password"
+                    id="register-confirm-password"
+                    name="confirm-password"
+                    placeholder="Confirme sua senha"
+                    required
+                  />
+                  <button type="button" class="password-toggle" aria-label="Mostrar/ocultar senha">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <span id="confirm-password-error" class="error-message"></span>
+                </div>
               </div>
             </div>
-            <div class="form-col">
-              <div class="form-group">
-                <label for="register-confirm-password">Confirmar Senha*</label>
-                <input
-                  type="password"
-                  id="register-confirm-password"
-                  name="confirm-password"
-                  placeholder="Confirme sua senha"
-                  required
-                />
-                <button
-                  type="button"
-                  class="password-toggle"
-                  aria-label="Mostrar/ocultar senha"
-                >
-                  <i class="fas fa-eye"></i>
-                </button>
-                <span id="confirm-password-error" class="error-message"></span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Tipo de usuário -->
-          <div class="form-group">
-            <label for="type">Tipo de Usuário*</label>
-            <select id="type" name="type" required>
-              <option value="client">Cliente</option>
-              <option value="admin">Administrador</option>
-            </select>
-            <span class="error-message" id="type-error"></span>
-          </div>
 
-          <!-- Botões -->
-          <div class="form-row">
-                <div class="form-col full-width">
-              <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Salvar</button>
-                <button type="reset" class="btn btn-primary">Limpar</button>
+            <div class="form-group">
+              <label for="type">Tipo de Usuário*</label>
+              <select id="type" name="type" required>
+                <option value="client">Cliente</option>
+                <option value="admin">Administrador</option>
+              </select>
+              <span class="error-message" id="type-error"></span>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col full-width">
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">Salvar</button>
+                  <button type="reset" class="btn btn-primary">Limpar</button>
+                </div>
               </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
-  </main>
+    </main>
 
-  <div id="footer-container"></div>
-  <script src="components/Header.js"></script>
-  <script src="components/Footer.js"></script>
-  <script src="js/admin-new-user.js"></script>
-</body>
+    <div id="footer-container"></div>
+    <script src="components/Header.js"></script>
+    <script src="components/Footer.js"></script>
+    <script src="js/admin-new-user.js"></script>
+  </body>
 </html>

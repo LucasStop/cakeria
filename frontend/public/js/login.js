@@ -1,16 +1,8 @@
-/**
- * Verifica se o usuário está autenticado
- * @returns {boolean}
- */
 function isAuthenticated() {
   const token = localStorage.getItem('token');
-  return !!token; // Converte para booleano
+  return !!token;
 }
 
-/**
- * Obtém as informações do usuário atual
- * @returns {Object|null}
- */
 function getCurrentUser() {
   try {
     const userStr = localStorage.getItem('user');
@@ -108,7 +100,8 @@ async function handleLoginSubmit(e) {
     if (!response.ok) {
       showError(emailInput, 'email-error', data.message || 'Credenciais inválidas');
       return;
-    }    localStorage.setItem('token', data.token);
+    }
+    localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
     sessionStorage.setItem('justLoggedIn', 'true');
 
