@@ -72,7 +72,6 @@ function initializeForm() {
   setupLiveValidation();
 
   markRequiredFields();
-
 }
 
 function markRequiredFields() {
@@ -343,7 +342,6 @@ async function handleProductSubmit(e) {
   }
 
   try {
-
     const formData = new FormData();
     formData.append('name', nameInput.value.trim());
     formData.append('price', parseFloat(priceInput.value.replace(',', '.')));
@@ -369,8 +367,6 @@ async function handleProductSubmit(e) {
     if (imageInput && imageInput.files.length > 0) {
       formData.append('image', imageInput.files[0]);
     }
-
-   
 
     const token = localStorage.getItem('token');
     if (!token) {
@@ -410,7 +406,6 @@ async function handleProductSubmit(e) {
           }).finally(() => {
             clearTimeout(timeoutId);
           });
-
 
           if (response.ok) {
             if (API.produtos) API.produtos.ENDPOINT = endpoint;

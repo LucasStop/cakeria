@@ -14,11 +14,9 @@ function setupCustomFormValidation() {
     imageInput.setAttribute('novalidate', 'true');
 
     imageInput.removeAttribute('required');
-
   }
 
   form.addEventListener('submit', function (event) {
-
     if (isEditMode && form.dataset.currentImageUrl) {
     } else if (!imageInput.files || imageInput.files.length === 0) {
     }

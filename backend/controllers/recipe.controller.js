@@ -85,7 +85,6 @@ exports.getById = async (req, res) => {
 
     await recipe.save();
 
-
     res.status(200).json(recipe);
   } catch (error) {
     console.error('Erro ao buscar receita:', error);
@@ -288,8 +287,6 @@ exports.delete = async (req, res) => {
     }
 
     const commentCount = await recipe.countComment_recipe();
-
-
 
     await recipe.destroy();
 

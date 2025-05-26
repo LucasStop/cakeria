@@ -1,9 +1,9 @@
 // Script para atualizar o contador do carrinho em todas as páginas
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   updateCartCounter();
-  
+
   // Adiciona ouvinte para eventos de atualização do carrinho
-  document.addEventListener('cartUpdated', function() {
+  document.addEventListener('cartUpdated', function () {
     updateCartCounter();
   });
 });

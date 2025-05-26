@@ -146,24 +146,26 @@ function setupEventListeners() {
 // Trata cliques nos itens do carrinho
 function handleCartItemsClick(event) {
   const target = event.target;
-  
+
   // Botão de diminuir quantidade
   if (target.classList.contains('minus') || target.closest('.minus')) {
     const button = target.classList.contains('minus') ? target : target.closest('.minus');
     const productId = button.dataset.id;
     decreaseQuantity(productId);
   }
-  
+
   // Botão de aumentar quantidade
   else if (target.classList.contains('plus') || target.closest('.plus')) {
     const button = target.classList.contains('plus') ? target : target.closest('.plus');
     const productId = button.dataset.id;
     increaseQuantity(productId);
   }
-  
+
   // Botão de remover item
   else if (target.classList.contains('remove-item') || target.closest('.remove-item')) {
-    const button = target.classList.contains('remove-item') ? target : target.closest('.remove-item');
+    const button = target.classList.contains('remove-item')
+      ? target
+      : target.closest('.remove-item');
     const productId = button.dataset.id;
     removeItem(productId);
   }
@@ -172,17 +174,17 @@ function handleCartItemsClick(event) {
 // Trata mudanças nos inputs dos itens do carrinho
 function handleCartItemsChange(event) {
   const target = event.target;
-  
+
   // Input de quantidade
   if (target.classList.contains('quantity-input')) {
     const productId = target.dataset.id;
     const newQuantity = parseInt(target.value);
-    
+
     if (isNaN(newQuantity) || newQuantity < 1) {
       loadCartItems(); // Recarrega para corrigir o valor
       return;
     }
-    
+
     updateItemQuantity(productId, newQuantity);
   }
 }
@@ -191,9 +193,9 @@ function handleCartItemsChange(event) {
 function decreaseQuantity(productId) {
   const cartItems = getCartItems();
   const itemIndex = cartItems.findIndex(item => item.id == productId);
-  
+
   if (itemIndex === -1) return;
-  
+
   if (cartItems[itemIndex].quantity > 1) {
     cartItems[itemIndex].quantity--;
     saveCartItems(cartItems);
@@ -208,9 +210,9 @@ function decreaseQuantity(productId) {
 function increaseQuantity(productId) {
   const cartItems = getCartItems();
   const itemIndex = cartItems.findIndex(item => item.id == productId);
-  
+
   if (itemIndex === -1) return;
-  
+
   cartItems[itemIndex].quantity++;
   saveCartItems(cartItems);
   updateCartItemUI(productId, cartItems[itemIndex].quantity);
@@ -221,9 +223,9 @@ function increaseQuantity(productId) {
 function updateItemQuantity(productId, quantity) {
   const cartItems = getCartItems();
   const itemIndex = cartItems.findIndex(item => item.id == productId);
-  
+
   if (itemIndex === -1) return;
-  
+
   cartItems[itemIndex].quantity = quantity;
   saveCartItems(cartItems);
   updateCartSummary();
@@ -233,7 +235,7 @@ function updateItemQuantity(productId, quantity) {
 function removeItem(productId) {
   const cartItems = getCartItems().filter(item => item.id != productId);
   saveCartItems(cartItems);
-  
+
   const itemElement = document.querySelector(`.cart-item[data-id="${productId}"]`);
   if (itemElement) {
     itemElement.classList.add('removing');
@@ -243,7 +245,7 @@ function removeItem(productId) {
   } else {
     loadCartItems();
   }
-  
+
   showToast('Item removido do carrinho');
 }
 
@@ -268,29 +270,29 @@ function updateCartSummary() {
   const subtotal = calculateSubtotal(cartItems);
   const shipping = calculateShipping(cartItems);
   const total = subtotal + shipping;
-  
+
   document.getElementById('cart-subtotal').textContent = formatCurrency(subtotal);
   document.getElementById('cart-shipping').textContent = formatCurrency(shipping);
   document.getElementById('cart-total').textContent = formatCurrency(total);
-  
+
   updateCartCounter();
 }
 
 // Calcula o subtotal do carrinho
 function calculateSubtotal(cartItems) {
   return cartItems.reduce((total, item) => {
-    return total + (item.price * item.quantity);
+    return total + item.price * item.quantity;
   }, 0);
 }
 
 // Calcula o frete (simplificado)
 function calculateShipping(cartItems) {
   if (cartItems.length === 0) return 0;
-  
+
   const subtotal = calculateSubtotal(cartItems);
   // Frete grátis para compras acima de R$ 100
   if (subtotal >= 100) return 0;
-  
+
   // Frete fixo de R$ 10 para compras menores
   return 10;
 }
@@ -314,16 +316,15 @@ function getCartItems() {
 function saveCartItems(cartItems) {
   try {
     localStorage.setItem('cart', JSON.stringify(cartItems));
-    
+
     // Dispara evento de atualização do carrinho
     const event = new CustomEvent('cartUpdated', {
       detail: {
         action: 'update',
-        cartItems: cartItems
-      }
+        cartItems: cartItems,
+      },
     });
     document.dispatchEvent(event);
-    
   } catch (error) {
     console.error('Erro ao salvar itens do carrinho:', error);
   }
@@ -380,11 +381,13 @@ function showLoginRequiredMessage() {
         text: 'Fazer login',
         callback: () => {
           window.location.href = './login.html?redirect=checkout';
-        }
-      }
+        },
+      },
     });
   } else {
-    const goToLogin = confirm('É necessário fazer login para finalizar a compra. Deseja ir para a página de login?');
+    const goToLogin = confirm(
+      'É necessário fazer login para finalizar a compra. Deseja ir para a página de login?'
+    );
     if (goToLogin) {
       window.location.href = './login.html?redirect=checkout';
     }
@@ -402,7 +405,7 @@ function showToast(message) {
 
 // Expõe funções para uso global
 window.CartManager = {
-  addToCart: function(produto, quantity) {
+  addToCart: function (produto, quantity) {
     try {
       const cart = getCartItems();
 
@@ -432,16 +435,16 @@ window.CartManager = {
   removeFromCart: removeItem,
   clearCart: clearCart,
   getCartItems: getCartItems,
-  calculateTotal: function() {
+  calculateTotal: function () {
     const cartItems = getCartItems();
     const subtotal = calculateSubtotal(cartItems);
     const shipping = calculateShipping(cartItems);
     return {
       subtotal,
       shipping,
-      total: subtotal + shipping
+      total: subtotal + shipping,
     };
-  }
+  },
 };
 
 // Verifica se a função addToCart já existe e a preserva
@@ -450,13 +453,13 @@ if (typeof window.addToCart === 'function' && !window.originalAddToCart) {
 }
 
 // Substitui ou cria a função global de adicionar ao carrinho
-window.addToCart = function(produto, quantity) {
+window.addToCart = function (produto, quantity) {
   const result = window.CartManager.addToCart(produto, quantity);
-  
+
   // Chama a implementação original, se existir
   if (window.originalAddToCart && window.originalAddToCart !== window.addToCart) {
     window.originalAddToCart(produto, quantity);
   }
-  
+
   return result;
 };

@@ -451,7 +451,6 @@ function updateUser(userId, formData) {
   submitButton.disabled = true;
   submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
 
-
   fetch(`http://localhost:3001/api/users/${userId}`, {
     method: 'PUT',
     headers: {
@@ -490,7 +489,6 @@ function deleteUser(userId) {
   deleteButton.disabled = true;
   deleteButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
 
-
   fetch(`http://localhost:3001/api/users/${userId}`, {
     method: 'DELETE',
     headers: {
@@ -498,9 +496,6 @@ function deleteUser(userId) {
     },
   })
     .then(response => {
-
-     
-
       if (!response.ok) {
         return response
           .json()

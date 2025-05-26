@@ -40,7 +40,7 @@ function canDeleteRecipe(recipe) {
 
 function canDeleteComment(comment) {
   const adminCheck = isAdmin();
- 
+
   if (adminCheck) return true;
 
   const user = getCurrentUser();

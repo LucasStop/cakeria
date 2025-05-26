@@ -88,8 +88,7 @@ function setupEventListeners() {
 
   const newRecipeBtn = document.getElementById('new-recipe-btn');
   if (newRecipeBtn) {
-    newRecipeBtn.addEventListener('click', () => {
-    });
+    newRecipeBtn.addEventListener('click', () => {});
   }
 
   if (categoryFilter) {
@@ -142,7 +141,6 @@ async function fetchRecipes() {
     if (queryParams.length > 0) {
       endpoint += `?${queryParams.join('&')}`;
     }
-
 
     const data = await API.get(endpoint);
 
@@ -205,7 +203,6 @@ function showError() {
 const userCache = {};
 
 async function getUserById(userId) {
-
   if (userCache[userId]) {
     return userCache[userId];
   }
@@ -230,9 +227,7 @@ async function displayRecipes(recipes) {
   if (!recipesGrid) return;
   recipesGrid.innerHTML = '';
 
-
   for (const recipe of recipes) {
-
     if (!recipeTemplate) {
       const card = document.createElement('div');
       card.className = 'recipe-card';
@@ -306,7 +301,6 @@ async function displayRecipes(recipes) {
 
       const dateSpan = card.querySelector('.date-text');
       if (dateSpan) {
-
         let dateString = recipe.created_at || recipe.createdAt;
         let date;
 
@@ -425,7 +419,6 @@ async function displayRecipes(recipes) {
     }
   }
 }
-
 
 function showDeleteConfirmation(recipe) {
   const dialog = document.createElement('div');

@@ -1,5 +1,4 @@
 function initScrollAnimations() {
-
   const animatedElements = document.querySelectorAll('.animate-on-scroll');
 
   const isElementInViewport = el => {

@@ -192,7 +192,6 @@ async function handleRegisterSubmit(e) {
   });
 
   if (!isValid) return;
-
 }
 
 function showError(inputElement, errorElementId, errorMessage) {
