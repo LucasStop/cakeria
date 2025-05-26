@@ -596,7 +596,6 @@ async function getCurrentUserId() {
         if (tokenParts.length === 3) {
           const payload = JSON.parse(atob(tokenParts[1]));
           if (payload && payload.id) {
-            console.log('ID do usuário obtido do token JWT:', payload.id);
             return payload.id;
           }
         }

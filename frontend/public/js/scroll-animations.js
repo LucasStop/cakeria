@@ -1,5 +1,4 @@
 function initScrollAnimations() {
-  console.log('Inicializando animações de scroll');
 
   const animatedElements = document.querySelectorAll('.animate-on-scroll');
 

@@ -40,10 +40,7 @@ exports.findOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    console.log('Recebendo requisição para criar produto:', {
-      body: req.body,
-      file: req.file ? 'Arquivo recebido' : 'Sem arquivo',
-    });
+   
 
     const {
       name,
@@ -129,14 +126,9 @@ exports.create = async (req, res) => {
         }
       }
 
-      console.log('Dados do produto validados:', {
-        ...productData,
-        expiry_date: productData.expiry_date ? 'Data definida' : 'Sem data',
-        image: productData.image ? 'Imagem incluída' : 'Sem imagem',
-      });
+     
 
       const product = await Product.create(productData);
-      console.log('Produto criado com sucesso:', product.id);
 
       res.status(201).json(product);
     } catch (dbError) {

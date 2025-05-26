@@ -3,10 +3,7 @@ const ProductModal = {
   overlayElement: null,
 
   init() {
-    console.log('[ProductModal] Inicializando...');
-
     if (this.isInitialized) {
-      console.log('[ProductModal] Já inicializado, ignorando');
       return;
     }
 
@@ -17,14 +14,10 @@ const ProductModal = {
     this.setupExistingButtons();
 
     this.isInitialized = true;
-    console.log('[ProductModal] Inicialização concluída');
   },
 
   createModalStructure() {
-    console.log('[ProductModal] Criando estrutura do modal...');
-
     if (document.getElementById('product-modal-overlay')) {
-      console.log('[ProductModal] Modal já existe no DOM');
       this.overlayElement = document.getElementById('product-modal-overlay');
       return;
     }
@@ -53,8 +46,6 @@ const ProductModal = {
     this.setupModalEvents();
 
     this.loadModalStyles();
-
-    console.log('[ProductModal] Estrutura do modal criada');
   },
 
   setupModalEvents() {
@@ -87,17 +78,12 @@ const ProductModal = {
     styleLink.rel = 'stylesheet';
     styleLink.href = '/css/product-modal.css';
     document.head.appendChild(styleLink);
-    console.log('[ProductModal] CSS carregado');
   },
 
   setupGlobalFunction() {
-    console.log('[ProductModal] Configurando função global verDetalhesProduto');
-
     const originalFunction = window.verDetalhesProduto;
 
     window.verDetalhesProduto = productId => {
-      console.log('[ProductModal] verDetalhesProduto chamada para produto:', productId);
-
       if (!this.isInitialized) {
         this.init();
       }
@@ -106,13 +92,10 @@ const ProductModal = {
     };
 
     if (typeof originalFunction === 'function') {
-      console.log('[ProductModal] Função original substituída');
     }
   },
 
   setupExistingButtons() {
-    console.log('[ProductModal] Configurando botões existentes...');
-
     const detailButtons = document.querySelectorAll(
       '.btn-ver-detalhes, [data-action="ver-detalhes"], [onclick*="verDetalhesProduto"]'
     );
@@ -144,14 +127,11 @@ const ProductModal = {
         });
 
         button.dataset.modalHandlerAttached = 'true';
-        console.log(`[ProductModal] Botão configurado para produto ${productId}`);
       }
     });
   },
 
   async showProductDetails(productId) {
-    console.log(`[ProductModal] Exibindo detalhes do produto ${productId}`);
-
     this.openModal();
 
     try {
@@ -167,8 +147,6 @@ const ProductModal = {
   },
 
   openModal() {
-    console.log('[ProductModal] Abrindo modal');
-
     if (!this.overlayElement) {
       this.createModalStructure();
     }
@@ -193,8 +171,6 @@ const ProductModal = {
   },
 
   closeModal() {
-    console.log('[ProductModal] Fechando modal');
-
     if (!this.overlayElement) return;
 
     this.overlayElement.classList.remove('active');
@@ -214,8 +190,6 @@ const ProductModal = {
   },
 
   async fetchProductDetails(productId) {
-    console.log(`[ProductModal] Buscando detalhes do produto ${productId}`);
-
     try {
       // Primeiro, tenta usar a API global se disponível
       if (window.API) {
@@ -223,7 +197,7 @@ const ProductModal = {
         if (window.API.produtos && typeof window.API.produtos.obterPorId === 'function') {
           return await window.API.produtos.obterPorId(productId);
         }
-        
+
         // Tenta usar o método genérico request da API
         if (typeof window.API.request === 'function') {
           try {
@@ -233,10 +207,10 @@ const ProductModal = {
           }
         }
       }
-      
+
       // Fallback para fetch direto
       const baseUrl = window.API?.BASE_URL || 'http://localhost:3001/api';
-      
+
       const possibleEndpoints = [
         `/products/${productId}`,
         `/produtos/${productId}`,
@@ -285,11 +259,12 @@ const ProductModal = {
     const formattedPrice = this.formatCurrency(produto.price);
     const estoque = produto.stock || produto.quantidade || 0;
     const estoqueClass = estoque > 10 ? 'in-stock' : estoque > 0 ? 'low-stock' : 'out-of-stock';
-    const estoqueText = estoque > 10 
-      ? `Em estoque (${estoque} unidades)` 
-      : estoque > 0 
-        ? `Estoque baixo (${estoque} unidades)` 
-        : 'Fora de estoque';
+    const estoqueText =
+      estoque > 10
+        ? `Em estoque (${estoque} unidades)`
+        : estoque > 0
+          ? `Estoque baixo (${estoque} unidades)`
+          : 'Fora de estoque';
 
     modalContent.innerHTML = `
       <div class="product-modal-image">
@@ -307,25 +282,35 @@ const ProductModal = {
             <strong>Categoria</strong>
             <span>${produto.category?.name || 'Não categorizado'}</span>
           </div>
-          ${produto.size ? `
+          ${
+            produto.size
+              ? `
           <div class="product-modal-meta-item">
             <strong>Tamanho</strong>
             <span>${produto.size}</span>
           </div>
-          ` : ''}
-          ${produto.expiration_date ? `
+          `
+              : ''
+          }
+          ${
+            produto.expiration_date
+              ? `
           <div class="product-modal-meta-item ${this.isExpired(produto.expiration_date) ? 'expired' : ''}">
             <strong>Validade</strong>
             <span>${this.formatExpirationDate(produto.expiration_date)}</span>
           </div>
-          ` : ''}
+          `
+              : ''
+          }
         </div>
         
         <div class="stock-info ${estoqueClass}">
           <i class="fas ${estoque > 0 ? 'fa-check-circle' : 'fa-times-circle'}"></i> ${estoqueText}
         </div>
         
-        ${estoque > 0 ? `
+        ${
+          estoque > 0
+            ? `
         <div class="product-modal-quantity">
           <label for="product-quantity">Quantidade:</label>
           <div class="quantity-control">
@@ -341,14 +326,16 @@ const ProductModal = {
             Adicionar ao Carrinho
           </button>
         </div>
-        ` : `
+        `
+            : `
         <div class="product-modal-actions" style="opacity: 0.6;">
           <button class="add-to-cart-btn" disabled>
             <i class="fas fa-shopping-cart"></i>
             Produto Indisponível
           </button>
         </div>
-        `}
+        `
+        }
       </div>
     `;
 
@@ -357,7 +344,7 @@ const ProductModal = {
       const minusBtn = modalContent.querySelector('.quantity-btn.minus');
       const plusBtn = modalContent.querySelector('.quantity-btn.plus');
       const quantityInput = modalContent.querySelector('.quantity-input');
-      
+
       if (minusBtn && plusBtn && quantityInput) {
         minusBtn.addEventListener('click', () => {
           const currentValue = parseInt(quantityInput.value);
@@ -365,14 +352,14 @@ const ProductModal = {
             quantityInput.value = currentValue - 1;
           }
         });
-        
+
         plusBtn.addEventListener('click', () => {
           const currentValue = parseInt(quantityInput.value);
           if (currentValue < estoque) {
             quantityInput.value = currentValue + 1;
           }
         });
-        
+
         quantityInput.addEventListener('change', () => {
           let value = parseInt(quantityInput.value);
           if (isNaN(value) || value < 1) {
@@ -383,7 +370,7 @@ const ProductModal = {
           quantityInput.value = value;
         });
       }
-      
+
       // Configura o botão de adicionar ao carrinho
       const addToCartBtn = modalContent.querySelector('.add-to-cart-btn');
       if (addToCartBtn) {
@@ -393,14 +380,13 @@ const ProductModal = {
             window.addToCart(produto, quantidade);
             this.showAddedToCartMessage(produto.name, quantidade);
           } else {
-            console.log(`[ProductModal] Produto ${produto.id} adicionado ao carrinho: ${quantidade} unidades`);
             this.showAddedToCartMessage(produto.name, quantidade);
           }
         });
       }
     }
   },
-  
+
   showAddedToCartMessage(productName, quantity) {
     const toastId = 'cart-toast-' + Date.now();
     const toastHTML = `
@@ -410,14 +396,14 @@ const ProductModal = {
         <button class="cart-toast-close">&times;</button>
       </div>
     `;
-    
+
     document.body.insertAdjacentHTML('beforeend', toastHTML);
     const toast = document.getElementById(toastId);
-    
+
     setTimeout(() => {
       toast.classList.add('active');
     }, 10);
-    
+
     const closeBtn = toast.querySelector('.cart-toast-close');
     if (closeBtn) {
       closeBtn.addEventListener('click', () => {
@@ -427,14 +413,14 @@ const ProductModal = {
         }, 300);
       });
     }
-    
+
     setTimeout(() => {
       toast.classList.remove('active');
       setTimeout(() => {
         toast.remove();
       }, 300);
     }, 5000);
-    
+
     // Fechar o modal após adicionar ao carrinho
     setTimeout(() => {
       this.closeModal();
@@ -444,28 +430,28 @@ const ProductModal = {
   isExpired(dateString) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     const expirationDate = new Date(dateString);
     return expirationDate < today;
   },
-  
+
   formatExpirationDate(dateString) {
     const date = new Date(dateString);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     const expirationDate = new Date(dateString);
     expirationDate.setHours(0, 0, 0, 0);
-    
+
     const diffTime = expirationDate - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays < 0) {
       return `<span class="expired-text">Vencido em ${date.toLocaleDateString('pt-BR')}</span>`;
     } else if (diffDays <= 7) {
       return `<span class="expiring-soon">Vence em ${diffDays} dia${diffDays !== 1 ? 's' : ''}</span>`;
     }
-    
+
     return date.toLocaleDateString('pt-BR');
   },
 
@@ -496,8 +482,6 @@ const ProductModal = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('[ProductModal] DOM carregado, configurando sistema...');
-
   ProductModal.setupGlobalFunction();
 
   if (
@@ -505,22 +489,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.products-list') ||
     document.querySelector('.featured-products')
   ) {
-    console.log('[ProductModal] Página de produtos detectada, inicializando completamente');
     ProductModal.init();
   } else {
-    console.log('[ProductModal] Não é página de produtos, inicialização completa adiada');
-
     setTimeout(() => {
       const hasProductButtons = document.querySelector(
         '.btn-ver-detalhes, [data-action="ver-detalhes"], [onclick*="verDetalhesProduto"]'
       );
       if (hasProductButtons) {
-        console.log('[ProductModal] Botões de produto encontrados, inicializando...');
         ProductModal.init();
-      } else {
-        console.log(
-          '[ProductModal] Nenhum botão de produto encontrado, modal não será inicializado'
-        );
       }
     }, 2000);
   }

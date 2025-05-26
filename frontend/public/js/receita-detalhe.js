@@ -342,7 +342,6 @@ function renderComments(comments) {
               editButton.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Clicou para editar comentário:', comment.id);
                 showEditCommentForm(comment);
               });
             }
@@ -932,7 +931,6 @@ function showDeleteCommentConfirmation(comment) {
 }
 
 function showEditCommentForm(comment) {
-  console.log('Editando comentário:', comment);
 
   const commentElement = document.querySelector(`.comment[data-comment-id="${comment.id}"]`);
   if (commentElement) {
@@ -990,7 +988,6 @@ function showEditCommentForm(comment) {
       saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
       saveButton.disabled = true;
 
-      console.log('Enviando atualização para o comentário:', comment.id);
 
       const response = await fetch(`${API.BASE_URL}/comment/${comment.id}`, {
         method: 'PUT',
@@ -1005,8 +1002,6 @@ function showEditCommentForm(comment) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Erro ao atualizar comentário');
       }
-
-      console.log('Comentário atualizado com sucesso');
 
       await fetchComments(getRecipeIdFromUrl());
 
