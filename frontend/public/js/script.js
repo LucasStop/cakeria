@@ -242,11 +242,14 @@ async function carregarCategoriasFiltro() {
       }
     } else {
       console.log('Tentando fetch direto para categorias');
+      
+      const url = 'http://localhost:3001/api/category';
+      let success = false;
 
       try {
         console.log(`Tentando carregar de: ${url}`);
 
-        const response = await fetch('http://localhost:3001/api/category');
+        const response = await fetch(url);
 
         if (response.ok) {
           const data = await response.json();
@@ -254,11 +257,11 @@ async function carregarCategoriasFiltro() {
             ? data
             : data.categorias || data.categories || data.data || data.items || [];
 
-          console.log(`Categorias carregadas via fetch de ${endpoint}:`, categoriasList.length);
+          console.log(`Categorias carregadas via fetch de ${url}:`, categoriasList.length);
           success = true;
         }
       } catch (endpointError) {
-        console.warn(`Falha ao carregar de ${endpoint}:`, endpointError);
+        console.warn(`Falha ao carregar de ${url}:`, endpointError);
       }
 
       if (!success) {
