@@ -451,7 +451,6 @@ function updateUser(userId, formData) {
   submitButton.disabled = true;
   submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
 
-  console.log('Enviando atualização para usuário:', userId);
 
   fetch(`http://localhost:3001/api/users/${userId}`, {
     method: 'PUT',
@@ -461,7 +460,6 @@ function updateUser(userId, formData) {
     body: formData,
   })
     .then(response => {
-      console.log('Resposta recebida:', response.status);
       if (!response.ok) {
         return response.json().then(err => {
           throw new Error(err.message || 'Erro ao atualizar usuário');
@@ -470,7 +468,6 @@ function updateUser(userId, formData) {
       return response.json();
     })
     .then(data => {
-      console.log('Usuário atualizado com sucesso:', data);
       alert('Usuário atualizado com sucesso!');
       document.getElementById('editUserModal').style.display = 'none';
       loadUsers();
@@ -493,7 +490,6 @@ function deleteUser(userId) {
   deleteButton.disabled = true;
   deleteButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
 
-  console.log('Excluindo usuário:', userId);
 
   fetch(`http://localhost:3001/api/users/${userId}`, {
     method: 'DELETE',
@@ -502,12 +498,8 @@ function deleteUser(userId) {
     },
   })
     .then(response => {
-      console.log('Resposta da exclusão:', response.status);
 
-      if (response.status === 204) {
-        console.log('Usuário excluído com sucesso (status 204)');
-        return { success: true };
-      }
+     
 
       if (!response.ok) {
         return response

@@ -18,15 +18,11 @@
     debug: true,
 
     init() {
-      if (this.debug) console.log('[Toast] Inicializando sistema de Toast');
-
       if (!this.container) {
         this.container = document.createElement('div');
         this.container.id = 'toast-container';
         this.container.className = 'toast-container';
         document.body.appendChild(this.container);
-
-        if (this.debug) console.log('[Toast] Contêiner criado e anexado ao body');
       }
 
       this.ensureToastCssLoaded();
@@ -35,11 +31,7 @@
     ensureToastCssLoaded() {
       if (this.cssLoaded) return;
 
-      if (this.debug) console.log('[Toast] Verificando se o CSS está carregado');
-
       if (!document.querySelector('link[href*="toast.css"]')) {
-        if (this.debug) console.log('[Toast] CSS não encontrado, carregando dinamicamente');
-
         const toastStyle = document.createElement('link');
         toastStyle.rel = 'stylesheet';
         toastStyle.href = '/css/toast.css';
@@ -47,7 +39,6 @@
 
         toastStyle.onload = () => {
           this.cssLoaded = true;
-          if (this.debug) console.log('[Toast] CSS carregado com sucesso');
         };
 
         toastStyle.onerror = () => {
@@ -56,7 +47,6 @@
         };
       } else {
         this.cssLoaded = true;
-        if (this.debug) console.log('[Toast] CSS já estava carregado');
       }
     },
 
@@ -111,7 +101,6 @@
       `;
       document.head.appendChild(style);
       this.cssLoaded = true;
-      if (this.debug) console.log('[Toast] Estilos de fallback adicionados');
     },
 
     create(message, options = {}) {
@@ -119,8 +108,6 @@
         this.init();
 
         const settings = { ...this.defaultOptions, ...options };
-
-        if (this.debug) console.log('[Toast] Criando toast com mensagem:', message);
 
         const toast = document.createElement('div');
         toast.className = `custom-toast ${settings.type || 'info'}`;
@@ -196,8 +183,6 @@
           }, settings.duration);
         }
 
-        if (this.debug) console.log('[Toast] Toast criado com sucesso');
-
         return toast;
       } catch (error) {
         console.error('[Toast] Erro ao criar toast:', error);
@@ -214,14 +199,11 @@
       setTimeout(() => {
         if (toast.parentNode) {
           toast.parentNode.removeChild(toast);
-          if (this.debug) console.log('[Toast] Toast removido');
         }
       }, 300);
     },
 
     showFallbackToast(message, type) {
-      console.log(`[Toast Fallback] ${type}: ${message}`);
-
       const toast = document.createElement('div');
       toast.style.position = 'fixed';
       toast.style.bottom = '20px';
@@ -282,11 +264,7 @@
 })();
 
 window.addEventListener('load', function () {
-  setTimeout(() => {
-    if (window.Toast && !window.Toast._hasShownFirstToast) {
-      console.log("Toast está disponível. Use window.Toast.info('mensagem') para testá-lo.");
-    }
-  }, 1000);
+  setTimeout(() => {}, 1000);
 });
 
 window.testToast = function () {

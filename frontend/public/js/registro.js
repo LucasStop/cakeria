@@ -297,7 +297,6 @@ function handleSubmit(e) {
       .then(async response => {
         if (response.ok) {
           const responseData = await response.json();
-          console.log('Usuário registrado com sucesso:', responseData);
 
           setTimeout(() => {
             window.location.href = '/login.html';
@@ -338,7 +337,6 @@ function handleSubmit(e) {
       .then(async response => {
         if (response.ok) {
           const responseData = await response.json();
-          console.log('Usuário registrado com sucesso:', responseData);
 
           setTimeout(() => {
             window.location.href = '/login.html';

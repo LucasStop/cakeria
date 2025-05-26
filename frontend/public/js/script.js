@@ -140,7 +140,6 @@ function renderizarCategorias(categoriasList) {
 }
 
 function initializeFilters() {
-  console.log('Inicializando sistema de filtros...');
 
   const filterSection = document.querySelector('.filter-section');
   if (!filterSection) {
@@ -210,7 +209,6 @@ function initializeFilters() {
 }
 
 async function carregarCategoriasFiltro() {
-  console.log('Iniciando carregamento de categorias para o filtro...');
   const selectCategoria = document.getElementById('filter-category');
   if (!selectCategoria) {
     console.warn('Elemento select de categorias não encontrado');
@@ -225,29 +223,24 @@ async function carregarCategoriasFiltro() {
     let categoriasList = [];
 
     if (window.categorias && Array.isArray(window.categorias) && window.categorias.length > 0) {
-      console.log('Usando categorias da variável global:', window.categorias.length);
       categoriasList = window.categorias;
     } else if (
       window.API &&
       window.API.categorias &&
       typeof window.API.categorias.listar === 'function'
     ) {
-      console.log('Tentando carregar categorias via API.categorias.listar()');
       try {
         categoriasList = await window.API.categorias.listar();
-        console.log('Categorias carregadas via API:', categoriasList.length);
       } catch (apiError) {
         console.error('Erro ao carregar via API.categorias.listar():', apiError);
         throw apiError;
       }
     } else {
-      console.log('Tentando fetch direto para categorias');
       
       const url = 'http://localhost:3001/api/category';
       let success = false;
 
       try {
-        console.log(`Tentando carregar de: ${url}`);
 
         const response = await fetch(url);
 
@@ -257,7 +250,6 @@ async function carregarCategoriasFiltro() {
             ? data
             : data.categorias || data.categories || data.data || data.items || [];
 
-          console.log(`Categorias carregadas via fetch de ${url}:`, categoriasList.length);
           success = true;
         }
       } catch (endpointError) {
@@ -279,7 +271,6 @@ async function carregarCategoriasFiltro() {
         }
       });
 
-      console.log(`${categoriasList.length} categorias adicionadas ao filtro`);
 
       if (filtroAtual.categoria) {
         selectCategoria.value = filtroAtual.categoria;
@@ -318,7 +309,6 @@ async function carregarCategoriasFiltro() {
 }
 
 function aplicarFiltros() {
-  console.log('Aplicando filtros:', filtroAtual);
 
   atualizarFiltrosAtivos();
 
@@ -501,7 +491,6 @@ async function renderizarListaProdutos(filtros = null) {
       </section>
     `;
 
-    console.log('Iniciando carregamento de produtos...');
 
     if (!API || !API.produtos || typeof API.produtos.listar !== 'function') {
       console.error('API não está configurada corretamente:', API);
@@ -509,9 +498,7 @@ async function renderizarListaProdutos(filtros = null) {
     }
 
     try {
-      console.log('Chamando API.produtos.listar()...');
       produtos = await API.produtos.listar();
-      console.log(`Carregados ${produtos ? produtos.length : 0} produtos do banco de dados`);
 
       if (!produtos || !Array.isArray(produtos)) {
         console.error('Resposta inválida da API:', produtos);
@@ -520,7 +507,6 @@ async function renderizarListaProdutos(filtros = null) {
     } catch (apiError) {
       console.error('Erro específico da API:', apiError);
 
-      console.log('Tentando método alternativo com fetch direto...');
       const response = await fetch(`${API.BASE_URL || 'http://localhost:3001/api'}/produtos`);
 
       if (!response.ok) {
@@ -528,7 +514,6 @@ async function renderizarListaProdutos(filtros = null) {
       }
 
       produtos = await response.json();
-      console.log('Produtos carregados via fetch direto:', produtos.length);
     }
 
     if (filtros) {
@@ -790,7 +775,6 @@ function navegarParaSobre() {
 }
 
 function navegarParaCompartilharReceitas() {
-  console.log('Navegando para compartilhar receitas...');
   window.location.href = '/compartilhar-receita.html';
   currentPage = 'compartilhar-receita';
 }
@@ -831,7 +815,6 @@ async function carregarConteudoHTML(url) {
           !href.includes('styles.css') &&
           !href.includes('components.css')
         ) {
-          console.log('Adicionando CSS:', href);
           const linkEl = document.createElement('link');
           linkEl.setAttribute('rel', 'stylesheet');
           linkEl.setAttribute('href', href);
@@ -922,7 +905,6 @@ function adicionarCSS(href) {
   );
 
   if (!existingLinks.includes(href)) {
-    console.log('Adicionando CSS faltante:', href);
     const linkEl = document.createElement('link');
     linkEl.setAttribute('rel', 'stylesheet');
     linkEl.setAttribute('href', href);
@@ -1016,7 +998,6 @@ window.verReceitaDetalhes = async function (id) {
 
     throw new Error('Arquivo HTML da receita não encontrado');
   } catch (error) {
-    console.log('Usando dados estáticos para a receita:', error);
 
     const receitas = [
       {

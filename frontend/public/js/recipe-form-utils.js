@@ -2,7 +2,6 @@ async function ensureCategoriesLoaded() {
   const categorySelect = document.getElementById('recipe-category');
 
   if (categorySelect && categorySelect.options.length <= 1) {
-    console.log('Select de categorias está vazio, recarregando categorias...');
 
     try {
       const loadingOption = document.createElement('option');

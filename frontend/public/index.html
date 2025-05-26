@@ -349,7 +349,6 @@
           const toastScript = document.createElement('script');
           toastScript.src = './js/utils/toast.js';
           toastScript.onload = function() {
-            console.log('Toast recarregado com sucesso');
             
             setTimeout(() => {
               if (window.Toast) {
@@ -361,8 +360,6 @@
             }, 500);
           };
           document.body.appendChild(toastScript);
-        } else {
-          console.log('Sistema Toast está disponível normalmente');
         }
         
         if (urlParams.has('welcome') && window.Toast) {
@@ -414,7 +411,6 @@
         });
       });
       
-      console.log('Para testar o sistema Toast, digite: testToast() no console');
     </script>
   </body>
 </html>

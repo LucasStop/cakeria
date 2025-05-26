@@ -85,7 +85,6 @@ exports.getById = async (req, res) => {
 
     await recipe.save();
 
-    console.log(`Visualizações da receita ${recipe.id} incrementadas para ${recipe.views}`);
 
     res.status(200).json(recipe);
   } catch (error) {
@@ -290,9 +289,7 @@ exports.delete = async (req, res) => {
 
     const commentCount = await recipe.countComment_recipe();
 
-    if (commentCount > 0) {
-      console.log(`Excluindo ${commentCount} comentários associados à receita ${recipeId}`);
-    }
+
 
     await recipe.destroy();
 
