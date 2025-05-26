@@ -12,7 +12,6 @@ function checkAdminAccess() {
     return;
   }
   if (!isAdmin(user)) {
-    Toast.warning('Acesso restrito. Você não tem permissão para acessar a área administrativa.');
     window.location.href = '/index.html';
     return;
   }
@@ -81,7 +80,6 @@ function initAdminDashboard() {
     },
   });
 
-  // Gráfico de Produtos
   new Chart(ctxProducts, {
     type: 'pie',
     data: {

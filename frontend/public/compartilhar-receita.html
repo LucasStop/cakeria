@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cakeria | Compartilhar Receita</title>
 
-    <!-- Favicon -->
     <link rel="icon" href="/assets/favicon.ico" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
     <link rel="shortcut icon" type="image/png" href="/assets/favicon-32x32.png" />
 
-    <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,14 +16,12 @@
       rel="stylesheet"
     />
 
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="/css/compartilhar-receita.css" />
+    <link rel="stylesheet" href="/css/compartilhar-receitas.css" />
     <link rel="stylesheet" href="/css/notifications.css" />
     <link rel="stylesheet" href="/css/loading-button.css" />
     <link rel="stylesheet" href="/css/form-helpers.css" />
@@ -65,7 +61,6 @@
                 <label for="recipe-category">Categoria</label>
                 <select id="recipe-category" name="category" required>
                   <option value="" disabled selected>Selecione uma categoria</option>
-                  <!-- As categorias serão carregadas dinamicamente via JavaScript -->
                 </select>
                 <span class="error-message" id="category-error"></span>
               </div>
@@ -238,7 +233,6 @@
               </button>
             </div>
 
-            <!-- Mensagem de erro do formulário -->
             <div class="error-message" id="form-error"></div>
           </form>
         </section>
@@ -247,7 +241,6 @@
 
     <footer-component></footer-component>
 
-    <!-- Carregar componentes primeiro -->
     <script src="./js/utils/toast.js"></script>
     <script src="./components/Footer.js"></script>
     <script src="./js/notificacao.js"></script>
@@ -266,18 +259,14 @@
     <script src="./js/home.js"></script>
     <script src="./js/auth-guard.js"></script>
 
-    <!-- Script para adicionar toast à página -->
     <script>
-      // Verificação de autenticação imediata para esta página
       document.addEventListener('DOMContentLoaded', () => {
         if (!isAuthenticated()) {
-          // Se o usuário não estiver autenticado, redireciona para login
           const currentPath = window.location.pathname;
           window.location.href = `/login.html?redirect=${encodeURIComponent(currentPath)}`;
           return;
         }
 
-        // Se chegou aqui, o usuário está autenticado
         if (window.Toast) {
           Toast.info('Compartilhe sua receita com a comunidade!', {
             position: 'top-center',
@@ -285,7 +274,6 @@
           });
         }
 
-        // Exibir toast de boas-vindas
         if (window.Toast) {
           Toast.info('Compartilhe sua receita com a comunidade!', {
             position: 'top-center',
@@ -293,18 +281,14 @@
           });
         }
 
-        // Melhorar feedback de erros com toast
         const showErrorOriginal = window.showError;
 
-        // Se existir uma função showError no escopo global, vamos melhorá-la
         if (typeof showError === 'function') {
           window.showError = function (elementId, message) {
-            // Manter o comportamento original
             if (typeof showErrorOriginal === 'function') {
               showErrorOriginal(elementId, message);
             }
 
-            // Adicionar toast para erros críticos
             if (elementId === 'form-error' && window.Toast) {
               Toast.error(message, {
                 title: 'Erro no formulário',
@@ -315,16 +299,11 @@
           };
         }
 
-        // Adicionar toast ao formulário
         const form = document.getElementById('recipe-form');
         if (form) {
-          // Preservar submit original
           const originalSubmit = form.onsubmit;
 
           form.addEventListener('submit', function (e) {
-            // Não vamos prevenir o comportamento padrão para manter a lógica original
-
-            // Adicionar toast de envio
             if (window.Toast) {
               Toast.info('Enviando receita...', {
                 position: 'top-center',
@@ -333,13 +312,12 @@
             }
           });
 
-          // Adicionar confirmação ao botão Cancelar
           const cancelBtn = document.getElementById('cancel-btn');
           if (cancelBtn) {
             const originalClick = cancelBtn.onclick;
 
             cancelBtn.addEventListener('click', function (e) {
-              e.preventDefault(); // Prevenir comportamento padrão
+              e.preventDefault();
 
               if (window.Toast) {
                 Toast.warning('Deseja realmente cancelar? Os dados não serão salvos.', {
@@ -348,12 +326,10 @@
                   closeButton: true,
                 });
 
-                // Após 2 segundos para dar tempo de ler, executa o comportamento original
                 setTimeout(() => {
                   if (typeof originalClick === 'function') {
                     originalClick.call(this);
                   } else {
-                    // Comportamento padrão se não houver handler
                     window.location.href = '/receitas.html';
                   }
                 }, 2000);

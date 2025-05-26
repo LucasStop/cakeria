@@ -9,6 +9,7 @@
     "migrate": "sequelize db:migrate",
     "migrate:undo": "sequelize db:migrate:undo",
     "seed": "sequelize db:seed:all",
+    "seed:run": "node scripts/run-seeders.js",
     "db:reset": "sequelize db:migrate:undo:all && sequelize db:migrate",
     "db:clear-data": "node scripts/truncate-data.js",
     "db:drop-tables": "node scripts/clean-database.js",

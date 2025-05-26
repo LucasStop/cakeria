@@ -1,29 +1,9 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 
-// Garantir que o diretório de uploads existe
-const uploadDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Configurar armazenamento para uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    // Criar um nome de arquivo único usando timestamp e nome original
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, `${uniqueSuffix}${ext}`);
-  },
-});
-
-// Filtro para aceitar apenas imagens
 const fileFilter = (req, file, cb) => {
-  // Aceitar apenas imagens
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
@@ -31,20 +11,26 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Criar middleware do multer com tratamento de erro
 const upload = multer({
-  storage: storage,
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, os.tmpdir());
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      const ext = path.extname(file.originalname);
+      cb(null, file.fieldname + '-' + uniqueSuffix + ext);
+    },
+  }),
   limits: {
-    fileSize: 5 * 1024 * 1024, // Limite de 5MB
+    fileSize: 5 * 1024 * 1024,
   },
   fileFilter: fileFilter,
 });
 
-// Envolver o middleware do multer em um wrapper que captura erros
 const safeUpload = {
   single: function (fieldName) {
     return function (req, res, next) {
-      // Usar o middleware do multer em um try-catch
       try {
         const middleware = upload.single(fieldName);
 
