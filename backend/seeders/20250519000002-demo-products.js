@@ -73,7 +73,7 @@ module.exports = {
           name: 'Brigadeiros Gourmet',
           description: 'Brigadeiros gourmet com diversos sabores',
           price: 3.5,
-          size: '30g/unidade',
+          size: '30g',
           stock: 50,
           expiry_date: futureDate,
           category_id: categoryMap['Doces'],
