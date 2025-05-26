@@ -140,7 +140,6 @@ function renderizarCategorias(categoriasList) {
 }
 
 function initializeFilters() {
-
   const filterSection = document.querySelector('.filter-section');
   if (!filterSection) {
     console.warn('Seção de filtros não encontrada - pulando inicialização');
@@ -236,12 +235,10 @@ async function carregarCategoriasFiltro() {
         throw apiError;
       }
     } else {
-      
       const url = 'http://localhost:3001/api/category';
       let success = false;
 
       try {
-
         const response = await fetch(url);
 
         if (response.ok) {
@@ -270,7 +267,6 @@ async function carregarCategoriasFiltro() {
           selectCategoria.appendChild(option);
         }
       });
-
 
       if (filtroAtual.categoria) {
         selectCategoria.value = filtroAtual.categoria;
@@ -309,7 +305,6 @@ async function carregarCategoriasFiltro() {
 }
 
 function aplicarFiltros() {
-
   atualizarFiltrosAtivos();
 
   renderizarListaProdutos(filtroAtual);
@@ -490,7 +485,6 @@ async function renderizarListaProdutos(filtros = null) {
         </div>
       </section>
     `;
-
 
     if (!API || !API.produtos || typeof API.produtos.listar !== 'function') {
       console.error('API não está configurada corretamente:', API);
@@ -998,7 +992,6 @@ window.verReceitaDetalhes = async function (id) {
 
     throw new Error('Arquivo HTML da receita não encontrado');
   } catch (error) {
-
     const receitas = [
       {
         id: 1,
