@@ -323,7 +323,7 @@ function handleSubmit(e) {
 
     formData.append('address', JSON.stringify(addressData));
 
-    fetch(`http://localhost:3001/api/users`, {
+    fetch(`http://localhost:3001/api/user`, {
       method: 'POST',
       body: formData,
     })
