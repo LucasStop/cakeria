@@ -90,14 +90,14 @@
         if (urlParams.has('expired') || urlParams.get('reason') === 'session_expired') {
           if (window.Toast) {
             Toast.warning('Sua sessão expirou. Por favor, faça login novamente.', {
-              position: 'top-center',
+              position: 'bottom-right',
               duration: 5000,
             });
           }
         } else if (urlParams.has('logout')) {
           if (window.Toast) {
             Toast.info('Você saiu do sistema com sucesso!', {
-              position: 'top-center',
+              position: 'bottom-right',
               duration: 3000,
             });
           }
@@ -110,7 +110,7 @@
           loginForm.addEventListener('submit', function (e) {
             if (window.Toast) {
               Toast.info('Realizando login...', {
-                position: 'top-center',
+                position: 'bottom-right',
                 duration: 3000,
               });
             }
