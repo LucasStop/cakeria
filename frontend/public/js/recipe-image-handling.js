@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const isEditMode = form && form.dataset.recipeId;
 
   if (isEditMode) {
+    console.log('Aplicando melhorias para o modo de edição de imagens');
     enhanceImageHandling();
   }
 });
@@ -23,6 +24,7 @@ function enhanceImageHandling() {
     imageRequirement.classList.add('optional');
 
     imageInput.removeAttribute('required');
+    console.log('Atributo required removido do campo de imagem - modo de edição');
 
     if (imageStatus) {
       imageStatus.style.display = 'block';
