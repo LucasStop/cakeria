@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.Toast) {
           Toast.warning('Você precisa fazer login para compartilhar receitas', {
             duration: 5000,
-            position: 'top-center',
+            position: 'bottom-right',
           });
         }
       }

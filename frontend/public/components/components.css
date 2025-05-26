@@ -60,7 +60,7 @@ canvas {
   background-color: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
-  position: fixed;
+  position: sticky;
   width: 100%;
   top: 0;
   left: 0;

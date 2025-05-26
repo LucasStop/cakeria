@@ -356,7 +356,7 @@
             setTimeout(() => {
               if (window.Toast) {
                 window.Toast.info('Sistema de notificações carregado!', {
-                  position: 'top-center',
+                  position: 'bottom-right',
                   duration: 3000
                 });
               }
@@ -369,7 +369,7 @@
         
         if (urlParams.has('welcome') && window.Toast) {
           window.Toast.info('Seja bem-vindo à Cakeria! Navegue por nossas delícias!', {
-            position: 'top-center',
+            position: 'bottom-right',
             duration: 5000
           });
         }
@@ -408,7 +408,7 @@
           btn.addEventListener('click', function() {
             if (window.Toast) {
               Toast.success('Monte seu bolo personalizado em 4 passos simples!', {
-                position: 'top-center',
+                position: 'bottom-right',
                 duration: 2000
               });
             }
