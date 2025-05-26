@@ -50,6 +50,10 @@ class Header extends HTMLElement {
               ${
                 isLoggedIn
                   ? `<div class="user-menu">
+                  <a href="/carrinho.html" class="cart-icon-wrapper" title="Carrinho de Compras">
+                   <i class="fa-solid fa-shopping-cart"></i>
+                   <span class="cart-count">0</span>
+                 </a>
                     <div class="user-profile" id="user-profile-toggle">
                       <div class="user-avatar">
                   <img src="${userImageUrl}" alt="Avatar" class="user-avatar-img" >
@@ -63,7 +67,12 @@ class Header extends HTMLElement {
                     <div class="dropdown-menu">
                       <a href="/perfil.html" class="dropdown-item">
                         <i class="fa-solid fa-user"></i> Meu Perfil
-                      </a>                      <a href="/pedidos/meus-pedidos.html" class="dropdown-item">
+                      </a>
+
+                      <a href="/carrinho.html" class="dropdown-item">
+                        <i class="fa-solid fa-shopping-cart"></i> Meu Carrinho
+                      </a>
+                      <a href="/pedidos/meus-pedidos.html" class="dropdown-item">
                         <i class="fa-solid fa-shopping-bag"></i> Meus Pedidos
                       </a>
                       ${
