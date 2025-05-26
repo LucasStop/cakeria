@@ -134,8 +134,7 @@ class Header extends HTMLElement {
                 <li><a href="/usuarios" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
                 <li><a href="/index.html" class="nav-link" data-route="site"><i class="fa-solid fa-globe"></i> Ver Site</a></li>
               </ul>
-            </nav>
-            <div class="user-menu">
+              <div class="user-menu">
               <div class="user-profile" id="user-profile-toggle">
                 <div class="user-avatar">
                   <img src="${userImageUrl}" alt="Avatar" class="user-avatar-img" >
@@ -159,6 +158,8 @@ class Header extends HTMLElement {
                 </button>
               </div>
             </div>
+            </nav>
+            
             <button class="menu-toggle" aria-label="Menu">
               <span class="bar"></span>
               <span class="bar"></span>
