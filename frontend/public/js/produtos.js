@@ -192,6 +192,8 @@ async function handleRegisterSubmit(e) {
   });
 
   if (!isValid) return;
+
+  console.log('Dados do produto:', Object.fromEntries(formData));
 }
 
 function showError(inputElement, errorElementId, errorMessage) {
