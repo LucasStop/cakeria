@@ -13,6 +13,56 @@ let currentPage = 1;
 const itemsPerPage = 10;
 let totalUsers = 0;
 let usersData = [];
+
+function getUserInitials(user) {
+  if (!user) return '?';
+
+  if (user.name) {
+    const nameParts = user.name.split(' ');
+    let initials = nameParts[0][0];
+
+    if (nameParts.length > 1) {
+      initials += nameParts[nameParts.length - 1][0];
+    }
+
+    return initials.toUpperCase();
+  } else if (user.email) {
+    return user.email[0].toUpperCase();
+  }
+
+  return '?';
+}
+
+async function loadUserAvatarForList(userId, avatarContainer) {
+  if (!userId || !avatarContainer) return;
+  
+  const token = localStorage.getItem('token');
+  try {
+    const response = await fetch(
+      `${window.API?.BASE_URL || 'http://localhost:3001/api'}/user/${userId}/image`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    if (response.ok) {
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      
+      const img = avatarContainer.querySelector('.user-avatar-img');
+      const placeholder = avatarContainer.querySelector('.avatar-placeholder');
+      
+      if (img) {
+        img.src = imageUrl;
+        img.style.display = 'block';
+      }
+      if (placeholder) {
+        placeholder.style.display = 'none';
+      }
+    }
+  } catch (error) {
+    console.error('Erro ao carregar imagem do usuário:', error);
+  }
+}
 function checkAdminAccess() {
   const token = localStorage.getItem('token');
 
@@ -88,7 +138,7 @@ function renderUsersTable() {
 
   if (usersData.length === 0) {
     tableBody.innerHTML =
-      '<tr><td colspan="6" class="text-center">Nenhum usuário encontrado</td></tr>';
+      '<tr><td colspan="7" class="text-center">Nenhum usuário encontrado</td></tr>';
     return;
   }
 
@@ -104,12 +154,24 @@ function renderUsersTable() {
     if (user.last_login) {
       const date = new Date(user.last_login);
       lastLoginFormatted = `${date.toLocaleDateString('pt-BR')} ${date.toLocaleTimeString('pt-BR')}`;
-    }    row.innerHTML = `
+    }
+    
+    row.innerHTML = `
+      <td data-label="Avatar">
+        <div class="user-avatar-container">
+          <div class="user-avatar">
+            <img src="" alt="Avatar" class="user-avatar-img" style="display: none;" >
+            <div class="avatar-placeholder" style="display: flex; width: 40px; height: 40px; align-items: center; justify-content: center; background-color: #ccc; border-radius: 50%;">
+              <span class="avatar-initial">${getUserInitials(user)}</span>
+            </div>
+          </div>
+        </div>
+      </td>
       <td data-label="Nome">${user.name}</td>
       <td data-label="Email">${user.email}</td>
       <td data-label="Tipo">${user.type === 'admin' ? 'Administrador' : 'Cliente'}</td>
       <td data-label="Telefone">${user.phone || '-'}</td>
-      <td data-label="Último Login">${lastLoginFormatted}</td>
+      <td data-label="Último Login">${user.cpf}</td>
       <td data-label="Ações" class="table-actions">
         <button class="action-btn edit-btn" data-id="${user.id}" title="Editar" onclick="openEditModal(${user.id})">
           <i class="fas fa-edit"></i>
@@ -121,7 +183,13 @@ function renderUsersTable() {
     `;
 
     tableBody.appendChild(row);
-  }  // Os eventos agora são adicionados diretamente no HTML com onclick
+    
+    // Carregar avatar do usuário
+    const avatarContainer = row.querySelector('.user-avatar-container');
+    if (avatarContainer) {
+      loadUserAvatarForList(user.id, avatarContainer);
+    }
+  }
 }
 
 function renderPagination() {
@@ -188,32 +256,30 @@ window.openEditModal = function(userId) {
     return;
   }
   
-  // Vamos editar diretamente na linha da tabela em vez de usar o modal
   const row = document.querySelector(`#usersTable tr[data-id="${userId}"]`);
   if (!row) {
     console.error('Linha da tabela não encontrada para o usuário:', userId);
     return;
   }
   
-  // Se já estiver em modo de edição, não faça nada
   if (row.classList.contains('editing')) {
     return;
   }
-  
-  row.classList.add('editing');
+    row.classList.add('editing');
   
   const cells = row.querySelectorAll('td:not(:last-child)');
   
-  cells[0].innerHTML = `<input type="text" class="edit-input" value="${user.name}" data-field="name" required>`;
+  
+  cells[1].innerHTML = `<input type="text" class="edit-input" value="${user.name}" data-field="name" required>`;
   
   
-  cells[2].innerHTML = `
+  cells[3].innerHTML = `
     <select class="edit-input" data-field="type">
       <option value="client" ${user.type === 'client' ? 'selected' : ''}>Cliente</option>
       <option value="admin" ${user.type === 'admin' ? 'selected' : ''}>Administrador</option>
     </select>
   `;
-  cells[3].innerHTML = `<input type="text" class="edit-input phone-mask" value="${user.phone || ''}" data-field="phone" placeholder="(00) 00000-0000">`;
+  cells[4].innerHTML = `<input type="text" class="edit-input phone-mask" value="${user.phone || ''}" data-field="phone" placeholder="(00) 00000-0000">`;
   
   
   
@@ -620,7 +686,7 @@ window.deleteUser = function(userId) {
 function showLoadingState(isLoading) {
   const tableBody = document.querySelector('#usersTable tbody');
   if (isLoading) {
-    tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Carregando...</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Carregando...</td></tr>';
   }
 }
 
@@ -668,7 +734,6 @@ window.saveUserChanges = function(userId) {
   const nameInput = row.querySelector('input[data-field="name"]');
   const emailInput = row.querySelector('input[data-field="email"]');
   
-  // Validações básicas
   if (nameInput && !nameInput.value.trim()) {
     Toast.error('O nome não pode ficar em branco.', {
       position: 'bottom-right',
