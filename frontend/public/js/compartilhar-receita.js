@@ -420,7 +420,6 @@ async function loadCategories() {
 
     console.log(`${categories.length} categorias carregadas com sucesso`);
   } catch (error) {
-    console.error('Erro ao carregar categorias:', error);
     showError('category-error', 'Não foi possível carregar as categorias. Tente novamente.');
     throw new Error('Falha ao carregar categorias');
   }
