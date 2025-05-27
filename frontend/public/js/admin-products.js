@@ -261,7 +261,6 @@ function checkAdminAccess() {
   const token = localStorage.getItem('token');
 
   if (!token) {
-    alert('Você precisa estar logado como administrador para acessar esta página.');
     window.location.href = 'login.html?redirect=admin-produtos.html';
     return;
   }
@@ -275,13 +274,11 @@ function checkAdminAccess() {
     .then(response => response.json())
     .then(data => {
       if (!data.user || data.user.type !== 'admin') {
-        alert('Acesso restrito apenas para administradores.');
         window.location.href = 'index.html';
       }
     })
     .catch(error => {
       console.error('Erro ao verificar permissões:', error);
-      alert('Erro ao verificar suas permissões. Por favor, faça login novamente.');
       window.location.href = 'login.html';
     });
 }

@@ -970,8 +970,6 @@ function shareRecipe(recipeId) {
 
     if (window.Toast) {
       Toast.success('Link da receita copiado para a área de transferência!');
-    } else {
-      alert('Link da receita copiado para a área de transferência!');
     }
   }
 }
