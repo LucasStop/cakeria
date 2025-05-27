@@ -72,6 +72,8 @@ function initializeForm() {
   setupLiveValidation();
 
   markRequiredFields();
+
+  console.log('Formulário de cadastro de produto inicializado');
 }
 
 function markRequiredFields() {
@@ -186,48 +188,107 @@ async function loadCategories() {
   if (!categorySelect) return;
 
   try {
+    // Indicador de carregamento
     categorySelect.innerHTML =
       '<option value="" disabled selected>Carregando categorias...</option>';
 
-    const possibleEndpoints = ['/category'];
+    // Define os possíveis endpoints, com o principal primeiro
+    const possibleEndpoints = ['/categories', '/categorias', '/categoria', '/category'];
+
+    // Se já tivermos um endpoint armazenado, use-o primeiro
+    if (API.categorias && API.categorias.ENDPOINT) {
+      possibleEndpoints.unshift(API.categorias.ENDPOINT);
+    }
 
     let categories = [];
     let succeeded = false;
+    let lastError = null;
 
-    for (const endpoint of possibleEndpoints) {
-      try {
-        const response = await fetch(`${API.BASE_URL}${endpoint}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
+    // Configura um timeout para a operação completa
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Tempo limite excedido ao carregar categorias')), 8000);
+    });
 
-        if (response.ok) {
-          const data = await response.json();
-          categories = Array.isArray(data)
-            ? data
-            : data.categories || data.data || data.items || [];
-          succeeded = true;
-          break;
+    // Tenta cada endpoint
+    const fetchPromise = (async () => {
+      for (const endpoint of possibleEndpoints) {
+        try {
+          console.log(`Tentando carregar categorias de: ${endpoint}`);
+
+          // Configura um timeout para cada requisição
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+          const response = await fetch(`${API.BASE_URL}${endpoint}`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              'Content-Type': 'application/json',
+            },
+            signal: controller.signal,
+          }).finally(() => clearTimeout(timeoutId));
+
+          if (response.ok) {
+            const data = await response.json();
+
+            // Normaliza os dados, independentemente do formato retornado
+            categories = Array.isArray(data)
+              ? data
+              : data.categories || data.data || data.items || [];
+
+            // Armazena o endpoint bem-sucedido para uso futuro
+            if (!API.categorias) API.categorias = {};
+            API.categorias.ENDPOINT = endpoint;
+
+            console.log(
+              `Endpoint ${endpoint} funcionou! Encontradas ${categories.length} categorias.`
+            );
+            succeeded = true;
+            break;
+          }
+        } catch (endpointError) {
+          console.warn(`Falha ao carregar de ${endpoint}:`, endpointError);
+          lastError = endpointError;
         }
-      } catch (endpointError) {
-        console.warn(`Falha ao carregar de ${endpoint}:`, endpointError);
       }
-    }
 
-    if (!succeeded) {
-      throw new Error('Não foi possível carregar as categorias de nenhum endpoint');
-    }
+      if (!succeeded) {
+        throw lastError || new Error('Não foi possível carregar as categorias de nenhum endpoint');
+      }
 
+      return categories;
+    })();
+
+    // Executa com timeout
+    categories = await Promise.race([fetchPromise, timeoutPromise]);
+
+    // Preenche o select com as categorias
     categorySelect.innerHTML =
       '<option value="" disabled selected>Selecione uma categoria</option>';
 
-    categories.forEach(category => {
+    // Ordena as categorias por nome antes de adicioná-las ao select
+    categories.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+
+    if (categories.length === 0) {
       const option = document.createElement('option');
-      option.value = category.id;
-      option.textContent = category.name;
+      option.value = '';
+      option.disabled = true;
+      option.textContent = 'Nenhuma categoria disponível';
       categorySelect.appendChild(option);
-    });
+    } else {
+      categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.id;
+        option.textContent = category.name;
+        if (category.is_active === false) {
+          option.classList.add('inactive-category');
+          option.textContent += ' (Inativa)';
+        }
+        categorySelect.appendChild(option);
+      });
+    }
   } catch (error) {
     console.error('Erro ao carregar categorias:', error);
+
     showErrorMessage(
       'categoria-error',
       'Erro ao carregar categorias. Por favor, recarregue a página.'
@@ -238,7 +299,11 @@ async function loadCategories() {
       errorDiv.innerHTML += ' <button class="btn btn-sm reload-btn">Recarregar</button>';
       const reloadBtn = errorDiv.querySelector('.reload-btn');
       if (reloadBtn) {
-        reloadBtn.addEventListener('click', loadCategories);
+        reloadBtn.addEventListener('click', () => {
+          errorDiv.textContent = ''; // Limpa a mensagem de erro
+          errorDiv.classList.remove('active'); // Remove a classe active
+          loadCategories(); // Recarrega as categorias
+        });
       }
     }
   }
@@ -342,6 +407,8 @@ async function handleProductSubmit(e) {
   }
 
   try {
+    console.log('Preparando dados para envio...');
+
     const formData = new FormData();
     formData.append('name', nameInput.value.trim());
     formData.append('price', parseFloat(priceInput.value.replace(',', '.')));
@@ -368,12 +435,23 @@ async function handleProductSubmit(e) {
       formData.append('image', imageInput.files[0]);
     }
 
+    console.log('Enviando dados:', {
+      name: nameInput.value,
+      price: parseFloat(priceInput.value.replace(',', '.')),
+      stock_quantity: parseInt(stockInput.value),
+      expiration_date: expirationInput.value || 'não especificada',
+      size: sizeSelect.value === 'custom' ? customSizeInput.value : sizeSelect.value,
+      category_id: categorySelect.value,
+      description: descriptionInput ? descriptionInput.value : '',
+      hasImage: imageInput && imageInput.files.length > 0,
+    });
+
     const token = localStorage.getItem('token');
     if (!token) {
       throw new Error('Usuário não autenticado. Faça login novamente.');
     }
 
-    const possibleEndpoints = ['/product'];
+    const possibleEndpoints = ['/products', '/produtos', '/product', '/produto'];
 
     const possibleServers = [API.BASE_URL, 'http://localhost:3001/api'];
 
@@ -391,6 +469,7 @@ async function handleProductSubmit(e) {
 
       for (const endpoint of possibleEndpoints) {
         const url = `${server}${endpoint}`;
+        console.log(`Tentando enviar para endpoint: ${url}`);
 
         try {
           const abortController = new AbortController();
@@ -407,8 +486,11 @@ async function handleProductSubmit(e) {
             clearTimeout(timeoutId);
           });
 
+          console.log(`Status da resposta para ${endpoint}:`, response.status);
+
           if (response.ok) {
             if (API.produtos) API.produtos.ENDPOINT = endpoint;
+            console.log(`Endpoint ${endpoint} funcionou! Salvando para uso futuro.`);
             success = true;
             break;
           }
@@ -444,6 +526,7 @@ async function handleProductSubmit(e) {
     }
 
     const responseData = await response.json();
+    console.log('Produto cadastrado com sucesso:', responseData);
 
     if (formErrorDisplay) {
       formErrorDisplay.textContent = 'Produto cadastrado com sucesso!';

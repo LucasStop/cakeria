@@ -18,8 +18,7 @@ async function fetchRecipeDetails(id) {
       throw new Error(`Erro na requisição: ${response.status}`);
     }
     const recipe = await response.json();
-    renderRecipeDetails(recipe);
-  } catch (error) {
+    renderRecipeDetails(recipe);  } catch (error) {
     console.error('Erro ao buscar detalhes da receita:', error);
     showError();
   }
@@ -50,11 +49,10 @@ function renderRecipeDetails(recipe) {
             <i class="fas fa-trash"></i> Excluir Receita
           </button>
         </div>
-      </div>
-      
+      </div>      
       <div class="recipe-content-wrapper">
         <div class="recipe-image-container">
-          <img src="${recipe.image_url || '/assets/placeholder.jpg'}" alt="${recipe.title}" class="recipe-main-image">
+          <img src="${recipe.id ? `${API.BASE_URL}/recipe/${recipe.id}/image` : '/assets/placeholder.jpg'}" alt="${recipe.title}" class="recipe-main-image" onerror="this.src='/assets/placeholder.jpg'">
           
           <div class="recipe-badges">
             <span class="recipe-badge difficulty-${recipe.difficulty || 'medio'}">
@@ -342,6 +340,7 @@ function renderComments(comments) {
               editButton.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
+                console.log('Clicou para editar comentário:', comment.id);
                 showEditCommentForm(comment);
               });
             }
@@ -931,6 +930,8 @@ function showDeleteCommentConfirmation(comment) {
 }
 
 function showEditCommentForm(comment) {
+  console.log('Editando comentário:', comment);
+
   const commentElement = document.querySelector(`.comment[data-comment-id="${comment.id}"]`);
   if (commentElement) {
     commentElement.classList.add('editing');
@@ -987,6 +988,8 @@ function showEditCommentForm(comment) {
       saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
       saveButton.disabled = true;
 
+      console.log('Enviando atualização para o comentário:', comment.id);
+
       const response = await fetch(`${API.BASE_URL}/comment/${comment.id}`, {
         method: 'PUT',
         headers: {
@@ -1000,6 +1003,8 @@ function showEditCommentForm(comment) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Erro ao atualizar comentário');
       }
+
+      console.log('Comentário atualizado com sucesso');
 
       await fetchComments(getRecipeIdFromUrl());
 

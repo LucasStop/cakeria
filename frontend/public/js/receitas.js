@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.Toast) {
           Toast.warning('Você precisa fazer login para compartilhar receitas', {
             duration: 5000,
-            position: 'top-center',
+            position: 'bottom-right',
           });
         }
       }
@@ -61,6 +61,7 @@ let currentPage = 1;
 let totalPages = 1;
 
 function initRecipesPage() {
+  console.log('Inicializando página de receitas...');
   setupEventListeners();
   fetchRecipes();
 }
@@ -70,6 +71,7 @@ function setupEventListeners() {
     searchBtn.addEventListener('click', () => {
       const searchTerm = searchInput.value.trim();
       if (searchTerm) {
+        console.log(`Buscando por: ${searchTerm}`);
         currentPage = 1;
         fetchRecipes();
       }
@@ -79,6 +81,7 @@ function setupEventListeners() {
       if (e.key === 'Enter') {
         const searchTerm = searchInput.value.trim();
         if (searchTerm) {
+          console.log(`Buscando por: ${searchTerm}`);
           currentPage = 1;
           fetchRecipes();
         }
@@ -88,7 +91,9 @@ function setupEventListeners() {
 
   const newRecipeBtn = document.getElementById('new-recipe-btn');
   if (newRecipeBtn) {
-    newRecipeBtn.addEventListener('click', () => {});
+    newRecipeBtn.addEventListener('click', () => {
+      console.log('Compartilhar nova receita');
+    });
   }
 
   if (categoryFilter) {
@@ -102,6 +107,7 @@ function setupEventListeners() {
 
     categoryFilter.addEventListener('change', () => {
       const selectedCategory = categoryFilter.value;
+      console.log(`Filtrando por categoria: ${selectedCategory}`);
       currentPage = 1;
       fetchRecipes();
     });
@@ -110,6 +116,7 @@ function setupEventListeners() {
   if (sortSelect) {
     sortSelect.addEventListener('change', () => {
       const sortOption = sortSelect.value;
+      console.log(`Ordenando por: ${sortOption}`);
       currentPage = 1;
       fetchRecipes();
     });
@@ -117,6 +124,7 @@ function setupEventListeners() {
 }
 
 async function fetchRecipes() {
+  console.log('Buscando receitas do servidor...');
   showLoading();
 
   try {
@@ -203,6 +211,8 @@ function showError() {
 const userCache = {};
 
 async function getUserById(userId) {
+  console.log(`Tentando buscar usuário com ID ${userId}...`);
+
   if (userCache[userId]) {
     return userCache[userId];
   }
@@ -235,11 +245,11 @@ async function displayRecipes(recipes) {
       const title = recipe.title || 'Sem título';
       const description = recipe.description || 'Sem descrição';
       const author = recipe.author?.name || 'Autor desconhecido';
-      const image = recipe.image_url || '/assets/placeholder.jpg';
+      const imageUrl = recipe.id ? `${API.BASE_URL}/recipe/${recipe.id}/image` : '/assets/placeholder.jpg';
 
       card.innerHTML = `
         <div class="recipe-image">
-          <img src="${image}" alt="${title}" onerror="this.src='/assets/placeholder.jpg'">
+          <img src="${imageUrl}" alt="${title}" onerror="this.src='/assets/placeholder.jpg'">
         </div>
         <div class="recipe-content">
           <h3 class="recipe-title">${title}</h3>
@@ -258,8 +268,9 @@ async function displayRecipes(recipes) {
       const card = recipeTemplate.content.cloneNode(true);
 
       const img = card.querySelector('.recipe-image img');
-      img.src = recipe.image_url || '/assets/placeholder.jpg';
+      img.src = recipe.id ? `${API.BASE_URL}/recipe/${recipe.id}/image` : '/assets/placeholder.jpg';
       img.alt = recipe.title;
+      img.onerror = function() { this.src = '/assets/placeholder.jpg'; };
 
       card.querySelector('.recipe-title').textContent = recipe.title;
 
@@ -296,11 +307,14 @@ async function displayRecipes(recipes) {
           authorName = 'Autor desconhecido';
         }
 
+        console.log('Nome do autor encontrado:', authorName);
         authorSpan.textContent = authorName;
       }
 
       const dateSpan = card.querySelector('.date-text');
       if (dateSpan) {
+        console.log('Data original:', recipe.created_at || recipe.createdAt);
+
         let dateString = recipe.created_at || recipe.createdAt;
         let date;
 
@@ -420,6 +434,8 @@ async function displayRecipes(recipes) {
   }
 }
 
+console.log(`${recipes.length} receitas exibidas com sucesso`);
+
 function showDeleteConfirmation(recipe) {
   const dialog = document.createElement('div');
   dialog.className = 'confirmation-dialog';
@@ -489,5 +505,6 @@ function showNotification(message, type = 'info') {
 
 window.fetchRecipes = fetchRecipes;
 window.verReceitaDetalhes = function (id) {
+  console.log(`Ver detalhes da receita ${id}`);
   window.location.href = `/receita.html?id=${id}`;
 };

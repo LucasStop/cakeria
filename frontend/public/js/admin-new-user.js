@@ -13,8 +13,14 @@ function checkAdminAccess() {
   const token = localStorage.getItem('token');
 
   if (!token) {
-    alert('Você precisa estar logado como administrador para acessar esta página.');
-    window.location.href = 'login.html?redirect=admin-new-user.html';
+    if (window.Toast) {
+      Toast.error('Você precisa estar logado como administrador para acessar esta página.', {
+        duration: 5000,
+      });
+    }
+    setTimeout(() => {
+      window.location.href = 'login.html?redirect=admin-new-user.html';
+    }, 2000);
     return;
   }
 
@@ -27,14 +33,26 @@ function checkAdminAccess() {
     .then(response => response.json())
     .then(data => {
       if (!data.user || data.user.type !== 'admin') {
-        alert('Acesso restrito apenas para administradores.');
-        window.location.href = 'index.html';
+        if (window.Toast) {
+          Toast.warning('Acesso restrito apenas para administradores.', {
+            duration: 5000,
+          });
+        }
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 2000);
       }
     })
     .catch(error => {
       console.error('Erro ao verificar permissões:', error);
-      alert('Erro ao verificar suas permissões. Por favor, faça login novamente.');
-      window.location.href = 'login.html';
+      if (window.Toast) {
+        Toast.error('Erro ao verificar suas permissões. Por favor, faça login novamente.', {
+          duration: 5000,
+        });
+      }
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 2000);
     });
 }
 
@@ -136,14 +154,119 @@ function addValidation(id, validateFn, errorId, errorMsg, formatFn = null) {
   const input = document.getElementById(id);
   if (!input) return;
 
-  input.addEventListener('input', () => {
-    if (formatFn) formatFn(input);
-    if (!validateFn(input.value)) {
-      showError(errorId, input, errorMsg);
-    } else {
-      clearError(errorId, input);
+  // Adiciona o tooltip de ajuda
+  const helpIcon = document.createElement('span');
+  helpIcon.className = 'help-icon';
+  helpIcon.innerHTML = '<i class="fas fa-question-circle"></i>';
+  helpIcon.title = errorMsg;
+  
+  // Adiciona o ícone após a label
+  const label = input.parentElement.querySelector('label');
+  if (label) {
+    label.appendChild(helpIcon);
+  }
+  
+  // Adiciona evento para mostrar o tooltip ao passar o mouse
+  helpIcon.addEventListener('mouseenter', function() {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'help-tooltip';
+    tooltip.textContent = errorMsg;
+    this.appendChild(tooltip);
+  });
+  
+  helpIcon.addEventListener('mouseleave', function() {
+    const tooltip = this.querySelector('.help-tooltip');
+    if (tooltip) {
+      tooltip.remove();
     }
   });
+
+  // Para os campos de senha, adiciona indicador de força
+  if (id === 'register-password') {
+    const strengthIndicator = document.createElement('div');
+    strengthIndicator.className = 'password-strength-indicator';
+    strengthIndicator.innerHTML = `
+      <div class="strength-meter">
+        <div class="strength-bar"></div>
+      </div>
+      <div class="strength-text">Força da senha: <span>Fraca</span></div>
+    `;
+    input.parentElement.appendChild(strengthIndicator);
+    
+    // Adiciona evento para atualizar o indicador de força
+    input.addEventListener('input', function() {
+      updatePasswordStrength(this.value, strengthIndicator);
+    });
+  }
+
+  // Evento principal de validação ao digitar
+  input.addEventListener('input', () => {
+    if (formatFn) formatFn(input);
+    
+    // Timeout para validar após o usuário parar de digitar
+    clearTimeout(input.validationTimeout);
+    input.validationTimeout = setTimeout(() => {
+      if (!validateFn(input.value)) {
+        showError(errorId, input, errorMsg);
+      } else {
+        clearError(errorId, input);
+        
+        // Adiciona animação de validação bem-sucedida
+        if (input.value) {
+          const successIcon = document.createElement('span');
+          successIcon.className = 'success-icon';
+          successIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+          input.parentElement.appendChild(successIcon);
+          
+          // Remove o ícone após 2 segundos
+          setTimeout(() => {
+            successIcon.remove();
+          }, 2000);
+        }
+      }
+    }, 500);
+  });
+  
+  // Valida também ao perder o foco
+  input.addEventListener('blur', () => {
+    if (input.value && !validateFn(input.value)) {
+      showError(errorId, input, errorMsg);
+    }
+  });
+}
+
+// Função para atualizar o indicador de força da senha
+function updatePasswordStrength(password, indicator) {
+  let strength = 0;
+  
+  // Critérios de força
+  if (password.length >= 5) strength += 20;
+  if (password.length >= 8) strength += 20;
+  if (/[A-Z]/.test(password)) strength += 20;
+  if (/[0-9]/.test(password)) strength += 20;
+  if (/[^A-Za-z0-9]/.test(password)) strength += 20;
+  
+  // Atualiza a barra de força
+  const strengthBar = indicator.querySelector('.strength-bar');
+  strengthBar.style.width = `${strength}%`;
+  
+  // Atualiza a cor baseada na força
+  if (strength <= 20) {
+    strengthBar.style.backgroundColor = '#ff4d4d';
+    indicator.querySelector('.strength-text span').textContent = 'Muito fraca';
+  } else if (strength <= 40) {
+    strengthBar.style.backgroundColor = '#ffa64d';
+    indicator.querySelector('.strength-text span').textContent = 'Fraca';
+  } else if (strength <= 60) {
+    strengthBar.style.backgroundColor = '#ffff4d';
+    indicator.querySelector('.strength-text span').textContent = 'Média';
+  } else if (strength <= 80) {
+    strengthBar.style.backgroundColor = '#4dff4d';
+    indicator.querySelector('.strength-text span').textContent = 'Forte';
+  } else {
+    strengthBar.style.backgroundColor = '#4dffff';
+    indicator.querySelector('.strength-text span').textContent = 'Muito forte';
+  }
 }
 
 const isNotEmpty = val => val.trim() !== '';
@@ -206,16 +329,60 @@ function formatLettersOnly(input) {
 
 function showError(id, input, msg) {
   input.classList.add('invalid-input');
-  document.getElementById(id).textContent = msg;
+  const errorElement = document.getElementById(id);
+  if (errorElement) {
+    errorElement.textContent = msg;
+    errorElement.classList.add('show-error');
+    
+    // Adiciona ícone de erro (se ainda não tiver)
+    if (!input.parentElement.querySelector('.error-icon')) {
+      const errorIcon = document.createElement('span');
+      errorIcon.className = 'error-icon';
+      errorIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+      errorIcon.title = msg;
+      input.parentElement.appendChild(errorIcon);
+      
+      // Adiciona evento para mostrar o tooltip ao passar o mouse
+      errorIcon.addEventListener('mouseenter', function() {
+        const tooltip = document.createElement('div');
+        tooltip.className = 'error-tooltip';
+        tooltip.textContent = msg;
+        this.appendChild(tooltip);
+      });
+      
+      errorIcon.addEventListener('mouseleave', function() {
+        const tooltip = this.querySelector('.error-tooltip');
+        if (tooltip) {
+          tooltip.remove();
+        }
+      });
+    }
+  }
 }
 
 function clearError(id, input) {
   input.classList.remove('invalid-input');
-  document.getElementById(id).textContent = '';
+  const errorElement = document.getElementById(id);
+  if (errorElement) {
+    errorElement.textContent = '';
+    errorElement.classList.remove('show-error');
+  }
+  
+  // Remove ícone de erro se existir
+  const errorIcon = input.parentElement.querySelector('.error-icon');
+  if (errorIcon) {
+    errorIcon.remove();
+  }
 }
 
 function fetchAddress(cep) {
   cep = cep.replace(/\D/g, '');
+  
+  // Mostrar toast de carregamento
+  const loadingToast = window.Toast ? 
+    Toast.info('<span class="loading-spinner"></span> Buscando endereço...', {
+      duration: 0, // Sem tempo limite
+    }) : null;
 
   fetch(`https://viacep.com.br/ws/${cep}/json/`)
     .then(response => {
@@ -225,8 +392,18 @@ function fetchAddress(cep) {
       return response.json();
     })
     .then(data => {
+      // Remove o toast de carregamento
+      if (loadingToast) {
+        Toast.remove(loadingToast);
+      }
+      
       if (data.erro) {
         showError('cep-error', document.getElementById('register-cep'), 'CEP não encontrado');
+        if (window.Toast) {
+          Toast.warning('CEP não encontrado. Por favor, verifique o número.', {
+            duration: 4000,
+          });
+        }
         return;
       }
 
@@ -244,10 +421,28 @@ function fetchAddress(cep) {
       if (data.bairro) clearError('neighborhood-error', neighborhoodField);
       if (data.localidade) clearError('city-error', cityField);
       if (data.uf) clearError('state-error', stateField);
+      
+      if (window.Toast) {
+        Toast.success('Endereço encontrado com sucesso!', {
+          duration: 3000,
+        });
+      }
     })
     .catch(error => {
       console.error('Erro ao buscar o endereço:', error);
+      
+      // Remove o toast de carregamento
+      if (loadingToast) {
+        Toast.remove(loadingToast);
+      }
+      
       showError('cep-error', document.getElementById('register-cep'), 'Erro ao buscar o CEP');
+      
+      if (window.Toast) {
+        Toast.error('Erro ao buscar o endereço. Por favor, verifique sua conexão e tente novamente.', {
+          duration: 4000,
+        });
+      }
     });
 }
 
@@ -255,45 +450,101 @@ function handleSubmit(e) {
   e.preventDefault();
 
   let isValid = true;
+  let errorMessages = [];
 
   const fields = {
-    'register-name': isValidName,
-    'register-email': isValidEmail,
-    'register-phone': isValidPhone,
-    'register-cpf': isValidCPF,
-    'register-password': isValidPassword,
-    'register-cep': isValidCEP,
-    'register-street': isNotEmpty,
-    'register-number': isValidNumber,
-    'register-neighborhood': isValidLettersOnly,
-    'register-city': isValidLettersOnly,
-    'register-state': isValidLettersOnly,
+    'register-name': { 
+      validate: isValidName, 
+      message: 'Digite pelo menos nome e sobrenome' 
+    },
+    'register-email': { 
+      validate: isValidEmail, 
+      message: 'Formato inválido (ex: usuario@email.com)' 
+    },
+    'register-phone': { 
+      validate: isValidPhone, 
+      message: 'Formato correto: (00) 00000-0000' 
+    },
+    'register-cpf': { 
+      validate: isValidCPF, 
+      message: 'CPF inválido' 
+    },
+    'register-password': { 
+      validate: isValidPassword, 
+      message: 'Mínimo 5 caracteres' 
+    },
+    'register-cep': { 
+      validate: isValidCEP, 
+      message: 'Formato correto: 00000-000' 
+    },
+    'register-street': { 
+      validate: isNotEmpty, 
+      message: 'Digite o nome da rua' 
+    },
+    'register-number': { 
+      validate: isValidNumber, 
+      message: 'Digite um número válido' 
+    },
+    'register-neighborhood': { 
+      validate: isValidLettersOnly, 
+      message: 'Digite um bairro válido (sem números)' 
+    },
+    'register-city': { 
+      validate: isValidLettersOnly, 
+      message: 'Digite uma cidade válida (sem números)' 
+    },
+    'register-state': { 
+      validate: isValidLettersOnly, 
+      message: 'Digite um estado válido (sem números)' 
+    },
   };
 
-  for (const [id, validateFn] of Object.entries(fields)) {
+  for (const [id, config] of Object.entries(fields)) {
     const input = document.getElementById(id);
     if (!input) continue;
 
-    if (!validateFn(input.value)) {
+    if (!config.validate(input.value)) {
       const errorId = id.replace('register-', '') + '-error';
-      showError(errorId, input, 'Campo inválido');
+      showError(errorId, input, config.message);
+      errorMessages.push(`${input.labels[0]?.textContent || id}: ${config.message}`);
       isValid = false;
     }
   }
 
-  const password = document.getElementById('register-password').value;
-  const confirm = document.getElementById('register-confirm-password').value;
+  const password = document.getElementById('register-password')?.value;
+  const confirm = document.getElementById('register-confirm-password')?.value;
 
-  if (password !== confirm) {
+  if (password && confirm && password !== confirm) {
     showError(
       'confirm-password-error',
       document.getElementById('register-confirm-password'),
       'As senhas não coincidem'
     );
+    errorMessages.push('Senha: As senhas não coincidem');
     isValid = false;
   }
 
-  if (!isValid) return;
+  if (!isValid) {
+    if (window.Toast) {
+      Toast.error(
+        `<strong>Por favor, corrija os seguintes erros:</strong><br>
+        <ul class="toast-error-list">
+          ${errorMessages.map(msg => `<li>${msg}</li>`).join('')}
+        </ul>`,
+        {
+          title: 'Erro de validação',
+          duration: 6000,
+        }
+      );
+    }
+    return;
+  }
+
+  // Mostrar toast de sucesso com carregamento
+  const loadingToast = window.Toast ? 
+    Toast.info('<span class="loading-spinner"></span> Enviando dados...', {
+      duration: 0, // Sem tempo limite
+    }) : null;
 
   const form = e.target;
   const fileInput = document.getElementById('register-avatar');
@@ -323,7 +574,7 @@ function handleSubmit(e) {
 
     formData.append('address', JSON.stringify(addressData));
 
-    fetch(`http://localhost:3001/api/users`, {
+    fetch(`http://localhost:3001/api/user`, {
       method: 'POST',
       body: formData,
     })
@@ -331,17 +582,14 @@ function handleSubmit(e) {
         if (response.ok) {
           const responseData = await response.json();
 
-          alert('Usuário cadastrado com sucesso!');
           window.location.href = 'admin-users.html';
         } else {
           const errorData = await response.json();
           console.error('Erro ao registrar usuário:', errorData);
-          alert('Erro ao cadastrar usuário: ' + (errorData.message || 'Erro desconhecido'));
         }
       })
       .catch(error => {
         console.error('Erro na requisição:', error);
-        alert('Erro na requisição: ' + error.message);
       });
   } else {
     const userData = {
@@ -362,7 +610,7 @@ function handleSubmit(e) {
       },
     };
 
-    fetch(`http://localhost:3001/api/users`, {
+    fetch(`http://localhost:3001/api/user`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -373,17 +621,14 @@ function handleSubmit(e) {
         if (response.ok) {
           const responseData = await response.json();
 
-          alert('Usuário cadastrado com sucesso!');
           window.location.href = 'admin-users.html';
         } else {
           const errorData = await response.json();
           console.error('Erro ao registrar usuário:', errorData);
-          alert('Erro ao cadastrar usuário: ' + (errorData.message || 'Erro desconhecido'));
         }
       })
       .catch(error => {
         console.error('Erro na requisição:', error);
-        alert('Erro na requisição: ' + error.message);
       });
   }
 }

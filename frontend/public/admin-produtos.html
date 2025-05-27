@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Administração de Produtos | Cakeria</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
+    <link rel="stylesheet" href="./components/components.css" />
+    <link rel="manifest" href="assets/site.webmanifest" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/admin-products.css" />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/index.css" />
+    <link rel="stylesheet" href="./css/product-edit.css" />
+    <link rel="stylesheet" href="./css/inline-edit.css" />
+    <link rel="stylesheet" href="./css/modal.css" />
+    <link rel="stylesheet" href="./css/toast.css" />
+    <link rel="stylesheet" href="./components/components.css" />
+    <link rel="stylesheet" href="./components/dashboards/css/styles.css" />
+
+    <script src="/components/Footer.js"></script>
+  </head>
+
+  <body>
+    <header-component variant="admin"></header-component>
+    <main class="container">
+      <div class="title-container">
+        <h1 class="page-title">Gerenciamento de Produtos</h1>
+      </div>
+
+      <div class="admin-dashboard">
+        <div class="admin-card wide-card">
+          <div class="search-filter">
+            <input type="text" id="searchProduct" placeholder="Buscar por nome ou categoria..." />
+            <select id="filterCategory">
+              <option value="">Todas as categorias</option>
+            </select>
+            <a href="admin-new-product.html" class="btn btn-primary"
+              ><i class="fas fa-plus"></i> Novo Produto</a
+            >
+          </div>
+
+          <div class="table-responsive">
+            <table id="productsTable" class="admin-table">
+              <thead>
+                <tr>
+                  <th>+</th>
+                  <th>Imagem</th>
+                  <th>Nome</th>
+                  <th>Categoria</th>
+                  <th>Preço</th>
+                  <th>Estoque</th>
+                  <th>Validade</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div id="pagination" class="pagination"></div>
+        </div>
+      </div>
+
+      <div id="editProductModal" class="modal">
+        <div class="modal-content">
+          <span class="close-modal">&times;</span>
+          <h2>Editar Produto</h2>
+          <form id="editProductForm" class="admin-form">
+            <input type="hidden" id="editProductId" />
+
+            <div class="form-group">
+              <label>Imagem do Produto</label>
+              <div class="product-image-upload-container">
+                <div id="editImagePreview" class="product-preview-img-container">
+                  <span class="default-image-icon"><i class="fas fa-image"></i></span>
+                </div>
+                <div class="product-image-input">
+                  <input type="file" id="editProductImage" name="editProductImage" accept="image/*" />
+                  <button type="button" id="editSelectImageBtn" class="btn-select-image">Selecionar Imagem</button>
+                  <span class="error-message" id="edit-image-error"></span>
+                  <small class="image-help-text">Max 5MB. JPG, PNG, WebP.</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="editProductName">Nome*</label>
+                  <input type="text" id="editProductName" name="editProductName" required />
+                  <span class="error-message" id="edit-name-error"></span>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="editProductPrice">Preço*</label>
+                  <input type="text" id="editProductPrice" name="editProductPrice" required />
+                  <span class="error-message" id="edit-price-error"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="editProductStock">Estoque*</label>
+                  <input
+                    type="number"
+                    id="editProductStock"
+                    name="editProductStock"
+                    min="0"
+                    required
+                  />
+                  <span class="error-message" id="edit-stock-error"></span>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="editProductExpiry">Data de Validade*</label>
+                  <input type="date" id="editProductExpiry" name="editProductExpiry" required />
+                  <span class="error-message" id="edit-expiry-error"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="editProductCategory">Categoria*</label>
+              <select id="editProductCategory" name="editProductCategory" required>
+                <option value="">Selecione uma categoria</option>
+              </select>
+              <span class="error-message" id="edit-category-error"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="editProductSize">Tamanho*</label>
+              <select id="editProductSize" name="editProductSize" required>
+                <option value="P">Pequeno</option>
+                <option value="M">Médio</option>
+                <option value="G">Grande</option>
+                <option value="custom">Personalizado</option>
+              </select>
+              <div id="editCustomSizeContainer" style="display: none">
+                <input
+                  type="text"
+                  id="editProductCustomSize"
+                  placeholder="Especifique o tamanho..."
+                />
+              </div>
+              <span class="error-message" id="edit-size-error"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="editProductDescription">Descrição*</label>
+              <textarea
+                id="editProductDescription"
+                name="editProductDescription"
+                required
+              ></textarea>
+              <span class="error-message" id="edit-description-error"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="editProductStatus">Status</label>
+              <select id="editProductStatus" name="editProductStatus">
+                <option value="true">Ativo</option>
+                <option value="false">Inativo</option>
+              </select>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-primary">Salvar Alterações</button>
+              <button type="button" class="btn-secondary close-modal">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content">
+          <span class="close-modal">&times;</span>
+          <h2>Confirmar Exclusão</h2>
+          <div class="warning-message">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>
+              Você está prestes a excluir o produto
+              <strong><span id="deleteProductName"></span></strong>.
+            </p>
+            <p>Esta operação <strong>NÃO</strong> pode ser desfeita!</p>
+          </div>
+          <input type="hidden" id="deleteProductId" />
+          <div class="form-actions">
+            <button id="confirmDelete" class="btn-danger">
+              <i class="fas fa-trash"></i> Excluir Permanentemente
+            </button>
+            <button class="btn-secondary close-modal">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="footer-container"></div>
+    <script src="components/Header.js"></script>
+    <script src="components/Footer.js"></script>
+    <script src="js/utils/toast.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/admin-products.js"></script>
+  </body>
+</html>

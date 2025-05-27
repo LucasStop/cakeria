@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
+  if (window.Toast && typeof window.Toast.init === 'function') {
+    window.Toast.init();
+  }
+
   checkAdminAccess();
   loadUsers();
   setupEventListeners();
@@ -9,11 +13,60 @@ let currentPage = 1;
 const itemsPerPage = 10;
 let totalUsers = 0;
 let usersData = [];
+
+function getUserInitials(user) {
+  if (!user) return '?';
+
+  if (user.name) {
+    const nameParts = user.name.split(' ');
+    let initials = nameParts[0][0];
+
+    if (nameParts.length > 1) {
+      initials += nameParts[nameParts.length - 1][0];
+    }
+
+    return initials.toUpperCase();
+  } else if (user.email) {
+    return user.email[0].toUpperCase();
+  }
+
+  return '?';
+}
+
+async function loadUserAvatarForList(userId, avatarContainer) {
+  if (!userId || !avatarContainer) return;
+
+  const token = localStorage.getItem('token');
+  try {
+    const response = await fetch(
+      `${window.API?.BASE_URL || 'http://localhost:3001/api'}/user/${userId}/image`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    if (response.ok) {
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+
+      const img = avatarContainer.querySelector('.user-avatar-img');
+      const placeholder = avatarContainer.querySelector('.avatar-placeholder');
+
+      if (img) {
+        img.src = imageUrl;
+        img.style.display = 'block';
+      }
+      if (placeholder) {
+        placeholder.style.display = 'none';
+      }
+    }
+  } catch (error) {
+    console.error('Erro ao carregar imagem do usuário:', error);
+  }
+}
 function checkAdminAccess() {
   const token = localStorage.getItem('token');
 
   if (!token) {
-    alert('Você precisa estar logado como administrador para acessar esta página.');
     window.location.href = 'login.html?redirect=admin-users.html';
     return;
   }
@@ -27,35 +80,21 @@ function checkAdminAccess() {
     .then(response => response.json())
     .then(data => {
       if (!data.user || data.user.type !== 'admin') {
-        alert('Acesso restrito apenas para administradores.');
         window.location.href = 'index.html';
       }
     })
     .catch(error => {
       console.error('Erro ao verificar permissões:', error);
-      alert('Erro ao verificar suas permissões. Por favor, faça login novamente.');
       window.location.href = 'login.html';
     });
 }
 
 function loadUsers() {
-  const token = localStorage.getItem('token');
   const searchTerm = document.getElementById('searchUser').value.toLowerCase();
   const typeFilter = document.getElementById('filterType').value;
   showLoadingState(true);
 
-  fetch('http://localhost:3001/api/users', {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Erro ao carregar usuários');
-      }
-      return response.json();
-    })
+  API.get('/user')
     .then(users => {
       usersData = users.filter(user => {
         const matchesSearch =
@@ -80,7 +119,13 @@ function loadUsers() {
     .catch(error => {
       console.error('Erro:', error);
       showLoadingState(false);
-      alert('Erro ao carregar a lista de usuários. Por favor, tente novamente.');
+      Toast.error('Erro ao carregar a lista de usuários. Por favor, tente novamente.', {
+        position: 'bottom-right',
+        closeButton: true,
+        pauseOnHover: true,
+        title: null,
+        zIndex: 99999,
+      });
     });
 }
 
@@ -90,7 +135,7 @@ function renderUsersTable() {
 
   if (usersData.length === 0) {
     tableBody.innerHTML =
-      '<tr><td colspan="6" class="text-center">Nenhum usuário encontrado</td></tr>';
+      '<tr><td colspan="7" class="text-center">Nenhum usuário encontrado</td></tr>';
     return;
   }
 
@@ -100,42 +145,47 @@ function renderUsersTable() {
   for (let i = startIndex; i < endIndex; i++) {
     const user = usersData[i];
     const row = document.createElement('tr');
+    row.setAttribute('data-id', user.id);
 
     let lastLoginFormatted = 'Nunca';
     if (user.last_login) {
       const date = new Date(user.last_login);
       lastLoginFormatted = `${date.toLocaleDateString('pt-BR')} ${date.toLocaleTimeString('pt-BR')}`;
     }
+
     row.innerHTML = `
+      <td data-label="Avatar">
+        <div class="user-avatar-container">
+          <div class="user-avatar">
+            <img src="" alt="Avatar" class="user-avatar-img" style="display: none;" >
+            <div class="avatar-placeholder" style="display: flex; width: 40px; height: 40px; align-items: center; justify-content: center; background-color: #ccc; border-radius: 50%;">
+              <span class="avatar-initial">${getUserInitials(user)}</span>
+            </div>
+          </div>
+        </div>
+      </td>
       <td data-label="Nome">${user.name}</td>
       <td data-label="Email">${user.email}</td>
       <td data-label="Tipo">${user.type === 'admin' ? 'Administrador' : 'Cliente'}</td>
       <td data-label="Telefone">${user.phone || '-'}</td>
-      <td data-label="Último Login">${lastLoginFormatted}</td>
+      <td data-label="Último Login">${user.cpf}</td>
       <td data-label="Ações" class="table-actions">
-        <button class="action-btn edit-btn" data-id="${user.id}" title="Editar">
+        <button class="action-btn edit-btn" data-id="${user.id}" title="Editar" onclick="openEditModal(${user.id})">
           <i class="fas fa-edit"></i>
         </button>
-        <button class="action-btn delete-btn" data-id="${user.id}" data-name="${user.name}" title="Excluir">
+        <button class="action-btn delete-btn" data-id="${user.id}" data-name="${user.name}" title="Excluir" onclick="openDeleteModal(${user.id}, '${user.name.replace(/'/g, "\\'")}')">
           <i class="fas fa-trash-alt"></i>
         </button>
       </td>
     `;
 
     tableBody.appendChild(row);
+
+    const avatarContainer = row.querySelector('.user-avatar-container');
+    if (avatarContainer) {
+      loadUserAvatarForList(user.id, avatarContainer);
+    }
   }
-
-  document.querySelectorAll('.edit-btn').forEach(btn => {
-    btn.addEventListener('click', function () {
-      openEditModal(this.getAttribute('data-id'));
-    });
-  });
-
-  document.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', function () {
-      openDeleteModal(this.getAttribute('data-id'), this.getAttribute('data-name'));
-    });
-  });
 }
 
 function renderPagination() {
@@ -193,42 +243,138 @@ function renderPagination() {
   pagination.appendChild(nextButton);
 }
 
-function openEditModal(userId) {
+window.openEditModal = function (userId) {
+  console.log('openEditModal chamada com ID:', userId);
   const user = usersData.find(u => u.id == userId);
-  if (!user) return;
-
-  document.getElementById('editUserId').value = user.id;
-  document.getElementById('editName').value = user.name;
-  document.getElementById('editEmail').value = user.email;
-  document.getElementById('editCpf').value = user.cpf || '';
-  document.getElementById('editPassword').value = '';
-  document.getElementById('editCurrentPassword').value = '';
-  document.getElementById('editType').value = user.type;
-  document.getElementById('editPhone').value = user.phone || '';
-
-  const avatarPreview = document.getElementById('editAvatarPreview');
-  avatarPreview.innerHTML = '';
-
-  if (user.image) {
-    const img = document.createElement('img');
-    img.src = `http://localhost:3001/api/users/${user.id}/image?t=${new Date().getTime()}`;
-    img.alt = `Foto de ${user.name}`;
-    img.className = 'uploaded-avatar';
-    avatarPreview.appendChild(img);
-  } else {
-    const icon = document.createElement('i');
-    icon.className = 'fas fa-user default-avatar-icon';
-    avatarPreview.appendChild(icon);
+  if (!user) {
+    console.error('Usuário não encontrado com ID:', userId);
+    return;
   }
 
-  document.getElementById('editUserModal').style.display = 'block';
-}
+  const row = document.querySelector(`#usersTable tr[data-id="${userId}"]`);
+  if (!row) {
+    console.error('Linha da tabela não encontrada para o usuário:', userId);
+    return;
+  }
 
-function openDeleteModal(userId, userName) {
-  document.getElementById('deleteUserId').value = userId;
-  document.getElementById('deleteUserName').textContent = userName;
-  document.getElementById('deleteConfirmModal').style.display = 'block';
-}
+  if (row.classList.contains('editing')) {
+    return;
+  }
+  row.classList.add('editing');
+
+  const cells = row.querySelectorAll('td:not(:last-child)');
+
+  cells[1].innerHTML = `<input type="text" class="edit-input" value="${user.name}" data-field="name" required>`;
+
+  cells[3].innerHTML = `
+    <select class="edit-input" data-field="type">
+      <option value="client" ${user.type === 'client' ? 'selected' : ''}>Cliente</option>
+      <option value="admin" ${user.type === 'admin' ? 'selected' : ''}>Administrador</option>
+    </select>
+  `;
+  cells[4].innerHTML = `<input type="text" class="edit-input phone-mask" value="${user.phone || ''}" data-field="phone" placeholder="(00) 00000-0000">`;
+
+  const actionsCell = row.querySelector('td:last-child');
+  actionsCell.innerHTML = `
+    <button class="action-btn save-btn" data-id="${user.id}" title="Salvar" onclick="saveUserChanges(${user.id})">
+      <i class="fas fa-save"></i>
+    </button>
+    <button class="action-btn cancel-btn" data-id="${user.id}" title="Cancelar" onclick="cancelEdit(${user.id})">
+      <i class="fas fa-times"></i>
+    </button>
+  `;
+
+  const phoneInput = row.querySelector('.phone-mask');
+  if (phoneInput) {
+    phoneInput.addEventListener('input', function (e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length > 11) value = value.slice(0, 11);
+
+      if (value.length > 10) {
+        value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+      } else if (value.length > 6) {
+        value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+      } else if (value.length > 2) {
+        value = value.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+      }
+
+      e.target.value = value;
+    });
+  }
+
+  const nameInput = row.querySelector('input[data-field="name"]');
+  if (nameInput) {
+    setTimeout(() => {
+      nameInput.focus();
+      nameInput.select();
+    }, 0);
+  }
+};
+
+window.openDeleteModal = function (userId, userName) {
+  console.log('openDeleteModal chamada com ID:', userId, 'Nome:', userName);
+
+  const userRow = document.querySelector(`#usersTable tr[data-id="${userId}"]`);
+  if (userRow) {
+    userRow.classList.add('highlight-delete');
+
+    userRow.classList.add('pulse-delete');
+  }
+
+  const confirmToast = Toast.create(
+    `<div class="toast-confirm-message">
+      Tem certeza que deseja excluir o usuário <strong>${userName}</strong>?<br>
+      Esta ação não pode ser desfeita.
+     </div>
+     <div class="toast-actions">
+       <button class="cancel-delete">Cancelar</button>
+       <button class="confirm-delete">Sim, excluir</button>
+     </div>`,
+    {
+      type: 'warning',
+      title: 'Confirmar exclusão',
+      duration: 10000,
+      position: 'bottom-right',
+      closeButton: true,
+      pauseOnHover: true,
+      zIndex: 99999,
+    }
+  );
+
+  if (confirmToast) {
+    const confirmBtn = confirmToast.querySelector('.confirm-delete');
+    const cancelBtn = confirmToast.querySelector('.cancel-delete');
+
+    const removeRowHighlight = () => {
+      const userRow = document.querySelector(`#usersTable tr[data-id="${userId}"]`);
+      if (userRow) {
+        userRow.classList.remove('highlight-delete');
+        userRow.classList.remove('pulse-delete');
+      }
+    };
+
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', function () {
+        Toast.remove(confirmToast);
+        deleteUser(userId);
+      });
+    }
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', function () {
+        Toast.remove(confirmToast);
+        removeRowHighlight();
+      });
+    }
+
+    const closeBtn = confirmToast.querySelector('.toast-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function () {
+        removeRowHighlight();
+      });
+    }
+  }
+};
 
 function setupFormMasks() {
   const cpfInputs = document.querySelectorAll('#editCpf');
@@ -417,7 +563,7 @@ function setupEventListeners() {
 function createUser(userData) {
   const token = localStorage.getItem('token');
 
-  fetch('http://localhost:3001/api/users', {
+  fetch('http://localhost:3001/api/user', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -434,46 +580,42 @@ function createUser(userData) {
       return response.json();
     })
     .then(data => {
-      alert('Usuário criado com sucesso!');
       loadUsers();
     })
     .catch(error => {
       console.error('Erro:', error);
-      alert('Erro ao criar usuário: ' + error.message);
     });
 }
 
 function updateUser(userId, formData) {
-  const token = localStorage.getItem('token');
-
   const submitButton = document.querySelector('#editUserForm button[type="submit"]');
   const originalButtonText = submitButton.innerHTML;
   submitButton.disabled = true;
   submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
 
-  fetch(`http://localhost:3001/api/users/${userId}`, {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: formData,
-  })
-    .then(response => {
-      if (!response.ok) {
-        return response.json().then(err => {
-          throw new Error(err.message || 'Erro ao atualizar usuário');
-        });
-      }
-      return response.json();
-    })
+  console.log('Enviando atualização para usuário:', userId);
+
+  API.User.update(userId, formData)
     .then(data => {
-      alert('Usuário atualizado com sucesso!');
+      Toast.success('Usuário atualizado com sucesso!', {
+        position: 'bottom-right',
+        closeButton: true,
+        pauseOnHover: true,
+        title: null,
+        zIndex: 99999,
+      });
       document.getElementById('editUserModal').style.display = 'none';
       loadUsers();
     })
     .catch(error => {
       console.error('Erro na atualização:', error);
-      alert('Erro ao atualizar usuário: ' + error.message);
+      Toast.error('Erro ao atualizar usuário: ' + error.message, {
+        position: 'bottom-right',
+        closeButton: true,
+        pauseOnHover: true,
+        title: null,
+        zIndex: 99999,
+      });
     })
     .finally(() => {
       submitButton.disabled = false;
@@ -481,53 +623,59 @@ function updateUser(userId, formData) {
     });
 }
 
-function deleteUser(userId) {
-  const token = localStorage.getItem('token');
+window.deleteUser = function (userId) {
+  console.log('Excluindo usuário:', userId);
 
-  const deleteButton = document.getElementById('confirmDelete');
-  const originalButtonText = deleteButton.innerHTML;
-  deleteButton.disabled = true;
-  deleteButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
+  const row = document.querySelector(`#usersTable tr[data-id="${userId}"]`);
+  if (!row) {
+    console.error('Linha da tabela não encontrada para o usuário:', userId);
+    return;
+  }
 
-  fetch(`http://localhost:3001/api/users/${userId}`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then(response => {
-      if (!response.ok) {
-        return response
-          .json()
-          .then(err => {
-            throw new Error(err.message || 'Erro ao excluir usuário');
-          })
-          .catch(() => {
-            throw new Error('Erro ao excluir usuário');
-          });
-      }
+  row.style.transition = 'opacity 0.5s ease';
+  row.style.opacity = '0.5';
 
-      return response.json().catch(() => ({ success: true }));
-    })
+  const actionsCell = row.querySelector('td:last-child');
+  actionsCell.innerHTML =
+    '<div class="spinner"><i class="fas fa-spinner fa-spin"></i> Excluindo...</div>';
+  API.User.delete(userId)
     .then(() => {
-      alert('Usuário excluído com sucesso!');
-      document.getElementById('deleteConfirmModal').style.display = 'none';
-      loadUsers();
+      console.log('Usuário excluído com sucesso');
+
+      row.style.opacity = '0';
+      setTimeout(() => {
+        loadUsers();
+
+        Toast.success('Usuário excluído com sucesso!', {
+          position: 'bottom-right',
+          closeButton: true,
+          pauseOnHover: true,
+          title: null,
+          zIndex: 99999,
+        });
+      }, 500);
     })
     .catch(error => {
       console.error('Erro na exclusão:', error);
-      alert('Erro ao excluir usuário: ' + error.message);
-    })
-    .finally(() => {
-      deleteButton.disabled = false;
-      deleteButton.innerHTML = originalButtonText;
+
+      row.style.opacity = '1';
+
+      renderUsersTable();
+
+      Toast.error('Erro ao excluir usuário: ' + (error.message || 'Tente novamente'), {
+        position: 'bottom-right',
+        closeButton: true,
+        pauseOnHover: true,
+        title: null,
+        zIndex: 99999,
+      });
     });
-}
+};
 
 function showLoadingState(isLoading) {
   const tableBody = document.querySelector('#usersTable tbody');
   if (isLoading) {
-    tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Carregando...</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Carregando...</td></tr>';
   }
 }
 
@@ -540,3 +688,171 @@ function debounce(func, delay) {
     }, delay);
   };
 }
+
+function showLoading() {
+  if (document.querySelector('.loading-overlay')) {
+    return;
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'loading-overlay';
+
+  const spinner = document.createElement('div');
+  spinner.className = 'loading-spinner';
+
+  overlay.appendChild(spinner);
+
+  document.body.appendChild(overlay);
+}
+
+function hideLoading() {
+  const overlay = document.querySelector('.loading-overlay');
+  if (overlay) {
+    document.body.removeChild(overlay);
+  }
+}
+
+window.saveUserChanges = function (userId) {
+  console.log('Salvando alterações para o usuário:', userId);
+  const row = document.querySelector(`#usersTable tr[data-id="${userId}"]`);
+  if (!row) {
+    console.error('Linha da tabela não encontrada para o usuário:', userId);
+    return;
+  }
+
+  const nameInput = row.querySelector('input[data-field="name"]');
+  const emailInput = row.querySelector('input[data-field="email"]');
+
+  if (nameInput && !nameInput.value.trim()) {
+    Toast.error('O nome não pode ficar em branco.', {
+      position: 'bottom-right',
+    });
+    nameInput.focus();
+    return;
+  }
+
+  if (emailInput) {
+    const emailValue = emailInput.value.trim();
+    if (!emailValue) {
+      Toast.error('O email não pode ficar em branco.', {
+        position: 'bottom-right',
+      });
+      emailInput.focus();
+      return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(emailValue)) {
+      Toast.error('Por favor, insira um email válido.', {
+        position: 'bottom-right',
+      });
+      emailInput.focus();
+      return;
+    }
+  }
+
+  const formData = new FormData();
+  const inputs = row.querySelectorAll('.edit-input');
+
+  inputs.forEach(input => {
+    const field = input.getAttribute('data-field');
+    const value = input.value.trim();
+    formData.append(field, value);
+  });
+
+  const user = usersData.find(u => u.id == userId);
+  if (user && user.cpf) {
+    formData.append('cpf', user.cpf);
+  }
+  const allInputs = row.querySelectorAll('.edit-input');
+  allInputs.forEach(input => {
+    input.disabled = true;
+    input.classList.add('saving');
+  });
+
+  row.classList.add('loading');
+  const actionsCell = row.querySelector('td:last-child');
+  const originalActionsHtml = actionsCell.innerHTML;
+  actionsCell.innerHTML =
+    '<div class="spinner"><i class="fas fa-spinner fa-spin"></i> Salvando...</div>';
+
+  const loadingToast = Toast.info('Salvando alterações...', {
+    position: 'bottom-right',
+    duration: 0,
+  });
+
+  API.User.update(userId, formData)
+    .then(data => {
+      console.log('Usuário atualizado com sucesso:', data);
+
+      if (loadingToast) Toast.remove(loadingToast);
+
+      const userIndex = usersData.findIndex(u => u.id == userId);
+      if (userIndex !== -1) {
+        inputs.forEach(input => {
+          const field = input.getAttribute('data-field');
+          const value = input.value;
+          usersData[userIndex][field] = value;
+        });
+      }
+      row.classList.remove('editing', 'loading');
+
+      renderUsersTable();
+
+      setTimeout(() => {
+        const updatedRow = document.querySelector(`#usersTable tr[data-id="${userId}"]`);
+        if (updatedRow) {
+          updatedRow.classList.add('success-highlight');
+          setTimeout(() => {
+            updatedRow.classList.remove('success-highlight');
+          }, 2000);
+        }
+      }, 50);
+      Toast.success(`Usuário ${data.name} atualizado com sucesso!`, {
+        position: 'bottom-right',
+        closeButton: true,
+        pauseOnHover: true,
+        title: null,
+        zIndex: 99999,
+      });
+    })
+    .catch(error => {
+      console.error('Erro na atualização:', error);
+
+      if (loadingToast) Toast.remove(loadingToast);
+
+      row.classList.remove('loading');
+      actionsCell.innerHTML = originalActionsHtml;
+
+      allInputs.forEach(input => {
+        input.disabled = false;
+        input.classList.remove('saving');
+      });
+
+      row.classList.add('error-highlight');
+      setTimeout(() => {
+        row.classList.remove('error-highlight');
+      }, 2000);
+
+      Toast.error('Erro ao atualizar usuário: ' + (error.message || 'Tente novamente'), {
+        position: 'bottom-right',
+        closeButton: true,
+        pauseOnHover: true,
+        title: 'Falha na atualização',
+        zIndex: 99999,
+      });
+    });
+};
+
+window.cancelEdit = function (userId) {
+  console.log('Cancelando edição para o usuário:', userId);
+  const row = document.querySelector(`#usersTable tr[data-id="${userId}"]`);
+  if (!row) {
+    console.error('Linha da tabela não encontrada para o usuário:', userId);
+    return;
+  }
+
+  row.classList.remove('editing');
+
+  renderUsersTable();
+};

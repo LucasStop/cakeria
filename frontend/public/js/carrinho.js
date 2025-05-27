@@ -398,8 +398,6 @@ function showLoginRequiredMessage() {
 function showToast(message) {
   if (window.Toast) {
     Toast.success(message);
-  } else {
-    alert(message);
   }
 }
 
