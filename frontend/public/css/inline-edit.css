@@ -69,6 +69,10 @@
   color: #17a2b8;
 }
 
+.admin-table .action-btn.edit-inline-btn {
+  color: #6c757d;
+}
+
 .admin-table tr.success-highlight {
   animation: success-fade 2s forwards;
 }
@@ -163,4 +167,11 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.admin-table .table-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: center;
 }

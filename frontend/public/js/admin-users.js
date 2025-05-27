@@ -184,7 +184,6 @@ function renderUsersTable() {
 
     tableBody.appendChild(row);
     
-    // Carregar avatar do usuário
     const avatarContainer = row.querySelector('.user-avatar-container');
     if (avatarContainer) {
       loadUserAvatarForList(user.id, avatarContainer);
@@ -247,7 +246,6 @@ function renderPagination() {
   pagination.appendChild(nextButton);
 }
 
-// Tornando a função global para ser acessível via onclick
 window.openEditModal = function(userId) {
   console.log('openEditModal chamada com ID:', userId);
   const user = usersData.find(u => u.id == userId);
