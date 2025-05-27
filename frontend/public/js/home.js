@@ -198,31 +198,46 @@ async function loadUserOrders() {
       '<div class="loading-indicator"><div class="spinner"></div><p>Carregando pedidos...</p></div>';
 
     // Verifica se há dados em cache e se ainda são válidos (menos de 5 minutos)
-    const cachedData = localStorage.getItem('userOrdersCache');
-    const cacheTimestamp = localStorage.getItem('userOrdersCacheTime');
-    const now = new Date().getTime();
-    const cacheLifetime = 5 * 60 * 1000; // 5 minutos em milissegundos
-
     let orders;
+    try {
+      const cachedData = localStorage.getItem('userOrdersCache');
+      const cacheTimestamp = localStorage.getItem('userOrdersCacheTime');
+      const now = new Date().getTime();
+      const cacheLifetime = 5 * 60 * 1000; // 5 minutos em milissegundos
 
-    // Se temos cache válido, use-o
-    if (cachedData && cacheTimestamp && now - parseInt(cacheTimestamp) < cacheLifetime) {
-      orders = JSON.parse(cachedData);
-      console.log('Usando dados em cache para pedidos do usuário');
-    } else {
-      // Caso contrário, busque novos dados
+      // Se temos cache válido, use-o
+      if (cachedData && cacheTimestamp && now - parseInt(cacheTimestamp) < cacheLifetime) {
+        orders = JSON.parse(cachedData);
+        console.log('Usando dados em cache para pedidos do usuário');
+      }
+    } catch (cacheError) {
+      console.warn('Erro ao utilizar cache de pedidos:', cacheError);
+    }
+
+    // Se não tiver cache válido, busca da API
+    if (!orders) {
+      const token = localStorage.getItem('token');
       orders = await API.request(`/order/user/${user.id}`, {
         method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      // Armazene em cache
-      localStorage.setItem('userOrdersCache', JSON.stringify(orders));
-      localStorage.setItem('userOrdersCacheTime', now.toString());
+      // Armazena em cache apenas se obtiver dados válidos
+      if (orders && Array.isArray(orders)) {
+        try {
+          localStorage.setItem('userOrdersCache', JSON.stringify(orders));
+          localStorage.setItem('userOrdersCacheTime', new Date().getTime().toString());
+        } catch (storageError) {
+          console.warn('Erro ao armazenar cache de pedidos:', storageError);
+        }
+      }
     }
 
     if (!orders || !Array.isArray(orders) || orders.length === 0) {
       orderList.innerHTML =
-        '<div class="empty-state"><p>Você ainda não tem pedidos.</p><a href="/produtos.html" class="btn btn-primary">Fazer Pedido</a></div>';
+        '<div class="empty-state"><div class="empty-icon"><i class="fas fa-shopping-bag"></i></div><h3>Nenhum pedido encontrado</h3><p>Você ainda não tem pedidos.</p><a href="/produtos.html" class="btn btn-primary">Fazer Pedido</a></div>';
 
       // Atualiza contadores de status
       updateOrderStatusCounts({
@@ -268,9 +283,10 @@ async function loadUserOrders() {
         // Pega o primeiro produto do pedido para mostrar como imagem
         const firstProduct = order.product && order.product.length > 0 ? order.product[0] : null;
         const productName = firstProduct ? firstProduct.name : 'Produto';
-        const productImage = firstProduct
-          ? `${API.BASE_URL}/product/image/${firstProduct.id}`
-          : '/assets/placeholder.jpg';
+        const productImage =
+          firstProduct && firstProduct.id
+            ? `${API.BASE_URL}/product/image/${firstProduct.id}`
+            : '/assets/placeholder.jpg';
 
         // Define classe e texto baseado no status
         let statusClass, statusText;
@@ -302,7 +318,7 @@ async function loadUserOrders() {
             <img src="${productImage}" alt="${productName}" onerror="this.src='/assets/placeholder.jpg'"/>
           </div>
           <div class="order-details">
-            <h4>${productName}</h4>
+            <h4>${productName}${order.product && order.product.length > 1 ? ` + ${order.product.length - 1} itens` : ''}</h4>
             <p class="order-date">Pedido em: ${orderDate}</p>
             <p class="order-id">Pedido #${order.id}</p>
           </div>
@@ -311,14 +327,23 @@ async function loadUserOrders() {
             <p class="delivery-date">${deliveryDate}</p>
           </div>
           <div class="order-actions">
-            <a href="/pedidos/${order.id}" class="btn btn-sm btn-outline">Detalhes</a>
+            <a href="/pedido.html?id=${order.id}" class="btn btn-sm btn-outline">Detalhes</a>
             ${order.status === 'delivered' ? '<button class="btn btn-sm btn-primary" onclick="reorderItems(' + order.id + ')">Pedir Novamente</button>' : ''}
           </div>
         </div>
       `;
       })
       .join('');
+
     orderList.innerHTML = ordersHTML;
+
+    // Adiciona link para ver todos os pedidos se houver mais que 3
+    if (orders.length > 3) {
+      orderList.innerHTML += `
+        <div class="view-all-link">
+          <a href="/pedidos.html" class="btn btn-link">Ver todos os ${orders.length} pedidos <i class="fas fa-arrow-right"></i></a>
+        </div>`;
+    }
   } catch (error) {
     handleOrderApiError(error, document.querySelector('.order-list'));
   }

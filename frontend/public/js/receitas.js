@@ -245,11 +245,11 @@ async function displayRecipes(recipes) {
       const title = recipe.title || 'Sem título';
       const description = recipe.description || 'Sem descrição';
       const author = recipe.author?.name || 'Autor desconhecido';
-      const image = recipe.image || '/assets/placeholder.jpg';
+      const imageUrl = recipe.id ? `${API.BASE_URL}/recipe/${recipe.id}/image` : '/assets/placeholder.jpg';
 
       card.innerHTML = `
         <div class="recipe-image">
-          <img src="${image}" alt="${title}" onerror="this.src='/assets/placeholder.jpg'">
+          <img src="${imageUrl}" alt="${title}" onerror="this.src='/assets/placeholder.jpg'">
         </div>
         <div class="recipe-content">
           <h3 class="recipe-title">${title}</h3>
@@ -268,8 +268,9 @@ async function displayRecipes(recipes) {
       const card = recipeTemplate.content.cloneNode(true);
 
       const img = card.querySelector('.recipe-image img');
-      img.src = recipe.image_url || '/assets/placeholder.jpg';
+      img.src = recipe.id ? `${API.BASE_URL}/recipe/${recipe.id}/image` : '/assets/placeholder.jpg';
       img.alt = recipe.title;
+      img.onerror = function() { this.src = '/assets/placeholder.jpg'; };
 
       card.querySelector('.recipe-title').textContent = recipe.title;
 
