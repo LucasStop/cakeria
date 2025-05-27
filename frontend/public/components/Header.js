@@ -141,7 +141,7 @@ class Header extends HTMLElement {
                 <li><a href="/produtos.html" class="nav-link" id="nav-produtos" data-route="produtos"><i class="fa-solid fa-box"></i> Produtos</a></li>
                 <li><a href="/registro-produto.html" class="nav-link" data-route="registro-produto"><i class="fa-solid fa-cake-candles"></i> Cadastrar produto</a></li>
                 <li><a href="/pedidos/gerenciar.html" class="nav-link" id="nav-pedidos" data-route="pedidos"><i class="fa-solid fa-shopping-cart"></i> Pedidos</a></li>
-                <li><a href="/usuarios" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
+                <li><a href="/admin-users.html" class="nav-link" id="nav-usuarios" data-route="usuarios"><i class="fa-solid fa-users"></i> Usuários</a></li>
                 <li><a href="/index.html" class="nav-link" data-route="site"><i class="fa-solid fa-globe"></i> Ver Site</a></li>
               </ul>
               <div class="user-menu">
