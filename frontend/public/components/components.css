@@ -412,7 +412,6 @@ canvas {
 
 .social-link {
   display: flex;
-  align-items: center;
   gap: 10px;
   color: var(--text-color-light);
   transition: var(--transition);
@@ -428,7 +427,6 @@ canvas {
 }
 
 .footer-bottom {
-  text-align: center;
   padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -615,19 +613,9 @@ canvas {
     grid-template-columns: 1fr;
   }
 
-  .footer-nav,
-  .footer-social {
-    align-items: center;
-  }
-
-  .social-links {
-    align-items: center;
-  }
-
   .footer-links {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     gap: 15px;
   }
 
