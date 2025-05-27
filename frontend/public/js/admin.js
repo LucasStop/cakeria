@@ -1,4 +1,43 @@
 document.addEventListener('DOMContentLoaded', function () {
+  checkAdminAccess();
+
+  initAdminDashboard();
+});
+
+function checkAdminAccess() {
+  const user = getCurrentUser();
+
+  if (!isAuthenticated()) {
+    window.location.href = '/login.html?redirect=/admin.html';
+    return;
+  }
+
+  if (!isAdmin(user)) {
+    window.location.href = '/index.html';
+    alert('Acesso restrito. Você não tem permissão para acessar a área administrativa.');
+    return;
+  }
+}
+
+function isAuthenticated() {
+  return localStorage.getItem('token') !== null;
+}
+
+function getCurrentUser() {
+  try {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  } catch (error) {
+    console.error('Erro ao obter dados do usuário:', error);
+    return null;
+  }
+}
+
+function isAdmin(user) {
+  return user && (user.type === 'admin' || user.isAdmin === true);
+}
+
+function initAdminDashboard() {
   const ctxUsers = document.getElementById('usersChart').getContext('2d');
   const ctxOrders = document.getElementById('ordersChart').getContext('2d');
   const ctxProducts = document.getElementById('productsChart').getContext('2d');
@@ -43,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function () {
     },
   });
 
-  // Gráfico de Produtos
   new Chart(ctxProducts, {
     type: 'pie',
     data: {
@@ -74,4 +112,4 @@ document.addEventListener('DOMContentLoaded', function () {
       block: 'start',
     });
   });
-});
+}

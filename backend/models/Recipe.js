@@ -19,12 +19,10 @@ module.exports = (sequelize, DataTypes) => {
       ingredients: {
         type: DataTypes.TEXT,
         allowNull: false,
-        // Remover qualquer conversão automática para JSON
       },
       instructions: {
         type: DataTypes.TEXT,
         allowNull: false,
-        // Remover qualquer conversão automática para JSON
       },
       prepTime: {
         type: DataTypes.INTEGER,
@@ -41,21 +39,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM('Fácil', 'Médio', 'Difícil'),
         defaultValue: 'Médio',
       },
-      // image_id: {
-      //   type: DataTypes.STRING,
-      // },
-      userId: {
+      user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: 'Users',
+          model: 'user',
           key: 'id',
         },
       },
-      categoryId: {
+      category_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'Categories',
+          model: 'category',
           key: 'id',
         },
       },
@@ -67,10 +62,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         defaultValue: 0,
       },
+      image: {
+        type: DataTypes.BLOB('long'),
+        allowNull: true,
+        comment: 'Imagem da receita em formato binário (BLOB)',
+      },
     },
     {
-      tableName: 'recipes',
+      tableName: 'recipe',
       timestamps: true,
+      paranoid: true,
       underscored: true,
     }
   );
@@ -88,7 +89,7 @@ module.exports = (sequelize, DataTypes) => {
 
     Recipe.hasMany(models.Comment, {
       foreignKey: 'recipe_id',
-      as: 'comments_recipes',
+      as: 'comment_recipe',
     });
   };
 

@@ -34,7 +34,7 @@
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  overflow: hidden; /* Para conter a imagem ampliada */
+  overflow: hidden;
 }
 
 .about-image img {
@@ -46,10 +46,9 @@
 }
 
 .about-image:hover img {
-  transform: scale(1.05); /* Ampliação da imagem em 5% ao passar o mouse */
+  transform: scale(1.05);
 }
 
-/* Garantir que o efeito de hover funcione mesmo com as animações */
 .about-image.animate-on-scroll.animated:hover img {
   transform: scale(1.05);
 }
@@ -121,13 +120,11 @@
     color 0.3s ease;
 }
 
-/* Efeito de hover para os ícones nos cards de valores */
 .value-card:hover .value-icon {
   transform: scale(1.15) rotate(5deg);
   color: var(--primary-color);
 }
 
-/* Garantir que os efeitos funcionem mesmo com animações de scroll */
 .value-card.animate-on-scroll.animated:hover {
   transform: translateY(-10px);
 }

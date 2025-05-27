@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'comments_recipes',
+      tableName: 'comment_recipe',
       timestamps: true,
       underscored: true,
     }

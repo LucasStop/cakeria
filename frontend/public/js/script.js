@@ -3,11 +3,18 @@ const API_URL = 'http://localhost:3001/api';
 let produtos = [];
 let categorias = [];
 
+let filtroAtual = {
+  nome: '',
+  categoria: '',
+  precoMin: '',
+  precoMax: '',
+  validade: '',
+};
+
 const contentEl = document.getElementById('content');
 const produtosContainer = document.getElementById('produtos-container');
 const categoriasContainer = document.getElementById('categorias-container');
 const verProdutosBtn = document.getElementById('ver-produtos');
-// const navRegiterProduct = document.getElementById('nav-register-product');
 const navCategorias = document.getElementById('nav-categorias');
 const navAdmin = document.getElementById('nav-admin');
 
@@ -18,6 +25,8 @@ window.navegarParaSobre = navegarParaSobre;
 window.navegarParaCompartilharReceitas = navegarParaCompartilharReceitas;
 window.navegarParaAdmin = navegarParaAdmin;
 window.navegarParaCadastrarProdutos = navegarParaCadastrarProdutos;
+window.navegarParaProdutos = navegarParaProdutos;
+window.navegarParaHome = navegarParaHome;
 
 document.addEventListener('DOMContentLoaded', iniciarAplicacao);
 if (verProdutosBtn) verProdutosBtn.addEventListener('click', navegarParaProdutos);
@@ -74,37 +83,36 @@ async function carregarDetalhesProduto(id) {
   }
 }
 
-// function renderizarProdutosDestaque(produtosDestaque) {
-//   if (!produtosContainer) return;
+function renderizarDetalhesProduto(produto) {
+  const imageUrl = window.ImageHelper
+    ? window.ImageHelper.getProductImageUrl(produto.id)
+    : `${API.BASE_URL}/product/image/${produto.id}`;
 
-//   if (produtosDestaque.length === 0) {
-//     produtosContainer.innerHTML = "<p>Nenhum produto encontrado</p>";
-//     return;
-//   }
+  contentEl.innerHTML = `
+    <div class="produto-detalhes">
+      <div class="produto-imagem">
+        <img src="${imageUrl}" alt="${produto.name}" onerror="this.onerror=null; this.src='/assets/default-product.png';">
+      </div>
+      <div class="produto-info">
+        <h1>${produto.name}</h1>
+        <p class="produto-preco">R$ ${formatarPreco(produto.price)}</p>
+        <p class="produto-descricao">${produto.description}</p>
+        <div class="produto-meta">
+          <span class="produto-tamanho"><strong>Tamanho:</strong> ${produto.size || 'Não informado'}</span>
+          <span class="produto-estoque"><strong>Estoque:</strong> ${produto.stock} unidades</span>
+        </div>
+        <div class="produto-acoes">
+          <button class="btn btn-primary" id="adicionar-carrinho" data-id="${produto.id}">
+            Adicionar ao Carrinho
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
 
-//   const html = produtosDestaque
-//     .map(
-//       (produto) => `
-//     <div class="product-card">
-//       <div class="product-img" style="background-image: url('${
-//         produto.image_id
-//           ? `/imgs/${produto.image_id}`
-//           : "/imgs/placeholder.png"
-//       }')"></div>
-//       <div class="product-info">
-//         <h3>${produto.name}</h3>
-//         <p class="product-price">R$ ${parseFloat(produto.price).toFixed(2)}</p>
-//         <button class="btn btn-primary" onclick="verDetalhesProduto(${
-//           produto.id
-//         })">Ver Detalhes</button>
-//       </div>
-//     </div>
-//   `
-//     )
-//     .join("");
-
-//   produtosContainer.innerHTML = html;
-// }
+  currentPage = 'produto';
+  window.history.pushState({}, '', `/produtos/${produto.id}`);
+}
 
 function renderizarCategorias(categoriasList) {
   if (!categoriasContainer) return;
@@ -131,75 +139,571 @@ function renderizarCategorias(categoriasList) {
   categoriasContainer.innerHTML = html;
 }
 
-// function renderizarDetalhesProduto(produto) {
-//   const mainContent = `
-//     <section class="product-details">
-//       <div class="product-image">
-//         <img src="${
-//           produto.image_id
-//             ? `/imgs/${produto.image_id}`
-//             : "/imgs/placeholder.png"
-//         }" alt="${produto.name}">
-//       </div>
-//       <div class="product-details-info">
-//         <h1>${produto.name}</h1>
-//         <p class="product-category">Categoria: ${
-//           produto.category?.name || "Não categorizado"
-//         }</p>
-//         <p class="product-details-price">R$ ${parseFloat(produto.price).toFixed(
-//           2
-//         )}</p>
-//         <p class="product-details-description">${
-//           produto.description || "Sem descrição disponível"
-//         }</p>
-//         <button class="btn btn-primary">Adicionar ao Carrinho</button>
-//         <button class="btn btn-outline" onclick="navegarParaProdutos()">Voltar para Produtos</button>
-//       </div>
-//     </section>
-//   `;
+function initializeFilters() {
+  const filterSection = document.querySelector('.filter-section');
+  if (!filterSection) {
+    console.warn('Seção de filtros não encontrada - pulando inicialização');
+    return;
+  }
 
-//   contentEl.innerHTML = mainContent;
-//   currentPage = "produto";
-//   window.history.pushState({}, "", `/produtos/${produto.id}`);
-// }
+  setTimeout(() => {
+    carregarCategoriasFiltro();
+  }, 500);
 
-// function renderizarListaProdutos() {
-//   const mainContent = `
-//     <section class="products-list">
-//       <div class="container">
-//         <h1 class="section-title">Nossos Produtos</h1>
-//         <div class="featured-products">
-//           ${produtos
-//             .map(
-//               (produto) => `
-//             <div class="product-card">
-//               <div class="product-img" style="background-image: url('${
-//                 produto.image_id
-//                   ? `/imgs/${produto.image_id}`
-//                   : "/imgs/placeholder.png"
-//               }')"></div>
-//               <div class="product-info">
-//                 <h3>${produto.name}</h3>
-//                 <p class="product-price">R$ ${parseFloat(produto.price).toFixed(
-//                   2
-//                 )}</p>
-//                 <button class="btn btn-primary" onclick="verDetalhesProduto(${
-//                   produto.id
-//                 })">Ver Detalhes</button>
-//               </div>
-//             </div>
-//           `
-//             )
-//             .join("")}
-//         </div>
-//       </div>
-//     </section>
-//   `;
+  const nameFilter = document.getElementById('filter-name');
+  if (nameFilter) {
+    nameFilter.addEventListener('input', function () {
+      filtroAtual.nome = this.value.trim();
+    });
 
-//   contentEl.innerHTML = mainContent;
-//   currentPage = "produtos";
-//   window.history.pushState({}, "", "/produtos");
-// }
+    nameFilter.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        aplicarFiltros();
+      }
+    });
+  }
+
+  const categoryFilter = document.getElementById('filter-category');
+  if (categoryFilter) {
+    categoryFilter.addEventListener('change', function () {
+      filtroAtual.categoria = this.value;
+    });
+  }
+
+  const minPriceFilter = document.getElementById('filter-min-price');
+  if (minPriceFilter) {
+    minPriceFilter.addEventListener('input', function () {
+      filtroAtual.precoMin = this.value ? parseFloat(this.value) : '';
+    });
+  }
+
+  const maxPriceFilter = document.getElementById('filter-max-price');
+  if (maxPriceFilter) {
+    maxPriceFilter.addEventListener('input', function () {
+      filtroAtual.precoMax = this.value ? parseFloat(this.value) : '';
+    });
+  }
+
+  const expiryFilter = document.getElementById('filter-expiry');
+  if (expiryFilter) {
+    expiryFilter.addEventListener('change', function () {
+      filtroAtual.validade = this.value;
+    });
+  }
+
+  const applyButton = document.getElementById('apply-filters');
+  if (applyButton) {
+    applyButton.addEventListener('click', aplicarFiltros);
+  }
+
+  const clearButton = document.getElementById('clear-filters');
+  if (clearButton) {
+    clearButton.addEventListener('click', limparFiltros);
+  }
+
+  const searchButton = document.getElementById('search-btn');
+  if (searchButton) {
+    searchButton.addEventListener('click', aplicarFiltros);
+  }
+}
+
+async function carregarCategoriasFiltro() {
+  const selectCategoria = document.getElementById('filter-category');
+  if (!selectCategoria) {
+    console.warn('Elemento select de categorias não encontrado');
+    return;
+  }
+
+  while (selectCategoria.options.length > 1) {
+    selectCategoria.remove(1);
+  }
+
+  try {
+    let categoriasList = [];
+
+    if (window.categorias && Array.isArray(window.categorias) && window.categorias.length > 0) {
+      categoriasList = window.categorias;
+    } else if (
+      window.API &&
+      window.API.categorias &&
+      typeof window.API.categorias.listar === 'function'
+    ) {
+      try {
+        categoriasList = await window.API.categorias.listar();
+      } catch (apiError) {
+        console.error('Erro ao carregar via API.categorias.listar():', apiError);
+        throw apiError;
+      }
+    } else {
+      const url = 'http://localhost:3001/api/category';
+      let success = false;
+
+      try {
+        const response = await fetch(url);
+
+        if (response.ok) {
+          const data = await response.json();
+          categoriasList = Array.isArray(data)
+            ? data
+            : data.categorias || data.categories || data.data || data.items || [];
+
+          success = true;
+        }
+      } catch (endpointError) {
+        console.warn(`Falha ao carregar de ${url}:`, endpointError);
+      }
+
+      if (!success) {
+        throw new Error('Não foi possível carregar categorias de nenhum endpoint');
+      }
+    }
+
+    if (categoriasList.length > 0) {
+      categoriasList.forEach(categoria => {
+        if (!selectCategoria.querySelector(`option[value="${categoria.id}"]`)) {
+          const option = document.createElement('option');
+          option.value = categoria.id;
+          option.textContent = categoria.name;
+          selectCategoria.appendChild(option);
+        }
+      });
+
+      if (filtroAtual.categoria) {
+        selectCategoria.value = filtroAtual.categoria;
+      }
+
+      return true;
+    } else {
+      console.warn('Nenhuma categoria encontrada para preencher o filtro');
+      selectCategoria.innerHTML +=
+        '<option value="" disabled>Nenhuma categoria disponível</option>';
+      return false;
+    }
+  } catch (error) {
+    console.error('Erro ao carregar categorias para filtro:', error);
+    selectCategoria.innerHTML += '<option value="" disabled>Erro ao carregar categorias</option>';
+
+    const filterItem = selectCategoria.closest('.filter-item');
+    if (filterItem && !filterItem.querySelector('.retry-button')) {
+      const retryButton = document.createElement('button');
+      retryButton.textContent = 'Tentar novamente';
+      retryButton.className = 'btn btn-sm retry-button';
+      retryButton.style.marginTop = '8px';
+      retryButton.addEventListener('click', function () {
+        this.disabled = true;
+        this.textContent = 'Carregando...';
+        carregarCategoriasFiltro().finally(() => {
+          this.disabled = false;
+          this.textContent = 'Tentar novamente';
+        });
+      });
+      filterItem.appendChild(retryButton);
+    }
+
+    return false;
+  }
+}
+
+function aplicarFiltros() {
+  atualizarFiltrosAtivos();
+
+  renderizarListaProdutos(filtroAtual);
+
+  if (window.Toast) {
+    window.Toast.info('Filtros aplicados com sucesso', {
+      position: 'bottom-right',
+      duration: 3000,
+    });
+  }
+}
+
+function limparFiltros() {
+  const nameFilter = document.getElementById('filter-name');
+  if (nameFilter) nameFilter.value = '';
+
+  const categoryFilter = document.getElementById('filter-category');
+  if (categoryFilter) categoryFilter.value = '';
+
+  const minPriceFilter = document.getElementById('filter-min-price');
+  if (minPriceFilter) minPriceFilter.value = '';
+
+  const maxPriceFilter = document.getElementById('filter-max-price');
+  if (maxPriceFilter) maxPriceFilter.value = '';
+
+  const expiryFilter = document.getElementById('filter-expiry');
+  if (expiryFilter) expiryFilter.value = '';
+
+  filtroAtual = {
+    nome: '',
+    categoria: '',
+    precoMin: '',
+    precoMax: '',
+    validade: '',
+  };
+
+  const activeFilters = document.getElementById('active-filters');
+  if (activeFilters) activeFilters.innerHTML = '';
+
+  renderizarListaProdutos();
+
+  if (window.Toast) {
+    window.Toast.info('Filtros removidos', {
+      position: 'bottom-right',
+      duration: 2000,
+    });
+  }
+}
+
+function atualizarFiltrosAtivos() {
+  const filtrosContainer = document.getElementById('active-filters');
+  if (!filtrosContainer) return;
+
+  filtrosContainer.innerHTML = '';
+  let temFiltroAtivo = false;
+
+  if (filtroAtual.nome) {
+    criarMarcadorFiltro(filtrosContainer, 'Nome', filtroAtual.nome, () => {
+      document.getElementById('filter-name').value = '';
+      filtroAtual.nome = '';
+      aplicarFiltros();
+    });
+    temFiltroAtivo = true;
+  }
+
+  if (filtroAtual.categoria) {
+    const selectCategoria = document.getElementById('filter-category');
+    const categoriaTexto = selectCategoria.options[selectCategoria.selectedIndex].text;
+
+    criarMarcadorFiltro(filtrosContainer, 'Categoria', categoriaTexto, () => {
+      document.getElementById('filter-category').value = '';
+      filtroAtual.categoria = '';
+      aplicarFiltros();
+    });
+    temFiltroAtivo = true;
+  }
+
+  if (filtroAtual.precoMin || filtroAtual.precoMax) {
+    let textoPreco = '';
+    if (filtroAtual.precoMin && filtroAtual.precoMax) {
+      textoPreco = `R$ ${filtroAtual.precoMin} até R$ ${filtroAtual.precoMax}`;
+    } else if (filtroAtual.precoMin) {
+      textoPreco = `A partir de R$ ${filtroAtual.precoMin}`;
+    } else {
+      textoPreco = `Até R$ ${filtroAtual.precoMax}`;
+    }
+
+    criarMarcadorFiltro(filtrosContainer, 'Preço', textoPreco, () => {
+      document.getElementById('filter-min-price').value = '';
+      document.getElementById('filter-max-price').value = '';
+      filtroAtual.precoMin = '';
+      filtroAtual.precoMax = '';
+      aplicarFiltros();
+    });
+    temFiltroAtivo = true;
+  }
+
+  if (filtroAtual.validade) {
+    let textoValidade = '';
+    switch (filtroAtual.validade) {
+      case 'valid':
+        textoValidade = 'Produtos válidos';
+        break;
+      case 'soon':
+        textoValidade = 'Vencimento próximo (30 dias)';
+        break;
+      case 'expired':
+        textoValidade = 'Produtos vencidos';
+        break;
+    }
+
+    criarMarcadorFiltro(filtrosContainer, 'Validade', textoValidade, () => {
+      document.getElementById('filter-expiry').value = '';
+      filtroAtual.validade = '';
+      aplicarFiltros();
+    });
+    temFiltroAtivo = true;
+  }
+
+  if (temFiltroAtivo) {
+    const limparTodos = document.createElement('button');
+    limparTodos.className = 'btn btn-sm btn-outline';
+    limparTodos.innerHTML = 'Limpar todos os filtros';
+    limparTodos.style.marginLeft = 'auto';
+    limparTodos.addEventListener('click', limparFiltros);
+    filtrosContainer.appendChild(limparTodos);
+  }
+}
+
+function criarMarcadorFiltro(container, tipo, valor, onRemove) {
+  const filtroEl = document.createElement('div');
+  filtroEl.className = 'active-filter';
+
+  let iconClass = 'fa-tag';
+  switch (tipo.toLowerCase()) {
+    case 'nome':
+      iconClass = 'fa-font';
+      break;
+    case 'categoria':
+      iconClass = 'fa-list';
+      break;
+    case 'preço':
+      iconClass = 'fa-dollar-sign';
+      break;
+    case 'validade':
+      iconClass = 'fa-calendar';
+      break;
+  }
+
+  filtroEl.innerHTML = `
+    <i class="fas ${iconClass}"></i>
+    <span><strong>${tipo}:</strong> ${valor}</span>
+    <button type="button" title="Remover filtro"><i class="fas fa-times"></i></button>
+  `;
+
+  filtroEl.querySelector('button').addEventListener('click', onRemove);
+
+  container.appendChild(filtroEl);
+
+  setTimeout(() => {
+    filtroEl.style.transform = 'scale(1.05)';
+    setTimeout(() => {
+      filtroEl.style.transform = 'scale(1)';
+    }, 150);
+  }, 10);
+}
+
+async function renderizarListaProdutos(filtros = null) {
+  try {
+    contentEl.innerHTML = `
+      <section class="products-list">
+        <div class="container">
+          <h1 class="section-title">Nossos Produtos</h1>
+          <div class="loading-indicator">
+            <div class="spinner"></div>
+            <p>Carregando produtos...</p>
+          </div>
+        </div>
+      </section>
+    `;
+
+    if (!API || !API.produtos || typeof API.produtos.listar !== 'function') {
+      console.error('API não está configurada corretamente:', API);
+      throw new Error('Configuração da API não está completa');
+    }
+
+    try {
+      produtos = await API.produtos.listar();
+
+      if (!produtos || !Array.isArray(produtos)) {
+        console.error('Resposta inválida da API:', produtos);
+        throw new Error('Formato inválido de resposta');
+      }
+    } catch (apiError) {
+      console.error('Erro específico da API:', apiError);
+
+      const response = await fetch(`${API.BASE_URL || 'http://localhost:3001/api'}/produtos`);
+
+      if (!response.ok) {
+        throw new Error(`Erro HTTP: ${response.status}`);
+      }
+
+      produtos = await response.json();
+    }
+
+    if (filtros) {
+      produtos = filtrarProdutos(produtos, filtros);
+    }
+
+    const mainContent = `
+      <section class="products-list">
+        <div class="container">
+          <h1 class="section-title">Nossos Produtos</h1>
+          
+          <section class="filter-section">
+            <h2 class="filter-title"><i class="fas fa-filter"></i> Filtrar Produtos</h2>
+            <div class="filter-container">
+              <div class="filter-item">
+                <label for="filter-name">Nome do produto</label>
+                <div class="search-box">
+                  <input type="text" id="filter-name" placeholder="Buscar produtos..." value="${filtros?.nome || ''}">
+                  <button id="search-btn" type="button"><i class="fas fa-search"></i></button>
+                </div>
+              </div>
+              
+              <div class="filter-item">
+                <label for="filter-category">Categoria</label>
+                <select id="filter-category">
+                  <option value="">Todas as categorias</option>
+                </select>
+              </div>
+              
+              <div class="filter-item">
+                <label for="filter-min-price">Preço</label>
+                <div class="price-range-container">
+                  <input type="number" id="filter-min-price" placeholder="Mín" min="0" step="0.01" value="${filtros?.precoMin || ''}">
+                  <span>até</span>
+                  <input type="number" id="filter-max-price" placeholder="Máx" min="0" step="0.01" value="${filtros?.precoMax || ''}">
+                </div>
+              </div>
+              
+              <div class="filter-item">
+                <label for="filter-expiry">Validade</label>
+                <select id="filter-expiry">
+                  <option value="">Todos os produtos</option>
+                  <option value="valid" ${filtros?.validade === 'valid' ? 'selected' : ''}>Produtos válidos</option>
+                  <option value="soon" ${filtros?.validade === 'soon' ? 'selected' : ''}>Vencimento próximo (30 dias)</option>
+                  <option value="expired" ${filtros?.validade === 'expired' ? 'selected' : ''}>Produtos vencidos</option>
+                </select>
+              </div>
+              
+              <div class="filter-actions">
+                <button id="apply-filters" class="btn btn-primary" type="button">
+                  <i class="fas fa-filter"></i> Aplicar Filtros
+                </button>
+                <button id="clear-filters" class="btn btn-outline" type="button">
+                  <i class="fas fa-times"></i> Limpar
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <div id="active-filters" class="active-filters-container"></div>
+
+          ${
+            produtos.length === 0
+              ? `<div class="empty-state">
+              <p>Nenhum produto encontrado${filtros ? ' com os filtros selecionados' : ''}.</p>
+              ${filtros ? '<button class="btn btn-outline" onclick="limparFiltros()">Limpar filtros</button>' : ''}
+              ${isAdmin() ? `<a href="/registro-produto.html" class="btn btn-primary">Cadastrar Novo Produto</a>` : ''}
+            </div>`
+              : `<div class="featured-products">
+              ${produtos
+                .map(produto => {
+                  const imageUrl = window.ImageHelper
+                    ? window.ImageHelper.getProductImageUrl(produto.id)
+                    : `${API.BASE_URL}/product/image/${produto.id}`;
+                  return `
+                  <div class="product-card">
+                    <div class="product-img" style="background-image: url('${imageUrl}')"></div>
+                    <div class="product-info">
+                      <h3>${produto.name}</h3>
+                      <p class="product-price">R$ ${parseFloat(produto.price).toFixed(2).replace('.', ',')}</p>
+                      <button class="btn btn-primary" onclick="verDetalhesProduto(${produto.id})">
+                        <i class="fas fa-eye"></i> Ver Detalhes
+                      </button>
+                    </div>
+                  </div>`;
+                })
+                .join('')}
+            </div>`
+          }
+        </div>
+      </section>
+    `;
+
+    contentEl.innerHTML = mainContent;
+
+    setTimeout(() => {
+      initializeFilters();
+
+      if (filtros) {
+        atualizarFiltrosAtivos();
+      }
+    }, 300);
+
+    if (window.Toast && produtos.length > 0) {
+      window.Toast.success(`${produtos.length} produtos carregados com sucesso!`, {
+        position: 'bottom-right',
+        duration: 3000,
+      });
+    } else if (window.Toast && produtos.length === 0) {
+      window.Toast.info('Não encontramos produtos disponíveis.', {
+        position: 'bottom-right',
+        duration: 3000,
+      });
+    }
+  } catch (error) {
+    console.error('Erro detalhado ao carregar produtos:', error);
+
+    contentEl.innerHTML = `
+      <section class="products-list">
+        <div class="container">
+          <h1 class="section-title">Nossos Produtos</h1>
+          <div class="error-state">
+            <i class="fas fa-exclamation-circle" style="color: #e53e3e; font-size: 2rem; margin-bottom: 1rem;"></i>
+            <p class="error">Erro ao carregar produtos: ${error.message || 'Falha na comunicação com o servidor'}.</p>
+            <p>Verifique sua conexão com a internet e tente novamente.</p>
+            <button class="btn btn-primary" onclick="renderizarListaProdutos()">Tentar Novamente</button>
+          </div>
+        </div>
+      </section>
+    `;
+
+    if (window.Toast) {
+      window.Toast.error(
+        `Não foi possível carregar os produtos: ${error.message || 'Erro de conexão'}`,
+        {
+          position: 'top-center',
+          duration: 5000,
+        }
+      );
+    }
+  }
+}
+
+function filtrarProdutos(produtos, filtros) {
+  return produtos.filter(produto => {
+    if (
+      filtros.nome &&
+      !produto.name.toLowerCase().includes(filtros.nome.toLowerCase()) &&
+      (!produto.description ||
+        !produto.description.toLowerCase().includes(filtros.nome.toLowerCase()))
+    ) {
+      return false;
+    }
+
+    if (filtros.categoria && produto.category_id != filtros.categoria) {
+      return false;
+    }
+
+    if (filtros.precoMin && parseFloat(produto.price) < filtros.precoMin) {
+      return false;
+    }
+
+    if (filtros.precoMax && parseFloat(produto.price) > filtros.precoMax) {
+      return false;
+    }
+
+    if (filtros.validade) {
+      const hoje = new Date();
+      const dataValidade = new Date(produto.expiry_date);
+      const diasParaVencer = Math.floor((dataValidade - hoje) / (1000 * 60 * 60 * 24));
+
+      switch (filtros.validade) {
+        case 'valid':
+          if (dataValidade < hoje) return false;
+          break;
+        case 'soon':
+          if (diasParaVencer < 0 || diasParaVencer > 30) return false;
+          break;
+        case 'expired':
+          if (dataValidade > hoje) return false;
+          break;
+      }
+    }
+
+    return true;
+  });
+}
+
+function isAdmin() {
+  try {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    return user && (user.type === 'admin' || user.isAdmin === true);
+  } catch (e) {
+    return false;
+  }
+}
 
 function renderizarListaCategorias() {
   const mainContent = `
@@ -230,9 +734,20 @@ function renderizarListaCategorias() {
   window.history.pushState({}, '', '/categorias');
 }
 
+function navegarParaHome() {
+  window.location.href = '/index.html';
+  currentPage = 'home';
+}
+
 function navegarParaCadastrarProdutos() {
-  window.location.href = '/registerProduct.html';
-  currentPage = 'registerProduct';
+  window.location.href = '/registro-produto.html';
+  currentPage = 'registro-produto';
+}
+
+function navegarParaProdutos() {
+  renderizarListaProdutos();
+  currentPage = 'produtos';
+  window.history.pushState({}, '', '/produtos');
 }
 
 function navegarParaCategorias() {
@@ -254,12 +769,11 @@ function navegarParaSobre() {
 }
 
 function navegarParaCompartilharReceitas() {
-  console.log('Navegando para compartilhar receitas...');
-  window.location.href = '/compartilharReceitas.html';
-  currentPage = 'compartilharReceitas';
+  window.location.href = '/compartilhar-receita.html';
+  currentPage = 'compartilhar-receita';
 }
 
-// Garantir que a função esteja disponível globalmente
+window.navegarParaHome = navegarParaHome;
 window.navegarParaCompartilharReceitas = navegarParaCompartilharReceitas;
 
 function navegarParaAdmin() {
@@ -267,7 +781,6 @@ function navegarParaAdmin() {
   currentPage = 'admin';
 }
 
-// Função para carregar conteúdo HTML de arquivos externos
 async function carregarConteudoHTML(url) {
   try {
     const response = await fetch(url);
@@ -277,42 +790,32 @@ async function carregarConteudoHTML(url) {
 
     const html = await response.text();
 
-    // Extrair o conteúdo usando DOMParser
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
 
-    // Limpar estilos específicos anteriores antes de inserir novo conteúdo
     removerEstilosEspecificos();
 
-    // Buscar e aplicar estilos específicos do documento
     const styles = Array.from(doc.querySelectorAll('style, link[rel="stylesheet"]'));
 
-    // Verificar quais estilos já existem para evitar duplicação
     const existingStyleUrls = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(
       link => link.getAttribute('href')
     );
 
-    // Aplicar estilos da página carregada
     styles.forEach(style => {
-      // Para link de stylesheet externo
       if (style.tagName === 'LINK' && style.getAttribute('rel') === 'stylesheet') {
         const href = style.getAttribute('href');
-        // Só adiciona se não for o CSS principal (styles.css) ou components.css
         if (
           !existingStyleUrls.includes(href) &&
           !href.includes('styles.css') &&
           !href.includes('components.css')
         ) {
-          console.log('Adicionando CSS:', href);
           const linkEl = document.createElement('link');
           linkEl.setAttribute('rel', 'stylesheet');
           linkEl.setAttribute('href', href);
           linkEl.setAttribute('data-page-specific', 'true');
           document.head.appendChild(linkEl);
         }
-      }
-      // Para estilos inline
-      else if (style.tagName === 'STYLE') {
+      } else if (style.tagName === 'STYLE') {
         const styleEl = document.createElement('style');
         styleEl.setAttribute('data-page-specific', 'true');
         styleEl.textContent = style.textContent;
@@ -320,40 +823,32 @@ async function carregarConteudoHTML(url) {
       }
     });
 
-    // Extrair o conteúdo principal
     let mainContent;
     if (doc.querySelector('main')) {
       mainContent = doc.querySelector('main').innerHTML;
     } else if (doc.querySelector('body')) {
-      // Se não encontrar a tag main, busca o conteúdo do body excluindo scripts e estilos
       const bodyContent = doc.querySelector('body');
-      // Remover scripts e estilos do conteúdo copiado
       Array.from(bodyContent.querySelectorAll('script, style, link')).forEach(el => el.remove());
       mainContent = bodyContent.innerHTML;
     } else {
       throw new Error('Conteúdo não encontrado');
     }
 
-    // Inserir o novo conteúdo
     contentEl.innerHTML = mainContent;
 
-    // Definir a página atual baseada no URL
     if (url.includes('receitas')) {
       currentPage = 'receitas';
       window.history.pushState({}, '', '/receitas');
 
-      // Adicionar CSS específico para receitas se não estiver já incluído
       adicionarCSS('/css/receitas.css');
     } else if (url.includes('sobre')) {
       currentPage = 'sobre';
       window.history.pushState({}, '', '/sobre');
 
-      // Adicionar CSS específico para sobre se não estiver já incluído
       adicionarCSS('/css/sobre.css');
       adicionarCSS('/css/animations.css');
     }
 
-    // Executar scripts que possam estar no conteúdo carregado
     const scripts = Array.from(contentEl.querySelectorAll('script'));
     scripts.forEach(oldScript => {
       const newScript = document.createElement('script');
@@ -364,9 +859,7 @@ async function carregarConteudoHTML(url) {
       oldScript.parentNode.replaceChild(newScript, oldScript);
     });
 
-    // Se estiver na página sobre, inicializar animações de scroll
     if (url.includes('sobre')) {
-      // Verificar se o script de animações já foi carregado
       setTimeout(() => {
         if (typeof initScrollAnimations === 'function') {
           initScrollAnimations();
@@ -385,10 +878,8 @@ async function carregarConteudoHTML(url) {
   }
 }
 
-// Função auxiliar para carregar um script
 async function carregarScript(src) {
   return new Promise((resolve, reject) => {
-    // Verificar se o script já existe
     if (document.querySelector(`script[src="${src}"]`)) {
       resolve();
       return;
@@ -402,14 +893,12 @@ async function carregarScript(src) {
   });
 }
 
-// Função auxiliar para adicionar CSS se não estiver já carregado
 function adicionarCSS(href) {
   const existingLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(link =>
     link.getAttribute('href')
   );
 
   if (!existingLinks.includes(href)) {
-    console.log('Adicionando CSS faltante:', href);
     const linkEl = document.createElement('link');
     linkEl.setAttribute('rel', 'stylesheet');
     linkEl.setAttribute('href', href);
@@ -420,9 +909,7 @@ function adicionarCSS(href) {
   return false;
 }
 
-// Função auxiliar para remover estilos específicos de página
 function removerEstilosEspecificos() {
-  // Remover estilos específicos anteriores antes de inserir novos
   Array.from(
     document.querySelectorAll('style[data-page-specific], link[data-page-specific]')
   ).forEach(el => el.remove());
@@ -433,7 +920,44 @@ window.renderizarListaProdutos = renderizarListaProdutos;
 window.renderizarListaCategorias = renderizarListaCategorias;
 
 window.verDetalhesProduto = async function (id) {
-  await carregarDetalhesProduto(id);
+  try {
+    if (window.ResourceLoader) {
+      window.ResourceLoader.loadProductCSS();
+    }
+
+    if (window.ProductDetails) {
+      if (typeof window.openProductModal === 'function') {
+        window.openProductModal();
+      } else if (window.ProductDetails.openModal) {
+        window.ProductDetails.openModal();
+      }
+
+      const produto = await window.API.produtos.obterPorId(id);
+
+      if (typeof window.renderProductDetails === 'function') {
+        window.renderProductDetails(produto);
+      }
+
+      return;
+    }
+
+    await carregarDetalhesProduto(id);
+  } catch (error) {
+    console.error('Erro ao carregar detalhes do produto:', error);
+
+    if (contentEl) {
+      contentEl.innerHTML = `
+        <div class="container">
+          <p class="error">Erro ao carregar detalhes do produto. Tente novamente mais tarde.</p>
+          <button class="btn btn-primary" onclick="window.history.back()">Voltar</button>
+        </div>
+      `;
+    }
+
+    if (window.Toast) {
+      window.Toast.error('Não foi possível carregar os detalhes do produto');
+    }
+  }
 };
 
 window.verProdutosPorCategoria = async function (categoriaId) {
@@ -450,7 +974,6 @@ window.verProdutosPorCategoria = async function (categoriaId) {
 
 window.verReceitaDetalhes = async function (id) {
   try {
-    // Tentar carregar do arquivo HTML dedicado
     const response = await fetch(`/receitas/${id}.html`);
 
     if (response.ok) {
@@ -467,12 +990,8 @@ window.verReceitaDetalhes = async function (id) {
       return;
     }
 
-    // Fallback para os dados estáticos se o arquivo não existir
     throw new Error('Arquivo HTML da receita não encontrado');
   } catch (error) {
-    console.log('Usando dados estáticos para a receita:', error);
-
-    // Resto do código existente usando os dados estáticos
     const receitas = [
       {
         id: 1,
@@ -596,3 +1115,7 @@ window.verReceitaDetalhes = async function (id) {
 
 window.carregarConteudoHTML = carregarConteudoHTML;
 window.removerEstilosEspecificos = removerEstilosEspecificos;
+window.navegarParaHome = navegarParaHome;
+window.initializeFilters = initializeFilters;
+window.aplicarFiltros = aplicarFiltros;
+window.limparFiltros = limparFiltros;

@@ -15,13 +15,14 @@ async function truncateData() {
     await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
 
     console.log('Limpando dados das tabelas...');
-
-    await sequelize.query('TRUNCATE TABLE order_products');
-    await sequelize.query('TRUNCATE TABLE orders');
-    await sequelize.query('TRUNCATE TABLE products');
-    await sequelize.query('TRUNCATE TABLE categories');
-    await sequelize.query('TRUNCATE TABLE addresses');
-    await sequelize.query('TRUNCATE TABLE users');
+    await sequelize.query('TRUNCATE TABLE order_product');
+    await sequelize.query('TRUNCATE TABLE order');
+    await sequelize.query('TRUNCATE TABLE product');
+    await sequelize.query('TRUNCATE TABLE category');
+    await sequelize.query('TRUNCATE TABLE comment_recipe');
+    await sequelize.query('TRUNCATE TABLE recipe');
+    await sequelize.query('TRUNCATE TABLE address');
+    await sequelize.query('TRUNCATE TABLE user');
 
     await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
 

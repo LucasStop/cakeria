@@ -1,9 +1,6 @@
 function initScrollAnimations() {
-  console.log('Inicializando animações de scroll');
-
   const animatedElements = document.querySelectorAll('.animate-on-scroll');
 
-  // Função para verificar se um elemento está visível na viewport
   const isElementInViewport = el => {
     const rect = el.getBoundingClientRect();
     return (
@@ -12,7 +9,6 @@ function initScrollAnimations() {
     );
   };
 
-  // Função para animar elementos visíveis
   const animateElements = () => {
     animatedElements.forEach(element => {
       if (isElementInViewport(element)) {
@@ -21,10 +17,8 @@ function initScrollAnimations() {
     });
   };
 
-  // Verificar na carga inicial
   animateElements();
 
-  // Adicionar evento de scroll
   window.addEventListener('scroll', animateElements);
 
   return {
@@ -34,7 +28,6 @@ function initScrollAnimations() {
   };
 }
 
-// Se a página for carregada diretamente, inicializar as animações
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   setTimeout(initScrollAnimations, 1);
 } else {

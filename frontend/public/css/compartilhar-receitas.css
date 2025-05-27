@@ -1,44 +1,62 @@
 .share-recipe-container {
   min-height: calc(100vh - 200px);
+  background-color: #f9f7f7;
 }
 
 .page-header {
   text-align: center;
   margin-bottom: 40px;
   margin-top: 50px;
+  position: relative;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: var(--color-primary);
+  border-radius: 3px;
 }
 
 .page-title {
   color: var(--color-primary);
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   margin-bottom: 15px;
   margin-top: 20px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  font-weight: 700;
 }
 
 .page-subtitle {
   color: #666;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   max-width: 700px;
   margin: 0 auto 30px;
+  line-height: 1.6;
 }
 
 .recipe-form-section {
   background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 40px;
   margin-bottom: 50px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .recipe-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 25px;
 }
 
 .form-row {
   display: flex;
-  gap: 20px;
+  gap: 25px;
   flex-wrap: wrap;
 }
 
@@ -50,23 +68,39 @@
 .form-group {
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .form-group label {
-  font-weight: 500;
-  margin-bottom: 8px;
-  color: #444;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 1.05rem;
+  position: relative;
+  display: inline-block;
+}
+
+.form-group label::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 2px;
+  width: 30px;
+  background: var(--color-primary);
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  padding: 14px 18px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
   font-family: 'Poppins', sans-serif;
-  font-size: 0.95rem;
-  transition: border-color 0.3s;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #f9f9f9;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .form-group input:focus,
@@ -74,63 +108,96 @@
 .form-group textarea:focus {
   border-color: var(--color-primary);
   outline: none;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.15);
 }
 
 .form-group textarea {
-  resize: vertical;
-  min-height: 80px;
+  resize: none;
+  min-height: 100px;
+  line-height: 1.5;
 }
 
 .error-message {
   color: #e74c3c;
   font-size: 0.85rem;
-  margin-top: 5px;
+  margin-top: 8px;
   display: none;
+  font-weight: 500;
+  padding-left: 5px;
 }
 
 .error-message.active {
   display: block;
+  animation: fadeIn 0.3s ease;
 }
 
-/* Estilos para a seção de ingredientes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 #ingredients-container,
 #steps-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .ingredient-item,
 .step-item {
   display: flex;
-  gap: 10px;
+  gap: 15px;
   align-items: center;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid #eee;
+}
+
+.ingredient-item:hover,
+.step-item:hover {
+  background-color: #f3f3f3;
+  transform: translateX(5px);
 }
 
 .step-item {
   position: relative;
-  padding-left: 40px;
+  padding-left: 60px;
 }
 
 .step-number {
   position: absolute;
-  left: 0;
-  top: 15px;
-  width: 30px;
-  height: 30px;
-  background: var(--color-primary);
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  background: grey;
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
+  box-shadow: 0 3px 6px rgba(128, 128, 128, 0.278);
 }
 
 .ingredient-item input,
 .step-item textarea {
   flex: 1;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  transition: all 0.3s ease;
 }
 
 .remove-btn {
@@ -139,38 +206,48 @@
   color: #e74c3c;
   cursor: pointer;
   font-size: 1.2rem;
-  padding: 5px;
+  padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s;
+  transition: all 0.2s;
+  border-radius: 50%;
+  opacity: 0.7;
 }
 
 .remove-btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
+  background-color: rgba(231, 76, 60, 0.1);
+  opacity: 1;
 }
 
 .add-btn {
   background: none;
-  border: 1px dashed #ccc;
+  border: 2px dashed #ccc;
   color: var(--color-primary);
   cursor: pointer;
-  padding: 10px 15px;
-  border-radius: 6px;
+  padding: 12px 18px;
+  border-radius: 10px;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-family: 'Poppins', sans-serif;
-  font-size: 0.95rem;
-  transition: background-color 0.2s;
-  margin-top: 5px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s;
+  margin-top: 10px;
 }
 
 .add-btn:hover {
-  background-color: rgba(var(--color-primary-rgb), 0.05);
+  background-color: rgba(var(--color-primary-rgb), 0.08);
+  border-color: var(--color-primary);
+  transform: translateY(-3px);
 }
 
-/* Estilos para o input de arquivo */
+.add-btn i {
+  font-size: 1rem;
+}
+
 .file-input-wrapper {
   position: relative;
   margin-bottom: 15px;
@@ -178,38 +255,94 @@
 
 .file-input-wrapper input[type='file'] {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  padding: 12px;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  width: 100%;
+  transition: all 0.3s;
+  cursor: pointer;
+  background-color: #f9f9f9;
+}
+
+.file-input-wrapper input[type='file']:hover {
+  border-color: var(--color-primary);
+  background-color: rgba(var(--color-primary-rgb), 0.05);
 }
 
 .file-preview {
-  margin-top: 10px;
+  margin-top: 15px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  border: 1px solid #eee;
 }
 
 #image-preview {
-  max-width: 300px;
-  max-height: 200px;
-  margin-bottom: 10px;
-  border-radius: 6px;
+  max-width: 100%;
+  height: auto;
+  max-height: 250px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
 }
 
-/* Estilos para botões de ação */
+#file-name {
+  color: #666;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
 .form-actions {
   display: flex;
   justify-content: center;
-  gap: 15px;
-  margin-top: 30px;
+  gap: 20px;
+  margin-top: 40px;
 }
 
 .form-actions button {
-  padding: 12px 30px;
-  font-size: 1rem;
+  padding: 14px 35px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: all 0.3s ease;
 }
 
-/* Responsividade */
+.form-actions .btn-outline {
+  border: 2px solid #ccc;
+  color: #555;
+  background: transparent;
+}
+
+.form-actions .btn-outline:hover {
+  border-color: #aaa;
+  background-color: #f3f3f3;
+  color: #333;
+}
+
+.form-actions .btn-primary {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+  transition: all 0.3s ease;
+}
+
+.form-actions .btn-primary:hover {
+  transform: translateY(-3px);
+  background: #ff5252;
+  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+}
+
 @media (max-width: 768px) {
+  .recipe-form-section {
+    padding: 25px;
+  }
+
   .form-row {
     flex-direction: column;
     gap: 15px;
@@ -222,23 +355,30 @@
   .ingredient-item,
   .step-item {
     flex-wrap: wrap;
+    padding: 12px;
   }
 
   .step-item {
-    padding-left: 0;
-    padding-top: 40px;
+    padding-left: 12px;
+    padding-top: 45px;
   }
 
   .step-number {
-    top: 0;
-    left: 15px;
+    top: 12px;
+    left: 12px;
+    transform: none;
   }
 
   .form-actions {
     flex-direction: column;
+    gap: 12px;
   }
 
   .form-actions button {
     width: 100%;
+  }
+
+  .page-title {
+    font-size: 2.2rem;
   }
 }
