@@ -210,74 +210,149 @@ function initializeFilters() {
 }
 
 async function carregarCategoriasFiltro() {
-  console.log('Iniciando carregamento de categorias para o filtro...');
   const selectCategoria = document.getElementById('filter-category');
-  if (!selectCategoria) {
-    console.warn('Elemento select de categorias não encontrado');
-    return;
-  }
+  if (!selectCategoria) return false;
 
+  // Limpa as opções existentes, mantendo apenas a primeira (normalmente "Todas as categorias")
   while (selectCategoria.options.length > 1) {
     selectCategoria.remove(1);
   }
 
   try {
+    // Adiciona uma opção de carregamento para feedback visual
+    const loadingOption = document.createElement('option');
+    loadingOption.disabled = true;
+    loadingOption.textContent = "Carregando categorias...";
+    selectCategoria.appendChild(loadingOption);
+
     let categoriasList = [];
 
+    // 1ª opção: Usar as categorias já carregadas na memória
     if (window.categorias && Array.isArray(window.categorias) && window.categorias.length > 0) {
-      console.log('Usando categorias da variável global:', window.categorias.length);
+      console.log('Usando categorias já carregadas na memória:', window.categorias.length);
       categoriasList = window.categorias;
-    } else if (
+    } 
+    // 2ª opção: Usar a API da aplicação, se disponível
+    else if (
       window.API &&
       window.API.categorias &&
       typeof window.API.categorias.listar === 'function'
     ) {
       console.log('Tentando carregar categorias via API.categorias.listar()');
       try {
-        categoriasList = await window.API.categorias.listar();
+        // Configura um timeout para a requisição da API
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Tempo limite excedido na API')), 5000);
+        });
+        
+        const apiPromise = window.API.categorias.listar();
+        categoriasList = await Promise.race([apiPromise, timeoutPromise]);
         console.log('Categorias carregadas via API:', categoriasList.length);
       } catch (apiError) {
         console.error('Erro ao carregar via API.categorias.listar():', apiError);
         throw apiError;
       }
-    } else {
+    } 
+    // 3ª opção: Fetch direto para os endpoints
+    else {
       console.log('Tentando fetch direto para categorias');
+      
+      // Define os possíveis endpoints
+      const possibleEndpoints = ['/categories', '/categorias', '/categoria', '/category'];
+      const possibleServers = [API_URL, 'http://localhost:3001/api'];
+      
+      // Se temos um endpoint bem-sucedido anteriormente, priorizamos ele
+      if (window.API && window.API.categorias && window.API.categorias.ENDPOINT) {
+        possibleEndpoints.unshift(window.API.categorias.ENDPOINT);
+      }
+      
+      let success = false;
+      let lastError = null;
 
-      try {
-        console.log(`Tentando carregar de: ${url}`);
+      // Configura um timeout global para todas as tentativas
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Tempo limite excedido ao tentar todos os endpoints')), 10000);
+      });
 
-        const response = await fetch('http://localhost:3001/api/category');
+      const fetchPromise = (async () => {
+        for (const server of possibleServers) {
+          if (success) break;
+          
+          for (const endpoint of possibleEndpoints) {
+            try {
+              const url = `${server}${endpoint}`;
+              console.log(`Tentando carregar de: ${url}`);
+              
+              // Configura um timeout para cada requisição individual
+              const controller = new AbortController();
+              const timeoutId = setTimeout(() => controller.abort(), 3000);
+              
+              const response = await fetch(url, {
+                headers: { 'Content-Type': 'application/json' },
+                signal: controller.signal
+              }).finally(() => clearTimeout(timeoutId));
 
-        if (response.ok) {
-          const data = await response.json();
-          categoriasList = Array.isArray(data)
-            ? data
-            : data.categorias || data.categories || data.data || data.items || [];
+              if (response.ok) {
+                const data = await response.json();
+                categoriasList = Array.isArray(data)
+                  ? data
+                  : data.categorias || data.categories || data.data || data.items || [];
 
-          console.log(`Categorias carregadas via fetch de ${endpoint}:`, categoriasList.length);
-          success = true;
+                console.log(`Categorias carregadas via fetch de ${endpoint}:`, categoriasList.length);
+                
+                // Armazena o endpoint bem-sucedido para uso futuro
+                if (!window.API) window.API = {};
+                if (!window.API.categorias) window.API.categorias = {};
+                window.API.categorias.ENDPOINT = endpoint;
+                
+                success = true;
+                break;
+              }
+            } catch (endpointError) {
+              console.warn(`Falha ao carregar de ${endpoint}:`, endpointError);
+              lastError = endpointError;
+            }
+          }
         }
-      } catch (endpointError) {
-        console.warn(`Falha ao carregar de ${endpoint}:`, endpointError);
-      }
 
-      if (!success) {
-        throw new Error('Não foi possível carregar categorias de nenhum endpoint');
-      }
+        if (!success) {
+          throw lastError || new Error('Não foi possível carregar categorias de nenhum endpoint');
+        }
+        
+        return categoriasList;
+      })();
+
+      // Executa com timeout
+      categoriasList = await Promise.race([fetchPromise, timeoutPromise]);
     }
 
+    // Remove a opção de carregamento
+    selectCategoria.removeChild(loadingOption);
+
     if (categoriasList.length > 0) {
+      // Ordena as categorias por nome
+      categoriasList.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+      
+      // Adiciona cada categoria ao select
       categoriasList.forEach(categoria => {
         if (!selectCategoria.querySelector(`option[value="${categoria.id}"]`)) {
           const option = document.createElement('option');
           option.value = categoria.id;
           option.textContent = categoria.name;
+          
+          // Identifica categorias inativas
+          if (categoria.is_active === false) {
+            option.classList.add('inactive-category');
+            option.textContent += ' (Inativa)';
+          }
+          
           selectCategoria.appendChild(option);
         }
       });
 
       console.log(`${categoriasList.length} categorias adicionadas ao filtro`);
 
+      // Restaura a seleção anterior, se houver
       if (filtroAtual.categoria) {
         selectCategoria.value = filtroAtual.categoria;
       }
@@ -285,14 +360,28 @@ async function carregarCategoriasFiltro() {
       return true;
     } else {
       console.warn('Nenhuma categoria encontrada para preencher o filtro');
-      selectCategoria.innerHTML +=
-        '<option value="" disabled>Nenhuma categoria disponível</option>';
+      const emptyOption = document.createElement('option');
+      emptyOption.disabled = true;
+      emptyOption.textContent = "Nenhuma categoria disponível";
+      selectCategoria.appendChild(emptyOption);
       return false;
     }
   } catch (error) {
-    console.error('Erro ao carregar categorias para filtro:', error);
-    selectCategoria.innerHTML += '<option value="" disabled>Erro ao carregar categorias</option>';
+    console.error('Erro ao carregar categorias para o filtro:', error);
+    
+    // Remove a opção de carregamento, se existir
+    const loadingOption = selectCategoria.querySelector('option[textContent="Carregando categorias..."]');
+    if (loadingOption) {
+      selectCategoria.removeChild(loadingOption);
+    }
+    
+    // Adiciona opção de erro
+    const errorOption = document.createElement('option');
+    errorOption.disabled = true;
+    errorOption.textContent = "Erro ao carregar categorias";
+    selectCategoria.appendChild(errorOption);
 
+    // Adiciona botão de retry
     const filterItem = selectCategoria.closest('.filter-item');
     if (filterItem && !filterItem.querySelector('.retry-button')) {
       const retryButton = document.createElement('button');
@@ -518,7 +607,7 @@ async function renderizarListaProdutos(filtros = null) {
       console.error('Erro específico da API:', apiError);
 
       console.log('Tentando método alternativo com fetch direto...');
-      const response = await fetch(`${API.BASE_URL || 'http://localhost:3001/api'}/produtos`);
+      const response = await fetch(`${API.BASE_URL || 'http://localhost:3001/api'}/product`);
 
       if (!response.ok) {
         throw new Error(`Erro HTTP: ${response.status}`);
