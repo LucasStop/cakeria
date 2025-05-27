@@ -54,14 +54,30 @@ async function loadCategories() {
     const categorySelect = document.getElementById('productCategory');
 
     if (categorySelect && categories && categories.length > 0) {
+      // Primeiro, limpe o select para garantir que não haja duplicatas
+      categorySelect.innerHTML = '<option value="">Selecione uma categoria</option>';
+      
       categories.forEach(category => {
         const option = document.createElement('option');
-        option.value = category._id; // Usar o ID da categoria como valor
+        option.value = category.id || category._id; // Usar ID da categoria (tentar ambos formatos)
         option.textContent = category.name;
         categorySelect.appendChild(option);
       });
+      
+      // Se houver apenas uma categoria, selecioná-la automaticamente
+      if (categories.length === 1) {
+        categorySelect.value = categories[0].id || categories[0]._id;
+      }
     } else if (categorySelect) {
-      categorySelect.innerHTML = '<option value=\\"\\">Nenhuma categoria encontrada</option>';
+      categorySelect.innerHTML = '<option value="">Nenhuma categoria encontrada</option>';
+      
+      // Mostrar alerta ao usuário
+      Toastify({
+        text: 'Nenhuma categoria encontrada. Crie uma categoria primeiro.',
+        duration: 5000,
+        gravity: 'top',
+        position: 'right',
+      }).showToast();
     }
   } catch (error) {
     console.error('Erro ao carregar categorias:', error);
@@ -73,7 +89,7 @@ async function loadCategories() {
     }).showToast();
     const categorySelect = document.getElementById('productCategory');
     if (categorySelect) {
-      categorySelect.innerHTML = '<option value=\\"\\">Erro ao carregar</option>';
+      categorySelect.innerHTML = '<option value="">Erro ao carregar</option>';
     }
   }
 }
@@ -237,13 +253,19 @@ async function handleSubmitProduct(event) {
       field: 'productStock',
       message: 'O estoque do produto deve ser um número válido e maior ou igual a zero.',
     });
-  }
-  // Garante que productCategory (que é o ID) não seja uma string vazia (opção "Selecione uma categoria")
+  }  // Garante que productCategory (que é o ID) não seja uma string vazia (opção "Selecione uma categoria")
   if (!productCategory || productCategory === '') {
     errors.push({
       field: 'productCategory',
       message: 'A categoria do produto deve ser selecionada.',
     });
+    
+    // Adiciona destaque visual ao campo de categoria
+    const categorySelect = document.getElementById('productCategory');
+    if (categorySelect) {
+      categorySelect.classList.add('invalid-input');
+      categorySelect.focus();
+    }
   }
   if (productSize === 'custom' && !isNotEmpty(productCustomSize)) {
     errors.push({
@@ -287,13 +309,28 @@ async function handleSubmitProduct(event) {
     }).showToast();
     return;
   }
-
   const formData = new FormData();
   formData.append('name', productName);
   formData.append('description', productDescription);
   formData.append('price', productPrice);
   formData.append('stock', productStock);
+  
+  // Garantir que category_id seja enviado corretamente
+  if (!productCategory || productCategory === '') {
+    // Se não houver categoria selecionada, mostrar erro novamente
+    showError('productCategory-error', 'A categoria do produto é obrigatória.');
+    Toastify({
+      text: 'Selecione uma categoria para continuar.',
+      duration: 3000,
+      gravity: 'top',
+      position: 'right',
+    }).showToast();
+    return;
+  }
+  
+  // Assegurar que o ID da categoria seja um valor válido
   formData.append('category_id', productCategory);
+  console.log('Categoria enviada:', productCategory); // Log para debug
 
   if (productSize === 'custom') {
     formData.append('size', productCustomSize);
