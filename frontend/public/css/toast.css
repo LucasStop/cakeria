@@ -9,7 +9,7 @@
   pointer-events: none;
 }
 
-.toast-container.top-right {
+.toast-container.bot {
   top: 20px;
   right: 20px;
 }
