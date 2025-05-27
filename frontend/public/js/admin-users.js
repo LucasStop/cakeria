@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (window.Toast && typeof window.Toast.init === 'function') {
     window.Toast.init();
   }
-  
+
   checkAdminAccess();
   loadUsers();
   setupEventListeners();
@@ -35,7 +35,7 @@ function getUserInitials(user) {
 
 async function loadUserAvatarForList(userId, avatarContainer) {
   if (!userId || !avatarContainer) return;
-  
+
   const token = localStorage.getItem('token');
   try {
     const response = await fetch(
@@ -47,10 +47,10 @@ async function loadUserAvatarForList(userId, avatarContainer) {
     if (response.ok) {
       const blob = await response.blob();
       const imageUrl = URL.createObjectURL(blob);
-      
+
       const img = avatarContainer.querySelector('.user-avatar-img');
       const placeholder = avatarContainer.querySelector('.avatar-placeholder');
-      
+
       if (img) {
         img.src = imageUrl;
         img.style.display = 'block';
@@ -155,7 +155,7 @@ function renderUsersTable() {
       const date = new Date(user.last_login);
       lastLoginFormatted = `${date.toLocaleDateString('pt-BR')} ${date.toLocaleTimeString('pt-BR')}`;
     }
-    
+
     row.innerHTML = `
       <td data-label="Avatar">
         <div class="user-avatar-container">
@@ -183,8 +183,7 @@ function renderUsersTable() {
     `;
 
     tableBody.appendChild(row);
-    
-    // Carregar avatar do usuário
+
     const avatarContainer = row.querySelector('.user-avatar-container');
     if (avatarContainer) {
       loadUserAvatarForList(user.id, avatarContainer);
@@ -247,32 +246,29 @@ function renderPagination() {
   pagination.appendChild(nextButton);
 }
 
-// Tornando a função global para ser acessível via onclick
-window.openEditModal = function(userId) {
+window.openEditModal = function (userId) {
   console.log('openEditModal chamada com ID:', userId);
   const user = usersData.find(u => u.id == userId);
   if (!user) {
     console.error('Usuário não encontrado com ID:', userId);
     return;
   }
-  
+
   const row = document.querySelector(`#usersTable tr[data-id="${userId}"]`);
   if (!row) {
     console.error('Linha da tabela não encontrada para o usuário:', userId);
     return;
   }
-  
+
   if (row.classList.contains('editing')) {
     return;
   }
-    row.classList.add('editing');
-  
+  row.classList.add('editing');
+
   const cells = row.querySelectorAll('td:not(:last-child)');
-  
-  
+
   cells[1].innerHTML = `<input type="text" class="edit-input" value="${user.name}" data-field="name" required>`;
-  
-  
+
   cells[3].innerHTML = `
     <select class="edit-input" data-field="type">
       <option value="client" ${user.type === 'client' ? 'selected' : ''}>Cliente</option>
@@ -280,9 +276,7 @@ window.openEditModal = function(userId) {
     </select>
   `;
   cells[4].innerHTML = `<input type="text" class="edit-input phone-mask" value="${user.phone || ''}" data-field="phone" placeholder="(00) 00000-0000">`;
-  
-  
-  
+
   const actionsCell = row.querySelector('td:last-child');
   actionsCell.innerHTML = `
     <button class="action-btn save-btn" data-id="${user.id}" title="Salvar" onclick="saveUserChanges(${user.id})">
@@ -295,7 +289,7 @@ window.openEditModal = function(userId) {
 
   const phoneInput = row.querySelector('.phone-mask');
   if (phoneInput) {
-    phoneInput.addEventListener('input', function(e) {
+    phoneInput.addEventListener('input', function (e) {
       let value = e.target.value.replace(/\D/g, '');
       if (value.length > 11) value = value.slice(0, 11);
 
@@ -310,27 +304,26 @@ window.openEditModal = function(userId) {
       e.target.value = value;
     });
   }
-  
+
   const nameInput = row.querySelector('input[data-field="name"]');
   if (nameInput) {
     setTimeout(() => {
       nameInput.focus();
-      nameInput.select(); 
+      nameInput.select();
     }, 0);
   }
-  
-}
+};
 
-window.openDeleteModal = function(userId, userName) {
+window.openDeleteModal = function (userId, userName) {
   console.log('openDeleteModal chamada com ID:', userId, 'Nome:', userName);
-  
+
   const userRow = document.querySelector(`#usersTable tr[data-id="${userId}"]`);
   if (userRow) {
     userRow.classList.add('highlight-delete');
-    
+
     userRow.classList.add('pulse-delete');
   }
-  
+
   const confirmToast = Toast.create(
     `<div class="toast-confirm-message">
       Tem certeza que deseja excluir o usuário <strong>${userName}</strong>?<br>
@@ -343,19 +336,18 @@ window.openDeleteModal = function(userId, userName) {
     {
       type: 'warning',
       title: 'Confirmar exclusão',
-      duration: 10000, 
-      position: 'bottom-right', 
+      duration: 10000,
+      position: 'bottom-right',
       closeButton: true,
       pauseOnHover: true,
-      zIndex: 99999
+      zIndex: 99999,
     }
   );
-  
 
   if (confirmToast) {
     const confirmBtn = confirmToast.querySelector('.confirm-delete');
     const cancelBtn = confirmToast.querySelector('.cancel-delete');
-    
+
     const removeRowHighlight = () => {
       const userRow = document.querySelector(`#usersTable tr[data-id="${userId}"]`);
       if (userRow) {
@@ -363,29 +355,29 @@ window.openDeleteModal = function(userId, userName) {
         userRow.classList.remove('pulse-delete');
       }
     };
-    
+
     if (confirmBtn) {
-      confirmBtn.addEventListener('click', function() {
+      confirmBtn.addEventListener('click', function () {
         Toast.remove(confirmToast);
         deleteUser(userId);
       });
     }
-    
+
     if (cancelBtn) {
-      cancelBtn.addEventListener('click', function() {
+      cancelBtn.addEventListener('click', function () {
         Toast.remove(confirmToast);
         removeRowHighlight();
       });
     }
-    
+
     const closeBtn = confirmToast.querySelector('.toast-close');
     if (closeBtn) {
-      closeBtn.addEventListener('click', function() {
+      closeBtn.addEventListener('click', function () {
         removeRowHighlight();
       });
     }
   }
-}
+};
 
 function setupFormMasks() {
   const cpfInputs = document.querySelectorAll('#editCpf');
@@ -487,7 +479,8 @@ function setupEventListeners() {
       icon.classList.remove('fa-eye-slash');
       icon.classList.add('fa-eye');
     }
-  });  document.getElementById('editUserForm').addEventListener('submit', function (e) {
+  });
+  document.getElementById('editUserForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     const userId = document.getElementById('editUserId').value;
@@ -635,28 +628,29 @@ function updateUser(userId, formData) {
     });
 }
 
-window.deleteUser = function(userId) {
+window.deleteUser = function (userId) {
   console.log('Excluindo usuário:', userId);
-  
+
   const row = document.querySelector(`#usersTable tr[data-id="${userId}"]`);
   if (!row) {
     console.error('Linha da tabela não encontrada para o usuário:', userId);
     return;
   }
-  
+
   row.style.transition = 'opacity 0.5s ease';
   row.style.opacity = '0.5';
-  
+
   const actionsCell = row.querySelector('td:last-child');
-  actionsCell.innerHTML = '<div class="spinner"><i class="fas fa-spinner fa-spin"></i> Excluindo...</div>';
+  actionsCell.innerHTML =
+    '<div class="spinner"><i class="fas fa-spinner fa-spin"></i> Excluindo...</div>';
   API.User.delete(userId)
     .then(() => {
       console.log('Usuário excluído com sucesso');
-      
+
       row.style.opacity = '0';
       setTimeout(() => {
         loadUsers();
-        
+
         Toast.success('Usuário excluído com sucesso!', {
           position: 'bottom-right',
           closeButton: true,
@@ -668,11 +662,11 @@ window.deleteUser = function(userId) {
     })
     .catch(error => {
       console.error('Erro na exclusão:', error);
-      
+
       row.style.opacity = '1';
-      
+
       renderUsersTable();
-      
+
       Toast.error('Erro ao excluir usuário: ' + (error.message || 'Tente novamente'), {
         position: 'bottom-right',
         closeButton: true,
@@ -681,7 +675,7 @@ window.deleteUser = function(userId) {
         zIndex: 99999,
       });
     });
-}
+};
 
 function showLoadingState(isLoading) {
   const tableBody = document.querySelector('#usersTable tbody');
@@ -704,15 +698,15 @@ function showLoading() {
   if (document.querySelector('.loading-overlay')) {
     return;
   }
-  
+
   const overlay = document.createElement('div');
   overlay.className = 'loading-overlay';
-  
+
   const spinner = document.createElement('div');
   spinner.className = 'loading-spinner';
-  
+
   overlay.appendChild(spinner);
-  
+
   document.body.appendChild(overlay);
 }
 
@@ -723,17 +717,17 @@ function hideLoading() {
   }
 }
 
-window.saveUserChanges = function(userId) {
+window.saveUserChanges = function (userId) {
   console.log('Salvando alterações para o usuário:', userId);
   const row = document.querySelector(`#usersTable tr[data-id="${userId}"]`);
   if (!row) {
     console.error('Linha da tabela não encontrada para o usuário:', userId);
     return;
   }
-  
+
   const nameInput = row.querySelector('input[data-field="name"]');
   const emailInput = row.querySelector('input[data-field="email"]');
-  
+
   if (nameInput && !nameInput.value.trim()) {
     Toast.error('O nome não pode ficar em branco.', {
       position: 'bottom-right',
@@ -741,7 +735,7 @@ window.saveUserChanges = function(userId) {
     nameInput.focus();
     return;
   }
-  
+
   if (emailInput) {
     const emailValue = emailInput.value.trim();
     if (!emailValue) {
@@ -751,7 +745,7 @@ window.saveUserChanges = function(userId) {
       emailInput.focus();
       return;
     }
-    
+
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(emailValue)) {
       Toast.error('Por favor, insira um email válido.', {
@@ -761,16 +755,16 @@ window.saveUserChanges = function(userId) {
       return;
     }
   }
-  
+
   const formData = new FormData();
   const inputs = row.querySelectorAll('.edit-input');
-  
+
   inputs.forEach(input => {
     const field = input.getAttribute('data-field');
     const value = input.value.trim();
     formData.append(field, value);
   });
-  
+
   const user = usersData.find(u => u.id == userId);
   if (user && user.cpf) {
     formData.append('cpf', user.cpf);
@@ -780,23 +774,24 @@ window.saveUserChanges = function(userId) {
     input.disabled = true;
     input.classList.add('saving');
   });
-  
+
   row.classList.add('loading');
   const actionsCell = row.querySelector('td:last-child');
   const originalActionsHtml = actionsCell.innerHTML;
-  actionsCell.innerHTML = '<div class="spinner"><i class="fas fa-spinner fa-spin"></i> Salvando...</div>';
+  actionsCell.innerHTML =
+    '<div class="spinner"><i class="fas fa-spinner fa-spin"></i> Salvando...</div>';
 
   const loadingToast = Toast.info('Salvando alterações...', {
     position: 'bottom-right',
-    duration: 0 
+    duration: 0,
   });
 
   API.User.update(userId, formData)
     .then(data => {
       console.log('Usuário atualizado com sucesso:', data);
-      
+
       if (loadingToast) Toast.remove(loadingToast);
-      
+
       const userIndex = usersData.findIndex(u => u.id == userId);
       if (userIndex !== -1) {
         inputs.forEach(input => {
@@ -806,9 +801,9 @@ window.saveUserChanges = function(userId) {
         });
       }
       row.classList.remove('editing', 'loading');
-      
+
       renderUsersTable();
-      
+
       setTimeout(() => {
         const updatedRow = document.querySelector(`#usersTable tr[data-id="${userId}"]`);
         if (updatedRow) {
@@ -825,24 +820,25 @@ window.saveUserChanges = function(userId) {
         title: null,
         zIndex: 99999,
       });
-    })    .catch(error => {
+    })
+    .catch(error => {
       console.error('Erro na atualização:', error);
-      
+
       if (loadingToast) Toast.remove(loadingToast);
-      
+
       row.classList.remove('loading');
       actionsCell.innerHTML = originalActionsHtml;
-      
+
       allInputs.forEach(input => {
         input.disabled = false;
         input.classList.remove('saving');
       });
-      
+
       row.classList.add('error-highlight');
       setTimeout(() => {
         row.classList.remove('error-highlight');
       }, 2000);
-      
+
       Toast.error('Erro ao atualizar usuário: ' + (error.message || 'Tente novamente'), {
         position: 'bottom-right',
         closeButton: true,
@@ -853,15 +849,15 @@ window.saveUserChanges = function(userId) {
     });
 };
 
-window.cancelEdit = function(userId) {
+window.cancelEdit = function (userId) {
   console.log('Cancelando edição para o usuário:', userId);
   const row = document.querySelector(`#usersTable tr[data-id="${userId}"]`);
   if (!row) {
     console.error('Linha da tabela não encontrada para o usuário:', userId);
     return;
   }
-  
+
   row.classList.remove('editing');
-  
+
   renderUsersTable();
 };

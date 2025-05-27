@@ -18,8 +18,7 @@ async function fetchRecipeDetails(id) {
       throw new Error(`Erro na requisição: ${response.status}`);
     }
     const recipe = await response.json();
-    renderRecipeDetails(recipe);
-  } catch (error) {
+    renderRecipeDetails(recipe);  } catch (error) {
     console.error('Erro ao buscar detalhes da receita:', error);
     showError();
   }
@@ -50,11 +49,10 @@ function renderRecipeDetails(recipe) {
             <i class="fas fa-trash"></i> Excluir Receita
           </button>
         </div>
-      </div>
-      
+      </div>      
       <div class="recipe-content-wrapper">
         <div class="recipe-image-container">
-          <img src="${recipe.image_url || '/assets/placeholder.jpg'}" alt="${recipe.title}" class="recipe-main-image">
+          <img src="${recipe.id ? `${API.BASE_URL}/recipe/${recipe.id}/image` : '/assets/placeholder.jpg'}" alt="${recipe.title}" class="recipe-main-image" onerror="this.src='/assets/placeholder.jpg'">
           
           <div class="recipe-badges">
             <span class="recipe-badge difficulty-${recipe.difficulty || 'medio'}">

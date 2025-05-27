@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     productForm.addEventListener('submit', handleSubmitProduct);
   }
 
-  // Configurar upload de imagem e manipulação de tamanho personalizado
   setupImageUpload();
   setupCustomSizeInput();
 });
