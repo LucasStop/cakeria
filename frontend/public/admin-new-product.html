@@ -85,13 +85,17 @@
                   <span id="productName-error" class="error-message"></span>
                 </div>
               </div>
-              <div class="form-col">
-                <div class="form-group">
+              <div class="form-col">                <div class="form-group">
                   <label for="productCategory">Categoria*</label>
-                  <select id="productCategory" name="productCategory" required>
-                    <option value="">Selecione uma categoria</option>
-                    <!-- Categorias serão populadas via JS -->
-                  </select>
+                  <div class="category-select-container">
+                    <select id="productCategory" name="productCategory" required>
+                      <option value="">Selecione uma categoria</option>
+                      <!-- Categorias serão populadas via JS -->
+                    </select>
+                    <button type="button" id="createCategoryBtn" class="btn btn-sm" title="Criar Nova Categoria">
+                      <i class="fas fa-plus"></i>
+                    </button>
+                  </div>
                   <span id="productCategory-error" class="error-message"></span>
                 </div>
               </div>

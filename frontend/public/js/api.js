@@ -16,8 +16,6 @@ const API = {
             position: 'bottom-right',
             duration: 5000,
           });
-        } else {
-          alert('Sua sessão expirou. Por favor, faça login novamente.');
         }
 
         window.location.href = '/login.html?expired=true';
@@ -144,7 +142,6 @@ const API = {
             duration: 6000,
           });
         } else {
-          alert('Sua sessão expirou. Por favor, faça login novamente.');
         }
 
         this.clearSession();

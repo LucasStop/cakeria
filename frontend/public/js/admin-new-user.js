@@ -582,17 +582,14 @@ function handleSubmit(e) {
         if (response.ok) {
           const responseData = await response.json();
 
-          alert('Usuário cadastrado com sucesso!');
           window.location.href = 'admin-users.html';
         } else {
           const errorData = await response.json();
           console.error('Erro ao registrar usuário:', errorData);
-          alert('Erro ao cadastrar usuário: ' + (errorData.message || 'Erro desconhecido'));
         }
       })
       .catch(error => {
         console.error('Erro na requisição:', error);
-        alert('Erro na requisição: ' + error.message);
       });
   } else {
     const userData = {
@@ -624,17 +621,14 @@ function handleSubmit(e) {
         if (response.ok) {
           const responseData = await response.json();
 
-          alert('Usuário cadastrado com sucesso!');
           window.location.href = 'admin-users.html';
         } else {
           const errorData = await response.json();
           console.error('Erro ao registrar usuário:', errorData);
-          alert('Erro ao cadastrar usuário: ' + (errorData.message || 'Erro desconhecido'));
         }
       })
       .catch(error => {
         console.error('Erro na requisição:', error);
-        alert('Erro na requisição: ' + error.message);
       });
   }
 }

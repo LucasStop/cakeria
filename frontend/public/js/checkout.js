@@ -682,8 +682,6 @@ function clearAllErrors() {
 function showError(message) {
   if (window.Toast) {
     Toast.error(message);
-  } else {
-    alert(`Erro: ${message}`);
   }
 }
 

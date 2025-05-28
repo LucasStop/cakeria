@@ -197,43 +197,14 @@ async function loadUserOrders() {
     orderList.innerHTML =
       '<div class="loading-indicator"><div class="spinner"></div><p>Carregando pedidos...</p></div>';
 
-    // Verifica se há dados em cache e se ainda são válidos (menos de 5 minutos)
-    let orders;
-    try {
-      const cachedData = localStorage.getItem('userOrdersCache');
-      const cacheTimestamp = localStorage.getItem('userOrdersCacheTime');
-      const now = new Date().getTime();
-      const cacheLifetime = 5 * 60 * 1000; // 5 minutos em milissegundos
-
-      // Se temos cache válido, use-o
-      if (cachedData && cacheTimestamp && now - parseInt(cacheTimestamp) < cacheLifetime) {
-        orders = JSON.parse(cachedData);
-        console.log('Usando dados em cache para pedidos do usuário');
-      }
-    } catch (cacheError) {
-      console.warn('Erro ao utilizar cache de pedidos:', cacheError);
-    }
-
-    // Se não tiver cache válido, busca da API
-    if (!orders) {
-      const token = localStorage.getItem('token');
-      orders = await API.request(`/order/user/${user.id}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      // Armazena em cache apenas se obtiver dados válidos
-      if (orders && Array.isArray(orders)) {
-        try {
-          localStorage.setItem('userOrdersCache', JSON.stringify(orders));
-          localStorage.setItem('userOrdersCacheTime', new Date().getTime().toString());
-        } catch (storageError) {
-          console.warn('Erro ao armazenar cache de pedidos:', storageError);
-        }
-      }
-    }
+    // Busca da API diretamente, sem verificar cache
+    const token = localStorage.getItem('token');
+    const orders = await API.request(`/order/user/${user.id}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (!orders || !Array.isArray(orders) || orders.length === 0) {
       orderList.innerHTML =
@@ -970,8 +941,6 @@ function shareRecipe(recipeId) {
 
     if (window.Toast) {
       Toast.success('Link da receita copiado para a área de transferência!');
-    } else {
-      alert('Link da receita copiado para a área de transferência!');
     }
   }
 }

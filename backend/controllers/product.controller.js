@@ -10,7 +10,6 @@ exports.findAll = async (req, res) => {
       attributes: {
         include: [[sequelize.literal('DATEDIFF(expiry_date, CURDATE())'), 'days_to_expire']],
       },
-      order: [['created_at', 'DESC']],
     });
     res.json(product);
   } catch (error) {

@@ -14,7 +14,6 @@ function checkAdminAccess() {
 
   if (!isAdmin(user)) {
     window.location.href = '/index.html';
-    alert('Acesso restrito. Você não tem permissão para acessar a área administrativa.');
     return;
   }
 }
